@@ -237,27 +237,13 @@ public class Showsample extends HttpServlet {
 			}
     		jsSample.put("ancestors",result);
 
-    		query= // find next object
-    		"SELECT  objectnames.id, objectnames.name, objectnames.type " +
-    		"FROM objectnames " +
-    		"WHERE (objectnames.name > (SELECT objectnames.name FROM objectnames " +
-    		"                           WHERE objectnames.id='"+objID+"')) " +
-    	    "ORDER BY 2 LIMIT 1";
-			try {  // get json from the database using the query
-				result=DBconnection.jsonfromquery(query);
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
-			if (result.length() > 0) {
-			    jsSample.put("next",result.get(0));
-			}
-    		
-    		query= // find next object
-    		"SELECT  objectnames.id, objectnames.name, objectnames.type " +
-    		"FROM objectnames " +
-    		"WHERE (objectnames.name < (SELECT objectnames.name FROM objectnames " +
-    		"                           WHERE objectnames.id='"+objID+"')) " +
-    	    "ORDER BY 2 DESC LIMIT 1";
+    		query= // find previous sample
+    		"SELECT  objectnames.id, objectnames.name, objectnames.type \n"
+			+"FROM objectnames \n"
+			+"WHERE ((objectnames.name < (SELECT objectnames.name FROM objectnames WHERE objectnames.id='"+objID+"')) \n"
+			+"AND objectnames.type=(SELECT objectnames.type FROM objectnames WHERE objectnames.id='"+objID+"')) \n"
+			+"ORDER BY objectnames.name DESC \n"
+			+"LIMIT 1";
 			try {  // get json from the database using the query
 				result=DBconnection.jsonfromquery(query);
 			} catch (Exception e2) {
@@ -265,6 +251,22 @@ public class Showsample extends HttpServlet {
 			}
 			if (result.length() > 0) {
 			    jsSample.put("previous",result.get(0));
+			}
+    		
+    		query= // find next sample
+    		"SELECT  objectnames.id, objectnames.name, objectnames.type \n"
+			+"FROM objectnames \n"
+			+"WHERE ((objectnames.name > (SELECT objectnames.name FROM objectnames WHERE objectnames.id='"+objID+"')) \n"
+			+"AND objectnames.type=(SELECT objectnames.type FROM objectnames WHERE objectnames.id='"+objID+"')) \n"
+			+"ORDER BY objectnames.name \n"
+    		+"LIMIT 1 \n";
+			try {  // get json from the database using the query
+				result=DBconnection.jsonfromquery(query);
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+			if (result.length() > 0) {
+			    jsSample.put("next",result.get(0));
 			}
 			
     	} catch (JSONException e) {
