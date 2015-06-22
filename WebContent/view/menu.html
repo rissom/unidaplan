@@ -1,0 +1,63 @@
+ 
+ <!-- <div class="btn-toolbar" role="toolbar">  -->
+  
+ <div class="btn-group btn-group-justified" role="toolbar">
+   <div class="btn-group" dropdown> 
+      <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle ng-disabled="disabled">
+        Object
+      </button>
+      <ul class="dropdown-menu" role="menu">
+          <li><a href="#">New Object  &#9654;</b></a>
+          	<ul class="dropdown-menu sub-menu">
+          	  <li><a href="#">Solarpanel</a></li>
+          	  <li><a href="#">Windrad</a></li>
+          	</ul>
+          </li>
+          <li><a href ng-click="menuCTRL.select('sample')">Open Object</a></li>
+          <li><a href="#">Recent Objects <b class="caret-right"></b></a></li>
+      </ul>
+   </div>  
+   <div class="btn-group" dropdown> 
+      <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle ng-disabled="disabled">
+        Process
+      </button>
+         <ul class="dropdown-menu" role="menu">
+        <li><a href="#">New Process <b class="caret-right"></b></a></li>
+        <li><a href="#" ng-click="menuCTRL.select('process')">Open Process <b class="caret-right"></b></a></li>
+        <li><a href="#">Recent Processes <b class="caret-right"></b></a></li>
+      </ul>  
+     </div>
+     
+   <div class="btn-group" dropdown>   
+      <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle ng-disabled="disabled">
+        Experiment
+      </button>
+        <ul class="dropdown-menu" role="menu">
+          <li><a href="#">New Experiment <b class="caret-right"></b></a></li>
+          <li><a href="#" ng-click="menuCTRL.select('experiments')">Open Experiment </b></a></li>
+        </ul>  
+   </div> 
+  
+   <div class="btn-group" dropdown>   
+      <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle ng-disabled="disabled">
+        Administration
+      </button>
+        <ul class="dropdown-menu" role="menu">
+          <li><a href="#">Groups and Users</a></li>
+          <li><a href="#">Objects</a></li>
+          <li><a href="#">Processes</a></li>
+          <li><a href="#">Parameters</a></li>
+          <li><a href="#">Experiments</a></li>        
+        </ul>  
+   </div>
+  
+   <div class="btn-group" dropdown>   
+      <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle ng-disabled="disabled">
+        Help
+      </button>
+        <ul class="dropdown-menu" role="menu">
+          <li><a href ng-click="menuCTRL.select('about')">About Unidaplan</a></li>
+          <li><a href ng-click="menuCTRL.select('help')">Help page</a></li>
+        </ul>  
+   </div>
+</div>

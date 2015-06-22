@@ -1,0 +1,34 @@
+<div ng-controller="expcontroller as expc" class="container" ng-show="menuCTRL.currentPage=='experiments'">
+
+  <div ng-show="{{expc.number_of_own_experiments()>0}}">
+    <h3>Meine Experimente</h3>
+      <table class="table">
+      <tr ng-repeat="experiment in expc.experiments">
+        <td ng-click="expc.articleClicked(experiment)">{{experiment.id}}         
+        </td>  
+        <td>{{experiment.name}}
+        </td>
+        <td>
+             <button type="button" class="btn btn-danger">loeschen</button>
+        </td>  
+      </tr> <!-- ends ng-repeat -->
+    </table>
+  </div>
+  
+  <div ng-show="{{expc.experiments.length-expc.number_of_own_experiments()>0}}">
+    <h3>Anderer Leute Experimente</h3> 
+    <!--   <tr ngif creator=='Thorsten Rissom'> -->
+       <table class="table">    
+       <tr ng-repeat="experiment in expc.experiments"> 
+	       <td ng-if="experiment.creator!='Thorsten Rissom'" ng-click="articleClicked(parameter)">{{exp.id}}         
+	       </td>  
+	       <td ng-if="experiment.creator!='Thorsten Rissom'">{{exp.name}}
+	       </td>
+	       <td ng-if="experiment.creator!='Thorsten Rissom'"><button type="button" class="btn btn-danger">loeschen</button>
+	       </td>
+	   </tr>  	  
+     </table>
+</div>
+
+    
+    

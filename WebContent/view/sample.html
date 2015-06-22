@@ -1,0 +1,78 @@
+<div ng-controller="showsamplecontroller" class="container" ng-show="menuCTRL.currentPage =='sample'" > 
+<p ng-init="loadData(1)"></p>
+<div ng-hide="sample.error">
+	<h3>{{sample.type}} {{sample.parameters[0].value}}</h3>
+	<h4>Basisparameter</h4>	
+    <table class="table">    
+      <tr ng-repeat="parameter in sample.parameters">
+	      <td ng-click="articleClicked(parameter)">{{parameter.name}} :
+	      </td>  
+	      <td> {{parameter.value}} {{parameter.error?'&plusmn;'+parameter.error:''}}
+	       {{parameter.unit.length>0?parameter.unit:''}}
+	      </td>
+      </tr>
+      <tr><td></td><td></td></tr>  <!-- um letzten Strich in Tabelle zu erzeugen -->
+    </table>
+    <h4>Files</h4>
+    <button type="button" class="btn btn-default "ng-click="addFile()">Datei hinzufügen</button>
+    <br />
+	<br />
+   
+    <h4>Objektbaum</h4>
+    <table>
+    <tr>
+    <td>
+    <div ng-show="sample.ancestors.length>0">Originates from:</div>
+	    <span ng-repeat="buttonsample in sample.ancestors">
+	    	<samplebutton></samplebutton>
+	    </span>
+<!-- 	<div ng-show="sample.ancestors.length>0"><br /></div>  -->
+	</td>
+	<td width=20mm>
+	</td>
+	<td>	    
+    <div ng-show="sample.children.length>0">Is ancestor of:</div>
+    	<span ng-repeat="buttonsample in sample.children">
+  	  		<samplebutton></samplebutton> 
+  	  	</span>
+  	</td>  	
+  <!--   <div ng-show="sample.ancestors.length>0"><br /></div>  -->
+    </tr>
+	</table>
+	<br />
+
+    
+    <h4>Planung</h4>
+    <table>
+		<tr ng-repeat="plan in sample.plans">
+			<td>Versuchsplan {{plan}}</td>
+		</tr>
+    </table>
+	<br />
+	    
+	    
+	    
+	 <table>
+	 	<tr>
+		 <td align="center">
+		 	<div ng-hide="true">{{buttonsample=sample.previous}}</div> <!--  superdreckig -->	 
+			<span ng-show="sample.previous">&#x25c0; previous </span><br />
+			<samplebutton ng-show="sample.previous"></samplebutton> 
+		 </td>
+		 <td align="center">
+		 	&nbsp;<br />
+		 	&nbsp;<button type="button" class="btn btn-danger">Objekt löschen</button>
+		 </td>
+		 <td align="center">
+		 	<div ng-hide="true">{{buttonsample=sample.next}}</div>	<!--  superdreckig -->	 	
+		 	<span ng-show="sample.next"> &nbsp; next &nbsp; &#9654;</span><br />
+			&nbsp;<samplebutton></samplebutton>
+     	 </td>
+     </tr>     
+     </table>
+</div>
+<div ng-show=sample.error> <!-- Fehler beim Holen des Samples aufgetreten -->
+ {{sample.error}}
+</div>
+<br /><br /><br /><br /><br />
+</div>

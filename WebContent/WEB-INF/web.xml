@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:web="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" version="2.4">
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+  <servlet>
+    <description>shows data for a sample</description>
+    <display-name>Showsample</display-name>
+    <servlet-name>Showsample</servlet-name>
+    <servlet-class>unidaplan.Showsample</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Showsample</servlet-name>
+    <url-pattern>/showsample</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description>shows available object-types</description>
+    <display-name>Available objecttypes</display-name>
+    <servlet-name>Available_objecttypes</servlet-name>
+    <servlet-class>unidaplan.Available_objecttypes</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Available_objecttypes</servlet-name>
+    <url-pattern>/objecttypes</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description>shows available Experiments</description>
+    <display-name>Experiments</display-name>
+    <servlet-name>Experiments</servlet-name>
+    <servlet-class>unidaplan.Experiments</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Experiments</servlet-name>
+    <url-pattern>/experiments</url-pattern>
+  </servlet-mapping>
+</web-app>
