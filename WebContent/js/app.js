@@ -1,16 +1,16 @@
-
+(function(){
 'use strict';
 
 
 // Declare app level module which depends on filters, and services
-var myApp = angular.module('unidaplan',['ui.bootstrap']);
+angular.module('unidaplan',['ui.bootstrap'])
 	
-myApp.config(function() {
+.config(function() {
 	// Put configuration code here
-});
+})
 
 
-myApp.directive('samplebutton', function(){
+.directive('samplebutton', function(){
 	return {
 		restrict: 'E',
 //		scope: {buttonsample : '='},
@@ -18,11 +18,11 @@ myApp.directive('samplebutton', function(){
 		+'{{buttonsample.type}} {{buttonsample.name}} '
 		+'</button>',
 	};
-});
+})
 
 
 
-myApp.run(function($rootScope, restfactory) {
+.run(function($rootScope, restfactory) {
 	/** ============================================== PRINT DEBUG ========================================================== 
 	 * debug > 3 - print all 
 	 * debug > 2 - print debug  
@@ -96,6 +96,7 @@ myApp.run(function($rootScope, restfactory) {
         
 
     
-});
+})
+})();
 
 

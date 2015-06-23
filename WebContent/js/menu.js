@@ -1,4 +1,7 @@
-myApp.controller('menu', function ($scope, $log) {
+(function(){
+'use strict';
+
+angular.module('unidaplan').controller('menu', function ($scope, $log) {
 
   $scope.status = {
     isopen: false
@@ -17,3 +20,4 @@ myApp.controller('menu', function ($scope, $log) {
 	this.currentPage=selected; 
   };
 });
+})();

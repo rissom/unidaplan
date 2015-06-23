@@ -1,4 +1,7 @@
-myApp.controller('showsamplecontroller',['$scope','restfactory',function($scope,restfactory){
+(function(){
+'use strict';
+
+angular.module('unidaplan').controller('showsamplecontroller',['$scope','restfactory',function($scope,restfactory){
 	
 	$scope.sample = { 'parameters':[ {name: 'A', id: 1, unit:'g', value:100}
 									  ,{ name: 'B', unit:'', id:2, value: 200}],
@@ -23,3 +26,4 @@ myApp.controller('showsamplecontroller',['$scope','restfactory',function($scope,
     	console.log("articleClicked(article):",article);
     };
 }]);
+})();

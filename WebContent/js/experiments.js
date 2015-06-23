@@ -1,4 +1,6 @@
-myApp.controller('expcontroller',['$scope','restfactory',function($scope,restfactory){
+(function(){
+'use strict';
+angular.module('unidaplan').controller('expcontroller',['$scope','restfactory',function($scope,restfactory){
 	
 	this.experiments =  [{"creator":"Thorsten Rissom","name":"Erstes Experiment","id":1},
 	                   {"creator":"Thorsten Rissom","name":"Zweites Experiment","id":2}];			
@@ -30,3 +32,4 @@ myApp.controller('expcontroller',['$scope','restfactory',function($scope,restfac
     	console.log("articleClicked(article):",article);
     };
 }]);
+})();
