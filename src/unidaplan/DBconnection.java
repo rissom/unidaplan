@@ -89,7 +89,7 @@ public class DBconnection  {
   
   
   public static JSONArray table2json(ResultSet rs) throws Exception {
-        JSONArray jsArray = new JSONArray();
+        JSONArray jsArray = new JSONArray();        
         int rows = rs.getMetaData().getColumnCount();
         while (rs.next()) {                
             JSONObject obj = new JSONObject();

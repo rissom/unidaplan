@@ -4,6 +4,7 @@
     <welcome-file>index.jsp</welcome-file>
     <welcome-file>index.html</welcome-file>
   </welcome-file-list>
+  
   <servlet>
     <description>shows data for a sample</description>
     <display-name>Showsample</display-name>
@@ -14,6 +15,18 @@
     <servlet-name>Showsample</servlet-name>
     <url-pattern>/showsample</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <description>shows samples with a name close to parameter name</description>
+    <display-name>Samples by name</display-name>
+    <servlet-name>Samples_by_name</servlet-name>
+    <servlet-class>unidaplan.Samples_by_name</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Samples_by_name</servlet-name>
+    <url-pattern>/samples_by_name</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
     <description>shows available object-types</description>
     <display-name>Available objecttypes</display-name>

@@ -1,133 +1,110 @@
-<div ng-controller="showsamplecontroller" class="container" ng-show="menuCTRL.currentPage =='about'" > 
- <h2>About Unidaplan</h2>
- Software to organize your experiments<br />
- &copy; 2015 Thorsten Rissom<br />
- <br />
- <b>Thorsten Rissom</b><br />
- Marienburger Str. 47<br />
- 10405 Berlin<br />
- Germany<br />
- <br />
- <br />
- <br />
- Made with: <br />
-<img src=/unidaplan/pics/angular-logo.svg width=200mm>
-<br />  
- <ng-init licenceangular=false></ng-init>
- <br /> 
- <a href ng-click="licenceangular=!licenceangular">see licence</a>
- 
- <blockquote ng-show="licenceangular" ng-animate> 
- The MIT License<br /><br />
+<div ng-controller="showsamplecontroller" class="container"
+	ng-show="menuCTRL.currentPage =='about'">
+	<h2>About Unidaplan</h2>
+	Software to organize your experiments<br /> &copy; 2015 Thorsten
+	Rissom<br /> <br /> <b>Thorsten Rissom</b><br /> Marienburger Str.
+	47<br /> 10405 Berlin<br /> Germany<br /> <br /> <br /> <br />
+	Made with: <br /> <img src=/unidaplan/pics/angular-logo.svg
+		width=200mm> <br />
+	<ng-init licenceangular=false></ng-init>
+	<br /> <a href ng-click="licenceangular=!licenceangular">see
+		licence</a>
 
-Copyright &copy; 2010-2015 Google, Inc. <a href=http://angularjs.org>http://angularjs.org</a><br /><br />
+	<blockquote ng-show="licenceangular" ng-animate>
+		The MIT License<br />
+		<br /> Copyright &copy; 2010-2015 Google, Inc. <a
+			href=http://angularjs.org>http://angularjs.org</a><br />
+		<br /> Permission is hereby granted, free of charge, to any person
+		obtaining a copy of this software and associated documentation files
+		(the "Software"), to deal in the Software without restriction,
+		including without limitation the rights to use, copy, modify, merge,
+		publish, distribute, sublicense, and/or sell copies of the Software,
+		and to permit persons to whom the Software is furnished to do so,
+		subject to the following conditions:<br />
+		<br /> The above copyright notice and this permission notice shall be
+		included in all copies or substantial portions of the Software.<br />
+		<br /> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
+		KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+		OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+		NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+		LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+		OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+		WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+	</blockquote>
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:<br /><br />
+	<br /> <br /> <br /> ...and Apache Tomcat<br />
+	<ng-init licencetomcat=false></ng-init>
+	<img src="/unidaplan/pics/tomcat-logo.png"> <br /> <a href
+		ng-click="licencetomcat=!licencetomcat">see licence</a>
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.<br /><br />
+	<blockquote ng-show="licencetomcat" ng-animate>
+		Licensed under the Apache License, Version 2.0 (the "License");<br />
+		you may not use this file except in compliance with the License.<br />
+		You may obtain a copy of the License at
+		</blockqoute>
+		<br /> <br /> <a href=http://www.apache.org/licenses/LICENSE-2.0>http://www.apache.org/licenses/LICENSE-2.0</a>
+		<br />
+		<br />
+		<blockqoute> Unless required by applicable law or agreed
+		to in writing, software distributed under the License is distributed
+		on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+		either express or implied. See the License for the specific language
+		governing permissions and limitations under the License. 
+	</blockquote>
+	<br /> <br /> <br /> ... and
+	<ng-init licencepostgresql=false></ng-init>
+	PostgreSQL<br /> <img src="/unidaplan/pics/postgresql-logo.svg"
+		width=90mm></img><br /> <a href
+		ng-click="licencepostgresql=!licencepostgresql">see licence</a>
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-</blockquote>
-
-<br />
-<br />
-<br />
-...and Apache Tomcat<br />
-<ng-init licencetomcat=false></ng-init>
-<img src="/unidaplan/pics/tomcat-logo.png">
-<br />
-<a href ng-click="licencetomcat=!licencetomcat">see licence</a>
- 
- <blockquote ng-show="licencetomcat" ng-animate>
-Licensed under the Apache License, Version 2.0 (the "License");<br />
-you may not use this file except in compliance with the License.<br />
-You may obtain a copy of the License at</blockqoute><br />
-<br />
-<a href=http://www.apache.org/licenses/LICENSE-2.0>http://www.apache.org/licenses/LICENSE-2.0</a>
-<br /><br />
-<blockqoute>
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License. 
- </blockquote>
- <br />
- <br />
- <br />
- 
- 
- 
- 
-... and 
-<ng-init licencepostgresql=false></ng-init>
-PostgreSQL<br />
-<img src="/unidaplan/pics/postgresql-logo.svg" width=90mm></img><br />
-<a href ng-click="licencepostgresql=!licencepostgresql">see licence</a>
-
-<blockquote ng-show="licencepostgresql" ng-animate>
-PostgreSQL Database Management System<br />
-(formerly known as Postgres, then as Postgres95)<br />
-Portions Copyright &copy; 1996-2015, The PostgreSQL Global Development Group<br /><br />
-
-Portions Copyright &copy; 1994, The Regents of the University of California<br /><br />
-
-Permission to use, copy, modify, and distribute this software and its documentation for any purpose, without fee, and without a written agreement is hereby granted, provided that the above copyright notice and this paragraph and the following two paragraphs appear in all copies.
-<br /><br />
-IN NO EVENT SHALL THE UNIVERSITY OF CALIFORNIA BE LIABLE TO ANY PARTY FOR DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, INCLUDING LOST PROFITS, ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF THE UNIVERSITY OF CALIFORNIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-<br /><br />
-THE UNIVERSITY OF CALIFORNIA SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE SOFTWARE PROVIDED HEREUNDER IS ON AN "AS IS" BASIS, AND THE UNIVERSITY OF CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
-<br />
-</blockquote>
-<br />
-<br />
-<br />
-and <br />
-Bootstrap<br /> <img src="/unidaplan/pics/bootstrap-logo.png" width=160mm></img> <br />
-<ng-init licencebootstrap=false></ng-init>
-<a href ng-click="licencebootstrap=!licencebootstrap">see licence</a><br />
-<blockquote ng-show="licencebootstrap" ng-animate>
-The MIT License (MIT)<br /><br />
-
-Copyright &copy; 2011-2015 Twitter, Inc<br /><br />
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:<br /><br />
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.<br /><br />
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-</blockquote>
-<br />
-<br />
-<br />
-<br /><br />
-<br />
-<br />
-
+	<blockquote ng-show="licencepostgresql" ng-animate>
+		PostgreSQL Database Management System<br /> (formerly known as
+		Postgres, then as Postgres95)<br /> Portions Copyright &copy;
+		1996-2015, The PostgreSQL Global Development Group<br />
+		<br /> Portions Copyright &copy; 1994, The Regents of the University
+		of California<br />
+		<br /> Permission to use, copy, modify, and distribute this software
+		and its documentation for any purpose, without fee, and without a
+		written agreement is hereby granted, provided that the above copyright
+		notice and this paragraph and the following two paragraphs appear in
+		all copies. <br />
+		<br /> IN NO EVENT SHALL THE UNIVERSITY OF CALIFORNIA BE LIABLE TO
+		ANY PARTY FOR DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
+		DAMAGES, INCLUDING LOST PROFITS, ARISING OUT OF THE USE OF THIS
+		SOFTWARE AND ITS DOCUMENTATION, EVEN IF THE UNIVERSITY OF CALIFORNIA
+		HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. <br />
+		<br /> THE UNIVERSITY OF CALIFORNIA SPECIFICALLY DISCLAIMS ANY
+		WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+		MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE SOFTWARE
+		PROVIDED HEREUNDER IS ON AN "AS IS" BASIS, AND THE UNIVERSITY OF
+		CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT,
+		UPDATES, ENHANCEMENTS, OR MODIFICATIONS. <br />
+	</blockquote>
+	<br /> <br /> <br /> and Bootstrap<br /> <img
+		src="/unidaplan/pics/bootstrap-logo.png" width=160mm></img> <br />
+	<ng-init licencebootstrap=false></ng-init>
+	<a href ng-click="licencebootstrap=!licencebootstrap">see licence</a><br />
+	<blockquote ng-show="licencebootstrap" ng-animate>
+		The MIT License (MIT)<br />
+		<br /> Copyright &copy; 2011-2015 Twitter, Inc<br />
+		<br /> Permission is hereby granted, free of charge, to any person
+		obtaining a copy of this software and associated documentation files
+		(the "Software"), to deal in the Software without restriction,
+		including without limitation the rights to use, copy, modify, merge,
+		publish, distribute, sublicense, and/or sell copies of the Software,
+		and to permit persons to whom the Software is furnished to do so,
+		subject to the following conditions:<br />
+		<br /> The above copyright notice and this permission notice shall be
+		included in all copies or substantial portions of the Software.<br />
+		<br /> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
+		KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+		OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+		NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+		LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+		OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+		WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+	</blockquote>
+	<br /> <br /> <br /> <br />
 </div>
 
 
