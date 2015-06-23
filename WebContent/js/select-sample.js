@@ -1,4 +1,6 @@
-myApp.controller('SampleChoserCtrl', ['$scope', '$modal', '$log', function ($scope, $modal, $log) {
+angular
+
+.controller('SampleChoserCtrl', ['$scope', '$modal', '$log', function ($scope, $modal, $log) {
 
   $scope.samplenames = ['2224', '2231', '1221'];
   
