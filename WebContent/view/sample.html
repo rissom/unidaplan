@@ -2,7 +2,7 @@
 	ng-show="menuCTRL.currentPage =='sample'">
 	<p ng-init="loadData(1)"></p>
 	<div ng-hide="sample.error">
-		<h3>{{sample.type}} {{sample.parameters[0].value}}</h3>
+		<h3>{{sample.type}} {{sample.name}}</h3>
 		<h4>Basisparameter</h4>
 		<table class="table">
 			<tr ng-repeat="parameter in sample.parameters">

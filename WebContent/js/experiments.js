@@ -8,7 +8,7 @@ angular.module('unidaplan').controller('expcontroller',['$scope','restfactory',f
 	$scope.myName='Thorsten Rissom';
 	
 	$scope.loadData = function(ID) {
-		var promise = restfactory.GET("experiments?ID="+ID);
+		var promise = restfactory.GET("experiments.json?ID="+ID);
 	    promise.then(function(rest) {
 	    	$scope.experiments = rest.data;
 	    }, function(rest) {

@@ -40,7 +40,7 @@ public class Showsample extends HttpServlet {
 	String plang="de"; // primary language = Deutsch
 	String slang="en"; // secondary language = english
 	
-    String query =  // fetch integerparameters from database
+    String query =  // fetch name and type of the object from the database (objectnames is a view)
 	"SELECT name, type FROM objectnames \n"
 	+"WHERE id="+objID;
 

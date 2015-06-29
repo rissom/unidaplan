@@ -1,6 +1,7 @@
 package unidaplan;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -81,6 +82,33 @@ public class DBconnection  {
   		  e.printStackTrace();
   	  } catch (Exception e) {
   		  System.out.print("Some problem during first database query. Error! ");
+	  		  e.printStackTrace();
+	  }
+	  return result;
+  }
+  
+  
+  public static JSONArray jsonFromPreparedStmt(PreparedStatement pStmt) throws Exception{
+	  JSONArray result = null;
+	  ResultSet queryResult=null;
+	  	  try {
+		          if (pStmt==null) {
+			          System.out.print("prepared statement null! " );
+		          }
+		          queryResult = pStmt.executeQuery();
+          if (queryResult==null) {
+        	  System.out.print("statement result null! ");
+        	  result=new JSONArray();
+          } else {
+        	  result = table2json(queryResult);
+        	  queryResult.close();
+          }     
+          pStmt.close();
+  	  } catch (SQLException e) {   // Exception for SQL database
+  		  System.out.print("Problem with the database! Error! ");
+  		  e.printStackTrace();
+  	  } catch (Exception e) {
+  		  System.out.print("Some problem with database query. Error! ");
 	  		  e.printStackTrace();
 	  }
 	  return result;

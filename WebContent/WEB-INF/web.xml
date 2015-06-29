@@ -13,7 +13,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>Showsample</servlet-name>
-    <url-pattern>/showsample</url-pattern>
+    <url-pattern>/showsample.json</url-pattern>
   </servlet-mapping>
   
   <servlet>
@@ -24,7 +24,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>Samples_by_name</servlet-name>
-    <url-pattern>/samples_by_name</url-pattern>
+    <url-pattern>/samples_by_name.json</url-pattern>
   </servlet-mapping>
   
   <servlet>
@@ -35,8 +35,9 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>Available_objecttypes</servlet-name>
-    <url-pattern>/objecttypes</url-pattern>
+    <url-pattern>/objecttypes.json</url-pattern>
   </servlet-mapping>
+  
   <servlet>
     <description>shows available Experiments</description>
     <display-name>Experiments</display-name>
@@ -45,6 +46,17 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>Experiments</servlet-name>
-    <url-pattern>/experiments</url-pattern>
+    <url-pattern>/experiments.json</url-pattern>
+  </servlet-mapping>
+
+ <servlet>
+    <description>show process</description>
+    <display-name>Process</display-name>
+    <servlet-name>Process</servlet-name>
+    <servlet-class>unidaplan.Showprocess</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Process</servlet-name>
+    <url-pattern>/process.json</url-pattern>
   </servlet-mapping>
 </web-app>

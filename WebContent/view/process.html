@@ -1,9 +1,28 @@
 <div ng-controller="showsamplecontroller" class="container" ng-show="menuCTRL.currentPage =='process'" > 
+<div ng-controller="process as processCtrl">
 <p />
-<p />
-<p />
+	<button ng-click="processCtrl.loadSamples()">Load Samples</button> &nbsp;
+	<button ng-click="processCtrl.getSamples()">get Samples</button>
 <p />	
-   Process
 <p />
-<p /> 
+<h2>{{process.pnumber}}</h2>
+<h3>Parameter</h3>
+Verlauf des Prozesses
+<h3>Samples</h3>
+<button>Add/Remove samples</button>
+<h3></h3>
+<h3></h3>
+<h3></h3>
+<p />
+<p />
+<ul>
+	<li ng-repeat="sample in processCtrl.samples">
+		<a >{{sample}}</a>
+	</li>
+</ul>
+<p />
+	<td align="center">&nbsp;<br /> &nbsp;
+					<button type="button" class="btn btn-danger">Prozess
+						löschen</button>
+</div> 
 </div>

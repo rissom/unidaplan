@@ -15,15 +15,20 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 
 /**
- * Servlet implementation class Samples_by_name
- * 
- * gets up to 20 Samples with a name close to the String given in the argument "name"
- * of the type given in the argument "type"
+ * Servlet implementation class Available_processtypes
  */
-@WebServlet("/Samples_by_name")
-public class Samples_by_name extends HttpServlet {
+@WebServlet("/available_processtypes.json")
+public class Available_processtypes extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public Available_processtypes() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
@@ -47,32 +52,17 @@ public class Samples_by_name extends HttpServlet {
 		
 		    try {
 		       stmt = DBconnection.conn.prepareStatement(	
-				"SELECT  objectnames.id, objectnames.name, objectnames.type "
-				+"FROM objectnames "
-				+"WHERE (objectnames.name LIKE ?) "
-				+"AND objectnames.type=? "
-				+"ORDER BY objectnames.name "
-				+"LIMIT 20");
-		       stmt.setString(1, "%"+name+"%");
-		       stmt.setString(2, type);
+				"SELECT pt.id, string FROM processtypes pt JOIN localized ON (localized.id=pt.name)");
 		       result=stmt.executeQuery(); // get ResultSet from the database using the query
-//		       while (result.next()) {
-//		            String coffeeName = result.getString("name");
-//		            System.out.println(coffeeName); 
-//		            String coffeetype = result.getString("type");
-//		            System.out.println(coffeetype); 
-//		            String id = result.getString("id");
-//		            System.out.println(id); 
-//		        }
 
 		    } catch (SQLException eS) {
 				// TODO Auto-generated catch block
 				eS.printStackTrace();
 			} finally {
 		       try {
-		          JSONArray samplelist = DBconnection.table2json(result);
-		          if (samplelist.length()>0) {
-		        	  out.println(samplelist.toString());
+		          JSONArray processlist = DBconnection.table2json(result);
+		          if (processlist.length()>0) {
+		        	  out.println(processlist.toString());
 			      }
 			      else {	
 			    	  out.println("[]");}   
@@ -87,4 +77,5 @@ public class Samples_by_name extends HttpServlet {
 		       }
 		   }    
 	}
+
 }
