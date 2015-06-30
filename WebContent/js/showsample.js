@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-function samplecontroller($scope, restfactory) {
+function samplecontroller(restfactory) {
 	
 	this.sample = { 'parameters':[ {name: 'A', id: 1, unit:'g', value:100}
 									  ,{ name: 'B', unit:'', id:2, value: 200}],
@@ -30,6 +30,6 @@ function samplecontroller($scope, restfactory) {
     } 
 }  
 
-angular.module('unidaplan').controller('showsamplecontroller',['$scope','restfactory',samplecontroller]);
+angular.module('unidaplan').controller('showsamplecontroller',['restfactory',samplecontroller]);
 
 })();
