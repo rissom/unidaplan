@@ -1,8 +1,7 @@
 (function(){
   'use strict';
 
-
-var process = function(SampleService ){
+function process(SampleService ){
 	
   this.samples=[];
 	
@@ -33,7 +32,7 @@ var process = function(SampleService ){
 
 
 
-angular.module('unidaplan').controller('process', ['SampleService', process]);
+angular.module('unidaplan').controller('process', ['SampleService', 'restfactory',process]);
 
 
 })();

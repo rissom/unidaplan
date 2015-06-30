@@ -1,9 +1,9 @@
 (function(){
 'use strict';
 
-angular.module('unidaplan').controller('showsamplecontroller',['$scope','restfactory',function($scope,restfactory){
+function samplecontroller($scope, restfactory) {
 	
-	$scope.sample = { 'parameters':[ {name: 'A', id: 1, unit:'g', value:100}
+	this.sample = { 'parameters':[ {name: 'A', id: 1, unit:'g', value:100}
 									  ,{ name: 'B', unit:'', id:2, value: 200}],
 					    	'next':{name: '0816', ID : 3 },
 					    'previous':{name: '0815', ID : 2 },
@@ -11,20 +11,25 @@ angular.module('unidaplan').controller('showsamplecontroller',['$scope','restfac
 					   'ancestors':[{name: '0816', ID : 3 }],
 						   'plans':[333,444],
 						    'type':'Petridish'					
-				    }
+				  };
 	
-	$scope.loadData = function(ID) {
-		console.log('Ich lade dann mal');
+	
+	this.loadData = function(ID) {
 		var promise = restfactory.GET("showsample.json?ID="+ID);
+		var thisSampleController = this;
 	    promise.then(function(rest) {
-	    	$scope.sample = rest.data;
+	    	thisSampleController.sample = rest.data;
 	    }, function(rest) {
 	    	console.log("ERROR");
 	    });
 	};
 	
-    $scope.articleClicked = function(article) {
+	
+    this.articleClicked = function(article) {
     	console.log("articleClicked(article):",article);
-    };
-}]);
+    } 
+}  
+
+angular.module('unidaplan').controller('showsamplecontroller',['$scope','restfactory',samplecontroller]);
+
 })();

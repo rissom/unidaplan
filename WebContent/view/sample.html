@@ -1,12 +1,12 @@
-<div ng-controller="showsamplecontroller" class="container"
+<div ng-controller="showsamplecontroller as ssc" class="container"
 	ng-show="menuCTRL.currentPage =='sample'">
-	<p ng-init="loadData(1)"></p>
+	<p ng-init="ssc.loadData(1)"></p>
 	<div ng-hide="sample.error">
-		<h3>{{sample.type}} {{sample.name}}</h3>
+		<h3>{{ssc.sample.type}} {{ssc.sample.name}}</h3>
 		<h4>Basisparameter</h4>
 		<table class="table">
-			<tr ng-repeat="parameter in sample.parameters">
-				<td ng-click="articleClicked(parameter)">{{parameter.name}} :</td>
+			<tr ng-repeat="parameter in ssc.sample.parameters">
+				<td ng-click="ssc.articleClicked(parameter)">{{parameter.name}} :</td>
 				<td>{{parameter.value}}
 					{{parameter.unit.length>0?parameter.unit:''}}</td>
 			</tr>
@@ -25,14 +25,14 @@
 		<table>
 			<tr>
 				<td>
-					<div ng-show="sample.ancestors.length>0">Originates from:</div> <span
-					ng-repeat="buttonsample in sample.ancestors"> <samplebutton></samplebutton>
+					<div ng-show="ssc.sample.ancestors.length>0">Originates from:</div> <span
+					ng-repeat="buttonsample in ssc.sample.ancestors"> <samplebutton></samplebutton>
 				</span> <!-- 	<div ng-show="sample.ancestors.length>0"><br /></div>  -->
 				</td>
 				<td width=20mm></td>
 				<td>
-					<div ng-show="sample.children.length>0">Is ancestor of:</div> <span
-					ng-repeat="buttonsample in sample.children"> <samplebutton></samplebutton>
+					<div ng-show="ssc.sample.children.length>0">Is ancestor of:</div> <span
+					ng-repeat="buttonsample in ssc.sample.children"> <samplebutton></samplebutton>
 				</span>
 				</td>
 				<!--   <div ng-show="sample.ancestors.length>0"><br /></div>  -->
@@ -43,7 +43,7 @@
 
 		<h4>Planung</h4>
 		<table>
-			<tr ng-repeat="plan in sample.plans">
+			<tr ng-repeat="plan in ssc.sample.plans">
 				<td>Versuchsplan {{plan}}</td>
 			</tr>
 		</table>
@@ -54,7 +54,7 @@
 		<table>
 			<tr>
 				<td align="center">
-					<div ng-hide="true">{{buttonsample=sample.previous}}</div> <!--  superdreckig -->
+					<div ng-hide="true">{{buttonsample=ssc.sample.previous}}</div> <!--  superdreckig -->
 					<span ng-show="sample.previous">&#x25c0; previous <br /> <samplebutton></samplebutton></span>
 				</td>
 				<td align="center">&nbsp;<br /> &nbsp;
@@ -62,7 +62,7 @@
 						löschen</button>
 				</td>
 				<td align="center">
-					<div ng-hide="true">{{buttonsample=sample.next}}</div> <!--  superdreckig -->
+					<div ng-hide="true">{{buttonsample=ssc.sample.next}}</div> <!--  superdreckig -->
 					<span ng-show="sample.next"> &nbsp; next &nbsp; &#9654;<br />
 						&nbsp;<samplebutton></samplebutton></span>
 				</td>
@@ -71,7 +71,7 @@
 	</div>
 	<div ng-show=sample.error>
 		<!-- Fehler beim Holen des Samples aufgetreten -->
-		{{sample.error}}
+		{{ssc.sample.error}}
 	</div>
 	<br />
 	<br />
