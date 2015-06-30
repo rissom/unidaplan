@@ -1,10 +1,11 @@
-<div ng-controller="showsamplecontroller" class="container" ng-show="menuCTRL.currentPage =='process'" > 
+<div ng-controller="showsamplecontroller as ssc" class="container" ng-show="menuCTRL.currentPage =='process'" > 
 <div ng-controller="process as processCtrl">
 <p />
 	<button ng-click="processCtrl.loadSamples()">Load Samples</button> &nbsp;
 	<button ng-click="processCtrl.getSamples()">get Samples</button>
 <p />	
 <p />
+<div ng-init="processCtrl.sayHello"></div>
 <h2>{{process.pnumber}}</h2>
 <h3>Parameter</h3>
 Verlauf des Prozesses

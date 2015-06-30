@@ -8,7 +8,6 @@
 			<tr ng-repeat="parameter in sample.parameters">
 				<td ng-click="articleClicked(parameter)">{{parameter.name}} :</td>
 				<td>{{parameter.value}}
-					{{parameter.error?'&plusmn;'+parameter.error:''}}
 					{{parameter.unit.length>0?parameter.unit:''}}</td>
 			</tr>
 			<tr>

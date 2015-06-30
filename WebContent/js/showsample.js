@@ -14,6 +14,7 @@ angular.module('unidaplan').controller('showsamplecontroller',['$scope','restfac
 				    }
 	
 	$scope.loadData = function(ID) {
+		console.log('Ich lade dann mal');
 		var promise = restfactory.GET("showsample.json?ID="+ID);
 	    promise.then(function(rest) {
 	    	$scope.sample = rest.data;

@@ -1,6 +1,9 @@
 package unidaplan;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -13,12 +16,8 @@ import org.json.JSONObject;
 public class Showsample extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static JSONArray result;
-	private static JSONArray parameters;
-	private static JSONArray intparameters;
-	private static JSONArray floatparameters;
-	private static JSONArray stringparameters;
-	private static JSONArray measurementparameters;
-
+	private static PreparedStatement pstmt;
+	private static JSONArray table;
 
 
 
@@ -61,139 +60,124 @@ public class Showsample extends HttpServlet {
     
 	
 	
-	parameters=new JSONArray();
-	
-    query =  // fetch integerparameters from database
-	"SELECT op.id, op.pos, COALESCE (a.value,alt_a.value) AS name, COALESCE (c.value,alt_c.value) AS unit, \n" +
-	"  o_integer_data.value,n.description, ot_parametergrps.id AS parametergrpID, \n" +
-	"  p.description AS Parameter_desc, COALESCE (b.value,alt_b.value) AS param_grp \n" +
-	"FROM o_integer_data \n" +
-	"JOIN ot_parameters op ON (ot_parameter_id=op.id) \n" +
-	"JOIN string_key_table n ON (n.id=op.stringkeyname) \n" +
-	"JOIN ot_parametergrps ON (op.Parametergroup=ot_parametergrps.ID)  \n" +
-	"JOIN string_key_table p ON (p.id=ot_parametergrps.stringkey)  \n" +
-	"LEFT JOIN stringtable a ON (a.string_key=n.id AND a.language='"+plang+"' ) \n" +
-	"LEFT JOIN stringtable alt_a ON (alt_a.string_key=n.id AND alt_a.language='"+slang+"') \n" +
-	"LEFT JOIN stringtable b ON (b.string_key=p.id AND b.language='"+plang+"' ) \n" +
-	"LEFT JOIN stringtable alt_b ON (alt_b.string_key=p.id AND alt_b.language='"+slang+"') \n" +
-	"JOIN paramdef pd ON (pd.id=op.definition) \n" +
-	"LEFT JOIN stringtable c ON (c.string_key=pd.StringKeyUnit AND c.language='"+plang+"' ) \n" +
-	"LEFT JOIN stringtable alt_c ON (alt_c.string_key=pd.StringKeyUnit AND alt_c.language='"+slang+"') \n" +
-	"WHERE objectID="+objID+" ORDER BY op.pos";
 
-    try {  // get json from the database using the query
-		intparameters=DBconnection.jsonfromquery(query);
-	} catch (Exception e1) {
-		e1.printStackTrace();
-	}
     
-    for (int i = 0; i < intparameters.length(); i++) {
-        try {
-			parameters.put(intparameters.get(i));
-		} catch (JSONException e) {
-			System.out.print("Error appending intparameters");
-		}
-    }
+	try {
+		JSONArray parameters=new JSONArray();  	
+		pstmt= DBconnection.conn.prepareStatement( 	
+		    "SELECT op.id, COALESCE (a.value,alt_a.value) AS name, COALESCE (c.value,alt_c.value) AS unit, \n"
+		+       "''||o_integer_data.value AS value,n.description, ot_parametergrps.id AS parametergrpID, \n"
+		+ 	   "p.description AS Parameter_desc, COALESCE (b.value,alt_b.value) AS param_grp \n"
+		+"FROM o_integer_data \n"
+		+"JOIN ot_parameters 	 op	 ON (ot_parameter_id=op.id AND op.ID_Field=false) \n" // Don't show title fields
+		+"JOIN string_key_table n  	 ON (n.id=op.stringkeyname) \n"
+		+"JOIN ot_parametergrps 	 ON (op.Parametergroup=ot_parametergrps.ID) \n"
+		+"JOIN string_key_table p	 ON (p.id=ot_parametergrps.stringkey) \n" 
+		+"LEFT JOIN stringtable a 	 ON (a.string_key=n.id AND a.language=? ) \n"  // Primary language
+		+"LEFT JOIN stringtable alt_a ON (alt_a.string_key=n.id AND alt_a.language=?) \n" // 2. lang. 
+		+"LEFT JOIN stringtable b 	 ON (b.string_key=p.id AND b.language=? ) \n" // Primary language
+		+"LEFT JOIN stringtable alt_b ON (alt_b.string_key=p.id AND alt_b.language=?) \n" // 2. lang. \n"
+		+"JOIN paramdef pd 			 ON (pd.id=op.definition) \n"
+		+"LEFT JOIN stringtable c 	 ON (c.string_key=pd.StringKeyUnit AND c.language=? )\n" // Primary language
+		+"LEFT JOIN stringtable alt_c ON (alt_c.string_key=pd.StringKeyUnit AND alt_c.language=?)\n" // 2. lang. 
+		+"WHERE objectID=?"
+		+"UNION ALL \n"
+		+"SELECT op.id, COALESCE (a.value,alt_a.value) AS name, COALESCE (c.value,alt_c.value) AS unit, \n"
+		+      "to_char(o_float_data.value, 'FM99999.99999') AS value,n.description, ot_parametergrps.id AS parametergrpID, \n"
+		+ 	   "p.description AS Parameter_desc, COALESCE (b.value,alt_b.value) AS param_grp \n"
+		+"FROM o_float_data  \n"
+		+"JOIN ot_parameters 	 op	 ON (ot_parameter_id=op.id) \n"
+		+"JOIN string_key_table n  	 ON (n.id=op.stringkeyname) \n"
+		+"JOIN ot_parametergrps 	 ON (op.Parametergroup=ot_parametergrps.ID) \n" 
+		+"JOIN string_key_table p	 ON (p.id=ot_parametergrps.stringkey)  \n"
+		+"LEFT JOIN stringtable a 	 ON (a.string_key=n.id AND a.language=? ) \n" // Primary language 
+		+"LEFT JOIN stringtable alt_a	 ON (alt_a.string_key=n.id AND alt_a.language=?)  \n" // 2. lang. 
+		+"LEFT JOIN stringtable b 	 ON (b.string_key=p.id AND b.language=? )  \n" // Primary language
+		+"LEFT JOIN stringtable alt_b	 ON (alt_b.string_key=p.id AND alt_b.language=?)  \n" // 2. lang. \n"
+		+"JOIN paramdef pd 			 ON (pd.id=op.definition) \n"
+		+"LEFT JOIN stringtable c 	 ON (c.string_key=pd.StringKeyUnit AND c.language=? ) \n" // Primary language
+		+"LEFT JOIN stringtable alt_c	 ON (alt_c.string_key=pd.StringKeyUnit AND alt_c.language=?) \n" // 2. lang. 
+		+"WHERE objectID=? \n"
+		+"UNION ALL \n"
+		+"SELECT op.id, COALESCE (a.value,alt_a.value) AS name, COALESCE (c.value,alt_c.value) AS unit, \n"
+		+      "to_char(o_measurement_data.value,'FM99999.99999')||' ± '||to_char(o_measurement_data.error,'FM99999.99999')"
+		+       " AS value,n.description, ot_parametergrps.id AS parametergrpID, \n"
+		+ 	   "p.description AS Parameter_desc, COALESCE (b.value,alt_b.value) AS param_grp \n"
+		+"FROM o_measurement_data  \n"
+		+"JOIN ot_parameters  op ON (ot_parameter_id=op.id) \n"
+		+"JOIN string_key_table n  	 ON (n.id=op.stringkeyname) \n"
+		+"JOIN ot_parametergrps 	 ON (op.Parametergroup=ot_parametergrps.ID) \n" 
+		+"JOIN string_key_table p	 ON (p.id=ot_parametergrps.stringkey)  \n"
+		+"LEFT JOIN stringtable a 	 ON (a.string_key=n.id AND a.language=? ) \n" // Primary language
+		+"LEFT JOIN stringtable alt_a ON (alt_a.string_key=n.id AND alt_a.language=?) \n" // 2. lang. 
+		+"LEFT JOIN stringtable b 	 ON (b.string_key=p.id AND b.language=? ) \n" // Primary language
+		+"LEFT JOIN stringtable alt_b ON (alt_b.string_key=p.id AND alt_b.language=?)  \n"// 2. lang. \n"
+		+"JOIN paramdef pd 			 ON (pd.id=op.definition) \n"
+		+"LEFT JOIN stringtable c 	 ON (c.string_key=pd.StringKeyUnit AND c.language=? ) \n" // Primary language
+		+"LEFT JOIN stringtable alt_c ON (alt_c.string_key=pd.StringKeyUnit AND alt_c.language=?)  \n" // 2. lang. \n"
+		+"WHERE objectID=? \n"
+		+"UNION ALL \n"
+		+"SELECT op.id, COALESCE (a.value,alt_a.value) AS name, COALESCE (c.value,alt_c.value) AS unit, \n"
+		+"       o_string_data.value AS value,n.description, ot_parametergrps.id AS parametergrpID, \n"
+		+" 	   p.description AS Parameter_desc, COALESCE (b.value,alt_b.value) AS param_grp \n"
+		+"FROM o_string_data  \n"
+		+"JOIN ot_parameters op	   	ON (ot_parameter_id=op.id) \n"
+		+"JOIN string_key_table n  	ON (n.id=op.stringkeyname) \n"
+		+"JOIN ot_parametergrps 	ON (op.Parametergroup=ot_parametergrps.ID) \n" 
+		+"JOIN string_key_table p	ON (p.id=ot_parametergrps.stringkey)  \n"
+		+"LEFT JOIN stringtable a 	ON (a.string_key=n.id AND a.language=? ) \n" // Primary language
+		+"LEFT JOIN stringtable alt_a ON (alt_a.string_key=n.id AND alt_a.language=?)  \n" // 2. lang. 
+		+"LEFT JOIN stringtable b 	ON (b.string_key=p.id AND b.language=? )  \n" // Primary language
+		+"LEFT JOIN stringtable alt_b ON (alt_b.string_key=p.id AND alt_b.language=?)  \n" // 2. lang. \n"
+		+"JOIN paramdef pd 			ON (pd.id=op.definition) \n"
+		+"LEFT JOIN stringtable c 	ON (c.string_key=pd.StringKeyUnit AND c.language=? )  \n" // Primary language 
+		+"LEFT JOIN stringtable alt_c ON (alt_c.string_key=pd.StringKeyUnit AND alt_c.language=?)  \n" // 2. lang. \n"
+		+"WHERE objectID=?"); 
+		pstmt.setString(1,plang);
+		pstmt.setString(2,slang);
+		pstmt.setString(3,plang);
+		pstmt.setString(4,slang);
+		pstmt.setString(5,plang);
+		pstmt.setString(6,slang);
+		pstmt.setInt(7,objID);
+		pstmt.setString(8,plang);
+		pstmt.setString(9,slang);
+		pstmt.setString(10,plang);
+		pstmt.setString(11,slang);
+		pstmt.setString(12,plang);
+		pstmt.setString(13,slang);
+		pstmt.setInt(14,objID);
+		pstmt.setString(15,plang);
+		pstmt.setString(16,slang);
+		pstmt.setString(17,plang);
+		pstmt.setString(18,slang);
+		pstmt.setString(19,plang);
+		pstmt.setString(20,slang);
+		pstmt.setInt(21,objID);
+		pstmt.setString(22,plang);
+		pstmt.setString(23,slang);
+		pstmt.setString(24,plang);
+		pstmt.setString(25,slang);
+		pstmt.setString(26,plang);
+		pstmt.setString(27,slang);
+		pstmt.setInt(28,objID);
+		table= DBconnection.jsonFromPreparedStmt(pstmt);
+		if (table.length()>0) {
+		jsSample.put("parameters",table); } 
+	} catch (SQLException e) {
+		System.out.println("Problems with SQL query for next process");
+		e.printStackTrace();
+	} catch (JSONException e){
+		System.out.println("Problems creating JSON for next process");
+		e.printStackTrace();
+	} catch (Exception e) {
+		System.out.println("Strange Problems with the next process");
+		e.printStackTrace();
+	}	
     
-    query = // fetch floatparameters from database
-	"SELECT op.id, op.pos, COALESCE (a.value,alt_a.value) AS name, COALESCE (c.value,alt_c.value) AS unit, \n" +
-	"  o_float_data.value,n.description, ot_parametergrps.id AS parametergrpID, \n" +
-	"  p.description AS Parameter_desc, COALESCE (b.value,alt_b.value) AS param_grp \n" +
-	"FROM o_float_data \n" +
-	"JOIN ot_parameters op ON (ot_parameter_id=op.id) \n" +
-	"JOIN string_key_table n ON (n.id=op.stringkeyname) \n" +
-	"JOIN ot_parametergrps ON (op.Parametergroup=ot_parametergrps.ID)  \n" +
-	"JOIN string_key_table p ON (p.id=ot_parametergrps.stringkey)  \n" +
-	"LEFT JOIN stringtable a ON (a.string_key=n.id AND a.language='"+plang+"' ) \n" +
-	"LEFT JOIN stringtable alt_a ON (alt_a.string_key=n.id AND alt_a.language='"+slang+"') \n" +
-	"LEFT JOIN stringtable b ON (b.string_key=p.id AND b.language='"+plang+"' ) \n" +
-	"LEFT JOIN stringtable alt_b ON (alt_b.string_key=p.id AND alt_b.language='"+slang+"') \n" +
-	"JOIN paramdef pd ON (pd.id=op.definition) \n" +
-	"LEFT JOIN stringtable c ON (c.string_key=pd.StringKeyUnit AND c.language='"+plang+"' ) \n" +
-	"LEFT JOIN stringtable alt_c ON (alt_c.string_key=pd.StringKeyUnit AND alt_c.language='"+slang+"') \n" +
-	"WHERE objectID="+objID+" ORDER BY op.pos";
-    
-    try {  // get json from the database using the query
-    	floatparameters=DBconnection.jsonfromquery(query);
-	} catch (Exception e1) {
-		e1.printStackTrace();
-	}    
-    
-    for (int i = 0; i < floatparameters.length(); i++) {
-        try {
-			parameters.put(floatparameters.get(i));
-		} catch (JSONException e) {
-			System.out.print("Error appending floatparameters");
-		}
-    }
-    
-    query = // fetch measurementparameters from database
-	"SELECT op.id, op.pos, COALESCE (a.value,alt_a.value) AS name, COALESCE (c.value,alt_c.value) AS unit, \n" +
-	"  o_measurement_data.value, o_measurement_data.error,n.description, ot_parametergrps.id AS parametergrpID, \n" +
-	"  p.description AS Parameter_desc, COALESCE (b.value,alt_b.value) AS param_grp \n" +
-	"FROM o_measurement_data \n" +
-	"JOIN ot_parameters op ON (ot_parameter_id=op.id) \n" +
-	"JOIN string_key_table n ON (n.id=op.stringkeyname) \n" +
-	"JOIN ot_parametergrps ON (op.Parametergroup=ot_parametergrps.ID)  \n" +
-	"JOIN string_key_table p ON (p.id=ot_parametergrps.stringkey)  \n" +
-	"LEFT JOIN stringtable a ON (a.string_key=n.id AND a.language='"+plang+"' ) \n" +
-	"LEFT JOIN stringtable alt_a ON (alt_a.string_key=n.id AND alt_a.language='"+slang+"') \n" +
-	"LEFT JOIN stringtable b ON (b.string_key=p.id AND b.language='"+plang+"' ) \n" +
-	"LEFT JOIN stringtable alt_b ON (alt_b.string_key=p.id AND alt_b.language='"+slang+"') \n" +
-	"JOIN paramdef pd ON (pd.id=op.definition) \n" +
-	"LEFT JOIN stringtable c ON (c.string_key=pd.StringKeyUnit AND c.language='"+plang+"' ) \n" +
-	"LEFT JOIN stringtable alt_c ON (alt_c.string_key=pd.StringKeyUnit AND alt_c.language='"+slang+"') \n" +
-	"WHERE objectID="+objID+" ORDER BY op.pos";
-    
-    try {  // get json from the database using the query
-    	measurementparameters=DBconnection.jsonfromquery(query);
-	} catch (Exception e1) {
-		e1.printStackTrace();
-	}
-    
-    for (int i = 0; i < measurementparameters.length(); i++) {
-        try {
-			parameters.put(measurementparameters.get(i));
-		} catch (JSONException e) {
-			System.out.print("Error appending measurementparameters");
-		}
-    }
-    
-    
-    query = // fetch Stringparameter from database
-	"SELECT op.id, op.pos, COALESCE (a.value,alt_a.value) AS name, \n" +
-	"  o_string_data.value,n.description, ot_parametergrps.id AS parametergrpID, \n" +
-	"  p.description AS Parameter_desc, COALESCE (b.value,alt_b.value) AS param_grp \n" +
-	"FROM o_string_data \n" +
-	"JOIN ot_parameters op ON (ot_parameter_id=op.id) \n" +
-	"JOIN string_key_table n ON (n.id=op.stringkeyname) \n" +
-	"JOIN ot_parametergrps ON (op.Parametergroup=ot_parametergrps.ID)  \n" +
-	"JOIN string_key_table p ON (p.id=ot_parametergrps.stringkey)  \n" +
-	"LEFT JOIN stringtable a ON (a.string_key=n.id AND a.language='"+plang+"' ) \n" +
-	"LEFT JOIN stringtable alt_a ON (alt_a.string_key=n.id AND alt_a.language='"+slang+"') \n" +
-	"LEFT JOIN stringtable b ON (b.string_key=p.id AND b.language='"+plang+"' ) \n" +
-	"LEFT JOIN stringtable alt_b ON (alt_b.string_key=p.id AND alt_b.language='"+slang+"') \n" +
-	"WHERE objectID="+objID+" ORDER BY op.pos";
-    
-    try {  // get json from the database using the query
-    	stringparameters=DBconnection.jsonfromquery(query);
-	} catch (Exception e1) {
-		e1.printStackTrace();
-	}
-    
-    for (int i = 0; i < stringparameters.length(); i++) {
-        try {
-			parameters.put(stringparameters.get(i));
-		} catch (JSONException e) {
-			System.out.print("Error appending floatparameters");
-		}
-    }
-    
-    
-
    
 //    System.out.print(result.toString());   // JSON auf Console ausgeben
-    if (parameters.length()==0) {
+    if (table.length()==0) {
     	try {
 			jsSample.put("error", "sample not found");
 		} catch (JSONException e) {
@@ -203,9 +187,7 @@ public class Showsample extends HttpServlet {
     }
     else {
     	
-    	try {	
-			jsSample.put("parameters",parameters);
-			
+    	try {				
 			JSONArray vps = new JSONArray();
 			vps.put (123);
 			vps.put (456);
