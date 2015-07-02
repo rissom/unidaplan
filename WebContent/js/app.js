@@ -10,16 +10,6 @@ angular.module('unidaplan',['ui.bootstrap'])
 })
 
 
-.directive('samplebutton', function(){
-	return {
-		restrict: 'E',
-//		scope: {buttonsample : '='},
-		template: '<button class="btn btn-default" ng-click="menuCTRL.select(\'sample\'); loadData(buttonsample.id)"> '
-		+'{{buttonsample.type}} {{buttonsample.name}} '
-		+'</button>',
-	};
-})
-
 
 
 .run(function($rootScope, restfactory) {

@@ -1,38 +1,28 @@
 (function(){
   'use strict';
 
-function process(SampleService ){
-	
-  this.samples=[];
-	
-  this.loadSamples = function(){
-    console.log('to your service');
-    SampleService.loadSamplesByName('Solarzelle','1');
-    this.samples=SampleService.samples;
-    },
-    
-  this.getSamples = function(){
-    this.samples=SampleService.samples;	
-  },
-    
-  this.sayHello = function(){
-	  console.log('Hello');
-  },
+function process(restfactory){
   
-  this.loadProcess = function($scope,restfactory,id){
-//			var promise = restfactory.GET("process.json?id="+ID);
-//		    promise.then(function(rest) {
-//		    	$scope.process = rest.data;
-//		    }, function(rest) {
-		    	console.log("aufruf");
-//		    });
-		}
-//		$http.get('process.json?id='+id)
+  this.process={}; 
+  
+ 
+  this.loadProcess = function(id){
+	  		var thisProcessController=this;
+			var promise = restfactory.GET("process.json?id="+id);
+		    promise.then(function(rest) {
+		    	thisProcessController.process = rest.data;
+		    }, function(rest) {
+		    	console.log("Error loading process");
+		    });
+		};
+  
+  this.articleClicked =function(parameter){
+	  console.log('Parameter '+parameter+' clicked');
   };
+  
+};
 
 
-
-angular.module('unidaplan').controller('process', ['SampleService', 'restfactory',process]);
-
+angular.module('unidaplan').controller('process', ['restfactory', process]);
 
 })();

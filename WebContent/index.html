@@ -6,12 +6,13 @@
   <meta charset="utf8" />
 	<title>Unidaplan</title>
 	<script type="text/javascript" src="js/angular.js">                  </script> 
-	<script type="text/javascript" src="js/angular-ui-router.js">		 </script>
+<!-- 	<script type="text/javascript" src="js/angular-ui-router.js">		 </script>  -->
 	<script type="text/javascript" src='js/ui-bootstrap-tpls-0.13.0.js'> </script>
 	<script type="text/javascript" src='js/app.js'>                      </script>
 	<script type="text/javascript" src='js/restfactory.js'>              </script> 
 <!--  	<script type="text/javascript" src='js/select-sample.js'>			 </script>	-->
-	<script type="text/javascript" src='js/showsample.js'>               </script> 
+	<script type="text/javascript" src='js/sample.js'>               </script> 
+	<script type="text/javascript" src='js/directives/sample-button.js'> </script> 
 	<script type="text/javascript" src='js/menu.js'>                     </script>
 	<script type="text/javascript" src='js/experiments.js'>              </script>
 	<script type="text/javascript" src='js/process.js'>              </script>
@@ -23,7 +24,7 @@
 
 <body>
 <!--  <ng-include src="'view/select-sample.html'"></ng-include>  -->
-<div ng-controller="menu as menuCTRL">
+<div ng-controller="menu as menuCtrl">
 <ng-include src="'view/menu.html'"></ng-include>  
 <ng-include src="'view/experiments.html'"></ng-include>
 <ng-include src="'view/sample.html'"></ng-include>

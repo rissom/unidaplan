@@ -30,7 +30,7 @@ public class Showsample extends HttpServlet {
     
 	int objID=1;
 	try  {
-		 objID=Integer.parseInt(request.getParameter("ID")); }
+		 objID=Integer.parseInt(request.getParameter("id")); }
 	catch (Exception e1) {
 		objID=1;
 		System.out.print("no object ID given!");
