@@ -7,15 +7,23 @@ function samplecontroller(restfactory) {
 	this.sample = {};
 	
 	
-	this.keyUp = function(keyCode,parameter) {
-		if (keyCode==13) {
+	this.keyUp = function(keyCode,newValue,parameter) {
+		if (keyCode===13) {
 			parameter.editing=false; 
+			var oldValue=parameter.value;
+			parameter.value=newValue;
 			var res = restfactory.POST('savesampleparameter.json',parameter);
 			res.then(function(data, status, headers, config) {
-			},function(data, status, headers, config) {
-				console.log('verkackt');
-				console.log(data);		
-			});
+					 },
+					 function(data, status, headers, config) {
+						parameter.value=oldValue;
+						console.log('verkackt');
+						console.log(data);
+					 }
+					);
+		}
+		if (keyCode===27) {
+			parameter.editing=false;			
 		}
 	}
 	

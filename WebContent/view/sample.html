@@ -8,12 +8,12 @@
 			<tr ng-repeat="parameter in ssc.sample.parameters">
 				<td ng-click="ssc.articleClicked(parameter)">{{parameter.name}} :</td>
 				<td >
-					<span ng-hide="parameter.editing" ng-click="parameter.editing=true">{{parameter.value}}
+					<span ng-hide="parameter.editing" ng-click="parameter.editing=true; newValue=parameter.value">{{parameter.value}}
 					</span>
 					<input 						   
-						ng-keyup="ssc.keyUp($event.keyCode,parameter)"
+						ng-keyup="ssc.keyUp($event.keyCode,newValue,parameter)"
 						ng-show="parameter.editing" type="text"
-					    ng-model="parameter.value" 
+					    ng-model="newValue" 
 					    ng-blur="parameter.editing=false">
 					</input>
 					{{parameter.unit.length>0?parameter.unit:''}}

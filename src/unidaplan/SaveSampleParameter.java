@@ -82,9 +82,10 @@ import org.json.JSONObject;
 	   					break;
         			}
 	        case 3: {   pstmt= DBconn.conn.prepareStatement( 			// Measurement data
-						 		"UPDATE o_measurement_data SET value=? WHERE id=? \n");
+						 		"UPDATE o_measurement_data SET (value,error)=(?,?) WHERE id=? \n");
 						pstmt.setDouble(1, Double.parseDouble(jsonIn.getString("value").split("±")[0]));
-						pstmt.setInt(2, pid);
+						pstmt.setDouble(2, Double.parseDouble(jsonIn.getString("value").split("±")[1]));
+						pstmt.setInt(3, pid);
 						break;
 			        }
 	        case 4:  { pstmt= DBconn.conn.prepareStatement( 			// String data	
