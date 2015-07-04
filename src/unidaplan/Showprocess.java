@@ -35,9 +35,12 @@ public class Showprocess extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
-      response.setContentType("text/html");
+      response.setContentType("application/json");
+      request.setCharacterEncoding("utf-8");
+      response.setCharacterEncoding("utf-8");
       PrintWriter out = response.getWriter();
-      DBconnection.startDB();
+      DBconnection DBconn=new DBconnection();
+      DBconn.startDB();
       
   	int processID=1;
   	int processTypeID=1;
@@ -56,11 +59,11 @@ public class Showprocess extends HttpServlet {
 
 	try {
 		// get number and type 
-		pstmt= DBconnection.conn.prepareStatement(	
+		pstmt= DBconn.conn.prepareStatement(	
 					"SELECT process_type_id, p_number FROM pnumbers \n"
 				  	+"WHERE id=?");
 		pstmt.setInt(1, processID);
-		JSONArray table= DBconnection.jsonFromPreparedStmt(pstmt);
+		JSONArray table= DBconn.jsonFromPreparedStmt(pstmt);
 		jsProcess=table.getJSONObject(0);
 		processTypeID=jsProcess.getInt("process_type_id");
 	} catch (SQLException e) {
@@ -77,7 +80,7 @@ public class Showprocess extends HttpServlet {
 		
 		// get processtype as localized string
 	try {	
-		pstmt= DBconnection.conn.prepareStatement( 			
+		pstmt= DBconn.conn.prepareStatement( 			
 				 "SELECT COALESCE(sta.value,stb.value) AS processtype FROM processes \n"
 				+"JOIN processtypes pt ON (processes.processtypesid=pt.id) \n"
 				+"LEFT JOIN stringtable sta ON (sta.string_key=pt.name AND sta.language=?) \n"
@@ -86,7 +89,7 @@ public class Showprocess extends HttpServlet {
 	   pstmt.setString(1, plang);
 	   pstmt.setString(2, slang);
 	   pstmt.setInt(3, processID);
-	   JSONArray table= DBconnection.jsonFromPreparedStmt(pstmt);
+	   JSONArray table= DBconn.jsonFromPreparedStmt(pstmt);
 	   jsProcess.put("processtype",table.getJSONObject(0).get("processtype")); // no easy way to merge JSON Objects.
 	} catch (SQLException e) {
 		System.out.println("Problems with SQL query");
@@ -102,12 +105,12 @@ public class Showprocess extends HttpServlet {
 	
     // get next process
     try {       
-		pstmt=DBconnection.conn.prepareStatement( 
+		pstmt=DBconn.conn.prepareStatement( 
 		"SELECT id,p_number FROM pnumbers \n"
 		+"WHERE (p_number>? AND process_type_id=?) \n");
 		pstmt.setInt(1,processID);
 		pstmt.setInt(2,processTypeID);
-		JSONArray table= DBconnection.jsonFromPreparedStmt(pstmt);
+		JSONArray table= DBconn.jsonFromPreparedStmt(pstmt);
 		if (table.length()>0) {
 		jsProcess.put("next",table.getJSONObject(0)); } 
 	} catch (SQLException e) {
@@ -124,75 +127,75 @@ public class Showprocess extends HttpServlet {
 // 		get the process Parameters:
     
     try{
-    	pstmt = DBconnection.conn.prepareStatement(
+    	pstmt = DBconn.conn.prepareStatement(
     	"SELECT pa.id, COALESCE (a.value,alt_a.value) AS name, COALESCE (c.value,alt_c.value) AS unit, \n"
-       +"''||p_integer_data.value AS value,n.description, p_parametergrps.id AS parametergrpID, \n"
- 	   +"p.description AS Parameter_desc, COALESCE (b.value,alt_b.value) AS param_grp \n"
-+"FROM p_integer_data \n" 
-+"JOIN p_parameters 	 pa	 ON (p_parameter_id=pa.id AND pa.ID_Field=false) \n" // Don't show title fields
-+"JOIN string_key_table n  	 ON (n.id=pa.stringkeyname) \n"
-+"JOIN p_parametergrps 	 ON (pa.Parametergroup=p_parametergrps.ID)  \n"
-+"JOIN string_key_table p	 ON (p.id=p_parametergrps.stringkey)  \n"
-+"LEFT JOIN stringtable a 	 ON (a.string_key=n.id AND a.language=? )  \n" // Primary language
-+"LEFT JOIN stringtable alt_a ON (alt_a.string_key=n.id AND alt_a.language=?)  \n" // 2. lang. 
-+"LEFT JOIN stringtable b 	 ON (b.string_key=p.id AND b.language=? )  \n" // Primary language
-+"LEFT JOIN stringtable alt_b ON (alt_b.string_key=p.id AND alt_b.language=?)  \n" // 2. lang. \n"
-+"JOIN paramdef pd 			 ON (pd.id=pa.definition) \n"
-+"LEFT JOIN stringtable c 	 ON (c.string_key=pd.StringKeyUnit AND c.language=? )  \n" // Primary language
-+"LEFT JOIN stringtable alt_c ON (alt_c.string_key=pd.StringKeyUnit AND alt_c.language=?) \n" // 2. lang. \n"
-+"WHERE p_integer_data.ProcessID=? \n"
-+"UNION ALL \n"
-+"SELECT pa.id, COALESCE (a.value,alt_a.value) AS name, COALESCE (c.value,alt_c.value) AS unit, \n"
-+"       to_char(p_float_data.value, 'FM99999.99999') AS value,n.description, p_parametergrps.id AS parametergrpID, \n"
-+" 	   p.description AS Parameter_desc, COALESCE (b.value,alt_b.value) AS param_grp \n"
-+"FROM p_float_data  \n"
-+"JOIN p_parameters 	 pa	 ON (p_parameter_id=pa.id)  \n"  
-+"JOIN string_key_table n  	 ON (n.id=pa.stringkeyname) \n"
-+"JOIN p_parametergrps 	 ON (pa.Parametergroup=p_parametergrps.ID) \n" 
-+"JOIN string_key_table p	 ON (p.id=p_parametergrps.stringkey)  \n"
-+"LEFT JOIN stringtable a 	 ON (a.string_key=n.id AND a.language=? )  \n" // Primary language
-+"LEFT JOIN stringtable alt_a ON (alt_a.string_key=n.id AND alt_a.language=?) \n" // 2. lang. 
-+"LEFT JOIN stringtable b 	 ON (b.string_key=p.id AND b.language=? ) \n" // Primary language
-+"LEFT JOIN stringtable alt_b ON (alt_b.string_key=p.id AND alt_b.language=?) \n" // 2. lang. 
-+"JOIN paramdef pd 			 ON (pd.id=pa.definition) \n"
-+"LEFT JOIN stringtable c 	 ON (c.string_key=pd.StringKeyUnit AND c.language=? ) \n" // Primary language
-+"LEFT JOIN stringtable alt_c ON (alt_c.string_key=pd.StringKeyUnit AND alt_c.language=?)  \n" // 2. lang. 
-+"WHERE p_float_data.ProcessID=? \n"
-+"UNION ALL \n"
-+"SELECT pa.id, COALESCE (a.value,alt_a.value) AS name, COALESCE (c.value,alt_c.value) AS unit, \n"
-+"       to_char(p_measurement_data.value,'FM99999.99999')||'+/-'||to_char(p_measurement_data.error,'FM99999.99999') \n"
-+"		 AS value,n.description, p_parametergrps.id AS parametergrpID, \n"
-+" 	   p.description AS Parameter_desc, COALESCE (b.value,alt_b.value) AS param_grp \n"
-+"FROM p_measurement_data  \n"
-+"JOIN p_parameters 	 pa	 ON (p_parameter_id=pa.id AND pa.ID_Field=false)  \n" // Don't show title fields
-+"JOIN string_key_table n  	 ON (n.id=pa.stringkeyname) \n"
-+"JOIN p_parametergrps 	 ON (pa.Parametergroup=p_parametergrps.ID)  \n"
-+"JOIN string_key_table p	 ON (p.id=p_parametergrps.stringkey)  \n"
-+"LEFT JOIN stringtable a 	 ON (a.string_key=n.id AND a.language=? )  \n" // Primary language
-+"LEFT JOIN stringtable alt_a ON (alt_a.string_key=n.id AND alt_a.language=?)  \n" // 2. lang. 
-+"LEFT JOIN stringtable b 	 ON (b.string_key=p.id AND b.language=? )  \n" // Primary language
-+"LEFT JOIN stringtable alt_b ON (alt_b.string_key=p.id AND alt_b.language=?)  \n" // 2. lang. 
-+"JOIN paramdef pd 			 ON (pd.id=pa.definition) \n"
-+"LEFT JOIN stringtable c 	 ON (c.string_key=pd.StringKeyUnit AND c.language=? ) \n" // Primary language
-+"LEFT JOIN stringtable alt_c ON (alt_c.string_key=pd.StringKeyUnit AND alt_c.language=?) -- 2. lang. \n"
-+"WHERE p_measurement_data.ProcessID=? \n"
-+"UNION ALL \n"
-+"SELECT pa.id, COALESCE (a.value,alt_a.value) AS name, COALESCE (c.value,alt_c.value) AS unit, \n"
-+"       p_string_data.value AS value,n.description, p_parametergrps.id AS parametergrpID, \n"
-+" 	   p.description AS Parameter_desc, COALESCE (b.value,alt_b.value) AS param_grp \n"
-+"FROM p_string_data  \n"
-+"JOIN p_parameters 	 pa	 ON (p_parameter_id=pa.id AND pa.ID_Field=false)  \n" // Don't show title fields
-+"JOIN string_key_table n  	 ON (n.id=pa.stringkeyname) \n"
-+"JOIN p_parametergrps 	 ON (pa.Parametergroup=p_parametergrps.ID)  \n"
-+"JOIN string_key_table p	 ON (p.id=p_parametergrps.stringkey)  \n"
-+"LEFT JOIN stringtable a 	 ON (a.string_key=n.id AND a.language=? )  \n" // Primary language
-+"LEFT JOIN stringtable alt_a ON (alt_a.string_key=n.id AND alt_a.language=?) \n" // 2. lang. 
-+"LEFT JOIN stringtable b 	 ON (b.string_key=p.id AND b.language=? ) \n" // Primary language
-+"LEFT JOIN stringtable alt_b ON (alt_b.string_key=p.id AND alt_b.language=?)  \n" // 2. lang. 
-+"JOIN paramdef pd 			 ON (pd.id=pa.definition) \n"
-+"LEFT JOIN stringtable c 	 ON (c.string_key=pd.StringKeyUnit AND c.language=? )  \n" // Primary language
-+"LEFT JOIN stringtable alt_c ON (alt_c.string_key=pd.StringKeyUnit AND alt_c.language=?) \n"// 2. lang. 
-+"WHERE p_string_data.ProcessID=?");
+	       +"''||p_integer_data.value AS value,n.description, p_parametergrps.id AS parametergrpID, \n"
+	 	   +"p.description AS Parameter_desc, COALESCE (b.value,alt_b.value) AS param_grp \n"
+	 	   +"FROM p_integer_data \n" 
+	 	   +"JOIN p_parameters 	 pa	 ON (p_parameter_id=pa.id AND pa.ID_Field=false) \n" // Don't show title fields
+	 	   +"JOIN string_key_table n  	 ON (n.id=pa.stringkeyname) \n"
+	 	   +"JOIN p_parametergrps 	 ON (pa.Parametergroup=p_parametergrps.ID)  \n"
+	 	   +"JOIN string_key_table p	 ON (p.id=p_parametergrps.stringkey)  \n"
+	 	   +"LEFT JOIN stringtable a 	 ON (a.string_key=n.id AND a.language=? )  \n" // Primary language
+	 	   +"LEFT JOIN stringtable alt_a ON (alt_a.string_key=n.id AND alt_a.language=?)  \n" // 2. lang. 
+	 	   +"LEFT JOIN stringtable b 	 ON (b.string_key=p.id AND b.language=? )  \n" // Primary language
+	 	   +"LEFT JOIN stringtable alt_b ON (alt_b.string_key=p.id AND alt_b.language=?)  \n" // 2. lang. \n"
+	 	   +"JOIN paramdef pd 			 ON (pd.id=pa.definition) \n"
+	 	   +"LEFT JOIN stringtable c 	 ON (c.string_key=pd.StringKeyUnit AND c.language=? )  \n" // Primary language
+	 	   +"LEFT JOIN stringtable alt_c ON (alt_c.string_key=pd.StringKeyUnit AND alt_c.language=?) \n" // 2. lang. \n"
+	 	   +"WHERE p_integer_data.ProcessID=? \n"
+	 	   +"UNION ALL \n"
+	 	   +"SELECT pa.id, COALESCE (a.value,alt_a.value) AS name, COALESCE (c.value,alt_c.value) AS unit, \n"
+	 	   +"       to_char(p_float_data.value, 'FM99999.99999') AS value,n.description, p_parametergrps.id AS parametergrpID, \n"
+	 	   +" 	   p.description AS Parameter_desc, COALESCE (b.value,alt_b.value) AS param_grp \n"
+	 	   +"FROM p_float_data  \n"
+	 	   +"JOIN p_parameters 	 pa	 ON (p_parameter_id=pa.id)  \n"  
+	 	   +"JOIN string_key_table n  	 ON (n.id=pa.stringkeyname) \n"
+	 	   +"JOIN p_parametergrps 	 ON (pa.Parametergroup=p_parametergrps.ID) \n" 
+	 	   +"JOIN string_key_table p	 ON (p.id=p_parametergrps.stringkey)  \n"
+	 	   +"LEFT JOIN stringtable a 	 ON (a.string_key=n.id AND a.language=? )  \n" // Primary language
+	 	   +"LEFT JOIN stringtable alt_a ON (alt_a.string_key=n.id AND alt_a.language=?) \n" // 2. lang. 
+	 	   +"LEFT JOIN stringtable b 	 ON (b.string_key=p.id AND b.language=? ) \n" // Primary language
+	 	   +"LEFT JOIN stringtable alt_b ON (alt_b.string_key=p.id AND alt_b.language=?) \n" // 2. lang. 
+	 	   +"JOIN paramdef pd 			 ON (pd.id=pa.definition) \n"
+	 	   +"LEFT JOIN stringtable c 	 ON (c.string_key=pd.StringKeyUnit AND c.language=? ) \n" // Primary language
+	 	   +"LEFT JOIN stringtable alt_c ON (alt_c.string_key=pd.StringKeyUnit AND alt_c.language=?)  \n" // 2. lang. 
+	 	   +"WHERE p_float_data.ProcessID=? \n"
+	 	   +"UNION ALL \n"
+	 	   +"SELECT pa.id, COALESCE (a.value,alt_a.value) AS name, COALESCE (c.value,alt_c.value) AS unit, \n"
+	 	   +"       to_char(p_measurement_data.value,'FM99999.99999')||'+/-'||to_char(p_measurement_data.error,'FM99999.99999') \n"
+	 	   +"		 AS value,n.description, p_parametergrps.id AS parametergrpID, \n"
+	 	   +" 	   p.description AS Parameter_desc, COALESCE (b.value,alt_b.value) AS param_grp \n"
+	 	   +"FROM p_measurement_data  \n"
+	 	   +"JOIN p_parameters 	 pa	 ON (p_parameter_id=pa.id AND pa.ID_Field=false)  \n" // Don't show title fields
+	 	   +"JOIN string_key_table n  	 ON (n.id=pa.stringkeyname) \n"
+	 	   +"JOIN p_parametergrps 	 ON (pa.Parametergroup=p_parametergrps.ID)  \n"
+	 	   +"JOIN string_key_table p	 ON (p.id=p_parametergrps.stringkey)  \n"
+	 	   +"LEFT JOIN stringtable a 	 ON (a.string_key=n.id AND a.language=? )  \n" // Primary language
+	 	   +"LEFT JOIN stringtable alt_a ON (alt_a.string_key=n.id AND alt_a.language=?)  \n" // 2. lang. 
+	 	   +"LEFT JOIN stringtable b 	 ON (b.string_key=p.id AND b.language=? )  \n" // Primary language
+	 	   +"LEFT JOIN stringtable alt_b ON (alt_b.string_key=p.id AND alt_b.language=?)  \n" // 2. lang. 
+	 	   +"JOIN paramdef pd 			 ON (pd.id=pa.definition) \n"
+	 	   +"LEFT JOIN stringtable c 	 ON (c.string_key=pd.StringKeyUnit AND c.language=? ) \n" // Primary language
+	 	   +"LEFT JOIN stringtable alt_c ON (alt_c.string_key=pd.StringKeyUnit AND alt_c.language=?) -- 2. lang. \n"
+	 	   +"WHERE p_measurement_data.ProcessID=? \n"
+	 	   +"UNION ALL \n"
+	 	   +"SELECT pa.id, COALESCE (a.value,alt_a.value) AS name, COALESCE (c.value,alt_c.value) AS unit, \n"
+	 	   +"       p_string_data.value AS value,n.description, p_parametergrps.id AS parametergrpID, \n"
+	 	   +" 	   p.description AS Parameter_desc, COALESCE (b.value,alt_b.value) AS param_grp \n"
+	 	   +"FROM p_string_data  \n"
+	 	   +"JOIN p_parameters 	 pa	 ON (p_parameter_id=pa.id AND pa.ID_Field=false)  \n" // Don't show title fields
+	 	   +"JOIN string_key_table n  	 ON (n.id=pa.stringkeyname) \n"
+	 	   +"JOIN p_parametergrps 	 ON (pa.Parametergroup=p_parametergrps.ID)  \n"
+	 	   +"JOIN string_key_table p	 ON (p.id=p_parametergrps.stringkey)  \n"
+	 	   +"LEFT JOIN stringtable a 	 ON (a.string_key=n.id AND a.language=? )  \n" // Primary language
+	 	   +"LEFT JOIN stringtable alt_a ON (alt_a.string_key=n.id AND alt_a.language=?) \n" // 2. lang. 
+	 	   +"LEFT JOIN stringtable b 	 ON (b.string_key=p.id AND b.language=? ) \n" // Primary language
+	 	   +"LEFT JOIN stringtable alt_b ON (alt_b.string_key=p.id AND alt_b.language=?)  \n" // 2. lang. 
+	 	   +"JOIN paramdef pd 			 ON (pd.id=pa.definition) \n"
+	 	   +"LEFT JOIN stringtable c 	 ON (c.string_key=pd.StringKeyUnit AND c.language=? )  \n" // Primary language
+	 	   +"LEFT JOIN stringtable alt_c ON (alt_c.string_key=pd.StringKeyUnit AND alt_c.language=?) \n"// 2. lang. 
+	 	   +"WHERE p_string_data.ProcessID=?");
     	pstmt.setString(1,plang);
     	pstmt.setString(2,slang);
     	pstmt.setString(3,plang);
@@ -221,7 +224,7 @@ public class Showprocess extends HttpServlet {
     	pstmt.setString(26,plang);
     	pstmt.setString(27,slang);
     	pstmt.setInt(28,processID);
-		JSONArray table= DBconnection.jsonFromPreparedStmt(pstmt);
+		JSONArray table= DBconn.jsonFromPreparedStmt(pstmt);
 		if (table.length()>0) {
 			jsProcess.put("parameters",table); } 
 	} catch (SQLException e) {
@@ -237,6 +240,6 @@ public class Showprocess extends HttpServlet {
   	
 
   	out.println(jsProcess.toString());
-  	DBconnection.closeDB();
+  	DBconn.closeDB();
     	}
   }

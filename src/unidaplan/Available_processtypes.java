@@ -34,8 +34,8 @@ public class Available_processtypes extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		 response.setContentType("text/html");
-
-		 	DBconnection.startDB();
+		 	DBconnection DBconn=new DBconnection();
+		 	DBconn.startDB();
 		 	String name="";
 		 	String type="";
 			try{
@@ -51,7 +51,7 @@ public class Available_processtypes extends HttpServlet {
 		    ResultSet result = null;
 		
 		    try {
-		       stmt = DBconnection.conn.prepareStatement(	
+		       stmt = DBconn.conn.prepareStatement(	
 				"SELECT pt.id, string FROM processtypes pt JOIN localized ON (localized.id=pt.name)");
 		       result=stmt.executeQuery(); // get ResultSet from the database using the query
 
@@ -60,7 +60,7 @@ public class Available_processtypes extends HttpServlet {
 				eS.printStackTrace();
 			} finally {
 		       try {
-		          JSONArray processlist = DBconnection.table2json(result);
+		          JSONArray processlist = DBconn.table2json(result);
 		          if (processlist.length()>0) {
 		        	  out.println(processlist.toString());
 			      }
@@ -73,7 +73,7 @@ public class Available_processtypes extends HttpServlet {
 		          // log this error
 		       }
 		       finally{		       
-		    	   if (DBconnection.conn != null) { DBconnection.closeDB(); } // close the database
+		    	   if (DBconn.conn != null) { DBconn.closeDB(); } // close the database
 		       }
 		   }    
 	}

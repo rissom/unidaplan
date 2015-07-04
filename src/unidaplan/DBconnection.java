@@ -19,7 +19,7 @@ import org.json.JSONObject;
 
 
 public class DBconnection  {
-  static Connection conn = null;
+  Connection conn = null;
   static String dbURL2 = "jdbc:postgresql://localhost/thorse";
   static String user = "thorse";
   static String pass = "jame765!";
@@ -27,7 +27,7 @@ public class DBconnection  {
 
     
     
-  public static void startDB() {
+  public void startDB() {
 	try {
 		Class.forName(DEFAULT_DRIVER);
 		conn = DriverManager.getConnection(dbURL2, user, pass);
@@ -39,8 +39,8 @@ public class DBconnection  {
 		e.printStackTrace();
 	}
   	if (conn==null) {
-    	System.out.print("conn null! " );
-    	System.out.print("Error connecting to database");
+    	System.out.println("conn null! " );
+    	System.out.println("Error connecting to database");
     } else
     {
 //        System.out.println("Connected to database.");
@@ -48,7 +48,7 @@ public class DBconnection  {
   }
   
   
-  public static void closeDB() {
+  public void closeDB() {
 	try {
 		conn.close();
 	} catch (SQLException e) {
@@ -59,18 +59,18 @@ public class DBconnection  {
 
   
   
-  public static JSONArray jsonfromquery(String query) throws Exception{
+  public JSONArray jsonfromquery(String query) throws Exception{
 	  Statement stmt = null;
 	  JSONArray result = null;
 	  ResultSet queryresult=null;
 	  	  try {
-	          stmt = DBconnection.conn.createStatement();
+	          stmt = conn.createStatement();
 	          if (stmt==null) {
-		          System.out.print("statement null! " );
+		          System.out.println("statement null! " );
 	      }
           queryresult = stmt.executeQuery(query);
           if (queryresult==null) {
-        	  System.out.print("statement result null! ");
+        	  System.out.println("statement result null! ");
         	  result=new JSONArray();
           } else {
         	  result = table2json(queryresult);
@@ -78,26 +78,26 @@ public class DBconnection  {
           }     
           stmt.close();
   	  } catch (SQLException e) {   // Exception for SQL database
-  		  System.out.print("Problem with the database! Error! ");
+  		  System.out.println("Problem with the database! Error! ");
   		  e.printStackTrace();
   	  } catch (Exception e) {
-  		  System.out.print("Some problem during first database query. Error! ");
+  		  System.out.println("Some problem during first database query. Error! ");
 	  		  e.printStackTrace();
 	  }
 	  return result;
   }
   
   
-  public static JSONArray jsonFromPreparedStmt(PreparedStatement pStmt) throws Exception{
+  public JSONArray jsonFromPreparedStmt(PreparedStatement pStmt) throws Exception{
 	  JSONArray result = null;
 	  ResultSet queryResult=null;
 	  	  try {
 		          if (pStmt==null) {
-			          System.out.print("prepared statement null! " );
+			          System.out.println("prepared statement null! " );
 		          }
 		          queryResult = pStmt.executeQuery();
           if (queryResult==null) {
-        	  System.out.print("statement result null! ");
+        	  System.out.println("statement result null! ");
         	  result=new JSONArray();
           } else {
         	  result = table2json(queryResult);
@@ -105,8 +105,7 @@ public class DBconnection  {
           }     
           pStmt.close();
   	  } catch (SQLException e) {   // Exception for SQL database
-  		  System.out.print("Problem with the database! Error! ");
-  		  e.printStackTrace();
+  		  System.out.println("No result, or problem with the database");
   	  } catch (Exception e) {
   		  System.out.print("Some problem with database query. Error! ");
 	  		  e.printStackTrace();
@@ -115,8 +114,44 @@ public class DBconnection  {
   }
      
   
+  public JSONObject jsonObjectFromPreparedStmt(PreparedStatement pStmt) throws Exception{
+	  JSONObject result = null;
+	  ResultSet queryResult=null;
+	  result = new JSONObject();
+	  	  try{
+	          if (pStmt==null) {
+		          System.out.println("prepared statement null! " );
+	          } else {
+	        	  queryResult = pStmt.executeQuery(); 
+	          }
+	          if (queryResult==null) {
+	        	  System.out.println("statement result null! ");
+	          } else {
+	        	  int columns = queryResult.getMetaData().getColumnCount();
+	        	  if ( queryResult.next() ){
+		              for (int i = 1; i <= columns; i++) {
+		                  result.put(queryResult.getMetaData().getColumnLabel(i), queryResult.getObject(i));
+		              }
+	        	  }
+	        	  else {
+	        		  System.out.println("No result!");
+	        	  }
+	          }
+	          queryResult.close();
+	          pStmt.close();
+	  	  } catch (SQLException e) {   // Exception for SQL database
+	  		  System.out.println("No result, or problem with the database");
+//	  		  e.printStackTrace();
+	  	  } catch (Exception e) {
+	  		  System.out.println("Some problem with database query. Error! ");
+//	  		  e.printStackTrace();
+		  }
+      return result;
+}
   
-  public static JSONArray table2json(ResultSet rs) throws Exception {
+  
+  
+  public JSONArray table2json(ResultSet rs) throws Exception {
         JSONArray jsArray = new JSONArray();        
         int rows = rs.getMetaData().getColumnCount();
         while (rs.next()) {                
@@ -151,7 +186,7 @@ public class DBconnection  {
     
 	
     
-  public static void testqueryDB(String query) {
+  public void testqueryDB(String query) {
     	System.out.println("testqueryDB");
     	if (conn==null) {
         	System.out.print("conn null! " );

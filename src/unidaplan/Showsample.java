@@ -24,48 +24,58 @@ public class Showsample extends HttpServlet {
 @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    response.setContentType("text/html");
+    response.setContentType("application/json");
+    request.setCharacterEncoding("utf-8");
+    response.setCharacterEncoding("utf-8");
     PrintWriter out = response.getWriter();
-    DBconnection.startDB();
-    
-	int objID=1;
-	try  {
+ 	DBconnection DBconn=new DBconnection();
+    DBconn.startDB();
+	String plang="de"; // primary language = Deutsch
+	String slang="en"; // secondary language = english
+	int objID=1;      // variable initialisation
+	JSONObject jsSample=new JSONObject(); // variable initialisation
+	
+	// get Parameter for id
+	try{
 		 objID=Integer.parseInt(request.getParameter("id")); }
 	catch (Exception e1) {
 		objID=1;
 		System.out.print("no object ID given!");
-//		e1.printStackTrace();
-	 	}
-	String plang="de"; // primary language = Deutsch
-	String slang="en"; // secondary language = english
-	
-    String query =  // fetch name and type of the object from the database (objectnames is a view)
-	"SELECT name, type FROM objectnames \n"
-	+"WHERE id="+objID;
+	}
+	   
+    // fetch name and type of the object from the database (objectnames is a view)
+    try{
+		pstmt= DBconn.conn.prepareStatement( 	
+				"SELECT name, type FROM objectnames WHERE id=?");
+		pstmt.setInt(1,objID);
+		jsSample= DBconn.jsonObjectFromPreparedStmt(pstmt);
+	} catch (SQLException e) {
+		System.out.println("Problems with SQL query for sample name");
+		e.printStackTrace();	
+	} catch (JSONException e) {
+		System.out.println("JSON Problem while getting sample name");
+		e.printStackTrace();
+	} catch (Exception e2) {
+		System.out.println("Strange Problem while getting sample name");
+		e2.printStackTrace();
+	}
 
-    try {  // get json from the database using the query
-		result=DBconnection.jsonfromquery(query);
-	} catch (Exception e1) {
-		e1.printStackTrace();
-	}
-    JSONObject jsSample = new JSONObject();
-    try {
-//		jsSample.put("sample",result.get(0));
-	    jsSample.put("name",result.getJSONObject(0).get("name"));
-	    jsSample.put("type",result.getJSONObject(0).get("type"));
-	} catch (JSONException e3) {
-		// TODO Auto-generated catch block
-		e3.printStackTrace();
-	}
     
-	
-	
-
+    // Error if the sample is not found
+    if (jsSample.length()==0) {
+    	try {
+			jsSample.put("error", "sample not found");
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    else {
     
 	try {
 		JSONArray parameters=new JSONArray();  	
-		pstmt= DBconnection.conn.prepareStatement( 	
-		    "SELECT op.id, COALESCE (a.value,alt_a.value) AS name, COALESCE (c.value,alt_c.value) AS unit, \n"
+		pstmt= DBconn.conn.prepareStatement( 	
+		    "SELECT op.id,  o_integer_data.id as pid, COALESCE (a.value,alt_a.value) AS name, COALESCE (c.value,alt_c.value) AS unit, \n"
 		+       "''||o_integer_data.value AS value,n.description, ot_parametergrps.id AS parametergrpID, \n"
 		+ 	   "p.description AS Parameter_desc, COALESCE (b.value,alt_b.value) AS param_grp \n"
 		+"FROM o_integer_data \n"
@@ -82,11 +92,11 @@ public class Showsample extends HttpServlet {
 		+"LEFT JOIN stringtable alt_c ON (alt_c.string_key=pd.StringKeyUnit AND alt_c.language=?)\n" // 2. lang. 
 		+"WHERE objectID=?"
 		+"UNION ALL \n"
-		+"SELECT op.id, COALESCE (a.value,alt_a.value) AS name, COALESCE (c.value,alt_c.value) AS unit, \n"
+		+"SELECT op.id, o_float_data.id as pid, COALESCE (a.value,alt_a.value) AS name, COALESCE (c.value,alt_c.value) AS unit, \n"
 		+      "to_char(o_float_data.value, 'FM99999.99999') AS value,n.description, ot_parametergrps.id AS parametergrpID, \n"
 		+ 	   "p.description AS Parameter_desc, COALESCE (b.value,alt_b.value) AS param_grp \n"
 		+"FROM o_float_data  \n"
-		+"JOIN ot_parameters 	 op	 ON (ot_parameter_id=op.id) \n"
+		+"LEFT JOIN ot_parameters op ON (ot_parameter_id=op.id) \n"
 		+"JOIN string_key_table n  	 ON (n.id=op.stringkeyname) \n"
 		+"JOIN ot_parametergrps 	 ON (op.Parametergroup=ot_parametergrps.ID) \n" 
 		+"JOIN string_key_table p	 ON (p.id=ot_parametergrps.stringkey)  \n"
@@ -99,7 +109,7 @@ public class Showsample extends HttpServlet {
 		+"LEFT JOIN stringtable alt_c	 ON (alt_c.string_key=pd.StringKeyUnit AND alt_c.language=?) \n" // 2. lang. 
 		+"WHERE objectID=? \n"
 		+"UNION ALL \n"
-		+"SELECT op.id, COALESCE (a.value,alt_a.value) AS name, COALESCE (c.value,alt_c.value) AS unit, \n"
+		+"SELECT op.id, o_measurement_data.id as pid, COALESCE (a.value,alt_a.value) AS name, COALESCE (c.value,alt_c.value) AS unit, \n"
 		+      "to_char(o_measurement_data.value,'FM99999.99999')||' ± '||to_char(o_measurement_data.error,'FM99999.99999')"
 		+       " AS value,n.description, ot_parametergrps.id AS parametergrpID, \n"
 		+ 	   "p.description AS Parameter_desc, COALESCE (b.value,alt_b.value) AS param_grp \n"
@@ -117,7 +127,7 @@ public class Showsample extends HttpServlet {
 		+"LEFT JOIN stringtable alt_c ON (alt_c.string_key=pd.StringKeyUnit AND alt_c.language=?)  \n" // 2. lang. \n"
 		+"WHERE objectID=? \n"
 		+"UNION ALL \n"
-		+"SELECT op.id, COALESCE (a.value,alt_a.value) AS name, COALESCE (c.value,alt_c.value) AS unit, \n"
+		+"SELECT op.id, o_string_data.id as pid, COALESCE (a.value,alt_a.value) AS name, COALESCE (c.value,alt_c.value) AS unit, \n"
 		+"       o_string_data.value AS value,n.description, ot_parametergrps.id AS parametergrpID, \n"
 		+" 	   p.description AS Parameter_desc, COALESCE (b.value,alt_b.value) AS param_grp \n"
 		+"FROM o_string_data  \n"
@@ -161,103 +171,124 @@ public class Showsample extends HttpServlet {
 		pstmt.setString(26,plang);
 		pstmt.setString(27,slang);
 		pstmt.setInt(28,objID);
-		table= DBconnection.jsonFromPreparedStmt(pstmt);
+		table= DBconn.jsonFromPreparedStmt(pstmt);
 		if (table.length()>0) {
 		jsSample.put("parameters",table); } 
 	} catch (SQLException e) {
-		System.out.println("Problems with SQL query for next process");
+		System.out.println("Problems with SQL query for sample parameters");
 		e.printStackTrace();
 	} catch (JSONException e){
-		System.out.println("Problems creating JSON for next process");
+		System.out.println("Problems creating JSON for sample parameters");
 		e.printStackTrace();
 	} catch (Exception e) {
-		System.out.println("Strange Problems with the next process");
+		System.out.println("Strange Problems with the sample parameters");
 		e.printStackTrace();
 	}	
-    
-   
-//    System.out.print(result.toString());   // JSON auf Console ausgeben
-    if (table.length()==0) {
-    	try {
-			jsSample.put("error", "sample not found");
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    }
-    else {
+
     	
+		// Find all experiment plans (TODO)
     	try {				
 			JSONArray vps = new JSONArray();
 			vps.put (123);
 			vps.put (456);
 			jsSample.put("plans",vps);
-				    
-		    query=  // Find all child objects
+    	} catch (Exception e){
+    		e.printStackTrace();
+    	}
+			
+		// Find all child objects
+    	try{
+		    pstmt=  DBconn.conn.prepareStatement( 	
 			"SELECT originates_from.id, objectnames.id, objectnames.name, objectnames.type \n"+
 			"FROM originates_from \n"+
 			"JOIN objectnames ON (objectnames.id=originates_from.child) \n"+
-			"WHERE originates_from.parent='"+objID+"' \n";
-		    
-    		try {  // get json from the database using the query
-				result=DBconnection.jsonfromquery(query);
-			} catch (Exception e2) {
+			"WHERE originates_from.parent=? \n");
+			pstmt.setInt(1,objID);
+			table= DBconn.jsonFromPreparedStmt(pstmt);
+			if (table.length()>0) {
+				jsSample.put("children",table); } 
+    	} catch (SQLException e) {
+    		System.out.println("Problems with SQL query for sample children");
+    		e.printStackTrace();
+    	} catch (Exception e2) {
 				e2.printStackTrace();
-			}
-    		jsSample.put("children",result);
-		    
-			query= // find all parent objects
+		}
+    	
+		// find all parent objects
+		try{    
+		    pstmt=  DBconn.conn.prepareStatement( 	
 			"SELECT originates_from.id, objectnames.id, objectnames.name, objectnames.type \n" +
 			"FROM originates_from \n" +
 			"JOIN objectnames ON (objectnames.id=originates_from.parent) \n" +
-			"WHERE originates_from.child='"+objID+"'\n";
-			
-			try {  // get json from the database using the query
-				result=DBconnection.jsonfromquery(query);
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
-    		jsSample.put("ancestors",result);
-
-    		query= // find previous sample
-    		"SELECT  objectnames.id, objectnames.name, objectnames.type \n"
-			+"FROM objectnames \n"
-			+"WHERE ((objectnames.name < (SELECT objectnames.name FROM objectnames WHERE objectnames.id='"+objID+"')) \n"
-			+"AND objectnames.type=(SELECT objectnames.type FROM objectnames WHERE objectnames.id='"+objID+"')) \n"
-			+"ORDER BY objectnames.name DESC \n"
-			+"LIMIT 1";
-			try {  // get json from the database using the query
-				result=DBconnection.jsonfromquery(query);
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
-			if (result.length() > 0) {
-			    jsSample.put("previous",result.get(0));
-			}
-    		
-    		query= // find next sample
-    		"SELECT  objectnames.id, objectnames.name, objectnames.type \n"
-			+"FROM objectnames \n"
-			+"WHERE ((objectnames.name > (SELECT objectnames.name FROM objectnames WHERE objectnames.id='"+objID+"')) \n"
-			+"AND objectnames.type=(SELECT objectnames.type FROM objectnames WHERE objectnames.id='"+objID+"')) \n"
-			+"ORDER BY objectnames.name \n"
-    		+"LIMIT 1 \n";
-			try {  // get json from the database using the query
-				result=DBconnection.jsonfromquery(query);
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
-			if (result.length() > 0) {
-			    jsSample.put("next",result.get(0));
-			}
-			
-    	} catch (JSONException e) {
-			System.out.print("Problem while creating JSON object");
-			e.printStackTrace();
+			"WHERE originates_from.child=? \n");
+			pstmt.setInt(1,objID);
+			table= DBconn.jsonFromPreparedStmt(pstmt);
+			if (table.length()>0) {
+				jsSample.put("ancestors",table); } 
+	    } catch (SQLException e) {
+    		System.out.println("Problems with SQL query for parent samples");
+    		e.printStackTrace();	
+		} catch (JSONException e2) {
+			System.out.println("JSON Problem while getting parent samples");
+			e2.printStackTrace();
+		} catch (Exception e3) {
+			System.out.println("Strange Problem while getting parent samples");
+    		e3.printStackTrace();
     	}
+		
+		// find the previous sample
+		try{
+		    pstmt=  DBconn.conn.prepareStatement( 	
+    		"SELECT  objectnames.id, objectnames.name, objectnames.type \n"
+			+"FROM objectnames \n"
+			+"WHERE ((objectnames.name < (SELECT objectnames.name FROM objectnames WHERE objectnames.id=?)) \n"
+			+"AND objectnames.type=(SELECT objectnames.type FROM objectnames WHERE objectnames.id=?)) \n"
+			+"ORDER BY objectnames.name DESC \n"
+			+"LIMIT 1");
+			pstmt.setInt(1,objID);
+			pstmt.setInt(2,objID);
+			table= DBconn.jsonFromPreparedStmt(pstmt);
+			if (table.length()>0) {
+				jsSample.put("previous",table.get(0)); }
+	    } catch (SQLException e) {
+    		System.out.println("Problems with SQL query for previous sample");
+    		e.printStackTrace();	
+		} catch (JSONException e2) {
+			System.out.println("JSON Problem while getting previous sample");
+			e2.printStackTrace();
+		} catch (Exception e3) {
+			System.out.println("Strange Problem while getting previous sample");
+    		e3.printStackTrace();
+    	}
+		
+		// find next sample	
+		try{
+		    pstmt=  DBconn.conn.prepareStatement( 	
+    		"SELECT  objectnames.id, objectnames.name, objectnames.type \n"
+			+"FROM objectnames \n"
+			+"WHERE ((objectnames.name > (SELECT objectnames.name FROM objectnames WHERE objectnames.id=?)) \n"
+			+"AND objectnames.type=(SELECT objectnames.type FROM objectnames WHERE objectnames.id=?)) \n"
+			+"ORDER BY objectnames.name \n"	
+    		+"LIMIT 1 \n");
+			pstmt.setInt(1,objID);
+			pstmt.setInt(2,objID); 
+			table= DBconn.jsonFromPreparedStmt(pstmt);
+			if (table.length()>0) {
+				jsSample.put("next",table.get(0)); }	
+		} catch (SQLException e) {
+    		System.out.println("Problems with SQL query for sample children");
+    		e.printStackTrace();	
+    	} catch (JSONException e) {
+			System.out.println("JSON Problem while getting next sample");
+			e.printStackTrace();
+    	} catch (Exception e2) {
+			System.out.println("Strange Problem while getting next sample");
+    		e2.printStackTrace();
+    	}
+
     	
     }
 	out.println(jsSample.toString());
-	DBconnection.closeDB();
+	DBconn.closeDB();
   	}
 }

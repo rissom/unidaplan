@@ -1,11 +1,13 @@
 	package unidaplan;
 	import java.io.IOException;
-	import java.io.PrintWriter;
-	import javax.servlet.ServletException;
-	import javax.servlet.http.HttpServlet;
-	import javax.servlet.http.HttpServletRequest;
-	import javax.servlet.http.HttpServletResponse;
-	import org.json.JSONArray;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.json.JSONArray;
 
 	public class Experiments extends HttpServlet {
 		private static final long serialVersionUID = 1L;
@@ -16,7 +18,8 @@
 	      throws ServletException, IOException {
 	    response.setContentType("text/html");
 	    PrintWriter out = response.getWriter();
-	    DBconnection.startDB();
+	 	DBconnection DBconn=new DBconnection();
+	    DBconn.startDB();
 		String plang="de"; // primary language = Deutsch
 		String slang="en"; // secondary language = english
 		
@@ -27,11 +30,11 @@
 	    + "JOIN stringtable a ON (exp_plan.Name=a.string_key AND a.language='"+plang+"')"
 	    + "JOIN stringtable b ON (exp_plan.Name=b.string_key AND b.language='"+slang+"')";
 	    try {  // get json from the database using the query
-			result=DBconnection.jsonfromquery(query);
+			result=DBconn.jsonfromquery(query);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
 		out.println(result.toString());
-		DBconnection.closeDB();
+		DBconn.closeDB();
 	}
 }	

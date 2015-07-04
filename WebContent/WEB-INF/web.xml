@@ -4,7 +4,6 @@
     <welcome-file>index.jsp</welcome-file>
     <welcome-file>index.html</welcome-file>
   </welcome-file-list>
-  
   <servlet>
     <description>shows data for a sample</description>
     <display-name>Showsample</display-name>
@@ -15,7 +14,6 @@
     <servlet-name>Showsample</servlet-name>
     <url-pattern>/showsample.json</url-pattern>
   </servlet-mapping>
-  
   <servlet>
     <description>shows samples with a name close to parameter name</description>
     <display-name>Samples by name</display-name>
@@ -26,7 +24,6 @@
     <servlet-name>Samples_by_name</servlet-name>
     <url-pattern>/samples_by_name.json</url-pattern>
   </servlet-mapping>
-  
   <servlet>
     <description>shows available object-types</description>
     <display-name>Available objecttypes</display-name>
@@ -37,7 +34,6 @@
     <servlet-name>Available_objecttypes</servlet-name>
     <url-pattern>/objecttypes.json</url-pattern>
   </servlet-mapping>
-  
   <servlet>
     <description>shows available Experiments</description>
     <display-name>Experiments</display-name>
@@ -48,8 +44,7 @@
     <servlet-name>Experiments</servlet-name>
     <url-pattern>/experiments.json</url-pattern>
   </servlet-mapping>
-
- <servlet>
+  <servlet>
     <description>show process</description>
     <display-name>Process</display-name>
     <servlet-name>Process</servlet-name>
@@ -59,4 +54,16 @@
     <servlet-name>Process</servlet-name>
     <url-pattern>/process.json</url-pattern>
   </servlet-mapping>
+  
+    <servlet>
+    <description>Save sample parameter</description>
+    <display-name>SaveSampleParameter</display-name>
+    <servlet-name>SaveSampleParameter</servlet-name>
+    <servlet-class>unidaplan.SaveSampleParameter</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SaveSampleParameter</servlet-name>
+    <url-pattern>/savesampleparameter.json</url-pattern>
+  </servlet-mapping>
+  
 </web-app>

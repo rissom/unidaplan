@@ -1,10 +1,9 @@
-<div ng-controller="samplecontroller as ssc" class="container" ng-show="menuCtrl.currentPage =='process'" > 
+<div class="container" ng-show="menuCtrl.currentPage =='process'" > 
 <div ng-controller="process as processCtrl">
 <p />
 <p />	
 <p />
 <div ng-init="processCtrl.loadProcess(1)"></div>
-{{processCtrl.process}}
 <h2>{{processCtrl.process.processtype}} {{processCtrl.process.p_number}}</h2>
 <h4>Parameter</h4>
 <table class="table">
@@ -27,25 +26,23 @@ Verlauf des Prozesses
 <button>Add/Remove samples</button>
 <p />
 <p />
-<ul>
-	<li ng-repeat="sample in processCtrl.samples">
-		<a >{{sample}}</a>
-	</li>
-</ul>
 <p />
 	<table>
 	<tr>
 		<td align="center">
-			<div ng-hide="true">{{buttonsample=processCtrl.process.previous}}</div> <!--  superdreckig -->
-			<span ng-show="sample.previous">&#x25c0; previous <br /> <samplebutton></samplebutton></span>
+			<span ng-show="processCtrl.process.previous">&#x25c0; previous <br />
+				<button class="btn btn-default">previous
+				</button>
+			</span>
 		</td>
 		<td align="center">&nbsp;<br /> &nbsp;
-			<button type="button" class="btn btn-danger">Prozess löschen</button>
+			<button type="button" class="btn btn-danger">Prozess löschen
+			</button>
 		</td>
 		<td align="center">
-			<div ng-hide="true">{{buttonsample=ssc.sample.next}}</div> <!--  superdreckig -->
-			<span ng-show="sample.next"> &nbsp; next &nbsp; &#9654;<br />
-				&nbsp;<samplebutton></samplebutton></span>
+			<span ng-show="processCtrl.process.next"> &nbsp; next &nbsp; &#9654;<br />&nbsp;
+			<button class="btn btn-default">next</button>			
+			</span>
 		</td>
 	</tr>
 </table>
