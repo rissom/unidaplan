@@ -39,11 +39,8 @@ public class DBconnection  {
 		e.printStackTrace();
 	}
   	if (conn==null) {
-    	System.out.println("conn null! " );
-    	System.out.println("Error connecting to database");
-    } else
-    {
-//        System.out.println("Connected to database.");
+    	System.err.println("DBconnection: conn null! " );
+    	System.err.println("DBconnection: Error connecting to database");
     } 
   }
   
@@ -66,11 +63,11 @@ public class DBconnection  {
 	  	  try {
 	          stmt = conn.createStatement();
 	          if (stmt==null) {
-		          System.out.println("statement null! " );
+		          System.err.println("DBconnection: statement null! " );
 	      }
           queryresult = stmt.executeQuery(query);
           if (queryresult==null) {
-        	  System.out.println("statement result null! ");
+        	  System.err.println("DBconnection: statement result null! ");
         	  result=new JSONArray();
           } else {
         	  result = table2json(queryresult);
@@ -78,10 +75,10 @@ public class DBconnection  {
           }     
           stmt.close();
   	  } catch (SQLException e) {   // Exception for SQL database
-  		  System.out.println("Problem with the database! Error! ");
+  		  System.err.println("DBconnection: Problem with the database! Error! ");
   		  e.printStackTrace();
   	  } catch (Exception e) {
-  		  System.out.println("Some problem during first database query. Error! ");
+  		  System.err.println("DBconnection: Some problem during first database query. Error! ");
 	  		  e.printStackTrace();
 	  }
 	  return result;
@@ -93,11 +90,11 @@ public class DBconnection  {
 	  ResultSet queryResult=null;
 	  	  try {
 		          if (pStmt==null) {
-			          System.out.println("prepared statement null! " );
+			          System.err.println("DBconnection: prepared statement null! " );
 		          }
 		          queryResult = pStmt.executeQuery();
           if (queryResult==null) {
-        	  System.out.println("statement result null! ");
+        	  System.err.println("DBconnection: statement result null! ");
         	  result=new JSONArray();
           } else {
         	  result = table2json(queryResult);
@@ -105,9 +102,9 @@ public class DBconnection  {
           }     
           pStmt.close();
   	  } catch (SQLException e) {   // Exception for SQL database
-  		  System.out.println("No result, or problem with the database");
+  		  System.err.println("DBconnection: No result, or problem with the database");
   	  } catch (Exception e) {
-  		  System.out.print("Some problem with database query. Error! ");
+  		  System.err.print("DBconnection: Some problem with database query. Error! ");
 	  		  e.printStackTrace();
 	  }
 	  return result;
@@ -120,12 +117,12 @@ public class DBconnection  {
 	  result = new JSONObject();
 	  	  try{
 	          if (pStmt==null) {
-		          System.out.println("prepared statement null! " );
+		          System.err.println("DBconnection: prepared statement null! " );
 	          } else {
 	        	  queryResult = pStmt.executeQuery(); 
 	          }
 	          if (queryResult==null) {
-	        	  System.out.println("statement result null! ");
+	        	  System.err.println("DBconnection: statement result null! ");
 	          } else {
 	        	  int columns = queryResult.getMetaData().getColumnCount();
 	        	  if ( queryResult.next() ){
@@ -134,16 +131,16 @@ public class DBconnection  {
 		              }
 	        	  }
 	        	  else {
-	        		  System.out.println("No result!");
+	        		  System.err.println("DBconnection: No result!");
 	        	  }
 	          }
 	          queryResult.close();
 	          pStmt.close();
 	  	  } catch (SQLException e) {   // Exception for SQL database
-	  		  System.out.println("No result, or problem with the database");
+	  		  System.err.println("DBconnection: No result, or problem with the database");
 //	  		  e.printStackTrace();
 	  	  } catch (Exception e) {
-	  		  System.out.println("Some problem with database query. Error! ");
+	  		  System.err.println("DBconnection: Some problem with database query. Error! ");
 //	  		  e.printStackTrace();
 		  }
       return result;
@@ -157,7 +154,9 @@ public class DBconnection  {
         while (rs.next()) {
             JSONObject obj = new JSONObject();
             for (int i = 1; i <= rows; i++) {
-                obj.put(rs.getMetaData().getColumnLabel(i), rs.getObject(i));
+            	Object tempObject=rs.getObject(i);
+//            	if (tempObject==null){tempObject="Null";}
+                obj.put(rs.getMetaData().getColumnLabel(i), tempObject);
             }
             jsArray.put(obj);
         }
@@ -196,14 +195,14 @@ public class DBconnection  {
 		try {
 			stmt = conn.createStatement();
 			if (stmt==null) {
-	        	System.out.print("statement null! " );
+	        	System.err.print("DBconnection: statement null! " );
 	        	return;
 	        }
 	        String sql;
 	        sql = "select value from stringtable where stringID=5";
 	        ResultSet rs = stmt.executeQuery(sql);
 	        if (rs==null) {
-	        	System.out.print("statement result null! " + sql);
+	        	System.err.print("DBconnection: statement result null! " + sql);
 	        } else {
 		        while(rs.next()){
 		            String wert = rs.getString("value"); 	//Retrieve by column name

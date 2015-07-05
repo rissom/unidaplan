@@ -6,7 +6,7 @@
 		<h4>Basisparameter</h4>
 		<table class="table">
 			<tr ng-repeat="parameter in ssc.sample.parameters">
-				<td ng-click="ssc.articleClicked(parameter)">{{parameter.name}} :</td>
+				<td ng-click="ssc.articleClicked(parameter)">{{parameter.trname}} :</td>
 				<td >
 					<span ng-hide="parameter.editing" ng-click="parameter.editing=true; newValue=parameter.value">{{parameter.value}}
 					</span>

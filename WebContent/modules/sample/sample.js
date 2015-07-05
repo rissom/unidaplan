@@ -6,6 +6,7 @@ function samplecontroller(restfactory) {
 	
 	this.sample = {};
 	
+	
 	this.keyUp = function(keyCode,newValue,parameter) {
 		if (keyCode===13) {
 			parameter.editing=false; 
@@ -26,12 +27,24 @@ function samplecontroller(restfactory) {
 		}
 	}
 	
+
+	this.translate = function(lang) {
+		var strings=this.sample.strings
+		angular.forEach(this.sample.parameters, function(parameter) {
+			angular.forEach(strings, function(translation) {
+				if (parameter.stringkeyname==translation.string_key && translation.language=="de")
+					{parameter.trname=translation.value;}
+			})
+		})
+	}
+
 	
 	this.loadData = function(ID) {
 		var promise = restfactory.GET("showsample.json?id="+ID);
 		var thisSampleController = this;
 	    promise.then(function(rest) {
 	    	thisSampleController.sample = rest.data;
+	    	thisSampleController.translate();
 	    }, function(rest) {
 	    	console.log("ERROR");
 	    });
