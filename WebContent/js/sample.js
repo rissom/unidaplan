@@ -6,7 +6,6 @@ function samplecontroller(restfactory) {
 	
 	this.sample = {};
 	
-	
 	this.keyUp = function(keyCode,newValue,parameter) {
 		if (keyCode===13) {
 			parameter.editing=false; 

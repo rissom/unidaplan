@@ -1,9 +1,9 @@
 (function(){
 'use strict';
 
-angular.module('unidaplan').controller('menu', function ($scope, $log) {
+angular.module('unidaplan').controller('menu', function () {
 
-  $scope.status = {
+  this.status = {
     isopen: false
   };
 

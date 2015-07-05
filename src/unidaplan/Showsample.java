@@ -171,7 +171,7 @@ public class Showsample extends HttpServlet {
 		pstmt.setString(26,plang);
 		pstmt.setString(27,slang);
 		pstmt.setInt(28,objID);
-		table= DBconn.jsonFromPreparedStmt(pstmt);
+		table= DBconn.jsonArrayFromPreparedStmt(pstmt);
 		if (table.length()>0) {
 		jsSample.put("parameters",table); } 
 	} catch (SQLException e) {
@@ -204,7 +204,7 @@ public class Showsample extends HttpServlet {
 			"JOIN objectnames ON (objectnames.id=originates_from.child) \n"+
 			"WHERE originates_from.parent=? \n");
 			pstmt.setInt(1,objID);
-			table= DBconn.jsonFromPreparedStmt(pstmt);
+			table= DBconn.jsonArrayFromPreparedStmt(pstmt);
 			if (table.length()>0) {
 				jsSample.put("children",table); } 
     	} catch (SQLException e) {
@@ -222,7 +222,7 @@ public class Showsample extends HttpServlet {
 			"JOIN objectnames ON (objectnames.id=originates_from.parent) \n" +
 			"WHERE originates_from.child=? \n");
 			pstmt.setInt(1,objID);
-			table= DBconn.jsonFromPreparedStmt(pstmt);
+			table= DBconn.jsonArrayFromPreparedStmt(pstmt);
 			if (table.length()>0) {
 				jsSample.put("ancestors",table); } 
 	    } catch (SQLException e) {
@@ -247,7 +247,7 @@ public class Showsample extends HttpServlet {
 			+"LIMIT 1");
 			pstmt.setInt(1,objID);
 			pstmt.setInt(2,objID);
-			table= DBconn.jsonFromPreparedStmt(pstmt);
+			table= DBconn.jsonArrayFromPreparedStmt(pstmt);
 			if (table.length()>0) {
 				jsSample.put("previous",table.get(0)); }
 	    } catch (SQLException e) {
@@ -272,7 +272,7 @@ public class Showsample extends HttpServlet {
     		+"LIMIT 1 \n");
 			pstmt.setInt(1,objID);
 			pstmt.setInt(2,objID); 
-			table= DBconn.jsonFromPreparedStmt(pstmt);
+			table= DBconn.jsonArrayFromPreparedStmt(pstmt);
 			if (table.length()>0) {
 				jsSample.put("next",table.get(0)); }	
 		} catch (SQLException e) {

@@ -88,7 +88,7 @@ public class DBconnection  {
   }
   
   
-  public JSONArray jsonFromPreparedStmt(PreparedStatement pStmt) throws Exception{
+  public JSONArray jsonArrayFromPreparedStmt(PreparedStatement pStmt) throws Exception{
 	  JSONArray result = null;
 	  ResultSet queryResult=null;
 	  	  try {
@@ -154,7 +154,7 @@ public class DBconnection  {
   public JSONArray table2json(ResultSet rs) throws Exception {
         JSONArray jsArray = new JSONArray();        
         int rows = rs.getMetaData().getColumnCount();
-        while (rs.next()) {                
+        while (rs.next()) {
             JSONObject obj = new JSONObject();
             for (int i = 1; i <= rows; i++) {
                 obj.put(rs.getMetaData().getColumnLabel(i), rs.getObject(i));

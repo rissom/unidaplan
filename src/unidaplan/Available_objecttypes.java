@@ -39,7 +39,7 @@ import org.json.JSONException;
 		    + "JOIN stringtable b ON (objecttypes.string_key=b.string_key AND b.language=? \n)");
 			pstmt.setString(1, plang);
 			pstmt.setString(2, slang);
-		result=DBconn.jsonFromPreparedStmt(pstmt);
+		result=DBconn.jsonArrayFromPreparedStmt(pstmt);
 		} catch (SQLException e) {
 			System.out.println("Problems with SQL query for sample name");
 			e.printStackTrace();	

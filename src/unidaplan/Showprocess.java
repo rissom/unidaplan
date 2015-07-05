@@ -63,7 +63,7 @@ public class Showprocess extends HttpServlet {
 					"SELECT process_type_id, p_number FROM pnumbers \n"
 				  	+"WHERE id=?");
 		pstmt.setInt(1, processID);
-		JSONArray table= DBconn.jsonFromPreparedStmt(pstmt);
+		JSONArray table= DBconn.jsonArrayFromPreparedStmt(pstmt);
 		jsProcess=table.getJSONObject(0);
 		processTypeID=jsProcess.getInt("process_type_id");
 	} catch (SQLException e) {
@@ -89,7 +89,7 @@ public class Showprocess extends HttpServlet {
 	   pstmt.setString(1, plang);
 	   pstmt.setString(2, slang);
 	   pstmt.setInt(3, processID);
-	   JSONArray table= DBconn.jsonFromPreparedStmt(pstmt);
+	   JSONArray table= DBconn.jsonArrayFromPreparedStmt(pstmt);
 	   jsProcess.put("processtype",table.getJSONObject(0).get("processtype")); // no easy way to merge JSON Objects.
 	} catch (SQLException e) {
 		System.out.println("Problems with SQL query");
@@ -110,7 +110,7 @@ public class Showprocess extends HttpServlet {
 		+"WHERE (p_number>? AND process_type_id=?) \n");
 		pstmt.setInt(1,processID);
 		pstmt.setInt(2,processTypeID);
-		JSONArray table= DBconn.jsonFromPreparedStmt(pstmt);
+		JSONArray table= DBconn.jsonArrayFromPreparedStmt(pstmt);
 		if (table.length()>0) {
 		jsProcess.put("next",table.getJSONObject(0)); } 
 	} catch (SQLException e) {
@@ -224,7 +224,7 @@ public class Showprocess extends HttpServlet {
     	pstmt.setString(26,plang);
     	pstmt.setString(27,slang);
     	pstmt.setInt(28,processID);
-		JSONArray table= DBconn.jsonFromPreparedStmt(pstmt);
+		JSONArray table= DBconn.jsonArrayFromPreparedStmt(pstmt);
 		if (table.length()>0) {
 			jsProcess.put("parameters",table); } 
 	} catch (SQLException e) {
