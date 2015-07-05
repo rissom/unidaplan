@@ -4,6 +4,7 @@
     <welcome-file>index.jsp</welcome-file>
     <welcome-file>index.html</welcome-file>
   </welcome-file-list>
+  
   <servlet>
     <description>shows data for a sample</description>
     <display-name>Showsample</display-name>
@@ -14,6 +15,7 @@
     <servlet-name>Showsample</servlet-name>
     <url-pattern>/showsample.json</url-pattern>
   </servlet-mapping>
+  
   <servlet>
     <description>shows samples with a name close to parameter name</description>
     <display-name>Samples by name</display-name>
@@ -24,16 +26,29 @@
     <servlet-name>Samples_by_name</servlet-name>
     <url-pattern>/samples_by_name.json</url-pattern>
   </servlet-mapping>
-  <servlet>
-    <description>shows available object-types</description>
-    <display-name>Available objecttypes</display-name>
-    <servlet-name>Available_objecttypes</servlet-name>
-    <servlet-class>unidaplan.Available_objecttypes</servlet-class>
+  
+    <servlet>
+    <description>shows available process-types</description>
+    <display-name>Available processtypes</display-name>
+    <servlet-name>Available_processtypes</servlet-name>
+    <servlet-class>unidaplan.Available_processtypes</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>Available_objecttypes</servlet-name>
-    <url-pattern>/objecttypes.json</url-pattern>
+    <servlet-name>Available_processtypes</servlet-name>
+    <url-pattern>/processtypes.json</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <description>shows available object-types</description>
+    <display-name>Available sampletypes</display-name>
+    <servlet-name>Available_sampletypes</servlet-name>
+    <servlet-class>unidaplan.Available_sampletypes</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Available_sampletypes</servlet-name>
+    <url-pattern>/sampletypes.json</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
     <description>shows available Experiments</description>
     <display-name>Experiments</display-name>
@@ -45,6 +60,7 @@
     <url-pattern>/experiments.json</url-pattern>
   </servlet-mapping>
   <servlet>
+  
     <description>show process</description>
     <display-name>Process</display-name>
     <servlet-name>Process</servlet-name>

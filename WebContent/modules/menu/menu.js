@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-angular.module('unidaplan').controller('menu', function () {
+function menuf() {
 
   this.status = {
     isopen: false
@@ -14,10 +14,16 @@ angular.module('unidaplan').controller('menu', function () {
 //  };
   
   this.currentPage='sample';
+  
   this.activeSample={'ID':'2'};
   
   this.select=function(selected) {
 	this.currentPage=selected; 
-  };
-});
+  }
+};
+  
+
+
+angular.module('unidaplan').controller('menu',menuf);
+  
 })();

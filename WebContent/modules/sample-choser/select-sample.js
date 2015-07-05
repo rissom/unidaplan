@@ -1,13 +1,16 @@
 (function(){
 
 	
-var sampleChoser = function('$scope', '$modal') {
+function sampleChoser($scope, $modal) {
+	
   this.samplenames = ['2224', '2231', '1221'];
+  
   this.stype = 'Solarzelle';
+  
   this.open = function (size) {
     var modalInstance = $modal.open({
       animation: false,   // animations suck!
-      templateUrl: 'view/sample-choser.html',
+      templateUrl: 'modules/sample-choser/sample-choser.html',
       controller: 'ModalInstanceCtrl',
       size: size,
       
@@ -20,16 +23,18 @@ var sampleChoser = function('$scope', '$modal') {
       	return $scope.stype;
   		}}]            
     });
-    modalInstance.result.then(function (selectedItem) {
-      $scope.selected = selectedItem;
-    }, function () {
-    });
-  };
+    modalInstance.result.then(
+    		function (selectedItem) {
+    			$scope.selected = selectedItem;
+    		}
+    		,function () {
+    			console.log("error loading samples")
+    		});
+  }
 }; 
-
 	
-angular.module('unidaplan')
-.controller('SampleChoserCtrl', ['$scope', '$modal', sampleChoser]); 
+angular.module('unidaplan').controller('SampleChoserCtrl', ['$scope', '$modal', sampleChoser]); 
+
 
 angular.module('unidaplan').controller('ModalInstanceCtrl', function ($scope, $modalInstance, samplenames, stype) {
 
@@ -43,7 +48,7 @@ angular.module('unidaplan').controller('ModalInstanceCtrl', function ($scope, $m
   };
 
   $scope.cancel = function () {
-    $modalInstance.dismiss('cancel');
+    $modalInstance.dismiss('abbrechen');
   };
 });
 
