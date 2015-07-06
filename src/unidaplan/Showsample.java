@@ -16,23 +16,20 @@ import org.json.JSONObject;
 
 public class Showsample extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static JSONArray result;
 	private static PreparedStatement pstmt;
 	private static JSONArray table;
-
 
 
 @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
+ 	ArrayList<String> stringkeys = new ArrayList<String>(); 
     response.setContentType("application/json");
     request.setCharacterEncoding("utf-8");
     response.setCharacterEncoding("utf-8");
     PrintWriter out = response.getWriter();
  	DBconnection DBconn=new DBconnection();
     DBconn.startDB();
-	String plang="de"; // primary language = Deutsch
-	String slang="en"; // secondary language = english
 	int objID=1;      // variable initialisation
 	int typeid=1;
 	JSONObject jsSample=new JSONObject(); // variable initialisation
@@ -48,16 +45,22 @@ public class Showsample extends HttpServlet {
     // fetch name and type of the object from the database (objectnames is a view)
     try{
 		pstmt= DBconn.conn.prepareStatement( 	
-				"SELECT name, type, typeid FROM objectnames WHERE id=?");
+				"SELECT name, typeid FROM objectnames WHERE id=?");
 		pstmt.setInt(1,objID);
 		jsSample= DBconn.jsonObjectFromPreparedStmt(pstmt);
-		typeid=jsSample.getInt("typeid");
+		if (jsSample.length()>0) {
+			typeid=jsSample.getInt("typeid");
+			pstmt= DBconn.conn.prepareStatement( 	
+			"SELECT string_key FROM objecttypes WHERE id=?");
+			pstmt.setInt(1,typeid);
+			int stringkey= DBconn.jsonObjectFromPreparedStmt(pstmt).getInt("string_key");
+			stringkeys.add(Integer.toString(stringkey));
+			jsSample.put("typestringkey", stringkey);
+		}
 	} catch (SQLException e) {
 		System.err.println("Showsample: Problems with SQL query for sample name");
-		e.printStackTrace();	
 	} catch (JSONException e) {
 		System.err.println("Showsample: JSON Problem while getting sample name");
-		e.printStackTrace();
 	} catch (Exception e2) {
 		System.err.println("Showsample: Strange Problem while getting sample name");
 		e2.printStackTrace();
@@ -68,16 +71,15 @@ public class Showsample extends HttpServlet {
     if (jsSample.length()==0) {
     	try {
 			jsSample.put("error", "sample not found");
+		    System.err.println("sample not found");
+		    response.sendError(HttpServletResponse.SC_NOT_FOUND);  // 404 Error
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		    System.err.println("Showsample: Strange JSON-Error");
 		}
     }
     else {
-    
 	try {
 		JSONArray parameters=new JSONArray();  
-	 	ArrayList<String> stringkeys = new ArrayList<String>(); 
 
 		pstmt= DBconn.conn.prepareStatement( 	
 		    "SELECT ot_parameters.id, parametergroup, compulsory, ot_parameters.pos,"
@@ -99,18 +101,6 @@ public class Showsample extends HttpServlet {
 	      		  JSONObject tempObj=(JSONObject) parameters.get(i);
 	      		  stringkeys.add(Integer.toString(tempObj.getInt("stringkeyname")));
 	      	  }
-	         String query="SELECT id,string_key,language,value FROM Stringtable WHERE string_key=ANY('{";
-	          	
-	         StringBuilder buff = new StringBuilder(); // join numbers with commas
-	         String sep = "";
-	         for (String str : stringkeys) {
-	          	    buff.append(sep);
-	          	    buff.append(str);
-	          	    sep = ",";
-	         }
-	         query+= buff.toString() + "}'::int[])";
-	         JSONArray theStrings=DBconn.jsonfromquery(query);
-	         jsSample.put("strings", theStrings);
 		}
 	} catch (SQLException e) {
 		System.err.println("Showsample: Problems with SQL query for sample parameters");
@@ -123,6 +113,7 @@ public class Showsample extends HttpServlet {
 		e.printStackTrace();
 	}	
     	
+	
 		// Find all experiment plans (TODO)
     	try {				
 			JSONArray vps = new JSONArray();
@@ -132,54 +123,73 @@ public class Showsample extends HttpServlet {
     	} catch (Exception e){
     		e.printStackTrace();
     	}
+    	
 			
 		// Find all child objects
     	try{
 		    pstmt=  DBconn.conn.prepareStatement( 	
-			"SELECT originates_from.id, objectnames.id, objectnames.name, objectnames.type \n"+
+			"SELECT originates_from.id, objectnames.id, objectnames.name, objectnames.typeid \n"+
 			"FROM originates_from \n"+
 			"JOIN objectnames ON (objectnames.id=originates_from.child) \n"+
 			"WHERE originates_from.parent=? \n");
 			pstmt.setInt(1,objID);
 			table= DBconn.jsonArrayFromPreparedStmt(pstmt);
 			if (table.length()>0) {
-				jsSample.put("children",table); } 
-    	} catch (SQLException e) {
-    		System.err.println("Showsample: Problems with SQL query for sample children");
-    		e.printStackTrace();
-    	} catch (Exception e2) {
-				e2.printStackTrace();
-		}
+				for(int i=0;i<table.length();i++) {
+					pstmt= DBconn.conn.prepareStatement( 	
+					"SELECT string_key FROM objecttypes WHERE id=?");
+					pstmt.setInt(1,((JSONObject)table.get(i)).getInt("typeid"));
+					int stringkey= DBconn.jsonObjectFromPreparedStmt(pstmt).getInt("string_key");
+					((JSONObject)table.get(i)).put("typestringkey", stringkey);
+					stringkeys.add(Integer.toString(stringkey));
+				} 
+				jsSample.put("children",table); 
+			}
+	    } catch (SQLException e) {
+    		System.err.println("Showsample: Problems with SQL query for child samples");
+		} catch (JSONException e2) {
+			System.err.println("Showsample: JSON Problem while getting child samples");
+		} catch (Exception e3) {
+			System.err.println("Showsample: Strange Problem while getting child samples");
+    	}
+    	
     	
 		// find all parent objects
 		try{    
 		    pstmt=  DBconn.conn.prepareStatement( 	
-			"SELECT originates_from.id, objectnames.id, objectnames.name, objectnames.type \n" +
+			"SELECT originates_from.id, objectnames.id, objectnames.name, objectnames.typeid \n" +
 			"FROM originates_from \n" +
 			"JOIN objectnames ON (objectnames.id=originates_from.parent) \n" +
 			"WHERE originates_from.child=? \n");
 			pstmt.setInt(1,objID);
 			table= DBconn.jsonArrayFromPreparedStmt(pstmt);
 			if (table.length()>0) {
-				jsSample.put("ancestors",table); } 
+				for(int i=0;i<table.length();i++) {
+					pstmt= DBconn.conn.prepareStatement( 	
+					"SELECT string_key FROM objecttypes WHERE id=?");
+					pstmt.setInt(1,((JSONObject)table.get(i)).getInt("typeid"));
+					int stringkey= DBconn.jsonObjectFromPreparedStmt(pstmt).getInt("string_key");
+					stringkeys.add(Integer.toString(stringkey));
+					((JSONObject)table.get(i)).put("typestringkey", stringkey);
+				}
+			jsSample.put("ancestors",table);	
+			}
 	    } catch (SQLException e) {
     		System.err.println("Showsample: Problems with SQL query for parent samples");
-    		e.printStackTrace();	
 		} catch (JSONException e2) {
 			System.err.println("Showsample: JSON Problem while getting parent samples");
-			e2.printStackTrace();
 		} catch (Exception e3) {
 			System.err.println("Showsample: Strange Problem while getting parent samples");
-    		e3.printStackTrace();
     	}
+		
 		
 		// find the previous sample
 		try{
 		    pstmt=  DBconn.conn.prepareStatement( 	
-    		"SELECT  objectnames.id, objectnames.name, objectnames.type \n"
+    		"SELECT  objectnames.id, objectnames.name, objectnames.typeid \n"
 			+"FROM objectnames \n"
 			+"WHERE ((objectnames.name < (SELECT objectnames.name FROM objectnames WHERE objectnames.id=?)) \n"
-			+"AND objectnames.type=(SELECT objectnames.type FROM objectnames WHERE objectnames.id=?)) \n"
+			+"AND objectnames.typeid=(SELECT objectnames.typeid FROM objectnames WHERE objectnames.id=?)) \n"
 			+"ORDER BY objectnames.name DESC \n"
 			+"LIMIT 1");
 			pstmt.setInt(1,objID);
@@ -189,22 +199,20 @@ public class Showsample extends HttpServlet {
 				jsSample.put("previous",table.get(0)); }
 	    } catch (SQLException e) {
     		System.err.println("Showsample: Problems with SQL query for previous sample");
-    		e.printStackTrace();	
 		} catch (JSONException e2) {
 			System.err.println("Showsample: JSON Problem while getting previous sample");
-			e2.printStackTrace();
 		} catch (Exception e3) {
 			System.err.println("Showsample: Strange Problem while getting previous sample");
-    		e3.printStackTrace();
     	}
+		
 		
 		// find next sample	
 		try{
 		    pstmt=  DBconn.conn.prepareStatement( 	
-    		"SELECT  objectnames.id, objectnames.name, objectnames.type \n"
+    		"SELECT  objectnames.id, objectnames.name, objectnames.typeid \n"
 			+"FROM objectnames \n"
 			+"WHERE ((objectnames.name > (SELECT objectnames.name FROM objectnames WHERE objectnames.id=?)) \n"
-			+"AND objectnames.type=(SELECT objectnames.type FROM objectnames WHERE objectnames.id=?)) \n"
+			+"AND objectnames.typeid=(SELECT objectnames.typeid FROM objectnames WHERE objectnames.id=?)) \n"
 			+"ORDER BY objectnames.name \n"	
     		+"LIMIT 1 \n");
 			pstmt.setInt(1,objID);
@@ -213,17 +221,35 @@ public class Showsample extends HttpServlet {
 			if (table.length()>0) {
 				jsSample.put("next",table.get(0)); }	
 		} catch (SQLException e) {
-    		System.err.println("Showsample: Problems with SQL query for sample children");
-    		e.printStackTrace();	
+    		System.err.println("Showsample: Problems with SQL query for next sample");
     	} catch (JSONException e) {
 			System.err.println("Showsample: JSON Problem while getting next sample");
-			e.printStackTrace();
     	} catch (Exception e2) {
 			System.err.println("Showsample: Strange Problem while getting next sample");
-    		e2.printStackTrace();
     	}
 
-    	
+		
+		// get the strings
+    	try{
+	        String query="SELECT id,string_key,language,value FROM Stringtable WHERE string_key=ANY('{";
+	      	
+	        StringBuilder buff = new StringBuilder(); // join numbers with commas
+	        String sep = "";
+	        for (String str : stringkeys) {
+         	    buff.append(sep);
+         	    buff.append(str);
+         	    sep = ",";
+	        }
+	        query+= buff.toString() + "}'::int[])";
+	        JSONArray theStrings=DBconn.jsonfromquery(query);
+	        jsSample.put("strings", theStrings);
+		} catch (SQLException e) {
+    		System.err.println("Showsample: Problems with SQL query for Stringkeys");
+    	} catch (JSONException e) {
+			System.err.println("Showsample: JSON Problem while getting Stringkeys");
+    	} catch (Exception e2) {
+			System.err.println("Showsample: Strange Problem while getting Stringkeys");
+    	}
     }
 	out.println(jsSample.toString());
 	DBconn.closeDB();

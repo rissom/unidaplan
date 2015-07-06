@@ -2,13 +2,22 @@
 	ng-show="menuCtrl.currentPage =='sample'">
 	<p ng-init="ssc.loadData(1)"></p>
 	<div ng-hide="sample.error">
-		<h3>{{ssc.sample.type}} {{ssc.sample.name}}</h3>
+	
+	
+		<h3>{{ssc.sample.trtype}} {{ssc.sample.name}}</h3>
+		
+		
+		
+		
 		<h4>Basisparameter</h4>
 		<table class="table">
-			<tr ng-repeat="parameter in ssc.sample.parameters">
-				<td ng-click="ssc.articleClicked(parameter)">{{parameter.trname}} :</td>
+			<tr ng-repeat="parameter in ssc.sample.parameters" 
+			ng-dblclick="parameter.editing=true; newValue=parameter.value">
+				<td>
+				    {{parameter.trname}} :
+				</td>
 				<td >
-					<span ng-hide="parameter.editing" ng-click="parameter.editing=true; newValue=parameter.value">{{parameter.value}}
+					<span ng-hide="parameter.editing">{{parameter.value}}
 					</span>
 					<input 						   
 						ng-keyup="ssc.keyUp($event.keyCode,newValue,parameter)"
@@ -31,26 +40,31 @@
 		<br /> <br />
 
 
+
 		<h4>Objektbaum</h4>
 		<table>
 			<tr>
 				<td>
 					<div ng-show="ssc.sample.ancestors.length>0">Originates from:</div> 
 						<span ng-repeat="bsample in ssc.sample.ancestors"> 
-							<samplebutton buttonsample="bsample"  action="ssc.loadData(bsample.id)"></samplebutton>
-						</span> <!-- 	<div ng-show="sample.ancestors.length>0"><br /></div>  -->
+							<samplebutton buttonsample="bsample"  
+										  action="ssc.loadData(bsample.id)">
+							</samplebutton>
+						</span> 
 				</td>
 				<td width=20mm></td>
 				<td>
 					<div ng-show="ssc.sample.children.length>0">Is ancestor of:</div> 
 						<span ng-repeat="bsample in ssc.sample.children">
-							 <samplebutton buttonsample="bsample" action="ssc.loadData(bsample.id)"></samplebutton>
+							 <samplebutton buttonsample="bsample" 
+							 			   action="ssc.loadData(bsample.id)">
+							 </samplebutton>
 						</span>
 				</td>
-				<!--   <div ng-show="sample.ancestors.length>0"><br /></div>  -->
 			</tr>
 		</table>
 		<br />
+
 
 
 		<h4>Planung</h4>
@@ -63,31 +77,36 @@
 
 
 
-		<table>
+		<table> <!-- Buttonbar: previous/delete/next -->
 			<tr>
 				<td align="center">
-			<!--		<div ng-hide="true">{{buttonsample=ssc.sample.previous}}</div>   superdreckig -->
 					<span ng-show="ssc.sample.previous">&#x25c0; previous <br /> 
-					<samplebutton buttonsample="ssc.sample.previous" action="ssc.loadData(ssc.sample.previous.id)"></samplebutton></span>
+						<samplebutton buttonsample="ssc.sample.previous" 
+									  action="ssc.loadData(ssc.sample.previous.id)">
+						</samplebutton>
+					</span>
 				</td>
 				<td align="center">&nbsp;<br /> &nbsp;
 					<button type="button" class="btn btn-danger">Objekt
 						löschen</button>
 				</td>
-				<td align="center">
-				
-				<!-- 	<div ng-hide="true">{{buttonsample=ssc.sample.next}}</div>  superdreckig -->
+				<td align="center">	
 					<span ng-show="ssc.sample.next"> &nbsp; next &nbsp; &#9654;<br />
 						&nbsp;
-						<samplebutton buttonsample="ssc.sample.next" action="ssc.loadData(ssc.sample.next.id)"></samplebutton></span>
+						<samplebutton buttonsample="ssc.sample.next" 
+									  action="ssc.loadData(ssc.sample.next.id)">
+						</samplebutton>
+					</span>
 				</td>
 			</tr>
 		</table>
 	</div>
+	
 	<div ng-show=sample.error>
 		<!-- Fehler beim Holen des Samples aufgetreten -->
 		{{ssc.sample.error}}
 	</div>
+	
 	<br />
 	<br />
 	<br />

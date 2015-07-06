@@ -1,10 +1,12 @@
 (function(){
 'use strict';
 
-function samplecontroller(restfactory) {
+function samplecontroller(restfactory,lang) {
 	
 	
 	this.sample = {};
+	
+//	this.lang = 
 	
 	
 	this.keyUp = function(keyCode,newValue,parameter) {
@@ -28,14 +30,35 @@ function samplecontroller(restfactory) {
 	}
 	
 
-	this.translate = function(lang) {
-		var strings=this.sample.strings
+	this.translate = function() {
+		var sample=this.sample
+		var strings=sample.strings;
+		var typestringkey=this.sample.typestringkey;
+		angular.forEach(strings, function(translation) {
+			if (typestringkey==translation.string_key && translation.language==lang){
+				sample.trtype=translation.value;
+				if (sample.next) { sample.next.trtypename=translation.value; }
+				if (sample.previous) { sample.previous.trtypename=translation.value; }
+			}
+		})
 		angular.forEach(this.sample.parameters, function(parameter) {
 			angular.forEach(strings, function(translation) {
-				if (parameter.stringkeyname==translation.string_key && translation.language=="de")
+				if (parameter.stringkeyname==translation.string_key && translation.language==lang)
 					{parameter.trname=translation.value;}
 			})
 		})
+		angular.forEach(this.sample.children, function(child) {
+			angular.forEach(strings, function(translation) {
+				if (child.typestringkey==translation.string_key && translation.language==lang)
+					{child.trtypename=translation.value;}
+			})
+		})	
+		angular.forEach(this.sample.ancestors, function(ancestor) {
+			angular.forEach(strings, function(translation) {
+				if (ancestor.typestringkey==translation.string_key && translation.language==lang)
+					{ancestor.trtypename=translation.value;}
+			})
+		})	
 	}
 
 	
@@ -72,6 +95,6 @@ function samplecontroller(restfactory) {
 }  
 
 
-angular.module('unidaplan').controller('samplecontroller',['restfactory',samplecontroller]);
+angular.module('unidaplan').controller('samplecontroller',['restfactory','lang',samplecontroller]);
 
 })();

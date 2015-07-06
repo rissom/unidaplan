@@ -5,6 +5,9 @@
 // Declare app level module which depends on filters, and services
 angular.module('unidaplan',['ui.bootstrap'])
 	
+
+.value ('lang',"de")
+
 .config(function() {
 	// Put configuration code here
 })

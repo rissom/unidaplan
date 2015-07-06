@@ -1,0 +1,27 @@
+{stringkeys : [
+				{key: 1, lang:de , value:'länge'},
+			  	{key: 1, lang:en , value:'length'},
+			  	{key: 2, lang:de , value:'höhe'},
+			  	{key: 2, lang:en , value:'height'},
+			  ]
+}
+
+{stringkeys : {de : [{key: 1, value:'länge'},
+			  		 {key: 2, value:'höhe'}]
+			   en : [{key: 2, value:'height'},
+			   	 	 {key: 1, value:'length'}]
+}
+
+{stringkeys : {
+				{key: 1, entries: [ {lang:de, value:'länge'},
+						  			{lang:en, value:'length'}]
+			  	{key: 2, entries: [ {lang:de, value:'höhe'},
+			  						{lang:en, value:'height'}]
+			  }
+}
+
+{stringkeys : [
+				{"key": 1, "entries": {de:'länge',en:'length'}},
+			  	{"key": 2, "entries": {de:'höhe',en:'height'}}
+			  ]
+}

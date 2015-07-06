@@ -100,7 +100,6 @@ import org.json.JSONObject;
 					   pstmt.setInt(2, pid);
 				   }
 			}
-		  
 		
 			
 		pstmt.executeUpdate();
