@@ -1,13 +1,14 @@
 <div ng-controller="expcontroller as expc" class="container"
 	ng-show="menuCtrl.currentPage=='experiments'">
+	<div ng-init="expc.loadData()"></div>
 
 	<div ng-show="{{expc.number_of_own_experiments()>0}}">
 		<h3>Meine Experimente</h3>
 		<table class="table">
-			<tr ng-repeat="experiment in expc.experiments">
-				<td ng-click="expc.articleClicked(experiment)">{{experiment.id}}
+			<tr ng-repeat="experiment in expc.experiments.experiments|filter:'Thorsten Rissom'">
+				<td>{{experiment.id}}
 				</td>
-				<td>{{experiment.name}}</td>
+				<td>{{experiment.trname}}</td>
 				<td>
 					<button type="button" class="btn btn-danger">loeschen</button>
 				</td>
@@ -16,14 +17,14 @@
 	</div>
 
 	<div
-		ng-show="{{expc.experiments.length-expc.number_of_own_experiments()>0}}">
+		ng-show="{{expc.experiments.experiments.length-expc.number_of_own_experiments()>0}}">
 		<h3>Anderer Leute Experimente</h3>
 		<!--   <tr ngif creator=='Thorsten Rissom'> -->
 		<table class="table">
-			<tr ng-repeat="experiment in expc.experiments">
-				<td ng-if="experiment.creator!='Thorsten Rissom'"
-					ng-click="articleClicked(parameter)">{{exp.id}}</td>
-				<td ng-if="experiment.creator!='Thorsten Rissom'">{{exp.name}}
+			<tr ng-repeat="experiment in expc.experiments.experiments">
+				<td ng-show="experiment.creator!='Thorsten Rissom'"
+					ng-click="articleClicked(parameter)">{{experiment.id}}</td>
+				<td ng-if="experiment.creator!='Thorsten Rissom'">{{experiment.trname}}
 				</td>
 				<td ng-if="experiment.creator!='Thorsten Rissom'"><button
 						type="button" class="btn btn-danger">loeschen</button></td>
