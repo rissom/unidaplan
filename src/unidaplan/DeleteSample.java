@@ -3,6 +3,7 @@ package unidaplan;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -54,40 +55,58 @@ public class DeleteSample extends HttpServlet {
 			System.err.print("Delete Sample: no object ID given!");
 		}
 	 	
+		
 	    try {
 		 	if (objID>0){
-	        pstmt = DBconn.conn.prepareStatement(	
-			"DELETE FROM o_float_data WHERE objectid=?"); 
-			pstmt.setInt(1,objID);
-			pstmt.executeUpdate();
-			pstmt.close();	        
-			pstmt = DBconn.conn.prepareStatement(	
-			"DELETE FROM o_measurement_data WHERE objectid=?"); 
-			pstmt.setInt(1,objID);
-			pstmt.executeUpdate();
-			pstmt.close();
-	        pstmt = DBconn.conn.prepareStatement(	
-			"DELETE FROM o_string_data WHERE objectid=?"); 
-			pstmt.setInt(1,objID);
-			pstmt.executeUpdate();
-			pstmt.close();
-	        pstmt = DBconn.conn.prepareStatement(	
-			"DELETE FROM o_integer_data WHERE objectid=?"); 
-			pstmt.setInt(1,objID);
-			pstmt.executeUpdate();
-			pstmt.close();
-	        pstmt = DBconn.conn.prepareStatement(	
-			"DELETE FROM samples WHERE id=?"); 
-			pstmt.setInt(1,objID);
-			pstmt.executeUpdate();
-			pstmt.close();
-	        pstmt = DBconn.conn.prepareStatement(	
-			"DELETE FROM originates_from WHERE parent=? OR child=?");
-			pstmt.setInt(1,objID);
-			pstmt.setInt(2,objID);
-			pstmt.executeUpdate();
-			pstmt.close();
-		 	}
+		        pstmt = DBconn.conn.prepareStatement(	
+		    	"SELECT processid, objectid FROM objectinprocess "
+		 		+"WHERE objectid=?");
+				pstmt.setInt(1,objID);
+				ResultSet resultset=pstmt.executeQuery();
+				if (!(resultset.next())) {
+					pstmt.close();
+			        pstmt = DBconn.conn.prepareStatement(	
+					"DELETE FROM o_float_data WHERE objectid=?"); 
+					pstmt.setInt(1,objID);
+					pstmt.executeUpdate();
+					pstmt.close();	    
+					
+					pstmt = DBconn.conn.prepareStatement(	
+					"DELETE FROM o_measurement_data WHERE objectid=?"); 
+					pstmt.setInt(1,objID);
+					pstmt.executeUpdate();
+					pstmt.close();
+					
+			        pstmt = DBconn.conn.prepareStatement(	
+					"DELETE FROM o_string_data WHERE objectid=?"); 
+					pstmt.setInt(1,objID);
+					pstmt.executeUpdate();
+					pstmt.close();
+					
+			        pstmt = DBconn.conn.prepareStatement(	
+					"DELETE FROM o_integer_data WHERE objectid=?"); 
+					pstmt.setInt(1,objID);
+					pstmt.executeUpdate();
+					pstmt.close();
+					
+			        pstmt = DBconn.conn.prepareStatement(	
+					"DELETE FROM originates_from WHERE parent=? OR child=?");
+					pstmt.setInt(1,objID);
+					pstmt.setInt(2,objID);
+					pstmt.executeUpdate();
+					pstmt.close();
+					
+					// objectinprocess
+			        pstmt = DBconn.conn.prepareStatement(	
+					"DELETE FROM samples WHERE id=?"); 
+					pstmt.setInt(1,objID);
+					pstmt.executeUpdate();
+					pstmt.close();					
+				} else {
+					pstmt.close();
+					out.println("{\"error\":\"processes exist}\"");
+					}
+			}
 	    } catch (SQLException eS) {
 			System.err.println("DeleteSample: SQL Error");
 			eS.printStackTrace();

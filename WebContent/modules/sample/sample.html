@@ -70,7 +70,7 @@
 		<h4>Planung</h4>
 		<table>
 			<tr ng-repeat="plan in ssc.sample.plans">
-				<td>Versuchsplan {{plan}}</td>
+				<td>Experiment no. {{plan.exp_id}}, "{{plan.trname}}"</td>
 			</tr>
 		</table>
 		<br />
@@ -87,7 +87,8 @@
 					</span>
 				</td>
 				<td align="center">&nbsp;<br /> &nbsp;
-					<button type="button" class="btn btn-danger">Objekt
+					<button type="button" class="btn btn-danger"
+							ng-click="ssc.deleteSample()">Objekt
 						löschen</button>
 				</td>
 				<td align="center">	

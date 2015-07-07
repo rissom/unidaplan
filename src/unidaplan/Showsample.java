@@ -45,7 +45,7 @@ public class Showsample extends HttpServlet {
     // fetch name and type of the object from the database (samplenames is a view)
     try{
 		pstmt= DBconn.conn.prepareStatement( 	
-				"SELECT name, typeid FROM samplenames WHERE id=?");
+				"SELECT name, typeid, id FROM samplenames WHERE id=?");
 		pstmt.setInt(1,objID);
 		jsSample= DBconn.jsonObjectFromPreparedStmt(pstmt);
 		if (jsSample.length()>0) {
@@ -115,11 +115,19 @@ public class Showsample extends HttpServlet {
     	
 	
 		// Find all experiment plans (TODO)
-    	try {				
-			JSONArray vps = new JSONArray();
-			vps.put (123);
-			vps.put (456);
-			jsSample.put("plans",vps);
+    	try {pstmt= DBconn.conn.prepareStatement( 
+    		"SELECT ep.id as exp_id, name, creator, status FROM exp_plan ep "
+    		+"JOIN expp_samples es ON es.expp_ID=ep.id "
+    		+"WHERE sample=?");
+			pstmt.setInt(1,objID);
+			JSONArray eps = DBconn.jsonArrayFromPreparedStmt(pstmt);
+			pstmt.close();
+			for (int i=0; i<eps.length();i++) {
+	      		  JSONObject tempObj=(JSONObject) eps.get(i);
+	      		  stringkeys.add(Integer.toString(tempObj.getInt("name")));
+	      	  }
+			jsSample.put("plans",eps);
+			
     	} catch (Exception e){
     		e.printStackTrace();
     	}

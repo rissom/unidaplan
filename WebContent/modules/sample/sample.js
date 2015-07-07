@@ -29,6 +29,23 @@ function samplecontroller(restfactory,lang) {
 		}
 	}
 	
+	
+	
+	this.deleteSample = function()
+	{  
+		var id=this.sample.id;
+		var res = restfactory.GET("delete-sample?id="+id);
+		res.then(function(data, status, headers, config) {   // success
+						// gehe zur Experimentseite			
+				 },
+					function(data, status, headers, config) { 	 // fail
+				    console.log("Error deleting Sample");
+					console.log("Sample id: ",id);
+				 }
+		);
+	}
+		
+	
 
 	this.translate = function() {
 		var sample=this.sample
@@ -57,6 +74,12 @@ function samplecontroller(restfactory,lang) {
 			angular.forEach(strings, function(translation) {
 				if (ancestor.typestringkey==translation.string_key && translation.language==lang)
 					{ancestor.trtypename=translation.value;}
+			})
+		})	
+		angular.forEach(this.sample.plans, function(plan) {
+			angular.forEach(strings, function(translation) {
+				if (plan.name==translation.string_key && translation.language==lang)
+					{plan.trname=translation.value;}
 			})
 		})	
 	}
