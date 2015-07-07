@@ -65,14 +65,23 @@
     <url-pattern>/process.json</url-pattern>
   </servlet-mapping>
   <servlet>
-    <description>Save sample parameter</description>
-    <display-name>SaveSampleParameter</display-name>
-    <servlet-name>SaveSampleParameter</servlet-name>
-    <servlet-class>unidaplan.SaveSampleParameter</servlet-class>
+    <description>Update sample parameter</description>
+    <display-name>UpdateSampleParameter</display-name>
+    <servlet-name>UpdateSampleParameter</servlet-name>
+    <servlet-class>unidaplan.UpdateSampleParameter</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>SaveSampleParameter</servlet-name>
-    <url-pattern>/savesampleparameter.json</url-pattern>
+    <servlet-name>UpdateSampleParameter</servlet-name>
+    <url-pattern>/update-sample-parameter.json</url-pattern>
   </servlet-mapping>
-  
+    <servlet>
+    <description>Add sample parameter</description>
+    <display-name>AddSampleParameter</display-name>
+    <servlet-name>AddSampleParameter</servlet-name>
+    <servlet-class>unidaplan.AddSampleParameter</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddSampleParameter</servlet-name>
+    <url-pattern>/add-sample-parameter.json</url-pattern>
+  </servlet-mapping>
 </web-app>

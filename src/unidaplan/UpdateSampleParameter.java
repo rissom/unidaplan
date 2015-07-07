@@ -13,7 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-	public class SaveSampleParameter extends HttpServlet {
+	public class UpdateSampleParameter extends HttpServlet {
 		private static final long serialVersionUID = 1L;
 		private static JSONArray result;
 

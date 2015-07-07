@@ -14,15 +14,27 @@ function samplecontroller(restfactory,lang) {
 			parameter.editing=false; 
 			var oldValue=parameter.value;
 			parameter.value=newValue;
-			var res = restfactory.POST('savesampleparameter.json',parameter);
-			res.then(function(data, status, headers, config) {
-					 },
-					 function(data, status, headers, config) {
-						parameter.value=oldValue;
-						console.log('verkackt');
-						console.log(data);
-					 }
-					);
+			 if (parameter.pid) {
+				var res = restfactory.POST('update-sample-parameter.json',parameter);
+				res.then(function(data, status, headers, config) {
+						 },
+						 function(data, status, headers, config) {
+							parameter.value=oldValue;
+							console.log('verkackt');
+							console.log(data);
+						 }
+						);
+			 } else {
+				var res = restfactory.POST('add-sample-parameter.json?sampleid='+this.sample.id,parameter);
+					res.then(function(data, status, headers, config) {
+							 },
+							 function(data, status, headers, config) {
+								parameter.value=oldValue;
+								console.log('verkackt');
+								console.log(data);
+							 }
+							);
+			 }
 		}
 		if (keyCode===27) {
 			parameter.editing=false;			
