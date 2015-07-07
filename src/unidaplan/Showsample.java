@@ -39,13 +39,13 @@ public class Showsample extends HttpServlet {
 		 objID=Integer.parseInt(request.getParameter("id")); }
 	catch (Exception e1) {
 		objID=1;
-		System.err.print("Showsample: no object ID given!");
+		System.err.print("Showsample: no sample ID given!");
 	}
 	   
-    // fetch name and type of the object from the database (objectnames is a view)
+    // fetch name and type of the object from the database (samplenames is a view)
     try{
 		pstmt= DBconn.conn.prepareStatement( 	
-				"SELECT name, typeid FROM objectnames WHERE id=?");
+				"SELECT name, typeid FROM samplenames WHERE id=?");
 		pstmt.setInt(1,objID);
 		jsSample= DBconn.jsonObjectFromPreparedStmt(pstmt);
 		if (jsSample.length()>0) {
@@ -81,7 +81,7 @@ public class Showsample extends HttpServlet {
 	try {
 		JSONArray parameters=new JSONArray();  
 
-		pstmt= DBconn.conn.prepareStatement( 	
+		pstmt= DBconn.conn.prepareStatement( 	 //get parameters
 		    "SELECT ot_parameters.id, parametergroup, compulsory, ot_parameters.pos,"
 		   +"stringkeyname,  pid, value, ot_parametergrps.id AS pgrpid, "
 		   +"ot_parametergrps.stringkey as parametergrp_key, st.description " 
@@ -128,9 +128,9 @@ public class Showsample extends HttpServlet {
 		// Find all child objects
     	try{
 		    pstmt=  DBconn.conn.prepareStatement( 	
-			"SELECT originates_from.id, objectnames.id, objectnames.name, objectnames.typeid \n"+
+			"SELECT originates_from.id, samplenames.id, samplenames.name, samplenames.typeid \n"+
 			"FROM originates_from \n"+
-			"JOIN objectnames ON (objectnames.id=originates_from.child) \n"+
+			"JOIN samplenames ON (samplenames.id=originates_from.child) \n"+
 			"WHERE originates_from.parent=? \n");
 			pstmt.setInt(1,objID);
 			table= DBconn.jsonArrayFromPreparedStmt(pstmt);
@@ -157,9 +157,9 @@ public class Showsample extends HttpServlet {
 		// find all parent objects
 		try{    
 		    pstmt=  DBconn.conn.prepareStatement( 	
-			"SELECT originates_from.id, objectnames.id, objectnames.name, objectnames.typeid \n" +
+			"SELECT originates_from.id, samplenames.id, samplenames.name, samplenames.typeid \n" +
 			"FROM originates_from \n" +
-			"JOIN objectnames ON (objectnames.id=originates_from.parent) \n" +
+			"JOIN samplenames ON (samplenames.id=originates_from.parent) \n" +
 			"WHERE originates_from.child=? \n");
 			pstmt.setInt(1,objID);
 			table= DBconn.jsonArrayFromPreparedStmt(pstmt);
@@ -186,11 +186,11 @@ public class Showsample extends HttpServlet {
 		// find the previous sample
 		try{
 		    pstmt=  DBconn.conn.prepareStatement( 	
-    		"SELECT  objectnames.id, objectnames.name, objectnames.typeid \n"
-			+"FROM objectnames \n"
-			+"WHERE ((objectnames.name < (SELECT objectnames.name FROM objectnames WHERE objectnames.id=?)) \n"
-			+"AND objectnames.typeid=(SELECT objectnames.typeid FROM objectnames WHERE objectnames.id=?)) \n"
-			+"ORDER BY objectnames.name DESC \n"
+    		"SELECT  samplenames.id, samplenames.name, samplenames.typeid \n"
+			+"FROM samplenames \n"
+			+"WHERE ((samplenames.name < (SELECT samplenames.name FROM samplenames WHERE samplenames.id=?)) \n"
+			+"AND samplenames.typeid=(SELECT samplenames.typeid FROM samplenames WHERE samplenames.id=?)) \n"
+			+"ORDER BY samplenames.name DESC \n"
 			+"LIMIT 1");
 			pstmt.setInt(1,objID);
 			pstmt.setInt(2,objID);
@@ -209,11 +209,11 @@ public class Showsample extends HttpServlet {
 		// find next sample	
 		try{
 		    pstmt=  DBconn.conn.prepareStatement( 	
-    		"SELECT  objectnames.id, objectnames.name, objectnames.typeid \n"
-			+"FROM objectnames \n"
-			+"WHERE ((objectnames.name > (SELECT objectnames.name FROM objectnames WHERE objectnames.id=?)) \n"
-			+"AND objectnames.typeid=(SELECT objectnames.typeid FROM objectnames WHERE objectnames.id=?)) \n"
-			+"ORDER BY objectnames.name \n"	
+    		"SELECT  samplenames.id, samplenames.name, samplenames.typeid \n"
+			+"FROM samplenames \n"
+			+"WHERE ((samplenames.name > (SELECT samplenames.name FROM samplenames WHERE samplenames.id=?)) \n"
+			+"AND samplenames.typeid=(SELECT samplenames.typeid FROM samplenames WHERE samplenames.id=?)) \n"
+			+"ORDER BY samplenames.name \n"	
     		+"LIMIT 1 \n");
 			pstmt.setInt(1,objID);
 			pstmt.setInt(2,objID); 

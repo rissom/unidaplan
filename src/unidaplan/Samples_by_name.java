@@ -47,9 +47,9 @@ public class Samples_by_name extends HttpServlet {
 		
 	    try {
 	       pstmt = DBconn.conn.prepareStatement(	
-			"SELECT  objectnames.id, objectnames.name, objectnames.type " 
-			+"FROM objectnames "
-			+"WHERE objectnames.name LIKE ? "
+			"SELECT  samplenames.id, samplenames.name, samplenames.typeid " 
+			+"FROM samplenames "
+			+"WHERE samplenames.name LIKE ? "
 			+"AND objectnames.typeID=? "
 			+"ORDER BY objectnames.name "
 			+"LIMIT 20 ");
