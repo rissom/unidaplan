@@ -3,9 +3,52 @@
 
 
 // Declare app level module which depends on filters, and services
-angular.module('unidaplan',['ui.bootstrap'])
-	
+angular.module('unidaplan',['ui.bootstrap','ui.router'])
 
+.config(function($stateProvider, $urlRouterProvider) {
+    
+    $urlRouterProvider.otherwise('/home');
+    
+    $stateProvider
+        
+        // UI-Router STATES AND NESTED VIEWS ========================================
+        .state('home', {
+            url: '/home',
+            templateUrl: 'modules/experiments/experiments.html'
+        })
+        
+        .state('sample', {
+        url: '/sample',
+        templateUrl: 'modules/sample/sample.html'
+        })
+        
+        .state('process', {
+        url: '/process',
+        templateUrl: 'modules/process/process.html'
+        })
+        
+        .state('experiments', {
+        url: '/experiments',
+        templateUrl: 'modules/experiments/experiments.html'
+        })
+        
+        .state('about', {
+        url: '/about',
+        templateUrl: 'modules/help/about.html'
+        })
+    
+    	.state('help', {
+        url: '/help',
+        templateUrl: 'modules/help/help.html'
+        })
+    
+    	.state('error', {
+    		url: '/error',
+    		template: "<h1>ERROR!!!</h1>"
+    	})
+    })
+        
+	
 .value ('lang',"de")
 
 .config(function() {
@@ -78,15 +121,6 @@ angular.module('unidaplan',['ui.bootstrap'])
     		}
     	}
     };
-  
-    /*
-     * 
-     * 
-     * 
-     * 
-     * 
-     */
-        
 
     
 })

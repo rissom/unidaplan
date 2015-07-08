@@ -12,9 +12,7 @@ function menuf() {
 //    $event.stopPropagation();
 //    $scope.status.isopen = !$scope.status.isopen;
 //  };
-  
-  this.currentPage='sample';
-  
+    
   this.activeSample={'ID':'2'};
   
   this.select=function(selected) {
