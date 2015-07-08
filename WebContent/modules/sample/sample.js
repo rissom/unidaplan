@@ -6,7 +6,30 @@ function samplecontroller(restfactory,lang) {
 	
 	this.sample = {};
 	
-//	this.lang = 
+	this.sample.parameters = [];
+	
+	this.sample.titleparameters = ["Wurst","Brot"];
+
+	this.tKeyUp = function(keyCode,newValue,parameter) {
+		if (keyCode===13) {
+			parameter.editing=false; 
+			var oldValue=parameter.value;
+			var res = restfactory.POST('update-sample-parameter.json',parameter);
+				res.then(
+					function(data, status, headers, config) {
+						parameter.value=newValue;
+					},
+					function(data, status, headers, config) {
+						parameter.value=oldValue;
+						console.log('verkackt');
+						console.log(data);
+					}
+				);
+		}
+		if (keyCode===27) {
+			parameter.editing=false;			
+		}
+	}
 	
 	
 	this.keyUp = function(keyCode,newValue,parameter) {
@@ -101,7 +124,20 @@ function samplecontroller(restfactory,lang) {
 		var promise = restfactory.GET("showsample.json?id="+ID);
 		var thisSampleController = this;
 	    promise.then(function(rest) {
-	    	thisSampleController.sample = rest.data;
+	    	var temp = rest.data;
+	    	temp.titleparameters=[];
+	    	var tempParameters=[];
+			angular.forEach(temp.parameters, 
+				function(parameter) {
+					if (parameter.id_field) {
+						temp.titleparameters.push(parameter);						
+					} else {
+						tempParameters.push(parameter);
+					}
+				}
+			)
+			temp.parameters=tempParameters;
+			thisSampleController.sample = temp;
 	    	thisSampleController.translate();
 	    }, function(rest) {
 	    	console.log("ERROR");

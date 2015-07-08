@@ -78,20 +78,24 @@ public class Showsample extends HttpServlet {
 		}
     }
     else {
+    	
+    	
 	try {
-		JSONArray parameters=new JSONArray();  
-
-		pstmt= DBconn.conn.prepareStatement( 	 //get parameters
+		JSONArray parameters=new JSONArray();
+		
+		//get parameters
+		pstmt= DBconn.conn.prepareStatement( 	 
 		   "SELECT ot_parameters.id, parametergroup, compulsory, ot_parameters.pos, "
 		   +"ot_parameters.stringkeyname,  pid, value, ot_parametergrps.id AS pgrpid, "
-		   +" ot_parametergrps.stringkey as parametergrp_key, st.description, paramdef.datatype " 
+		   +" ot_parametergrps.stringkey as parametergrp_key, st.description, paramdef.datatype, " 
+		   +" ot_parameters.id_field, paramdef.maxdigits "
 		   +"FROM ot_parameters "
 		   +"JOIN ot_parametergrps ON (ot_parameters.Parametergroup=ot_parametergrps.ID) " 
 		   +"JOIN paramdef ON (paramdef.id=ot_parameters.definition) "
 		   +"LEFT JOIN acc_sample_parameters a ON "
 		   +"(a.objectid=? AND a.id=ot_parameters.id AND hidden=FALSE) "
 		   +"JOIN String_key_table st ON st.id=ot_parameters.stringkeyname "
-		   +"WHERE (ot_parameters.objecttypesID=? AND ot_parameters.id_field=FALSE) " 
+		   +"WHERE (ot_parameters.objecttypesID=?) " 
 		   +"ORDER BY pos");
 		pstmt.setInt(1,objID);
 		pstmt.setInt(2,typeid);

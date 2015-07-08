@@ -4,14 +4,27 @@
 	<div ng-hide="sample.error">
 	
 	
-		<h3>{{ssc.sample.trtype}} {{ssc.sample.name}}</h3>
+		<h3>{{ssc.sample.trtype}} 
+			<span ng-repeat="tparameter in ssc.sample.titleparameters"
+				  ng-dblclick="tparameter.editing=true; newValue=tparameter.value">
+				<span ng-hide="tparameter.editing">{{tparameter.value|trailingzeros:tparameter.maxdigits}}
+				</span>
+				<input 						   
+					ng-keyup="ssc.keyUp($event.keyCode,newValue,tparameter)"
+					ng-show="tparameter.editing" type="text"
+				    ng-model="newValue" 
+				    ng-blur="tparameter.editing=false">
+				</input>
+				{{$last?'':'-'}}
+			</span>
+		</h3>
 		
 		
 		
 		
 		<h4>Basisparameter</h4>
 		<table class="table">
-			<tr ng-repeat="parameter in ssc.sample.parameters" 
+			<tr ng-repeat="parameter in ssc.sample.parameters| orderBy : ssc.sample.parameters.pos" 
 			ng-dblclick="parameter.editing=true; newValue=parameter.value">
 				<td>
 				    {{parameter.trname}} :
