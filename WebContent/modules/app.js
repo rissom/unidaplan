@@ -64,8 +64,8 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 .config(['$translateProvider', function ($translateProvider) {
   $translateProvider.useSanitizeValueStrategy('escape');
   $translateProvider.translations('en', {
-    'TITLE': 'Hello',
-    'FOO': 'This is a paragraph'
+  	'Params' : 'Parameters',
+  	'abouttext' : 'Software to organize your experiments'
   });
  
   $translateProvider.translations('de', {
@@ -105,7 +105,15 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
   	'Samples in process' : 'Proben im Prozess',
   	'Add/Remove samples' : 'Proben hinzufügen/entfernen',
   	'Delete Process' : 'Prozess löschen',
-  	'Status of process run' : 'Verlauf des Prozesses'
+  	'Status of process run' : 'Verlauf des Prozesses',
+  	'Processes' : 'Prozesse',
+  	'Params' : 'Parameter',
+  	'and' : 'und',
+  	'Made with' : 'programmiert mit',
+  	'abouttext' : 'Software für die Verwaltung wissenschaftlicher Proben',
+  	'see license' : 'Lizenz',
+  	'as well as' : 'So wie'
+  	
   });
  
   $translateProvider.preferredLanguage('en');

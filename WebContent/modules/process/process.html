@@ -4,7 +4,7 @@
 <p />
 <div ng-init="processCtrl.loadProcess(1)"></div>
 <h2>{{processCtrl.process.trprocesstype}} {{processCtrl.process.p_number}}</h2>
-<h4>Parameter</h4>
+<h4>{{'Params'|translate}}</h4>
 <table class="table">
 	<tr ng-repeat="parameter in processCtrl.process.parameters">
 		<td ng-click="processCtrl.articleClicked(parameter)">{{parameter.trname}} :</td>
