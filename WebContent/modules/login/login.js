@@ -24,7 +24,5 @@ angular
 		});
 	}])
 	
-.LoginCtrl	('LoginCtrl'), [
-      '$state',
-]
+.LoginCtrl	('LoginCtrl'), ['translate','$state']
 })();

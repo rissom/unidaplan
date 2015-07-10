@@ -1,0 +1,60 @@
+<div ng-controller="expcontroller as oexpCtrl">
+	<div ng-init="oexpCtrl.loadData()"></div>
+
+
+		<!--  My Experiments -->
+
+		<h3 ng-show="oexpCtrl.myexperiments().length>0">
+			{{ 'My Experiments' | translate }}
+		</h3>
+		<table class="table">
+			<tr ng-repeat="experiment in oexpCtrl.myexperiments()">
+				<td>
+				<a ui-sref="experiment({experimentID:experiment.id})">{{experiment.id}}</a>
+				</td>
+				<td>
+				<a ui-sref="experiment({experimentID:experiment.id})">{{experiment.trname}}</a>
+				</td>
+				<td>
+				  {{oexpCtrl.getStatus(experiment)}}
+				</td>
+				<td>
+					<button type="button" class="btn btn-danger">
+						löschen
+					</button>
+				</td>
+			</tr>  <!-- ends ng-repeat -->
+		</table>
+
+
+
+		<!--  Other Experiments -->
+		
+		<h3 ng-show="oexpCtrl.otherexperiments().length>0">
+			{{ 'Other Experiments' | translate }}</h3>
+		<table class="table">
+			<tr ng-repeat="experiment in oexpCtrl.otherexperiments()">
+				<td>
+					<a ui-sref="experiment({experimentID:experiment.id})">
+						{{experiment.id}}
+					</a>
+				</td>
+				<td>
+					{{experiment.creator}}
+				</td>	
+				<td>
+					<a ui-sref="experiment({experimentID:experiment.id})">
+						{{experiment.trname}}
+					</a>
+				</td>
+				<td>
+				  	{{oexpCtrl.getStatus(experiment)}}
+				</td>
+				<td>
+					<button type="button" class="btn btn-danger">
+						löschen
+					</button>
+				</td>
+			</tr>
+		</table>
+</div>	

@@ -1,27 +1,26 @@
 (function(){
 'use strict';
 
-function menuf() {
+function menuf($translate,$rootscope) {
 
-  this.status = {
-    isopen: false
-  };
+	this.status = {
+	    isopen: false
+	};
 
-//  $scope.toggleDropdown = function($event) {
-//    $event.preventDefault();
-//    $event.stopPropagation();
-//    $scope.status.isopen = !$scope.status.isopen;
-//  };
-    
-  this.activeSample={'ID':'2'};
-  
-  this.select=function(selected) {
-	this.currentPage=selected; 
-  }
-};
-  
+	this.oldlanguage='en';  
+	
+	this.language = function(){
+		return $translate.use();
+	}
+	
+	this.setLanguage = function(lang){  // change language and send a broadcast
+		if (this.old_language!=$translate.use()) {
+			$translate.use(lang);
+			$rootscope.$broadcast('language changed',{'language':lang});
+		}
+	}
+}
 
-
-angular.module('unidaplan').controller('menu',menuf);
+angular.module('unidaplan').controller('menu',['$translate','$scope',menuf]);
   
 })();

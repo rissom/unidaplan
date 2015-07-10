@@ -1,14 +1,16 @@
 (function(){
 'use strict';
 
-function samplecontroller(restfactory,lang) {
+function samplecontroller(restfactory,$translate,$scope) {
 	
 	
 	this.sample = {};
 	
+	this.sample.empty = true;
+	
 	this.sample.parameters = [];
 	
-	this.sample.titleparameters = ["Wurst","Brot"];
+	this.sample.titleparameters = [];
 
 	this.tKeyUp = function(keyCode,newValue,parameter) {
 		if (keyCode===13) {
@@ -31,6 +33,9 @@ function samplecontroller(restfactory,lang) {
 		}
 	}
 	
+	$scope.$on('language changed', function(event, args) {
+		$scope.ssc.translate(args.language);
+	});
 	
 	this.keyUp = function(keyCode,newValue,parameter) {
 		if (keyCode===13) {
@@ -82,7 +87,7 @@ function samplecontroller(restfactory,lang) {
 		
 	
 
-	this.translate = function() {
+	this.translate = function(lang) {
 		var sample=this.sample
 		var strings=sample.strings;
 		var typestringkey=this.sample.typestringkey;
@@ -138,9 +143,10 @@ function samplecontroller(restfactory,lang) {
 			)
 			temp.parameters=tempParameters;
 			thisSampleController.sample = temp;
-	    	thisSampleController.translate();
+			thisSampleController.sample.empty = false;
+	    	thisSampleController.translate($translate.use());
 	    }, function(rest) {
-	    	console.log("ERROR");
+	    	thisSampleController.sample.error = "Not Found!";
 	    });
 	};
 	
@@ -166,6 +172,6 @@ function samplecontroller(restfactory,lang) {
 }  
 
 
-angular.module('unidaplan').controller('samplecontroller',['restfactory','lang',samplecontroller]);
+angular.module('unidaplan').controller('samplecontroller',['restfactory','$translate','$scope',samplecontroller]);
 
 })();

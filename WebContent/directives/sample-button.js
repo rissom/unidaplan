@@ -3,9 +3,9 @@
 function samplebutton(){
 	return {
 		restrict: 'E',		
-		template: '<button class="btn btn-default" ng-click="action()">{{buttonsample.trtypename}} {{buttonsample.name}}</button>',
-		scope: { buttonsample : '=' , 
-				       action : '&' }
+		template: '<button class="btn btn-default" ui-sref="sample({sampleID:buttonsample.id})">'
+					+'{{buttonsample.trtypename}} {{buttonsample.name}}</button>',
+		scope: { buttonsample : '=' }
 	}
 };
 

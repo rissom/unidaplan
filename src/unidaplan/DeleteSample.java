@@ -58,13 +58,26 @@ public class DeleteSample extends HttpServlet {
 		
 	    try {
 		 	if (objID>0){
+		 		Boolean DeletionPossible=true;			
+
+		 		// Check if processes with this sample exist
 		        pstmt = DBconn.conn.prepareStatement(	
 		    	"SELECT processid, objectid FROM objectinprocess "
 		 		+"WHERE objectid=?");
 				pstmt.setInt(1,objID);
 				ResultSet resultset=pstmt.executeQuery();
-				if (!(resultset.next())) {
-					pstmt.close();
+				if (resultset.next()) {DeletionPossible=false;}
+				pstmt.close();
+				
+				// Check if experiments with this sample exist
+		        pstmt = DBconn.conn.prepareStatement(	
+		        	"SELECT id FROM expp_samples WHERE sample=?");
+				pstmt.setInt(1,objID);
+				resultset=pstmt.executeQuery();
+				if (resultset.next()) {DeletionPossible=false;}
+				pstmt.close();
+				
+				if (DeletionPossible){  // Really deleting the sample (OMG!)
 			        pstmt = DBconn.conn.prepareStatement(	
 					"DELETE FROM o_float_data WHERE objectid=?"); 
 					pstmt.setInt(1,objID);
@@ -103,8 +116,7 @@ public class DeleteSample extends HttpServlet {
 					pstmt.executeUpdate();
 					pstmt.close();					
 				} else {
-					pstmt.close();
-					out.println("{\"error\":\"processes exist}\"");
+					out.println("{\"error\":\"processes or experiments with this sample exist!}\"");
 					}
 			}
 	    } catch (SQLException eS) {

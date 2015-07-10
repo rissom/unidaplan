@@ -2,6 +2,7 @@ package unidaplan;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -24,6 +25,7 @@ public class Showsample extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
  	ArrayList<String> stringkeys = new ArrayList<String>(); 
+ 	Boolean Deletable=true;
     response.setContentType("application/json");
     request.setCharacterEncoding("utf-8");
     response.setCharacterEncoding("utf-8");
@@ -81,7 +83,6 @@ public class Showsample extends HttpServlet {
     	
     	
 	try {
-		JSONArray parameters=new JSONArray();
 		
 		//get parameters
 		pstmt= DBconn.conn.prepareStatement( 	 
@@ -99,13 +100,13 @@ public class Showsample extends HttpServlet {
 		   +"ORDER BY pos");
 		pstmt.setInt(1,objID);
 		pstmt.setInt(2,typeid);
-		parameters = DBconn.jsonArrayFromPreparedStmt(pstmt);
+		JSONArray parameters=DBconn.jsonArrayFromPreparedStmt(pstmt);
 		if (parameters.length()>0) {
 			jsSample.put("parameters",parameters);
-	      	  for (int i=0; i<parameters.length();i++) {
-	      		  JSONObject tempObj=(JSONObject) parameters.get(i);
-	      		  stringkeys.add(Integer.toString(tempObj.getInt("stringkeyname")));
-	      	  }
+	      	for (int i=0; i<parameters.length();i++) {
+	      		JSONObject tempObj=(JSONObject) parameters.get(i);
+	      		stringkeys.add(Integer.toString(tempObj.getInt("stringkeyname")));
+	      	}
 		}
 	} catch (SQLException e) {
 		System.err.println("Showsample: Problems with SQL query for sample parameters");
@@ -119,7 +120,7 @@ public class Showsample extends HttpServlet {
 	}	
     	
 	
-		// Find all experiment plans (TODO)
+		// Find all experiment plans
     	try {pstmt= DBconn.conn.prepareStatement( 
     		"SELECT ep.id as exp_id, name, creator, status FROM exp_plan ep "
     		+"JOIN expp_samples es ON es.expp_ID=ep.id "
@@ -241,6 +242,32 @@ public class Showsample extends HttpServlet {
 			System.err.println("Showsample: Strange Problem while getting next sample");
     	}
 
+		// Can we delete this sample?
+		try{
+	        pstmt = DBconn.conn.prepareStatement(	
+	    	"SELECT processid, objectid FROM objectinprocess "
+	 		+"WHERE objectid=?");
+			pstmt.setInt(1,objID);
+			ResultSet resultset=pstmt.executeQuery();
+			if (resultset.next()) {Deletable=false;}
+			pstmt.close();
+			
+			// Check if experiments with this sample exist
+	        pstmt = DBconn.conn.prepareStatement(	
+	        	"SELECT id FROM expp_samples WHERE sample=?");
+			pstmt.setInt(1,objID);
+			resultset=pstmt.executeQuery();
+			if (resultset.next()) {Deletable=false;}
+			pstmt.close();
+			jsSample.put("deletable", Deletable);
+		} catch (SQLException e) {
+			System.err.println("Showsample: Problems with SQL query for next sample");
+		} catch (JSONException e) {
+			System.err.println("Showsample: JSON Problem while getting next sample");
+		} catch (Exception e2) {
+			System.err.println("Showsample: Strange Problem while getting next sample");
+		}
+			
 		
 		// get the strings
     	try{

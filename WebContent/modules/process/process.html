@@ -3,11 +3,11 @@
 <p />	
 <p />
 <div ng-init="processCtrl.loadProcess(1)"></div>
-<h2>{{processCtrl.process.processtype}} {{processCtrl.process.p_number}}</h2>
+<h2>{{processCtrl.process.trprocesstype}} {{processCtrl.process.p_number}}</h2>
 <h4>Parameter</h4>
 <table class="table">
 	<tr ng-repeat="parameter in processCtrl.process.parameters">
-		<td ng-click="processCtrl.articleClicked(parameter)">{{parameter.name}} :</td>
+		<td ng-click="processCtrl.articleClicked(parameter)">{{parameter.trname}} :</td>
 		<td>{{parameter.value}}
 			{{parameter.unit.length>0?parameter.unit:''}}</td>
 	</tr>
@@ -20,26 +20,29 @@
 		
 
 
-Verlauf des Prozesses
-<h4>Samples in process</h4>
-<button>Add/Remove samples</button>
+{{'Status of process run'|translate}}
+<h4>{{'Samples in process'|translate}}</h4>
+<button>{{'Add/Remove samples'|translate}}</button>
 <p />
 <p />
 <p />
 	<table>
 	<tr>
 		<td align="center">
-			<span ng-show="processCtrl.process.previous">&#x25c0; previous <br />
-				<button class="btn btn-default">previous
+			<span ng-show="processCtrl.process.previous">&#x25c0; {{'previous'|translate}}<br />
+				<button class="btn btn-default">
+					{{'previous'|translate}}
 				</button>
 			</span>
 		</td>
 		<td align="center">&nbsp;<br /> &nbsp;
-			<button type="button" class="btn btn-danger">Prozess löschen
+			<button type="button" class="btn btn-danger">
+				{{'Delete Process'|translate}}
 			</button>
 		</td>
 		<td align="center">
-			<span ng-show="processCtrl.process.next"> &nbsp; next &nbsp; &#9654;<br />&nbsp;
+			<span ng-show="processCtrl.process.next"> &nbsp;
+				{{'next'|translate}} &nbsp; &#9654; &nbsp; <br />
 			<button class="btn btn-default">next</button>			
 			</span>
 		</td>

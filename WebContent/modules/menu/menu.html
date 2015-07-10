@@ -2,57 +2,150 @@
 <!-- <div class="btn-toolbar" role="toolbar">  -->
 
 <div class="btn-group btn-group-justified" role="toolbar">
-	<div class="btn-group" dropdown>
+
+
+<!-- Samples -->
+	<div class="btn-group"  dropdown>
 		<button type="button" class="btn btn-default dropdown-toggle"
-			dropdown-toggle ng-disabled="disabled">Object</button>
+			dropdown-toggle ng-disabled="disabled">
+				{{'Samples'|translate}}</button>
 		<ul class="dropdown-menu" role="menu">
-			<li><a ui-sref="error">New Object &#9654;</b></a>
-				<ul class="dropdown-menu sub-menu">
+			<li>
+				<a ui-sref="error">
+					{{'New Sample'|translate}} 
+				<b class="caret-right"></b>
+				</a>
+				<ul class="dropdown-menu" role=sub-menu">
 					<li><a ui-sref="error">Solarpanel</a></li>
 					<li><a ui-sref="error">Windrad</a></li>
-				</ul></li>
-			<li><a ui-sref="sample">Open Object</a></li>
-			<li><a ui-sref="error">Recent Objects <b class="caret-right"></b></a></li>
+				</ul>
+			</li>
+			<li>
+				<a ui-sref="sample({sampleID:4})">
+					{{'Show Sample'|translate}}
+				</a>
+			</li>
+			<li>
+				<a ui-sref="error">
+					{{'Recent Samples'|translate}} <b class="caret-right"></b>
+				</a>
+			</li>
 		</ul>
 	</div>
 	<div class="btn-group" dropdown>
-		<button type="button" class="btn btn-default dropdown-toggle"
-			dropdown-toggle ng-disabled="disabled">Process</button>
+		<button type="button" 
+				class="btn btn-default 
+				dropdown-toggle"
+				dropdown-toggle 
+				ng-disabled="disabled">
+				{{'Process'|translate}}
+		</button>
 		<ul class="dropdown-menu" role="menu">
-			<li><a ui-sref="error">New Process <b class="caret-right"></b></a></li>
-			<li><a ui-sref="process">Open Process</a></li>
-			<li><a ui-sref="error">Recent Processes <b class="caret-right"></b></a></li>
+			<li>
+				<a ui-sref="error">
+					{{'New Process'|translate}} <b class="caret-right"></b>
+				</a>
+			</li>
+			<li>
+				<a ui-sref="process">
+					{{'Show Process'|translate}}
+				</a>
+			</li>
+			<li><a ui-sref="error">{{'Recent Processes'|translate}} <b class="caret-right"></b></a></li>
 		</ul>
 	</div>
 
 	<div class="btn-group" dropdown>
-		<button type="button" class="btn btn-default dropdown-toggle"
-			dropdown-toggle ng-disabled="disabled">Experiment</button>
+		<button type="button" 
+				class="btn btn-default dropdown-toggle"
+				dropdown-toggle 
+				ng-disabled="disabled">
+				{{'Experiment'|translate}}
+		</button>
 		<ul class="dropdown-menu" role="menu">
-			<li><a ui-sref="error">New Experiment <b class="caret-right"></b></a></li>
-			<li><a ui-sref="experiments">Open Experiments</a></li>
+			<li>
+				<a ui-sref="error">
+					{{'New Experiment'|translate}}
+				</a>
+			</li>
+			<li>
+				<a ui-sref="openExperiment">
+					{{'Open Experiments'|translate}}
+				</a>
+			</li>
 		</ul>
 	</div>
 
 	<div class="btn-group" dropdown>
-		<button type="button" class="btn btn-default dropdown-toggle"
-			dropdown-toggle ng-disabled="disabled">Administration</button>
+		<button type="button"
+			    class="btn btn-default dropdown-toggle"
+				dropdown-toggle
+				ng-disabled="disabled">
+					{{'Administration'|translate}}
+		</button>
 		<ul class="dropdown-menu" role="menu">
-			<li><a ui-sref="error">Groups and Users</a></li>
-			<li><a ui-sref="error">Objects</a></li>
-			<li><a ui-sref="error">Processes</a></li>
-			<li><a ui-sref="error">Parameters</a></li>
-			<li><a ui-sref="error">Experiments</a></li>
+			<li>
+				<a ui-sref="error">
+					{{'Groups and Users'|translate}}
+				</a>
+			</li>
+			<li>
+				<a ui-sref="error">
+					{{'Samples'|translate}}
+				</a>
+			</li>
+			<li>
+				<a ui-sref="error">
+					{{'Processes'|translate}}
+				</a>
+			</li>
+			<li>
+				<a ui-sref="error">
+					{{'Parameters'|translate}}
+				</a>
+			</li>
+			<li><a ui-sref="error">{{'Experiments'|translate}}</a></li>
 		</ul>
 	</div>
 
 	<div class="btn-group" dropdown>
-		<button type="button" class="btn btn-default dropdown-toggle"
-			dropdown-toggle ng-disabled="disabled">Help</button>
+		<button type="button" 
+				class="btn btn-default dropdown-toggle"
+				dropdown-toggle ng-disabled="disabled">
+				{{'Help' | translate}} 
+		</button>
 		<ul class="dropdown-menu" role="menu">
-			<li><a ui-sref="about">About
-					Unidaplan</a></li>
-			<li><a ui-sref="help">Help page</a></li>
+			<li>
+				<a ui-sref="about">
+					{{'About Unidaplan'|translate}}
+				</a>
+			</li>
+			<li>
+				<a ui-sref="help">
+					{{'Help page'|translate}}
+				</a>
+			</li>
+		</ul>
+	</div>
+	
+		<div class="btn-group" dropdown>
+		<button type="button" 
+			class="btn btn-default dropdown-toggle"
+			dropdown-toggle 
+			ng-disabled="disabled">
+			{{menuCtrl.language()}}
+		</button>
+		<ul class="dropdown-menu" role="menu">
+			<li>
+				<a href ng-click="menuCtrl.setLanguage('de')">
+					de
+				</a>
+			</li>
+			<li>
+				<a href ng-click="menuCtrl.setLanguage('en')">
+					en
+				</a>
+			</li>
 		</ul>
 	</div>
 </div>

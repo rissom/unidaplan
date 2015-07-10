@@ -32,7 +32,7 @@ import org.json.JSONObject;
 	    JSONObject expPlans = new JSONObject();
 	    try {  
 			pstmt= DBconn.conn.prepareStatement( 	
-			"SELECT exp_plan.ID AS ID,users.name as creator, exp_plan.name "
+			"SELECT exp_plan.ID AS ID,users.name as creator, exp_plan.name ,status "
 		    + "FROM  exp_plan \n"
 		    + "JOIN users ON (users.id=exp_plan.Creator)");
 			JSONArray experiments=DBconn.jsonArrayFromPreparedStmt(pstmt);
