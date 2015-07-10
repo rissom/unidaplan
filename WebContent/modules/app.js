@@ -65,7 +65,8 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
   $translateProvider.useSanitizeValueStrategy('escape');
   $translateProvider.translations('en', {
   	'Params' : 'Parameters',
-  	'abouttext' : 'Software to organize your experiments'
+  	'abouttext' : 'Software to organize your experiments',
+	'HELPTEXT' : 'Unidaplan is web-based software for the administration of scientific samples.'			
   });
  
   $translateProvider.translations('de', {
@@ -112,8 +113,11 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
   	'Made with' : 'programmiert mit',
   	'abouttext' : 'Software für die Verwaltung wissenschaftlicher Proben',
   	'see license' : 'Lizenz',
-  	'as well as' : 'So wie'
-  	
+  	'as well as' : 'So wie',
+  	'HELPTEXT' : 'Unidaplan ist eine Webbasierte Software um wissenschaftliche Proben zu verwalten. Es können Probentypen'+
+  		  '(z.B. Pulverproben, Solarzellen, Halbleiterlaser, usw.) definiert werden. Die Proben können bestimmte'+
+  		  'Parameter und Eigenschaften aufweisen. Die Auswahl und Definition der Parameter erfolgt über den'+
+  		  'Adminstrator.'
   });
  
   $translateProvider.preferredLanguage('en');
