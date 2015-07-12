@@ -12,27 +12,14 @@ function sampleController(restfactory,$translate,$scope,$stateParams) {
 	
 	this.sample.titleparameters = [];
 	
-	this.loadData = function() {
+	this.loadData = function() {			// Load data and filter Titleparameters
 		var ID= $stateParams.sampleID;
 		var promise = restfactory.GET("showsample.json?id="+ID);
 		var thisSampleController = this;
 	    promise.then(function(rest) {
-	    	var temp = rest.data;
-	    	temp.titleparameters=[];
-	    	var tempParameters=[];
-			angular.forEach(temp.parameters, 
-				function(parameter) {
-					if (parameter.id_field) {
-						temp.titleparameters.push(parameter);						
-					} else {
-						tempParameters.push(parameter);
-					}
-				}
-			)
-			temp.parameters=tempParameters;
-			thisSampleController.sample = temp;
+			thisSampleController.sample = rest.data;;
 			thisSampleController.sample.empty = false;
-	    	thisSampleController.translate($translate.use());
+	    	thisSampleController.translate($translate.use()); // translate to active language
 	    }, function(rest) {
 	    	thisSampleController.sample.error = "Not Found!";
 	    });

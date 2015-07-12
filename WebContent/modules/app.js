@@ -16,7 +16,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
         .state('sample', {
         url: '/sample/:sampleID',
         templateUrl: 'modules/sample/sample.html',
-        controller: "sampleController as ssc"  
+        controller: "sampleController as ssc"  ,
         })
         
         

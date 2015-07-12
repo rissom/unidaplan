@@ -81,10 +81,45 @@ public class Showsample extends HttpServlet {
     }
     else {
     	
-    	
+	//get the title parameters
 	try {
-		
-		//get parameters
+		pstmt= DBconn.conn.prepareStatement( 	 
+		   "SELECT ot_parameters.id, parametergroup, compulsory, ot_parameters.pos, "
+		   +"ot_parameters.stringkeyname,  pid, value, ot_parametergrps.id AS pgrpid, "
+		   +" ot_parametergrps.stringkey as parametergrp_key, st.description, paramdef.datatype, " 
+		   +" ot_parameters.id_field, paramdef.maxdigits "
+		   +"FROM ot_parameters "
+		   +"JOIN ot_parametergrps ON (ot_parameters.Parametergroup=ot_parametergrps.ID) " 
+		   +"JOIN paramdef ON (paramdef.id=ot_parameters.definition) "
+		   +"LEFT JOIN acc_sample_parameters a ON "
+		   +"(a.objectid=? AND a.id=ot_parameters.id ) "
+		   +"JOIN String_key_table st ON st.id=ot_parameters.stringkeyname "
+		   +"WHERE (ot_parameters.objecttypesID=? AND ot_parameters.id_field=true) " 
+		   +"ORDER BY pos");
+		pstmt.setInt(1,objID);
+		pstmt.setInt(2,typeid);
+		JSONArray parameters=DBconn.jsonArrayFromPreparedStmt(pstmt);
+		if (parameters.length()>0) {
+			jsSample.put("titleparameters",parameters);
+	      	for (int i=0; i<parameters.length();i++) {
+	      		JSONObject tempObj=(JSONObject) parameters.get(i);
+	      		stringkeys.add(Integer.toString(tempObj.getInt("stringkeyname")));
+	      	}
+		}
+	} catch (SQLException e) {
+		System.err.println("Showsample: Problems with SQL query for sample parameters");
+		e.printStackTrace();
+	} catch (JSONException e){
+		System.err.println("Showsample: Problems creating JSON for sample parameters");
+		e.printStackTrace();
+	} catch (Exception e) {
+		System.err.println("Showsample: Strange Problems with the sample parameters");
+		e.printStackTrace();
+	}	
+    	
+    	
+	//get the parameters
+	try {
 		pstmt= DBconn.conn.prepareStatement( 	 
 		   "SELECT ot_parameters.id, parametergroup, compulsory, ot_parameters.pos, "
 		   +"ot_parameters.stringkeyname,  pid, value, ot_parametergrps.id AS pgrpid, "
@@ -96,7 +131,7 @@ public class Showsample extends HttpServlet {
 		   +"LEFT JOIN acc_sample_parameters a ON "
 		   +"(a.objectid=? AND a.id=ot_parameters.id AND hidden=FALSE) "
 		   +"JOIN String_key_table st ON st.id=ot_parameters.stringkeyname "
-		   +"WHERE (ot_parameters.objecttypesID=?) " 
+		   +"WHERE (ot_parameters.objecttypesID=? AND ot_parameters.id_field=false) " 
 		   +"ORDER BY pos");
 		pstmt.setInt(1,objID);
 		pstmt.setInt(2,typeid);
@@ -120,19 +155,19 @@ public class Showsample extends HttpServlet {
 	}	
     	
 	
-		// Find all experiment plans
-    	try {pstmt= DBconn.conn.prepareStatement( 
-    		"SELECT ep.id as exp_id, name, creator, status FROM exp_plan ep "
-    		+"JOIN expp_samples es ON es.expp_ID=ep.id "
-    		+"WHERE sample=?");
-			pstmt.setInt(1,objID);
-			JSONArray eps = DBconn.jsonArrayFromPreparedStmt(pstmt);
-			pstmt.close();
-			for (int i=0; i<eps.length();i++) {
-	      		  JSONObject tempObj=(JSONObject) eps.get(i);
-	      		  stringkeys.add(Integer.toString(tempObj.getInt("name")));
-	      	  }
-			jsSample.put("plans",eps);
+	// Find all experiment plans
+	try {pstmt= DBconn.conn.prepareStatement( 
+		"SELECT ep.id as exp_id, name, creator, status FROM exp_plan ep "
+		+"JOIN expp_samples es ON es.expp_ID=ep.id "
+		+"WHERE sample=?");
+		pstmt.setInt(1,objID);
+		JSONArray eps = DBconn.jsonArrayFromPreparedStmt(pstmt);
+		pstmt.close();
+		for (int i=0; i<eps.length();i++) {
+      		  JSONObject tempObj=(JSONObject) eps.get(i);
+      		  stringkeys.add(Integer.toString(tempObj.getInt("name")));
+      	  }
+		jsSample.put("plans",eps);
 			
     	} catch (Exception e){
     		e.printStackTrace();
