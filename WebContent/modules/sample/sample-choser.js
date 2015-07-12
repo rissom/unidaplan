@@ -8,7 +8,7 @@ function sampleChoser(restfactory,sampleService,$translate,$scope) {
 	this.samples = function(name)
 	{
 //		console.log(SampleService.loadSamplesByName(2,""))	
-		console.log(sampleService.samples);
+		console.log("working");
 		return this.mysamples
 //		return SampleService.loadSamplesByName(1,name);
 //		return sampleService.samples;

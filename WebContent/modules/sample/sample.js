@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-function samplecontroller(restfactory,$translate,$scope) {
+function sampleController(restfactory,$translate,$scope,$stateParams) {
 	
 	
 	this.sample = {};
@@ -33,9 +33,11 @@ function samplecontroller(restfactory,$translate,$scope) {
 		}
 	}
 	
+	var mySampleController=this
 	$scope.$on('language changed', function(event, args) {
-		$scope.ssc.translate(args.language);
+		mySampleController.translate(args.language);
 	});
+	
 	
 	this.keyUp = function(keyCode,newValue,parameter) {
 		if (keyCode===13) {
@@ -125,7 +127,8 @@ function samplecontroller(restfactory,$translate,$scope) {
 	}
 
 	
-	this.loadData = function(ID) {
+	this.loadData = function() {
+		var ID= $stateParams.sampleID;
 		var promise = restfactory.GET("showsample.json?id="+ID);
 		var thisSampleController = this;
 	    promise.then(function(rest) {
@@ -172,6 +175,6 @@ function samplecontroller(restfactory,$translate,$scope) {
 }  
 
 
-angular.module('unidaplan').controller('samplecontroller',['restfactory','$translate','$scope',samplecontroller]);
+angular.module('unidaplan').controller('sampleController',['restfactory','$translate','$scope','$stateParams',sampleController]);
 
 })();

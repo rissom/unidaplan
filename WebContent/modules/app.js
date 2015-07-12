@@ -7,23 +7,23 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 
 .config(function($stateProvider, $urlRouterProvider) {
     
-    $urlRouterProvider.otherwise('/home');
+    $urlRouterProvider.otherwise('/openExperiment');
     
     $stateProvider
         
         // UI-Router STATES AND NESTED VIEWS ========================================
-        .state('home', {
-            url: '/home',
-            templateUrl: 'modules/experiments/experiments.html'
-        })
         
         .state('sample', {
         url: '/sample/:sampleID',
         templateUrl: 'modules/sample/sample.html',
-        controller: function($scope, $stateParams) {
-                // get the id
-                $scope.id = $stateParams.sampleID; }
-  
+        controller: "sampleController as ssc"  
+        })
+        
+        
+        .state('sampleChoser', {
+        url: '/sample',
+        templateUrl: 'modules/sample/sample-choser.html',
+//        controller: 'sampleChoser as sampleChoserCtrl'
         })
         
         .state('process', {
@@ -117,7 +117,8 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
   	'HELPTEXT' : 'Unidaplan ist eine Webbasierte Software um wissenschaftliche Proben zu verwalten. Es können Probentypen'+
   		  '(z.B. Pulverproben, Solarzellen, Halbleiterlaser, usw.) definiert werden. Die Proben können bestimmte'+
   		  'Parameter und Eigenschaften aufweisen. Die Auswahl und Definition der Parameter erfolgt über den'+
-  		  'Adminstrator.'
+  		  'Adminstrator.',
+    'Available Samples':'Verfügbare Proben'
   });
  
   $translateProvider.preferredLanguage('en');
