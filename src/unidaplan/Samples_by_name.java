@@ -50,8 +50,8 @@ public class Samples_by_name extends HttpServlet {
 			"SELECT  samplenames.id, samplenames.name, samplenames.typeid " 
 			+"FROM samplenames "
 			+"WHERE samplenames.name LIKE ? "
-			+"AND objectnames.typeID=? "
-			+"ORDER BY objectnames.name "
+			+"AND samplenames.typeID=? "
+			+"ORDER BY samplenames.name "
 			+"LIMIT 20 ");
 	       pstmt.setString(1, "%"+name+"%");
 	       pstmt.setInt(2, typeID);

@@ -1,0 +1,10 @@
+ <h3 ng-show="sampleChoserCtrl.samples('').length>0">
+	{{ 'Available Samples' | translate }} 
+</h3>
+<table class="table">
+	<tr ng-repeat="sample in sampleChoserCtrl.samples('name')">
+		<td>
+			<a ui-sref="sample({sampleID:sample.id})">{{sample.id}}</a>
+		</td>								
+	</tr>   
+</table>
