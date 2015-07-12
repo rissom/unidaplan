@@ -7,7 +7,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 
 .config(function($stateProvider, $urlRouterProvider) {
     
-    $urlRouterProvider.otherwise('/openExperiment');
+    $urlRouterProvider.otherwise('/open-experiments');
     
     $stateProvider
         
