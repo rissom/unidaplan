@@ -26,27 +26,6 @@ function sampleController(restfactory,$translate,$scope,$stateParams) {
 	};
 	
 
-	this.tKeyUp = function(keyCode,newValue,parameter) {
-		if (keyCode===13) {
-			parameter.editing=false; 
-			var oldValue=parameter.value;
-			var res = restfactory.POST('update-sample-parameter.json',parameter);
-				res.then(
-					function(data, status, headers, config) {
-						parameter.value=newValue;
-					},
-					function(data, status, headers, config) {
-						parameter.value=oldValue;
-						console.log('verkackt');
-						console.log(data);
-					}
-				);
-		}
-		if (keyCode===27) {
-			parameter.editing=false;			
-		}
-	}
-	
 	var mySampleController=this
 	$scope.$on('language changed', function(event, args) {
 		mySampleController.translate(args.language);
@@ -54,7 +33,7 @@ function sampleController(restfactory,$translate,$scope,$stateParams) {
 	
 	
 	this.keyUp = function(keyCode,newValue,parameter) {
-		if (keyCode===13) {
+		if (keyCode===13) {				// Return key pressed
 			parameter.editing=false; 
 			var oldValue=parameter.value;
 			parameter.value=newValue;
@@ -80,7 +59,7 @@ function sampleController(restfactory,$translate,$scope,$stateParams) {
 							);
 			 }
 		}
-		if (keyCode===27) {
+		if (keyCode===27) {		// Escape key pressed
 			parameter.editing=false;			
 		}
 	}

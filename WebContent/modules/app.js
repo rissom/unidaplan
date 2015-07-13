@@ -16,14 +16,14 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
         .state('sample', {
         url: '/sample/:sampleID',
         templateUrl: 'modules/sample/sample.html',
-        controller: "sampleController as ssc"  ,
+        controller: "sampleController as ssc"  
         })
         
         
-        .state('sampleChoser', {
+        .state('sChoser', {
         url: '/sample',
         templateUrl: 'modules/sample/sample-choser.html',
-//        controller: 'sampleChoser as sampleChoserCtrl'
+        controller: 'sampleChoser as sampleChoserCtrl'
         })
         
         .state('process', {
