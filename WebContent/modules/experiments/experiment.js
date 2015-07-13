@@ -1,11 +1,15 @@
 (function(){
 'use strict';
 
-function experiment2(restfactory,$translate) {
+function experiment(restfactory,$translate,$stateParams) {
 	
-	this.experiments =  [];			
+	this.experiments =  [];		
 
 	this.strings = [];
+	
+	this.ID = function(){
+		return $stateParams.experimentID;
+	}
 	
 	this.myName='Thorsten Rissom';
 	
@@ -31,6 +35,6 @@ function experiment2(restfactory,$translate) {
 };
     
         
-angular.module('unidaplan').controller('exp2controller',['restfactory','$translate',experiment2]);
+angular.module('unidaplan').controller('expController',['restfactory','$translate','$stateParams',experiment]);
 
 })();

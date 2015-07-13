@@ -74,7 +74,7 @@
     <servlet-name>UpdateSampleParameter</servlet-name>
     <url-pattern>/update-sample-parameter.json</url-pattern>
   </servlet-mapping>
-    <servlet>
+  <servlet>
     <description>Add sample parameter</description>
     <display-name>AddSampleParameter</display-name>
     <servlet-name>AddSampleParameter</servlet-name>

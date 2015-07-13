@@ -32,16 +32,14 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
         })
         
         .state('openExperiment', {
-        url: '/open-experiments',
+        url: '/experiments',
         templateUrl: 'modules/experiments/open-experiment.html'
         })
         
         .state('experiment', {
     	url: '/experiment/:experimentID',
         templateUrl: 'modules/experiments/experiment.html',
-        controller: function($scope, $stateParams) {
-             // get the id
-             $scope.id = $stateParams.experimentID; }
+        controller: 'expController as expCtrl'
         })
         
         .state('about', {
