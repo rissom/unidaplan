@@ -88,6 +88,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
   	'Is ancestor of': 'Vorfahr von',
   	'Originates from': 'Stammt ab von',
   	'Delete Sample': 'Probe löschen',
+  	'Delete Experiment' : 'Experiment löschen',
   	'New Process' : 'Neuer Prozess',  	
   	'Help page': 'Hilfe Seite',
   	'New Sample': 'Neue Probe',
