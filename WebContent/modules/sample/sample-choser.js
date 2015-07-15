@@ -37,10 +37,22 @@ function sampleChoser(sampleService,$translate,$scope,restfactory) {
 	};
 	
 	
-	
+	// get a bunch of fitting samples
 	this.loadSamples=function(){
 		var thisController=this;
-		var promise=restfactory.GET('/samples_by_name.json?type=1&name=1');
+//		 if (parameter.pid) {
+//				var res = restfactory.POST('update-sample-parameter.json',parameter);
+//				res.then(function(data, status, headers, config) {
+//						 },
+//						 function(data, status, headers, config) {
+//							parameter.value=oldValue;
+//							console.log('verkackt');
+//							console.log(data);
+//						 }
+//						);
+		var details={}
+		details.sampletypes=this.getSelectedSampleTypeIDs();
+		var promise=restfactory.POST('/samples_by_name.json?type=1&name=1',details);
 		promise.then(function(data){
 			thisController.samples=data.data;
 			thisController.translate();
@@ -69,7 +81,7 @@ function sampleChoser(sampleService,$translate,$scope,restfactory) {
 	
 	
 	this.typeSelected=function(sample){
-		if (this.selectedtypes[0].id==0){
+		if (this.selectedtypes==undefined||this.selectedtypes[0].id==0){
 			return true
 		}
 		var thisController=this;
@@ -100,7 +112,7 @@ function sampleChoser(sampleService,$translate,$scope,restfactory) {
 	
 	this.getSelectedSampleTypeIDs=function(){
 		var typeList=[]
-		if (thisController.selectedtypes[0].id==0){  // all types selected
+		if (thisController.selectedtypes==undefined || thisController.selectedtypes[0].id==0){  // all types selected
 			angular.forEach(thisController.types,function(type) {
 				typeList.push(type.id);			
 			});

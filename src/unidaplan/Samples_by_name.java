@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Servlet implementation class Samples_by_name
@@ -27,9 +29,17 @@ public class Samples_by_name extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	    response.setContentType("text/html");
-        request.setCharacterEncoding("utf-8");
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    request.setCharacterEncoding("utf-8");
+	    String in = request.getReader().readLine();
+	    JSONObject  jsonIn = null;	    
+	    try {
+			  jsonIn = new JSONObject(in);
+		} catch (JSONException e) {
+			System.err.println("SaveSampleParameter: Input is not valid JSON");
+		}
+	    System.out.println(jsonIn);
+		response.setContentType("application/json");
         response.setCharacterEncoding("utf-8");
 	 	DBconnection DBconn=new DBconnection();
 	 	DBconn.startDB();
