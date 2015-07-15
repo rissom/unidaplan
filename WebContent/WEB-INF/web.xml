@@ -74,6 +74,7 @@
     <servlet-name>UpdateSampleParameter</servlet-name>
     <url-pattern>/update-sample-parameter.json</url-pattern>
   </servlet-mapping>
+  
   <servlet>
     <description>Add sample parameter</description>
     <display-name>AddSampleParameter</display-name>
@@ -84,4 +85,81 @@
     <servlet-name>AddSampleParameter</servlet-name>
     <url-pattern>/add-sample-parameter.json</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <description>Change the status of an experiment</description>
+    <display-name>ChangeExperimentStatus</display-name>
+    <servlet-name>ChangeExperimentStatus</servlet-name>
+    <servlet-class>unidaplan.ChangeExperimentStatus</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ChangeExperimentStatus</servlet-name>
+    <url-pattern>/change-experiment-status</url-pattern>
+  </servlet-mapping>  
+  
+    <servlet>
+    <description>Show a single Experiment</description>
+    <display-name>Experiment</display-name>
+    <servlet-name>Experiment</servlet-name>
+    <servlet-class>unidaplan.Experiment</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Experiment</servlet-name>
+    <url-pattern>/experiment.json</url-pattern>
+  </servlet-mapping>  
+  
+      <servlet>
+    <description>Update a parameter of an experiment</description>
+    <display-name>UpdateExperimentParameter</display-name>
+    <servlet-name>UpdateExperimentParameter</servlet-name>
+    <servlet-class>unidaplan.UpdateExperimentParameter</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateExperimentParameter</servlet-name>
+    <url-pattern>/update-experiment-parameter.json</url-pattern>
+  </servlet-mapping> 
+
+  <servlet>
+    <description>Add a Parameter of an experiment</description>
+    <display-name>AddExperimentParameter</display-name>
+    <servlet-name>AddExperimentParameter</servlet-name>
+    <servlet-class>unidaplan.AddExperimentParameter</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddExperimentParameter</servlet-name>
+    <url-pattern>/add-experiment-parameter.json</url-pattern>
+  </servlet-mapping> 
+
+  <servlet>
+    <description>Add a user</description>
+    <display-name>AddUser</display-name>
+    <servlet-name>AddUser</servlet-name>
+    <servlet-class>unidaplan.AddUser</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddUser</servlet-name>
+    <url-pattern>/add-user.json</url-pattern>
+  </servlet-mapping> 
+  
+  <servlet>
+    <description>Get a list of users</description>
+    <display-name>GetUsers</display-name>
+    <servlet-name>GetUsers</servlet-name>
+    <servlet-class>unidaplan.GetUsers</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GetUsers</servlet-name>
+    <url-pattern>/get-users.json</url-pattern>
+  </servlet-mapping>
+  
+    <servlet>
+    <description>Delete user</description>
+    <display-name>DeleteUser</display-name>
+    <servlet-name>DeleteUser</servlet-name>
+    <servlet-class>unidaplan.DeleteUser</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeleteUser</servlet-name>
+    <url-pattern>/delete-user</url-pattern>
+  </servlet-mapping>     
 </web-app>

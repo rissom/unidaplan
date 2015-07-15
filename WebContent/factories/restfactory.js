@@ -1,5 +1,5 @@
 
-angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', function($q, $rootScope,$http) {
+angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', '$state', function($q, $rootScope,$http) {
 
 	$http.defaults.headers.post["Content-Type"] = "application/json";
 	$http.defaults.headers.put["Content-Type"] = "application/json";
@@ -121,6 +121,7 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 				function(data, status, headers, config) {
 					console.log("restfactory.POST: error: ",[ data,status,headers,config ]);
 					defer.reject('some http error occured');
+					if (status==401) {$state.go('Login');}
 			    }
 			);
 		} catch(err) {

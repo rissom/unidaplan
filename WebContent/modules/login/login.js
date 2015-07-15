@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-var LoginCtrl=function($state){
+var loginController=function($state){
 		this.userLogin = function(){
 			var data = {
 				name : this.userinput,
@@ -11,18 +11,6 @@ var LoginCtrl=function($state){
 		};
 	}
 
-angular
-	.module ('login',[])
+angular.module('unidaplan').controller('loginController',['$state','restfactory','$translate',loginController])
 	
-	.config(['$stateProvider', function($stateProvider){
-		$stateProvider
-			.state('login', {
-				url:'/login',
-				templateUrl:'/js/modules/login/login.html',
-				controller: 'LoginCtrl',
-				controllerAs: 'login'
-		});
-	}])
-	
-.LoginCtrl	('LoginCtrl'), ['translate','$state']
 })();

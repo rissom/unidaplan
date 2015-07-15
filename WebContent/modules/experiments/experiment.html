@@ -1,3 +1,35 @@
-<h3>Experiment no.{{expCtrl.ID()}}</h3><br />
-blablabla
+<div ng-init="expCtrl.loadData()"></div>
+<h3>
+{{'Experiment'|translate}} {{'no.'|translate}} {{expCtrl.ID()}} : 
+{{expCtrl.trname}}
+</h3>
+{{'created by'|translate}} {{expCtrl.experiment.creator}}
+<br />
+<br />
 
+		<!-- Parameters -->
+		<h4>{{'Parameters'|translate}}</h4>
+		<table class="table">
+			<tr ng-repeat="parameter in expCtrl.experiment.parameters| orderBy : expCtrl.experiment.parameters.pos" 
+			ng-dblclick="parameter.editing=true; newValue=parameter.value">
+				<td>
+				    {{parameter.trname}} :
+				</td>
+				<td >
+					<span ng-hide="parameter.editing">{{parameter.value}}
+					</span>
+					<input 						   
+						ng-keyup="expCtrl.keyUp($event.keyCode,newValue,parameter)"
+						ng-show="parameter.editing" type="text"
+					    ng-model="newValue" 
+					    ng-blur="parameter.editing=false">
+					</input>
+					{{parameter.unit.length>0?parameter.unit:''}}
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td></td>
+			</tr>
+			<!-- um letzten Strich in Tabelle zu erzeugen -->
+		</table>

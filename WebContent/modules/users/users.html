@@ -1,0 +1,44 @@
+		<h3 >
+			{{ 'Users' | translate }}
+		</h3>
+		<table class="table">
+			<tr><td><b>ID</b></td><td><b>Name</b></td><td><b>{{'E-mail'|translate}}</b></td><td><b>{{'role'|translate}}</b></td>
+				<td><b>{{'Delete User'|translate}}</b></td></tr>
+			<tr ng-repeat="user in userCtrl.users">
+				<td>
+					{{user.id}}
+				</td>
+				<td>
+					{{user.name}}
+				</td>
+				<td>
+				    {{user.email}}
+				</td>
+				<td>
+	  				<span class="dropdown" dropdown on-toggle="toggled(open)">
+					      <a href class="dropdown-toggle" dropdown-toggle>
+				  			{{userCtrl.getRole(user)}}
+					      </a>
+					      <ul class="dropdown-menu">
+					        <li ng-repeat="role in userCtrl.roles">
+					          <a href ng-click="userCtrl.setRole($index,user)">{{role}}</a>
+					        </li>
+					      </ul>
+	  				 </span>
+				</td>
+				<td>
+					<button type="button"
+							class="btn btn-danger"
+							ng-click="userCtrl.deleteUser(user)"
+							ng-show="user.deletable" >
+						{{'Delete User'|translate}}
+					</button>
+				</td>
+			</tr>  <!-- ends ng-repeat -->
+			<tr><td></td><td></td><td></td><td></td></tr>
+		</table>
+				<button type="button"
+							class="btn btn-default"
+							ng-click="" >
+						+  {{'Add User'|translate}}
+					</button>

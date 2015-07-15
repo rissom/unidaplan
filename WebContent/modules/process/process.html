@@ -3,7 +3,7 @@
 <p />	
 <p />
 <div ng-init="processCtrl.loadProcess(1)"></div>
-<h2>{{processCtrl.process.trprocesstype}} {{processCtrl.process.p_number}}</h2>
+<h3>{{processCtrl.process.trprocesstype}} {{processCtrl.process.p_number}}</h3>
 <h4>{{'Params'|translate}}</h4>
 <table class="table">
 	<tr ng-repeat="parameter in processCtrl.process.parameters">
@@ -43,7 +43,7 @@
 		<td align="center">
 			<span ng-show="processCtrl.process.next"> &nbsp;
 				{{'next'|translate}} &nbsp; &#9654; &nbsp; <br />
-			<button class="btn btn-default">next</button>			
+			<button class="btn btn-default">{{'next'|translate}}</button>			
 			</span>
 		</td>
 	</tr>

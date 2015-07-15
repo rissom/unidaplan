@@ -86,8 +86,13 @@
 		</button>
 		<ul class="dropdown-menu" role="menu">
 			<li>
-				<a ui-sref="error">
-					{{'Groups and Users'|translate}}
+				<a ui-sref="users">
+					{{'Users'|translate}}
+				</a>
+			</li>
+			<li>
+				<a ui-sref="groups">
+					{{'Groups'|translate}}
 				</a>
 			</li>
 			<li>
@@ -148,5 +153,7 @@
 				</a>
 			</li>
 		</ul>
-	</div>
+
+	</div>			
 </div>
+<small>User: {{menuCtrl.getUserName()}}, last Login: {{menuCtrl.getLastLogin()}}</samll>

@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-	public class AddSampleParameter extends HttpServlet {
+	public class AddExperimentParameter extends HttpServlet {
 		private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("resource")
@@ -25,7 +25,7 @@ import org.json.JSONObject;
 	    try {
 			  jsonIn = new JSONObject(in);
 		} catch (JSONException e) {
-			System.err.println("SaveSampleParameter: Input is not valid JSON");
+			System.err.println("AddExperimentParameter: Input is not valid JSON");
 		}
 		response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
@@ -38,7 +38,7 @@ import org.json.JSONObject;
 			 sampleid=Integer.parseInt(request.getParameter("sampleid")); 
 //			 sampleid=jsonIn.getInt("sampleid");			 
 		} catch (JSONException e) {
-			System.err.println("AddSampleParameter: Error parsing ID-Field");
+			System.err.println("AddExperimentParameter: Error parsing ID-Field");
 			response.setStatus(404);
 		}
 
@@ -50,18 +50,18 @@ import org.json.JSONObject;
 	    int type=-1;
 		try {	
 			pstmt= DBconn.conn.prepareStatement( 			
-					 "SELECT paramdef.datatype FROM Ot_parameters otp \n"
-					+"JOIN paramdef ON otp.definition=paramdef.id \n"
-					+"WHERE otp.id=? \n");
+					 "SELECT paramdef.datatype FROM Expp_param ep \n"
+					+"JOIN paramdef ON ep.definition=paramdef.id \n"
+					+"WHERE ep.id=? \n");
 		   	pstmt.setInt(1, id);
 		   	JSONObject answer=DBconn.jsonObjectFromPreparedStmt(pstmt);
 			type= answer.getInt("datatype");
 		} catch (SQLException e) {
-			System.err.println("SaveSampleParameter: Problems with SQL query");
+			System.err.println("AddExperimentParameter: Problems with SQL query");
 		} catch (JSONException e){
-			System.err.println("SaveSampleParameter: Problems creating JSON");
+			System.err.println("AddExperimentParameter: Problems creating JSON");
 		} catch (Exception e) {
-			System.err.println("SaveSampleParameter: Strange Problems");
+			System.err.println("AddExperimentParameter: Strange Problems");
 		}
 		
 		// differentiate according to type
@@ -69,21 +69,21 @@ import org.json.JSONObject;
 
 			switch (type) {
 	        case 1: {   pstmt= DBconn.conn.prepareStatement( 			// Integer values
-			   					 "INSERT INTO o_integer_data VALUES(DEFAULT,?,?,?) RETURNING ID");
+			   					 "INSERT INTO expp_integer_data VALUES(DEFAULT,?,?,?) RETURNING ID");
 			   			pstmt.setInt(1, id);
 				        pstmt.setInt(2, sampleid);
 			   			pstmt.setInt(3, jsonIn.getInt("value"));
 			   			break;
 			        }
 	        case 2: {   pstmt= DBconn.conn.prepareStatement( 			// Double values
-	   					 		"INSERT INTO o_float_data VALUES(DEFAULT,?,?,?) RETURNING ID");
+	   					 		"INSERT INTO expp_float_data VALUES(DEFAULT,?,?,?) RETURNING ID");
 				        pstmt.setInt(1, sampleid);
 			   			pstmt.setInt(2, id);				        
 				        pstmt.setDouble(3, jsonIn.getDouble("value"));
 	   					break;
         			}
 	        case 3: {   pstmt= DBconn.conn.prepareStatement( 			// Measurement data
-						 		"INSERT INTO o_measurement_data VALUES(DEFAULT,?,?,?,?) RETURNING ID");
+						 		"INSERT INTO expp_measurement_data VALUES(DEFAULT,?,?,?,?) RETURNING ID");
 	        			pstmt.setInt(1, sampleid);
 	        			pstmt.setInt(2, id);
 						pstmt.setDouble(3, Double.parseDouble(jsonIn.getString("value").split("±")[0]));
@@ -91,14 +91,14 @@ import org.json.JSONObject;
 						break;
 			        }
 	        case 4:  { pstmt= DBconn.conn.prepareStatement( 			// String data	
-				 		"INSERT INTO o_string_data VALUES(DEFAULT,?,?,?) RETURNING ID");
+				 		"INSERT INTO expp_string_data VALUES(DEFAULT,?,?,?) RETURNING ID");
 				        pstmt.setInt(1, sampleid);
 				        pstmt.setInt(2, id);
 				        pstmt.setString(3, jsonIn.getString("value"));
 					   break;
 			        }
 	        case 5: {  pstmt= DBconn.conn.prepareStatement( 			
-	        		 	"INSERT INTO o_string_data VALUES(DEFAULT,?,?,?) RETURNING ID");
+	        		 	"INSERT INTO expp_string_data VALUES(DEFAULT,?,?,?) RETURNING ID");
 				        pstmt.setInt(1, sampleid);
 				        pstmt.setInt(2, id);
 				        pstmt.setString(3, jsonIn.getString("value"));
@@ -112,12 +112,12 @@ import org.json.JSONObject;
 		pstmt.close();
 		DBconn.closeDB();
 	} catch (SQLException e) {
-		System.err.println("SaveSampleParameter: More Problems with SQL query");
+		System.err.println("AddExperimentParameter: More Problems with SQL query");
 		e.printStackTrace();
 	} catch (JSONException e){
-		System.err.println("SaveSampleParameter: More Problems creating JSON");
+		System.err.println("AddExperimentParameter: More Problems creating JSON");
 	} catch (Exception e) {
-		System.err.println("SaveSampleParameter: More Strange Problems");
+		System.err.println("AddExperimentParameter: More Strange Problems");
 	}
 		
     // tell client that everything is fine

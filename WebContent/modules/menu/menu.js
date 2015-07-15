@@ -19,6 +19,17 @@ function menuf($translate,$rootScope) {
 			$rootScope.$broadcast('language changed',{'language':lang});
 		}
 	}
+	
+	
+	this.getUserName = function(){
+		return "Thorsten Rissom";
+	}
+	
+	
+	this.getLastLogin = function(){
+		return "1.1.1901";
+	}
+	
 }
 
 angular.module('unidaplan').controller('menu',['$translate','$rootScope',menuf]);

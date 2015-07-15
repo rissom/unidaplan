@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-function openExperiment(restfactory,$translate,$scope) {
+function oExpController(restfactory,$translate,$scope) {
 	
 	this.experiments =  [];			
 
@@ -9,6 +9,16 @@ function openExperiment(restfactory,$translate,$scope) {
 	
 	this.myName='Thorsten Rissom';
 	
+	this.statusItems=["planning phase","planned","running","completed"]
+	
+	this.setStatus=function(status,experiment){
+		experiment.status=status;
+		var promise = restfactory.GET("change-experiment-status?id="+experiment.id+"&status="+status)
+	    promise.then(function(rest) {
+	    }, function(rest) {
+	    	console.log("ERROR");
+	    });
+	}
 	
 	this.loadData = function() {
 		var promise = restfactory.GET("experiments.json"),
@@ -24,18 +34,14 @@ function openExperiment(restfactory,$translate,$scope) {
 	    });
 	};
 	
+	var thisOExpCtrl = this;
 	$scope.$on('language changed', function(event, args) {
-		$scope.oexpCtrl.translate(args.language);
+		thisOExpCtrl.translate(args.language);
 	});
 	
+	
 	this.getStatus = function(experiment) {
-		var status='-';
-		switch (experiment.status) {
-			case 0  : status="planning phase"; break;
-			case 1  : status="planned"; break;
-			case 2  : status="running"; break; 
-		    default : status="finished"; }
-		return status;
+		return this.statusItems[experiment.status];
 	};
 	
 	
@@ -70,12 +76,20 @@ function openExperiment(restfactory,$translate,$scope) {
 				if (anExp.name==translation.string_key && translation.language==lang)
 					{anExp.trname=translation.value;}
 			})
-		})		
+		})	
+		if (lang=='en') {
+			this.statusItems=["planning phase","planned","running","completed"];
+		}else{
+			this.statusItems=["Planungsphase","geplant","läuft","abgeschlossen"];
+		}
 	};
+	
+	//activate function:
+	this.loadData();
 
 };
     
         
-angular.module('unidaplan').controller('expcontroller',['restfactory','$translate','$scope',openExperiment]);
+angular.module('unidaplan').controller('oExpController',['restfactory','$translate','$scope',oExpController]);
 
 })();

@@ -172,7 +172,11 @@ public class Showprocess extends HttpServlet {
 	} catch (Exception e2) {
 		System.err.println("Showsample: Strange Problem while getting Stringkeys");
 	}
-  	out.println(jsProcess.toString());
+	if (jsProcess.length()>0){
+		out.println(jsProcess.toString());
+	}else{
+		out.println("{error:nodata}");
+	}
   	DBconn.closeDB();
     }
   }

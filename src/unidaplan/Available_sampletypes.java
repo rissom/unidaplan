@@ -29,9 +29,8 @@ import org.json.JSONObject;
 	    response.setCharacterEncoding("utf-8");
 	    PrintWriter out = response.getWriter();
 	    
-	    PreparedStatement ptsmt=null;		// Declare variables
+	    PreparedStatement pstmt = null;		// Declare variables
 		JSONArray objectList = null;
-		PreparedStatement pstmt;
 	    
 	    DBconnection DBconn=new DBconnection();   // New connection to the database
 	    DBconn.startDB();

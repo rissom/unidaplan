@@ -7,14 +7,14 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 
 .config(function($stateProvider, $urlRouterProvider) {
     
-    $urlRouterProvider.otherwise('/open-experiments');
+    $urlRouterProvider.otherwise('/login');
     
     $stateProvider
         
         // UI-Router STATES AND NESTED VIEWS ========================================
         
         .state('sample', {
-        url: '/sample/:sampleID',
+        url: '/sample/{sampleID:int}',
         templateUrl: 'modules/sample/sample.html',
         controller: "sampleController as ssc"  
         })
@@ -33,14 +33,33 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
         
         .state('openExperiment', {
         url: '/experiments',
-        templateUrl: 'modules/experiments/open-experiment.html'
+        controller:'oExpController as oexpCtrl',
+        templateUrl: "modules/experiments/open-experiment.html"
         })
         
         .state('experiment', {
-    	url: '/experiment/:experimentID',
+    	url: '/experiment/{experimentID:int}',
         templateUrl: 'modules/experiments/experiment.html',
         controller: 'expController as expCtrl'
         })
+        
+        .state('users', {
+    	url: '/admin/users',
+        templateUrl: 'modules/users/users.html',
+        controller: 'userController as userCtrl'
+        })
+        
+        .state('groups', {
+    	url: '/admin/groups',
+        templateUrl: 'modules/groups/groups.html',
+        controller: 'groupController as groupCtrl'
+        })
+        
+        .state('login', {
+    	url: '/login',
+    	templateUrl: 'modules/login/login.html',
+    	controller: 'loginController as loginCtrl'
+    	})
         
         .state('about', {
         url: '/about',
@@ -57,7 +76,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
     		template: "<h1>ERROR!!!</h1>"
     	})
     })
-        
+       
     
 .config(['$translateProvider', function ($translateProvider) {
   $translateProvider.useSanitizeValueStrategy('escape');
@@ -74,11 +93,13 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
     'My Experiments': 'Meine Experimente',
     'Other Experiments': 'Andere Experimente',
     'Base Parameters': 'Basisparameter',
+    'created by' : 'erstellt von',
     'Files': 'Dateien',
     'Sample Tree': 'Probenbaum',
     'Planned Processes': 'Planung',
     'delete sample': 'Probe löschen',
     'Experiment': 'Experiment',
+    'No.' : 'Nr.',
     'Help': 'Hilfe',
     'Sample': 'Probe',
     'Samples': 'Proben',
@@ -89,7 +110,8 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
   	'Originates from': 'Stammt ab von',
   	'Delete Sample': 'Probe löschen',
   	'Delete Experiment' : 'Experiment löschen',
-  	'New Process' : 'Neuer Prozess',  	
+  	'New Process' : 'Neuer Prozess',
+  	'no.' : 'Nr.',  
   	'Help page': 'Hilfe Seite',
   	'New Sample': 'Neue Probe',
   	'Recent Samples' : 'zuvor geöffnete Proben',
@@ -117,8 +139,14 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
   		  '(z.B. Pulverproben, Solarzellen, Halbleiterlaser, usw.) definiert werden. Die Proben können bestimmte'+
   		  'Parameter und Eigenschaften aufweisen. Die Auswahl und Definition der Parameter erfolgt über den'+
   		  'Adminstrator.',
-    'Available Samples':'Verfügbare Proben'
-  });
+    'Available Samples':'Verfügbare Proben',
+    'Users' : 'Benutzer',
+    'Delete User' : 'Lösche Benutzer',
+    'role' : 'Rolle',
+    'E-mail' : 'E-Mail',
+    'Groups' : 'Gruppen',
+    'Delete Group' : 'Gruppe löschen',
+    'Members' : 'Mitglieder'});
  
   $translateProvider.preferredLanguage('en');
 }])

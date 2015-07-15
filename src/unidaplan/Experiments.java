@@ -16,7 +16,6 @@ import org.json.JSONObject;
 
 	public class Experiments extends HttpServlet {
 		private static final long serialVersionUID = 1L;
-		private static JSONArray result;
 
 	@Override
 	  public void doGet(HttpServletRequest request, HttpServletResponse response)
