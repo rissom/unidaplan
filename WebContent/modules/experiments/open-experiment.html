@@ -17,16 +17,16 @@
 				<a ui-sref="experiment({experimentID:experiment.id})">{{experiment.trname}}</a>
 				</td>
 				<td>
-	  				<span class="dropdown" dropdown on-toggle="toggled(open)">
-					      <a href class="dropdown-toggle" dropdown-toggle>
+	  				<div class="dropdown" dropdown on-toggle="toggled(open)">
+					      <a class="dropdown-toggle" dropdown-toggle>
 				  			{{oexpCtrl.getStatus(experiment)}}
 					      </a>
 					      <ul class="dropdown-menu">
 					        <li ng-repeat="choice in oexpCtrl.statusItems">
-					          <a href ng-click="oexpCtrl.setStatus($index,experiment)">{{choice}}</a>
+					          <a  ng-click="oexpCtrl.setStatus($index,experiment)">{{choice}}</a>
 					        </li>
 					      </ul>
-	  				 </span>
+	  				 </div>
 				</td>
 				<td>
 					<button type="button" class="btn btn-danger">
@@ -65,16 +65,16 @@
 					</a>
 				</td>
 				<td>
-					    <span class="dropdown" dropdown on-toggle="toggled(open)">
-					      <a href class="dropdown-toggle" dropdown-toggle>
+					    <div class="dropdown" dropdown on-toggle="toggled(open)">
+					      <a class="dropdown-toggle" dropdown-toggle>
 				  			{{oexpCtrl.getStatus(experiment)}}
 					      </a>
 					      <ul class="dropdown-menu">
 					        <li ng-repeat="choice in oexpCtrl.statusItems">
-					          <a href ng-click="oexpCtrl.setStatus($index,experiment)">{{choice}}</a>
+					          <a ng-click="oexpCtrl.setStatus($index,experiment)">{{choice}}</a>
 					        </li>
 					      </ul>
-	  				  </span>
+	  				  </div>
 				
 				</td>
 				<td>
@@ -85,4 +85,3 @@
 			</tr>
 			<tr><td></td><td></td><td></td><td></td><td></td></tr>
 		</table>
-</div>	

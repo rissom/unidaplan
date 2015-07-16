@@ -40,16 +40,6 @@ function sampleChoser(sampleService,$translate,$scope,restfactory) {
 	// get a bunch of fitting samples
 	this.loadSamples=function(){
 		var thisController=this;
-//		 if (parameter.pid) {
-//				var res = restfactory.POST('update-sample-parameter.json',parameter);
-//				res.then(function(data, status, headers, config) {
-//						 },
-//						 function(data, status, headers, config) {
-//							parameter.value=oldValue;
-//							console.log('verkackt');
-//							console.log(data);
-//						 }
-//						);
 		var details={}
 		details.sampletypes=this.getSelectedSampleTypeIDs();
 		var promise=restfactory.POST('/samples_by_name.json?type=1&name=1',details);
@@ -110,6 +100,8 @@ function sampleChoser(sampleService,$translate,$scope,restfactory) {
 		}
 	}
 	
+	
+	
 	this.getSelectedSampleTypeIDs=function(){
 		var typeList=[]
 		if (thisController.selectedtypes==undefined || thisController.selectedtypes[0].id==0){  // all types selected
@@ -136,7 +128,6 @@ function sampleChoser(sampleService,$translate,$scope,restfactory) {
 	//activate function
 	this.loadTypes();
 	this.loadSamples();
-
 };
 
         
