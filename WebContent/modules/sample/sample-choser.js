@@ -17,6 +17,7 @@ function sampleChoser(sampleService,$translate,$scope,restfactory) {
 			thisController.types=data.data.samplestypes;
 			thisController.types=data.data.sampletypes;
 			thisController.strings=data.data.strings;
+			thisController.loadSamples();
 		});
 	}
 	
@@ -42,7 +43,8 @@ function sampleChoser(sampleService,$translate,$scope,restfactory) {
 		var thisController=this;
 		var details={}
 		details.sampletypes=this.getSelectedSampleTypeIDs();
-		var promise=restfactory.POST('/samples_by_name.json?type=1&name=1',details);
+		console.log("details: "+details)
+		var promise=restfactory.POST('/samples_by_name.json?name=1',details);
 		promise.then(function(data){
 			thisController.samples=data.data;
 			thisController.translate();
@@ -71,8 +73,11 @@ function sampleChoser(sampleService,$translate,$scope,restfactory) {
 	
 	
 	this.typeSelected=function(sample){
-		if (this.selectedtypes==undefined||this.selectedtypes[0].id==0){
-			return true
+		if (this.selectedtypes==undefined){
+			return true;
+		}
+		if(this.selectedtypes[0].id==0){
+			return true;
 		}
 		var thisController=this;
 		var found=false;
@@ -127,7 +132,6 @@ function sampleChoser(sampleService,$translate,$scope,restfactory) {
 	
 	//activate function
 	this.loadTypes();
-	this.loadSamples();
 };
 
         

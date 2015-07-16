@@ -15,16 +15,16 @@
 				    {{user.email}}
 				</td>
 				<td>
-	  				<span class="dropdown" dropdown on-toggle="toggled(open)">
-					      <a href class="dropdown-toggle" dropdown-toggle>
+	  				<div class="dropdown" dropdown on-toggle="toggled(open)">
+					      <a class="dropdown-toggle" dropdown-toggle>
 				  			{{userCtrl.getRole(user)}}
 					      </a>
 					      <ul class="dropdown-menu">
 					        <li ng-repeat="role in userCtrl.roles">
-					          <a href ng-click="userCtrl.setRole($index,user)">{{role}}</a>
+					          <a ng-click="userCtrl.setRole($index,user)">{{role}}</a>
 					        </li>
 					      </ul>
-	  				 </span>
+	  				 </div>
 				</td>
 				<td>
 					<button type="button"

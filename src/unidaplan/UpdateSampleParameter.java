@@ -102,7 +102,6 @@ import org.json.JSONObject;
 		DBconn.closeDB();
 	} catch (SQLException e) {
 		System.err.println("SaveSampleParameter: More Problems with SQL query");
-		e.printStackTrace();
 	} catch (JSONException e){
 		System.err.println("SaveSampleParameter: More Problems creating JSON");
 	} catch (Exception e) {

@@ -12,16 +12,16 @@
 					{{group.name}}
 				</td>
 				<td>
-	  				<span class="dropdown" dropdown on-toggle="toggled(open)">
-					      <a href class="dropdown-toggle" dropdown-toggle>
+	  				<div class="dropdown" dropdown on-toggle="toggled(open)">
+					      <a class="dropdown-toggle" dropdown-toggle>
 				  			{{groupCtrl.getRole(group)}}
 					      </a>
 					      <ul class="dropdown-menu">
 					        <li ng-repeat="role in groupCtrl.roles">
-					          <a href ng-click="groupCtrl.setRole($index,group)">{{role}}</a>
+					          <a ng-click="groupCtrl.setRole($index,group)">{{role}}</a>
 					        </li>
 					      </ul>
-	  				 </span>
+	  				 </div>
 				</td>
 				<td>
 					<button type="button"

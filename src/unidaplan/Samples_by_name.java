@@ -3,7 +3,6 @@ package unidaplan;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.servlet.ServletException;
@@ -32,46 +31,51 @@ public class Samples_by_name extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
-	    JSONObject  jsonIn = null;	    
+	    JSONObject  jsonIn = null;	 
+	    JSONArray samplelist =new JSONArray();
 	    try {
 			  jsonIn = new JSONObject(in);
 		} catch (JSONException e) {
-			System.err.println("SaveSampleParameter: Input is not valid JSON");
+			System.err.println("Samples by name: Input is not valid JSON");
 		}
-	    System.out.println(jsonIn);
 		response.setContentType("application/json");
         response.setCharacterEncoding("utf-8");
 	 	DBconnection DBconn=new DBconnection();
 	 	DBconn.startDB();
 	 	String name="";
-	 	int typeID=1;
-	 	ResultSet result = null;
 		try{
 			name=request.getParameter("name");
-			typeID=Integer.parseInt(request.getParameter("type")); 
 		} catch (Exception e1) {
-			System.out.print("no type ID or name given!");
+			System.err.print("no type ID or name given!");
 		} 
 	    PrintWriter out = response.getWriter();
 	    PreparedStatement pstmt = null;
 		
 	    try {
-	       pstmt = DBconn.conn.prepareStatement(	
-			"SELECT  samplenames.id, samplenames.name, samplenames.typeid " 
-			+"FROM samplenames "
-			+"WHERE samplenames.name LIKE ? "
-			+"AND samplenames.typeID=? "
-			+"ORDER BY samplenames.name "
-			+"LIMIT 20 ");
-	       pstmt.setString(1, "%"+name+"%");
-	       pstmt.setInt(2, typeID);
-	       result=pstmt.executeQuery(); // get ResultSet from the database using the query
-		} catch (SQLException eS) {
-			System.out.println("SQL Error in Sample by name");
-			eS.printStackTrace();
+	       JSONArray typeArray=jsonIn.getJSONArray("sampletypes");
+	       if (typeArray.length()>0){
+		       String query="SELECT  samplenames.id, samplenames.name, samplenames.typeid \n"
+		    		   		+"FROM samplenames \n" 
+		    		   		+"WHERE samplenames.name LIKE '%"+name+"%' AND "
+		    		   		+"samplenames.typeID = ANY ('{";
+		       String sep="";
+		       for (int i=0; i<typeArray.length(); i++){
+		    	   query += sep+typeArray.getInt(i);
+		    	   sep=",";
+		       }
+		       query+= "}'::int[]) \n"
+		    		   	+"ORDER BY samplenames.name \n" 
+		    		   	+"LIMIT 20 \n";
+		       samplelist=DBconn.jsonfromquery(query); 
+	       }
+		} catch (SQLException  eS) {
+			System.err.println("SQL Error in Sample by name");
+		} catch (JSONException js){
+			System.err.println("JSON Error in Sample by name");
+		} catch (Exception e) {
+			System.err.println("Misc Error in Sample by name");
 		} finally {
         try {
-          JSONArray samplelist = DBconn.table2json(result);
           if (samplelist.length()>0) {
         	  out.println(samplelist.toString());
 	      }
