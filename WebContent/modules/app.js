@@ -149,7 +149,8 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
     'Members' : 'Mitglieder',
     'Search for Sample' : 'Suche nach Probe',
     'Enter samplename here' : 'Probennamen hier eingeben',
-    'Available sample types' : 'Mögliche Probentypen'});
+    'Available sample types' : 'Mögliche Probentypen',
+    'Add User' : 'Benutzer hinzufügen'});
  
   $translateProvider.preferredLanguage('en');
 }])
