@@ -5,6 +5,7 @@
 function sampleChoser(sampleService,$translate,$scope,restfactory) {
 
 	this.samples=[];
+	this.selectedTypesVar=[]
 	this.types=[];
 	this.strings=[];
 	this.selectortypes=[];
@@ -38,41 +39,83 @@ function sampleChoser(sampleService,$translate,$scope,restfactory) {
 	
 	
 	
+	// get all available sample types
 	this.loadTypes=function(){
 		var promise=restfactory.GET('/sampletypes.json');
 		promise.then(function(data){
 			thisController.types=data.data.sampletypes;
 			thisController.strings=data.data.strings;
-			thisController.loadSamples();
+			angular.forEach(thisController.types,function(type) {
+				thisController.selectedTypesVar.push(type.id);			
+			});			
 		});
 	}
 	
 	
-	$scope.$watch('sampleChoserCtrl.userinput', function (tmpStr){
+	
+	$scope.$watch('sampleChoserCtrl.selectedtypes', function (seltypes){
+		var typeList=[];
+		if (seltypes==undefined || seltypes.length==0){  // Nothing selected => Everything selected
+			angular.forEach(thisController.types,function(type) {
+				typeList.push(type.id);			
+			});
+		} else {
+		if (seltypes[0].id==0){  // all types field selected => Everything selected
+			angular.forEach(thisController.types,function(type) {
+				typeList.push(type.id);			
+			});
+		}else{										// make list of selected types
+			angular.forEach(thisController.selectedtypes,function(type) {
+				typeList.push(type.id);	
+			})
+		}}
+		thisController.selectedTypesVar = typeList;
+		
+		//check if there was change
 		var oldUserinput="";
-		if (tmpStr!=undefined) {oldUserinput=tmpStr;}
-		var oldTypeIDs = thisController.getSelectedSampleTypeIDs();
+		if (thisController.userinput!=undefined) {
+			oldUserinput=thisController.userinput;
+		}
+		var oldTypeIDs = thisController.selectedTypesVar;
 		  setTimeout(function() {
-			    // if searchStr is still the same..
-			    // go ahead and retrieve the data
-			    if (thisController.checkForChange(oldUserinput, oldTypeIDs)==false)			    	
-			    {
-			    	thisController.loadSamples();
+			  	var newUserinput="";
+				if (thisController.userinput!=undefined){
+					newUserinput=thisController.userinput;
+				}
+			    if (oldUserinput==newUserinput){
+			    	if( thisController.selectedTypesVar.equals(oldTypeIDs)){
+				    	thisController.loadSamples();
+			    	}
 			    }
-			  }, 250);
-	});			
+			   
+		  }, 250);
+	});	
 	
 	
-	this.checkForChange = function(oldUserinput, oldTypeIDs){
-			if (oldUserinput == thisController.userinput){
-				var newTypeIDs=thisController.getSelectedSampleTypeIDs();
-				 	if (newTypeIDs.equals(oldTypeIDs)){
-						return false;				 	
-					}
-			}
-			return true;
-	}
 	
+	$scope.$watch('sampleChoserCtrl.userinput', function (tmpStr){
+		//check if there was change
+		var oldUserinput="";
+		if (thisController.userinput!=undefined) {
+			oldUserinput=thisController.userinput;
+		}
+		var oldTypeIDs = thisController.selectedTypesVar;
+		  setTimeout(function() {
+			  	var newUserinput="";
+				if (thisController.userinput!=undefined){
+					newUserinput=thisController.userinput;
+				}
+			    if (oldUserinput==newUserinput){
+			    	if( thisController.selectedTypesVar.equals(oldTypeIDs)){
+				    	thisController.loadSamples();
+			    	}
+			    }			    
+		  }, 250);
+	});	
+	
+
+	
+	// get the translated string for a string key
 	this.stringFromKey = function(stringkey,strings) {
 		var keyfound=false;
 		var returnString="@@@ no string! @@@";
@@ -88,28 +131,26 @@ function sampleChoser(sampleService,$translate,$scope,restfactory) {
 	};
 	
 	
+	
 	// get a bunch of fitting samples
 	this.loadSamples=function(){
 		var details={}
-		details.sampletypes=this.getSelectedSampleTypeIDs();	
+		details.sampletypes=this.selectedTypesVar;	
 		var name="";
 		if (thisController.userinput!=undefined){name=thisController.userinput}
 			var promise=restfactory.POST('/samples_by_name.json?name='+name,details);
 			promise.then(function(data){
 				thisController.samples=data.data;
-				thisController.translate();
+				if (thisController.firsttime) {
+					thisController.translate();
+					thisController.firsttime=false;
+				}
 			});		
 	}
 	
 	
 	
-	this.getSelectorSize=function(){
-		console.log("working");
-		return "12";
-	}
-	
-	
-	
+	// return the translated name string of a type for a sample
 	this.getType=function(sample){
 		var typeName
 		angular.forEach(thisController.types,function(type) {
@@ -121,24 +162,18 @@ function sampleChoser(sampleService,$translate,$scope,restfactory) {
 	}
 	
 	
-	
+	// Check if the sampletype is selected
 	this.typeSelected=function(sample){
-		if (this.selectedtypes==undefined){
-			return true;
-		}
-		if(this.selectedtypes.length>0 && this.selectedtypes[0].id==0){
-			return true;
-		}
 		var found=false;
-		angular.forEach(thisController.selectedtypes,function(type) {
-			if (sample.typeid==type.id){
+		angular.forEach(thisController.selectedTypesVar,function(type) {
+			if (sample.typeid==type){
 				found=true;
 			}
 		});
 		return found;
 	}
 	
-	
+
 	
 	this.translate=function(lang){
 		this.selectortypes=[];
@@ -152,23 +187,7 @@ function sampleChoser(sampleService,$translate,$scope,restfactory) {
 			thisController.selectortypes.unshift({trname:'all types','id':0});
 		}
 	}
-	
-	
-	
-	this.getSelectedSampleTypeIDs=function(){
-		var typeList=[]
-		if (thisController.selectedtypes==undefined || thisController.selectedtypes[0].id==0){  // all types selected
-			angular.forEach(thisController.types,function(type) {
-				typeList.push(type.id);			
-			});
-		}else{
-			angular.forEach(thisController.selectedtypes,function(type) {
-				typeList.push(type.id);			
-			})
-		}
-		return typeList;
-	}
-	
+
 	
 	
 	var thisController = this;
@@ -179,6 +198,7 @@ function sampleChoser(sampleService,$translate,$scope,restfactory) {
 	
 	
 	//activate function
+	this.firsttime=true;
 	this.loadTypes();
 };
 
