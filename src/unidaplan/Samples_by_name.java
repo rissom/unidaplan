@@ -35,6 +35,7 @@ public class Samples_by_name extends HttpServlet {
 	    JSONArray samplelist =new JSONArray();
 	    try {
 			  jsonIn = new JSONObject(in);
+			  System.out.println(jsonIn);
 		} catch (JSONException e) {
 			System.err.println("Samples by name: Input is not valid JSON");
 		}

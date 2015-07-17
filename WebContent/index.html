@@ -12,7 +12,6 @@
 <script type="text/javascript" src='modules/app.js'></script>
 <script type="text/javascript" src='factories/restfactory.js'></script>
 <script type="text/javascript" src='directives/sample-button.js'></script>
-<!--  	<script type="text/javascript" src='select-sample.js'>		  </script>	-->
 <script type="text/javascript" src='modules/sample/sample-choser.js'></script>
 <script type="text/javascript" src='modules/sample/sample.js'></script>
 <script type="text/javascript" src='modules/menu/menu.js'></script>
@@ -33,19 +32,11 @@
 </head>
 
 <body>
-	<!--  <ng-include src="'view/select-sample.html'"></ng-include>  -->
 	<div ng-controller="menu as menuCtrl"> 
-	
 		<ng-include src="'modules/menu/menu.html'"></ng-include>
 			<div class="container">
-		
-	<!-- 	<ng-include src="'modules/experiments/experiments.html'"></ng-include>
-		<ng-include src="'modules/sample/sample.html'"></ng-include>
-		<ng-include src="'modules/process/process.html'"></ng-include>
-		<ng-include src="'modules/help/about.html'"></ng-include>
-		<ng-include src="'modules/help/help.html'"></ng-include> -->
-	<div ui-view></div>
-	</div>
+				<div ui-view></div>
+			</div>
 	</div>
 </body>
 </html>

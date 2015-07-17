@@ -35,15 +35,16 @@
     <url-pattern>/processtypes.json</url-pattern>
   </servlet-mapping>
   <servlet>
-    <description>shows available object-types</description>
+    <description>shows available sample types</description>
     <display-name>Available sampletypes</display-name>
-    <servlet-name>Available_sampletypes</servlet-name>
-    <servlet-class>unidaplan.Available_sampletypes</servlet-class>
+    <servlet-name>AvailableSampletypes</servlet-name>
+    <servlet-class>unidaplan.AvailableSampletypes</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>Available_sampletypes</servlet-name>
+    <servlet-name>AvailableSampletypes</servlet-name>
     <url-pattern>/sampletypes.json</url-pattern>
   </servlet-mapping>
+  
   <servlet>
     <description>shows available Experiments</description>
     <display-name>Experiments</display-name>
@@ -54,6 +55,7 @@
     <servlet-name>Experiments</servlet-name>
     <url-pattern>/experiments.json</url-pattern>
   </servlet-mapping>
+  
   <servlet>
     <description>show process</description>
     <display-name>Process</display-name>
@@ -64,6 +66,7 @@
     <servlet-name>Process</servlet-name>
     <url-pattern>/process.json</url-pattern>
   </servlet-mapping>
+  
   <servlet>
     <description>Update sample parameter</description>
     <display-name>UpdateSampleParameter</display-name>

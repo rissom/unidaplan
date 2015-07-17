@@ -8,13 +8,39 @@ function sampleChoser(sampleService,$translate,$scope,restfactory) {
 	this.types=[];
 	this.strings=[];
 	this.selectortypes=[];
+	thisController=this;
+	
+	
+	// attach the .equals method to Array's prototype to call it on any array
+	Array.prototype.equals = function (array) {
+	    // if the other array is a falsy value, return
+	    if (!array)
+	        return false;
+
+	    // compare lengths - can save a lot of time 
+	    if (this.length != array.length)
+	        return false;
+
+	    for (var i = 0, l=this.length; i < l; i++) {
+	        // Check if we have nested arrays
+	        if (this[i] instanceof Array && array[i] instanceof Array) {
+	            // recurse into the nested arrays
+	            if (!this[i].equals(array[i]))
+	                return false;       
+	        }           
+	        else if (this[i] != array[i]) { 
+	            // Warning - two different object instances will never be equal: {x:20} != {x:20}
+	            return false;   
+	        }           
+	    }       
+	    return true;
+	}   
+	
 	
 	
 	this.loadTypes=function(){
-		var thisController=this;
 		var promise=restfactory.GET('/sampletypes.json');
 		promise.then(function(data){
-			thisController.types=data.data.samplestypes;
 			thisController.types=data.data.sampletypes;
 			thisController.strings=data.data.strings;
 			thisController.loadSamples();
@@ -22,6 +48,30 @@ function sampleChoser(sampleService,$translate,$scope,restfactory) {
 	}
 	
 	
+	$scope.$watch('sampleChoserCtrl.userinput', function (tmpStr){
+		var oldUserinput="";
+		if (tmpStr!=undefined) {oldUserinput=tmpStr;}
+		var oldTypeIDs = thisController.getSelectedSampleTypeIDs();
+		  setTimeout(function() {
+			    // if searchStr is still the same..
+			    // go ahead and retrieve the data
+			    if (thisController.checkForChange(oldUserinput, oldTypeIDs)==false)			    	
+			    {
+			    	thisController.loadSamples();
+			    }
+			  }, 250);
+	});			
+	
+	
+	this.checkForChange = function(oldUserinput, oldTypeIDs){
+			if (oldUserinput == thisController.userinput){
+				var newTypeIDs=thisController.getSelectedSampleTypeIDs();
+				 	if (newTypeIDs.equals(oldTypeIDs)){
+						return false;				 	
+					}
+			}
+			return true;
+	}
 	
 	this.stringFromKey = function(stringkey,strings) {
 		var keyfound=false;
@@ -40,15 +90,15 @@ function sampleChoser(sampleService,$translate,$scope,restfactory) {
 	
 	// get a bunch of fitting samples
 	this.loadSamples=function(){
-		var thisController=this;
 		var details={}
-		details.sampletypes=this.getSelectedSampleTypeIDs();
-		console.log("details: "+details)
-		var promise=restfactory.POST('/samples_by_name.json?name=1',details);
-		promise.then(function(data){
-			thisController.samples=data.data;
-			thisController.translate();
-		});		
+		details.sampletypes=this.getSelectedSampleTypeIDs();	
+		var name="";
+		if (thisController.userinput!=undefined){name=thisController.userinput}
+			var promise=restfactory.POST('/samples_by_name.json?name='+name,details);
+			promise.then(function(data){
+				thisController.samples=data.data;
+				thisController.translate();
+			});		
 	}
 	
 	
@@ -76,10 +126,9 @@ function sampleChoser(sampleService,$translate,$scope,restfactory) {
 		if (this.selectedtypes==undefined){
 			return true;
 		}
-		if(this.selectedtypes[0].id==0){
+		if(this.selectedtypes.length>0 && this.selectedtypes[0].id==0){
 			return true;
 		}
-		var thisController=this;
 		var found=false;
 		angular.forEach(thisController.selectedtypes,function(type) {
 			if (sample.typeid==type.id){
@@ -92,7 +141,6 @@ function sampleChoser(sampleService,$translate,$scope,restfactory) {
 	
 	
 	this.translate=function(lang){
-	var thisController=this;
 		this.selectortypes=[];
 		angular.forEach(thisController.types,function(type) {
 			type.trname=thisController.stringFromKey(type.string_key,thisController.strings);
