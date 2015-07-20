@@ -25,12 +25,11 @@ import org.json.JSONException;
 	    DBconn.startDB();
 	    try {  
 			pstmt= DBconn.conn.prepareStatement( 	
-			"SELECT max(users.id) AS id, max(users.name) AS name, max(users.email) AS email, " 
-		   +"max(users.lastchange) AS lastchange, "
-		   +"CASE count(ep.id) WHEN 0 THEN true ELSE false END AS deletable "
-		   +"FROM users "
-		   +"LEFT JOIN exp_plan ep ON users.id=ep.creator "
-		   +"GROUP BY users.name ");
+			"SELECT users.id, users.fullname, users.username, users.email, "
+		   +"                 users.blocked, users.lastchange, "
+		   +"CASE Coalesce((SELECT count(ep.creator) from exp_plan ep WHERE users.id=ep.creator " 
+		   +"GROUP BY ep.creator),0) WHEN 0 THEN true ELSE false END AS deletable "
+		   +"FROM users");
 			JSONArray users=DBconn.jsonArrayFromPreparedStmt(pstmt);
 			pstmt.close();			
 			out.println(users.toString());

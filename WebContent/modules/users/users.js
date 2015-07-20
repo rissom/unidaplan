@@ -3,68 +3,79 @@
 
 function userController(restfactory,$translate,$scope) {
 	
-	this.users =  [];			
+	this.users =  [];		
+	
+	this.edit = false;
+	
+	this.actions = ['block','edit'];
+	
+	var thisController = this;
 
-	this.strings = [];
+	this.performAction=function(index,user){
+		if (index==1){
+			user.edit=true
+		}
+		if (index==3){
+			this.deleteUser(user);
+		}
+	}
 	
-	this.myName='Thorsten Rissom';
-	
-	this.roles=["Admin","Technician","Scientist"]
-	
-	this.setRole=function(role,user){
-		user.role=role;
-//		var promise = restfactory.GET("change-experiment-status?id="+experiment.id+"&status="+status)
-//	    promise.then(function(rest) {
-//	    	console.log("status changed")
-//	    }, function(rest) {
-//	    	console.log("ERROR");
-//	    });
+	this.getActions = function(user){
+		var actions=[];
+		actions.push("edit");
+		if (user.blocked) {
+			actions.push("unblock");
+		}else{
+			actions.push("block");
+		}
+		actions.push("resend token");
+		if (user.deletable){
+			actions.push("delete");
+		}
+		return actions
 	}
 	
 	this.loadData = function() {
-		var promise = restfactory.GET("get-users.json"),
-		 	userCtrl=this;
-		
-		
-	    promise.then(function(rest) {
-	    	userCtrl.users = rest.data;
+		var promise = restfactory.GET("get-users.json");
+		promise.then(function(rest) {
+	    	thisController.users = rest.data;
 	    }, function(rest) {
 	    	console.log("ERROR");
 	    });
 	};
 	
-	var thisUserCtrl = this;
-	$scope.$on('language changed', function(event, args) {
-		thisUserCtrl.translate(args.language);
-	});
-	
+
 	this.deleteUser = function(user) {
 		var promise = restfactory.GET("delete-user?id="+user.id);
 	    promise.then(function(rest) {
-	    	console.log("user deleted")
+	    	thisController.loadData();
 	    }, function(rest) {
 	    	console.log("ERROR");
 	    });
+	}	
+	
+	
+	this.addUser = function() {
+		this.edit=true;
 	}
 	
 	
-	this.getRole = function(user) {
-		if (user.role==undefined){
-			return "horst";		
-		}else{
-			return this.roles[user.role];
-		}
-	};
+	this.submitUser = function() {
+		var newUser=  { "fullname" : this.fullname,
+						"username" : this.username,
+						   "email" : this.email}
+		var promise = restfactory.POST("add-user.json",newUser);
+		promise.then(function(data, status, headers, config){
+				thisController.loadData();
+				thisController.edit=false;
+			},
+					 function(data, status, headers, config){
+				console.log('Error');
+			});
+	}
 	
 	
 	
-	this.translate = function(lang) {
-		if (lang=='en') {
-			this.roles=["Admin","Technician","Scientist"];
-		}else{
-			this.roles=["Administrator","Techniker","Wissenschaftler"];
-		}
-	};
 	
 	// Activate function:
 	this.loadData();

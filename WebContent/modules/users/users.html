@@ -1,40 +1,61 @@
 		<h3 >
-			{{ 'Users' | translate }}
+			{{'Users'|translate }}
 		</h3>
+		<form name="addUserForm" ng-submit="addUserForm.$valid && userCtrl.submitUser()" novalidate>
 		<table class="table">
-			<tr><td><b>ID</b></td><td><b>Name</b></td><td><b>{{'E-mail'|translate}}</b></td><td><b>{{'role'|translate}}</b></td>
-				<td><b>{{'Delete User'|translate}}</b></td></tr>
-			<tr ng-repeat="user in userCtrl.users">
-				<td>
-					{{user.id}}
+			<tr>				
+				<td><b>Name</b>
+				</td>
+				<td><b>{{'Username'|translate}}</b>
+				</td>
+				<td><b>{{'E-mail'|translate}}</b>
 				</td>
 				<td>
-					{{user.name}}
+				</td>
+			</tr>
+			<tr ng-repeat="user in userCtrl.users">				
+				<td>
+					{{user.fullname}}
+				</td>
+				<td>
+					{{user.username}}
 				</td>
 				<td>
 				    {{user.email}}
 				</td>
 				<td>
-	  				<div class="dropdown" dropdown on-toggle="toggled(open)">
+					<div class="dropdown" dropdown on-toggle="toggled(open)">
 					      <a class="dropdown-toggle" dropdown-toggle>
-				  			{{userCtrl.getRole(user)}}
+				  			{{'action'|translate}}
 					      </a>
 					      <ul class="dropdown-menu">
-					        <li ng-repeat="role in userCtrl.roles">
-					          <a ng-click="userCtrl.setRole($index,user)">{{role}}</a>
+					        <li ng-repeat="action in userCtrl.getActions(user)">
+					          <a ng-click="userCtrl.performAction($index,user)">{{action}}</a>
 					        </li>
 					      </ul>
 	  				 </div>
 				</td>
-				<td>
-					<button type="button"
-							class="btn btn-danger"
-							ng-click="userCtrl.deleteUser(user)"
-							ng-show="user.deletable" >
-						{{'Delete User'|translate}}
-					</button>
-				</td>
 			</tr>  <!-- ends ng-repeat -->
+			<tr  ng-show=userCtrl.edit>
+				<td><input type="text" ng-model="userCtrl.fullname" 
+				   placeholder="{{'Enter full name here'|translate}}"
+				   style="width:300px;"
+				   required >				   
+				</td>
+				<td><input type="text" ng-model="userCtrl.username" 
+				    placeholder="{{'Enter your username here'|translate}}"
+				    required>
+				</td>
+				<td><input type="email" ng-model="userCtrl.email" 
+				    placeholder="{{'Enter your e-mail here'|translate}}"
+				    required>
+				</td>
+				<td>
+					<input type="submit" 
+						   class="btn btn-default" 
+						   value="{{'Add User'|translate}}">
+				</td>
+			</tr>
 			<tr>
 				<td></td>
 				<td></td>
@@ -43,8 +64,10 @@
 				<td></td>
 			</tr>
 		</table>
-				<button type="button"
-							class="btn btn-default"
-							ng-click="" >
-						+  {{'Add User'|translate}}
-					</button>
+		</form>
+			<button type="button"
+					class="btn btn-default"
+					ng-hide="userCtrl.edit"
+					ng-click="userCtrl.addUser()" >
+					+  {{'Add User'|translate}}
+			</button>
