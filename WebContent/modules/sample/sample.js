@@ -1,34 +1,36 @@
 (function(){
 'use strict';
 
-function sampleController(restfactory,$translate,$scope,$stateParams) {
+function sampleController(restfactory,$translate,$scope,$stateParams){
 	
+	var thisController = this;
 	
 	this.sample = {};
 	
-	this.sample.empty = true;
-	
-	this.sample.parameters = [];
-	
-	this.sample.titleparameters = [];
-	
+	this.strings = [];
+			
 	this.loadData = function() {			// Load data and filter Titleparameters
 		var ID= $stateParams.sampleID;
 		var promise = restfactory.GET("showsample.json?id="+ID);
-		var thisSampleController = this;
 	    promise.then(function(rest) {
-			thisSampleController.sample = rest.data;;
-			thisSampleController.sample.empty = false;
-	    	thisSampleController.translate($translate.use()); // translate to active language
+	    	thisController.parameters = rest.data.parameters;
+	    	thisController.titleparameters = rest.data.titleparameters;
+	    	thisController.strings = rest.data.strings;
+	    	thisController.children = rest.data.children;
+	    	thisController.ancestors = rest.data.ancestors;
+	    	thisController.plans = rest.data.plans;
+	    	thisController.deletable = rest.data.deletable;
+	    	thisController.next = rest.data.next;
+	    	thisController.previous = rest.data.previous;
+	    	thisController.translate($translate.use()); // translate to active language
 	    }, function(rest) {
-	    	thisSampleController.sample.error = "Not Found!";
+	    	thisController.sample.error = "Not Found!";
 	    });
 	};
 	
 
-	var mySampleController=this
 	$scope.$on('language changed', function(event, args) {
-		mySampleController.translate(args.language);
+		thisController.translate(args.language);
 	});
 	
 	
@@ -80,51 +82,42 @@ function sampleController(restfactory,$translate,$scope,$stateParams) {
 		);
 	}
 		
+	this.stringFromKey = function(stringkey,strings) {
+		var keyfound=false;
+		var returnString="@@@ no string! @@@";
+		angular.forEach(strings, function(translation) {
+			if (!keyfound && stringkey==translation.string_key) {
+				returnString = translation.value;
+				if (translation.language==$translate.use()) {
+					keyfound=true;
+				}
+			}
+		})
+		return returnString;
+	};
+	
 	
 
 	this.translate = function(lang) {
-		var sample=this.sample
-		var strings=sample.strings;
-		var typestringkey=this.sample.typestringkey;
-		angular.forEach(strings, function(translation) {
-			if (typestringkey==translation.string_key && translation.language==lang){
-				sample.trtype=translation.value;
-				if (sample.next) { sample.next.trtypename=translation.value; }
-				if (sample.previous) { sample.previous.trtypename=translation.value; }
-			}
+		var trtypename=this.stringFromKey(this.sample.typestringkey,thisController.strings) 
+		this.sample.trtype=trtypename;
+			if (this.next) 	 { this.sample.next.trtypename=trtypename; }
+			if (this.previous) { this.sample.previous.trtypename=trtypename; }
+			
+		angular.forEach(this.parameters, function(parameter) {
+			parameter.trname=thisController.stringFromKey(parameter.stringkeyname,thisController.strings) 
 		})
-		angular.forEach(this.sample.parameters, function(parameter) {
-			angular.forEach(strings, function(translation) {
-				if (parameter.stringkeyname==translation.string_key && translation.language==lang)
-					{parameter.trname=translation.value;}
-			})
-		})
-		angular.forEach(this.sample.children, function(child) {
-			angular.forEach(strings, function(translation) {
-				if (child.typestringkey==translation.string_key && translation.language==lang)
-					{child.trtypename=translation.value;}
-			})
+		angular.forEach(this.children, function(child) {
+			child.trtypename=thisController.stringFromKey(child.typestringkey,thisController.strings) 
 		})	
-		angular.forEach(this.sample.ancestors, function(ancestor) {
-			angular.forEach(strings, function(translation) {
-				if (ancestor.typestringkey==translation.string_key && translation.language==lang)
-					{ancestor.trtypename=translation.value;}
-			})
+		angular.forEach(this.ancestors, function(ancestor) {
+			ancestor.trtypename=thisController.stringFromKey(ancestor.typestringkey,thisController.strings) 
 		})	
-		angular.forEach(this.sample.plans, function(plan) {
-			angular.forEach(strings, function(translation) {
-				if (plan.name==translation.string_key && translation.language==lang)
-					{plan.trname=translation.value;}
-			})
+		angular.forEach(this.plans, function(plan) {
+			plan.trname=thisController.stringFromKey(plan.name,thisController.strings) 
 		})	
 	}
 
-	
-
-	
-	this.sayHello = function() {
-		console.log('Hello')
-	};
 	
 	
 	this.saveParameter = function(parameter) {
@@ -136,11 +129,12 @@ function sampleController(restfactory,$translate,$scope,$stateParams) {
 		});
 	};
 	
-	
-    this.articleClicked = function(article) {
-    	console.log("articleClicked(article):",article);
-    }; 
+    
+    
+    //activation 
+    this.loadData();
 }  
+
 
 
 angular.module('unidaplan').controller('sampleController',['restfactory','$translate','$scope','$stateParams',sampleController]);

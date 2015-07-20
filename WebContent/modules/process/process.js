@@ -1,7 +1,7 @@
 (function(){
   'use strict';
 
-function process(restfactory,$scope,$translate){
+function process(restfactory,$scope,$state,$translate){
   
   this.process={trprocesstype:""}; 
   
@@ -53,9 +53,10 @@ function process(restfactory,$scope,$translate){
 	})	
   };
 
-	
+  //activate function
+  this.loadProcess(1);
 };
 
-angular.module('unidaplan').controller('process', ['restfactory', '$scope', '$translate', process]);
+angular.module('unidaplan').controller('process', ['restfactory', '$scope', '$state', '$translate', process]);
 
 })();
