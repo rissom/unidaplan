@@ -5,6 +5,7 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 	$http.defaults.headers.put["Content-Type"] = "application/json";
 	
 	var rest = {};
+	var failedState={};
 	
 	rest.origin = window.location.origin;
 	rest.protocol = window.location.protocol;
@@ -28,9 +29,6 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 								text = text.substring(0,100)+"...";
 							}
 							console.log("restfactory.GET: "+uri+" no JSON warning: ",text);
-//							if (uri.indexOf("i18n")==-1){
-//								defer.reject(data);
-//							}
 						}
 //						var serverObj = JSON.parse(data.data);
 //						console.log("restfactory.GET: from: "+uri+" got: ",data);
@@ -38,16 +36,19 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 					} catch (err) {
 						console.log("restfactory.GET: "+uri+" parse error: "+data,err);
 						defer.reject('parse error occured');
+						failedState=$state.current;
 					}
 				},
 				function(data, status, headers, config) {
 					console.log("restfactory.GET: error: ",[ data,status,headers,config ]);
 					defer.reject('some http error occured');
+					failedState=$state.current;
 			    }
 			);
 		} catch(err) {
 			console.log("restfactory.GET: "+uri+" exception loading data: ",err);
 			defer.reject('Oops, try catch!');
+			failedState=$state.current;
 		}
 		return defer.promise;
 	};
@@ -78,16 +79,19 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 					} catch (err) {
 						console.log("restfactory.PUT: parse error: ",err);
 						defer.reject('parse error occured');
+						failedState=$state.current;
 					}
 				},
 				function(data, status, headers, config) {
 					console.log("restfactory.PUT: error: ",[ data,status,headers,config ]);
 					defer.reject('some http error occured');
+					failedState=$state.current;
 			    }
 			);
 		} catch(err) {
 			console.log("restfactory.PUT: exception loading data: ",err);
 			defer.reject('Oops, try catch!');
+			failedState=$state.current;
 		}
 		return defer.promise;
 	};
@@ -109,24 +113,27 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 			ret.then(
 				function(data, status, headers, config) {
 					try {
-//						var p = new DOMParser();
-//						var xml = p.parseFromString(data.data,'application/xml');
 						console.log("restfactory.POST: from: "+uri+" got: ",data);
 						defer.resolve(data);
 					} catch (err) {
 						console.log("restfactory.POST: parse error: ",err);
 						defer.reject('parse error occured');
+						failedState=$state.current;
 					}
 				},
 				function(data, status, headers, config) {
 					console.log("restfactory.POST: error: ",[ data,status,headers,config ]);
 					defer.reject('some http error occured');
-					if (status==401) {$state.go('Login');}
+					failedState=$state.current;
+					if (status==401) {
+						$state.go('Login');
+					}
 			    }
 			);
 		} catch(err) {
 			console.log("restfactory.POST: exception loading data: ",err);
 			defer.reject('Oops, try catch!');
+			failedState=$state.current;
 		}
 		return defer.promise;
 	};
@@ -148,11 +155,13 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 				function(data, status, headers, config) {
 					console.log("restfactory.DELETE: error: ",[ data,status,headers,config ]);
 					defer.reject('some http error occured');
+					failedState=$state.current;
 			    }
 			);
 		} catch(err) {
 			console.log("restfactory.DELETE: exception loading data: ",err);
 			defer.reject('Oops, try catch!');
+			failedState=$state.current;
 		}
 		return defer.promise;
 	};

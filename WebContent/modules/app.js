@@ -16,9 +16,14 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
         .state('sample', {
         url: '/sample/{sampleID:int}',
         templateUrl: 'modules/sample/sample.html',
-        controller: "sampleController as ssc"  
+        controller: "sampleController as sampleCtrl"  
         })
-        
+            	
+        .state('signup', {
+    	url: '/signup/{userID:int}/{token:string}',
+    	templateUrl: 'modules/signup/signup.html',
+    	controller: 'signupController as signupCtrl'
+    	})
         
         .state('sChoser', {
         url: '/sample',
@@ -28,7 +33,8 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
         
         .state('process', {
         url: '/process',
-        templateUrl: 'modules/process/process.html'
+        templateUrl: 'modules/process/process.html',
+        controller:"process as processCtrl"
         })
         
         .state('openExperiment', {
@@ -60,7 +66,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
     	templateUrl: 'modules/login/login.html',
     	controller: 'loginController as loginCtrl'
     	})
-        
+    	
         .state('about', {
         url: '/about',
         templateUrl: 'modules/help/about.html'
@@ -94,6 +100,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
     'Other Experiments': 'Andere Experimente',
     'Base Parameters': 'Basisparameter',
     'created by' : 'erstellt von',
+    'Enter your e-mail here' : 'Bitte E-Mail-Adresse hier eingeben',
     'Files': 'Dateien',
     'Sample Tree': 'Probenbaum',
     'Planned Processes': 'Planung',
@@ -110,15 +117,21 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
   	'Originates from': 'Stammt ab von',
   	'Delete Sample': 'Probe löschen',
   	'Delete Experiment' : 'Experiment löschen',
+  	'Enter your password here' : 'Bitte Passwort hier eingeben',
+  	'Enter your username here' : 'Bitte Benutzernamen hier eingeben',
   	'New Process' : 'Neuer Prozess',
   	'no.' : 'Nr.',  
   	'Help page': 'Hilfe Seite',
   	'New Sample': 'Neue Probe',
+  	'Password' : 'Passwort',
+  	'Re-enter Password' : 'Passwort wiederholen',
+  	'Re-enter your password here' : 'Bitte Passwort hier wiederholen',
   	'Recent Samples' : 'zuvor geöffnete Proben',
   	'Recent Processes' : 'Zuvor geöffnete Prozesse',
   	'Show Process' : 'Zeige Prozess',
   	'Show Sample' : 'Zeige Probe',
   	'Show Samples' : 'Zeige Proben',
+  	'Sign Up' : 'Registrieren',
   	'New Experiment' : 'Neues Experiment',
   	'Open Experiments' : 'Experimente öffnen',
   	'Groups and Users' : 'Benutzer und Gruppen',
@@ -148,6 +161,8 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
     'Delete Group' : 'Gruppe löschen',
     'Members' : 'Mitglieder',
     'Search for Sample' : 'Suche nach Probe',
+    'User' : 'Benutzer',
+    'last Login' : 'letzes Mal eingeloggt',
     'Enter samplename here' : 'Probennamen hier eingeben',
     'Available sample types' : 'Mögliche Probentypen',
     'Add User' : 'Benutzer hinzufügen'});

@@ -8,3 +8,15 @@
     vertical-align: middle;
     width: 0;
 }
+
+.ng-invalid.ng-dirty {
+	border-color: #FA787E;
+}
+
+.ng-valid.ng-dirty {
+	border-color: #78FA89;
+}
+
+.uninvalid {
+		border-color: #2B37F5;
+}

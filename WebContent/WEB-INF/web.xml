@@ -156,6 +156,17 @@
   </servlet-mapping>
   
     <servlet>
+    <description>Get a single user</description>
+    <display-name>GetUser</display-name>
+    <servlet-name>GetUser</servlet-name>
+    <servlet-class>unidaplan.GetUser</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GetUser</servlet-name>
+    <url-pattern>/get-user.json</url-pattern>
+  </servlet-mapping>
+  
+    <servlet>
     <description>Delete user</description>
     <display-name>DeleteUser</display-name>
     <servlet-name>DeleteUser</servlet-name>
