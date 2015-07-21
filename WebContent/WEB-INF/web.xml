@@ -175,5 +175,16 @@
   <servlet-mapping>
     <servlet-name>DeleteUser</servlet-name>
     <url-pattern>/delete-user</url-pattern>
-  </servlet-mapping>     
+  </servlet-mapping>  
+  
+   <servlet>
+    <description>Sign Up</description>
+    <display-name>SignUp</display-name>
+    <servlet-name>SignUp</servlet-name>
+    <servlet-class>unidaplan.SignUp</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SignUp</servlet-name>
+    <url-pattern>/sign-up</url-pattern>
+  </servlet-mapping>    
 </web-app>
