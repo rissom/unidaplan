@@ -4,6 +4,7 @@
 function signupController(restfactory,$translate,$state,$scope,$stateParams){
 	
 	var thisController=this;
+	this.fullname="";
 	this.username="";
 	this.email="";
 	
@@ -11,11 +12,11 @@ function signupController(restfactory,$translate,$state,$scope,$stateParams){
 	
 	this.signup = function(){
 		var data = {
-			name : this.userinput,
+			fullname : this.fullname,
+			username : this.username,
 			pw : this.pwinput,
-			pw2 : this.pwinput2
 		}
-	console.log('Login in: '+data.name+' with pw: '+data.pw);	
+	console.log('Login in: '+data.fullname+', username: '+data.username+' with pw: '+data.pw);	
 	};
 
 	
@@ -26,7 +27,8 @@ function signupController(restfactory,$translate,$state,$scope,$stateParams){
 		this.token =  $stateParams.token;
 	    promise.then(
 	    	function(rest) {
-		    	thisController.username = rest.data.name;
+		    	thisController.fullname = rest.data.fullname;
+		    	thisController.username = rest.data.username;
 		    	thisController.email = rest.data.email;		    	
 		    }, function(rest) {
 		    	console.log("ERROR");

@@ -1,7 +1,7 @@
 	<div ng-hide="sampleCtrl.sample.error">
 	
 		<!-- Heading with sample name -->
-		<h3>{{sampleCtrl.sample.trtype}} 
+		<h3>{{sampleCtrl.trtype}} 
 			<span ng-repeat="tparameter in sampleCtrl.titleparameters"
 				  ng-dblclick="tparameter.editing=true; newValue=tparameter.value">
 				<span ng-hide="tparameter.editing">{{tparameter.value|trailingzeros:tparameter.maxdigits}}
@@ -58,7 +58,7 @@
 			<tr>
 				<td>
 					<div ng-show="sampleCtrl.ancestors.length>0">{{'Originates from'|translate}}:</div> 
-						<span ng-repeat="bsample in sampleCtrl.sample.ancestors"> 
+						<span ng-repeat="bsample in sampleCtrl.ancestors"> 
 							<samplebutton buttonsample="bsample"  
 										  action="sampleCtrl.loadData(bsample.id)">
 							</samplebutton>
@@ -67,7 +67,7 @@
 				<td width=20mm></td>
 				<td>
 					<div ng-show="sampleCtrl.children.length>0">{{'Is ancestor of'|translate}}:</div> 
-						<span ng-repeat="bsample in sampleCtrl.sample.children">
+						<span ng-repeat="bsample in sampleCtrl.children">
 							 <samplebutton buttonsample="bsample" 
 							 			   action="sampleCtrl.loadData(bsample.id)">
 							 </samplebutton>
@@ -81,8 +81,11 @@
 
 		<h4>{{'Planned Processes'|translate}}</h4>
 		<table>
-			<tr ng-repeat="plan in sampleCtrl.plans">
-				<td>Experiment no. {{plan.exp_id}}, "{{plan.trname}}"</td>
+			<tr ng-repeat="experiment in sampleCtrl.plans">
+				<td>
+					<a ui-sref="experiment({experimentID:experiment.exp_id})">
+						 Experiment no. {{experiment.exp_id}}, "{{experiment.trname}}"
+					</td>
 			</tr>
 		</table>
 		<br />

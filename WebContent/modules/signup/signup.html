@@ -1,36 +1,54 @@
 <h3>{{'Sign Up'|translate}}</h3>
+<form name="signupForm" ng-submit="signupForm.$valid && signupCtrl.pwinput==signupCtrl.pwinput2 && signupCtrl.signup()" novalidate>
    	<p ng-init="signupCtrl.logToken()"></p>   
 
 <br />
-<label>Name:</label><br />
-<input type="text" ng-model="signupCtrl.username" 
-				   placeholder="{{'Enter your username here'|translate}}"
-				   style="width:300px;">
+<label>{{'Full Name'|translate}}:</label><br />
+<input type="text" 
+	   ng-model="signupCtrl.fullname" 
+	   placeholder="{{'Enter your username here'|translate}}"
+	   style="width:300px;"
+	   required>
 <br />
 <br />
-<label>{{'E-mail'|translate}}:</label><br />
+<label>{{'Username'|translate}}:</label><br />
+<input type="text" 
+	   ng-model="signupCtrl.username" 
+	   placeholder="{{'Enter your e-mail here'|translate}}"
+       style="width:300px;"
+       required>
+<br />
 
-<input type="email" ng-model="signupCtrl.email" 
-				    placeholder="{{'Enter your e-mail here'|translate}}"
-				    style="width:300px;">
+<label>{{'E-mail'|translate}}:</label><br />
+<input type="email" 
+	   ng-model="signupCtrl.email" 
+	   placeholder="{{'Enter your e-mail here'|translate}}"
+       style="width:300px;"
+       required>
 <br />
 <br />
 				
 
 <label>{{'Password'|translate}}:</label><br />
-<input type="text" ng-model="signupCtrl.pwinput"
-				   placeholder="{{'Enter your password here'|translate}}"
-				   style="width:300px;">
+<input type="password" 
+	   ng-model="signupCtrl.pwinput"
+	   placeholder="{{'Enter your password here'|translate}}"
+	   style="width:300px;"
+	   required>
 <br />
 <br />
 
 <label>{{'Re-enter Password'|translate}}:</label><br />
-<input type="text" ng-model="signupCtrl.pwinput2"
-				   placeholder="{{'Re-enter your password here'|translate}}"
-				   ng-class="{'uninvalid':signupCtrl.invalid()}"
-				   style="width:300px;">
-<br />
-<br />      	
-<p><p>
-<button class="btn btn-default" ng-click="signupCtrl.signup()">{{'Sign Up'|translate}}</button>
+<input type="password" ng-model="signupCtrl.pwinput2"
+	   placeholder="{{'Re-enter your password here'|translate}}"
+	   ng-class="{'uninvalid':signupCtrl.invalid()}"
+	   style="width:300px;"
+	   required>
+<br />     	
+<p />
+<p />
+<input class="btn btn-default"
+	   type="submit"
+	   value="{{'Sign Up'|translate}}">
+</form>
 <br /><br />

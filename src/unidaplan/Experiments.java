@@ -22,6 +22,7 @@ import org.json.JSONObject;
 	      throws ServletException, IOException {
 		PreparedStatement pstmt;
 		ArrayList<String> stringkeys = new ArrayList<String>(); 
+		JSONArray experiments = null;
 	    response.setContentType("application/json");
 	    request.setCharacterEncoding("utf-8");
 	    response.setCharacterEncoding("utf-8");
@@ -31,15 +32,22 @@ import org.json.JSONObject;
 	    JSONObject expPlans = new JSONObject();
 	    try {  
 			pstmt= DBconn.conn.prepareStatement( 	
-			"SELECT exp_plan.ID AS ID,users.name as creator, exp_plan.name ,status "
+			"SELECT exp_plan.ID AS ID,users.fullname as creator, exp_plan.name ,status "
 		    + "FROM  exp_plan \n"
 		    + "JOIN users ON (users.id=exp_plan.Creator)");
-			JSONArray experiments=DBconn.jsonArrayFromPreparedStmt(pstmt);
+			experiments=DBconn.jsonArrayFromPreparedStmt(pstmt);
 			pstmt.close();
 			  for (int i=0; i<experiments.length();i++) {
 	      		  JSONObject tempObj=(JSONObject) experiments.get(i);
 	      		  stringkeys.add(Integer.toString(tempObj.getInt("name")));
 	      	  }
+    	} catch (SQLException e) {
+    		System.err.println("Experiments: Problems with SQL query for Stringkeys");
+    	} catch (JSONException e) {
+			System.err.println("Experiments: JSON Problem while getting Stringkeys");
+    	} catch (Exception e2) {
+			System.err.println("Experiments: Strange Problem while getting Stringkeys");
+    	} try {
 			  
 			// get the strings
 	        String query="SELECT id,string_key,language,value FROM Stringtable WHERE string_key=ANY('{";

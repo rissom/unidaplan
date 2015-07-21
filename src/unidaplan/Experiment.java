@@ -49,7 +49,7 @@ import org.json.JSONObject;
 	   	}
 	    try {  
 			pstmt= DBconn.conn.prepareStatement( 	
-			"SELECT exp_plan.ID AS ID,users.name as creator, exp_plan.name ,status "
+			"SELECT exp_plan.ID AS ID,users.fullname as creator, exp_plan.name ,status "
 		    + "FROM  exp_plan \n"
 		    + "JOIN users ON (users.id=exp_plan.Creator) "
 		    + "WHERE exp_plan.ID=?");

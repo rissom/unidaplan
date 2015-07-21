@@ -22,6 +22,7 @@ function sampleController(restfactory,$translate,$scope,$stateParams){
 	    	thisController.deletable = rest.data.deletable;
 	    	thisController.next = rest.data.next;
 	    	thisController.previous = rest.data.previous;
+	    	thisController.typestringkey = rest.data.typestringkey;
 	    	thisController.translate($translate.use()); // translate to active language
 	    }, function(rest) {
 	    	thisController.sample.error = "Not Found!";
@@ -99,10 +100,11 @@ function sampleController(restfactory,$translate,$scope,$stateParams){
 	
 
 	this.translate = function(lang) {
-		var trtypename=this.stringFromKey(this.sample.typestringkey,thisController.strings) 
-		this.sample.trtype=trtypename;
-			if (this.next) 	 { this.sample.next.trtypename=trtypename; }
-			if (this.previous) { this.sample.previous.trtypename=trtypename; }
+
+		var trtypename=this.stringFromKey(thisController.typestringkey,thisController.strings)
+			this.trtype=trtypename;
+			if (this.next) 	   { this.next.trtypename=trtypename; }
+			if (this.previous) { this.previous.trtypename=trtypename; }
 			
 		angular.forEach(this.parameters, function(parameter) {
 			parameter.trname=thisController.stringFromKey(parameter.stringkeyname,thisController.strings) 

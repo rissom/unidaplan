@@ -34,7 +34,7 @@ import org.json.JSONObject;
 	    DBconn.startDB();
 	    try {  
 			pstmt= DBconn.conn.prepareStatement( 	
-			"SELECT users.id, users.name, users.email, " 
+			"SELECT users.id, users.fullname, users.username, users.email, " 
 		   +"users.lastchange "
 		   +"FROM users WHERE id=?");
 			pstmt.setInt(1, userID);
