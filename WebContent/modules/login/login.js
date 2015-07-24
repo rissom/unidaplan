@@ -1,15 +1,22 @@
 (function(){
 'use strict';
 
-var loginController=function($state){
-		this.userLogin = function(){
-			var data = {
-				name : this.userinput,
-				pw : this.pwinput
+var loginController=function($state,restfactory){
+	
+
+	this.userLogin = function(){
+		console.log("yeah");
+		var promise=restfactory.GET('login?user='+this.userinput+'&pw='+this.pwinput);
+		promise.then(function(data){
+				console.log("allesklar");
+			}, function(data){
+				console.log("das war nix");
 			}
-		console.log('Login in: '+name+' with pw: '+pw);	
-		};
+		)
 	}
+}	
+	
+
 
 angular.module('unidaplan').controller('loginController',['$state','restfactory','$translate',loginController])
 	

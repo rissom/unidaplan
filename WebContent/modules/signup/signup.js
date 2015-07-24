@@ -12,24 +12,38 @@ function signupController(restfactory,$translate,$state,$scope,$stateParams){
 	
 	this.signup = function(){
 		var data = {
+			id : $stateParams.userID,
+			token : $stateParams.token,
 			fullname : this.fullname,
 			username : this.username,
-			pw : this.pwinput,
+			email : this.email,
+			password : this.pwinput,
 		}
-	console.log('Login in: '+data.fullname+', username: '+data.username+' with pw: '+data.pw);	
+	var promise=restfactory.POST("sign-up",data);
+	 promise.then(
+			 function(data, status, headers, config){
+				 $state.go("openExperiment");
+			 },
+			 function(data, status, headers, config){
+			 }
+	);
+	 
 	};
 
 	
 	
 	// activate Function
 	this.activate = function(){
-		var promise = restfactory.GET("get-user.json?id="+$stateParams.userID);
-		this.token =  $stateParams.token;
+		var promise = restfactory.GET("get-user.json?id="+$stateParams.userID+"&token="+$stateParams.token);
 	    promise.then(
 	    	function(rest) {
-		    	thisController.fullname = rest.data.fullname;
-		    	thisController.username = rest.data.username;
-		    	thisController.email = rest.data.email;		    	
+	    		if (rest.data.token==($stateParams.token)){
+			    	thisController.fullname = rest.data.fullname;
+			    	thisController.username = rest.data.username;
+			    	thisController.email = rest.data.email;
+	    		} else{
+	    			thisController.error="wrong token";
+	    		} 
 		    }, function(rest) {
 		    	console.log("ERROR");
 		    }

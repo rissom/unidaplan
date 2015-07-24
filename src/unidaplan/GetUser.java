@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -23,9 +24,12 @@ import org.json.JSONObject;
 	    request.setCharacterEncoding("utf-8");
 	    response.setCharacterEncoding("utf-8");
 	    int userID=-1;
+	    String token="";
 		// get Parameter for id
 		try{
-			 userID=Integer.parseInt(request.getParameter("id")); }
+			 userID=Integer.parseInt(request.getParameter("id"));
+			 token=request.getParameter("token");
+		}
 		catch (Exception e1) {
 			System.err.print("User: no user ID given!");
 		}
@@ -34,13 +38,20 @@ import org.json.JSONObject;
 	    DBconn.startDB();
 	    try {  
 			pstmt= DBconn.conn.prepareStatement( 	
-			"SELECT users.id, users.fullname, users.username, users.email, " 
-		   +"users.lastchange "
+			"SELECT id, fullname, username, email, lastchange, token, token_valid_to " 
 		   +"FROM users WHERE id=?");
 			pstmt.setInt(1, userID);
 			JSONObject user=DBconn.jsonObjectFromPreparedStmt(pstmt);
-			pstmt.close();			
-			out.println(user.toString());
+			pstmt.close();		
+		   	String validToString = user.optString("token_valid_to");
+		   	Timestamp validToDate = Timestamp.valueOf(validToString); 
+			if (user.getString("token").equals(token) &&
+					validToDate.getTime()>System.currentTimeMillis()){
+				System.out.println("korrektes Token");
+				out.println(user.toString());
+			} else {
+				out.println("{\"error\":\"invalid token\"}");
+			}
 			DBconn.closeDB();
     	} catch (SQLException e) {
     		System.err.println("GetUsers: Problems with SQL query");

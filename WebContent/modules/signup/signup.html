@@ -1,5 +1,8 @@
 <h3>{{'Sign Up'|translate}}</h3>
-<form name="signupForm" ng-submit="signupForm.$valid && signupCtrl.pwinput==signupCtrl.pwinput2 && signupCtrl.signup()" novalidate>
+<form name="signupForm" 
+	  ng-submit="signupForm.$valid && signupCtrl.pwinput==signupCtrl.pwinput2 && signupCtrl.signup()"
+	  ng-hide=signupCtrl.error 
+	  novalidate>
    	<p ng-init="signupCtrl.logToken()"></p>   
 
 <br />
@@ -51,4 +54,7 @@
 	   type="submit"
 	   value="{{'Sign Up'|translate}}">
 </form>
+<div ng-show=signupCtrl.error>
+{{signupCtrl.error}}
+</div>
 <br /><br />

@@ -44,7 +44,6 @@
     <servlet-name>AvailableSampletypes</servlet-name>
     <url-pattern>/sampletypes.json</url-pattern>
   </servlet-mapping>
-  
   <servlet>
     <description>shows available Experiments</description>
     <display-name>Experiments</display-name>
@@ -55,7 +54,6 @@
     <servlet-name>Experiments</servlet-name>
     <url-pattern>/experiments.json</url-pattern>
   </servlet-mapping>
-  
   <servlet>
     <description>show process</description>
     <display-name>Process</display-name>
@@ -66,7 +64,6 @@
     <servlet-name>Process</servlet-name>
     <url-pattern>/process.json</url-pattern>
   </servlet-mapping>
-  
   <servlet>
     <description>Update sample parameter</description>
     <display-name>UpdateSampleParameter</display-name>
@@ -77,7 +74,6 @@
     <servlet-name>UpdateSampleParameter</servlet-name>
     <url-pattern>/update-sample-parameter.json</url-pattern>
   </servlet-mapping>
-  
   <servlet>
     <description>Add sample parameter</description>
     <display-name>AddSampleParameter</display-name>
@@ -88,7 +84,6 @@
     <servlet-name>AddSampleParameter</servlet-name>
     <url-pattern>/add-sample-parameter.json</url-pattern>
   </servlet-mapping>
-  
   <servlet>
     <description>Change the status of an experiment</description>
     <display-name>ChangeExperimentStatus</display-name>
@@ -98,9 +93,8 @@
   <servlet-mapping>
     <servlet-name>ChangeExperimentStatus</servlet-name>
     <url-pattern>/change-experiment-status</url-pattern>
-  </servlet-mapping>  
-  
-    <servlet>
+  </servlet-mapping>
+  <servlet>
     <description>Show a single Experiment</description>
     <display-name>Experiment</display-name>
     <servlet-name>Experiment</servlet-name>
@@ -109,9 +103,8 @@
   <servlet-mapping>
     <servlet-name>Experiment</servlet-name>
     <url-pattern>/experiment.json</url-pattern>
-  </servlet-mapping>  
-  
-      <servlet>
+  </servlet-mapping>
+  <servlet>
     <description>Update a parameter of an experiment</description>
     <display-name>UpdateExperimentParameter</display-name>
     <servlet-name>UpdateExperimentParameter</servlet-name>
@@ -120,8 +113,7 @@
   <servlet-mapping>
     <servlet-name>UpdateExperimentParameter</servlet-name>
     <url-pattern>/update-experiment-parameter.json</url-pattern>
-  </servlet-mapping> 
-
+  </servlet-mapping>
   <servlet>
     <description>Add a Parameter of an experiment</description>
     <display-name>AddExperimentParameter</display-name>
@@ -131,8 +123,7 @@
   <servlet-mapping>
     <servlet-name>AddExperimentParameter</servlet-name>
     <url-pattern>/add-experiment-parameter.json</url-pattern>
-  </servlet-mapping> 
-
+  </servlet-mapping>
   <servlet>
     <description>Add a user</description>
     <display-name>AddUser</display-name>
@@ -142,8 +133,7 @@
   <servlet-mapping>
     <servlet-name>AddUser</servlet-name>
     <url-pattern>/add-user.json</url-pattern>
-  </servlet-mapping> 
-  
+  </servlet-mapping>
   <servlet>
     <description>Get a list of users</description>
     <display-name>GetUsers</display-name>
@@ -154,8 +144,7 @@
     <servlet-name>GetUsers</servlet-name>
     <url-pattern>/get-users.json</url-pattern>
   </servlet-mapping>
-  
-    <servlet>
+  <servlet>
     <description>Get a single user</description>
     <display-name>GetUser</display-name>
     <servlet-name>GetUser</servlet-name>
@@ -165,8 +154,7 @@
     <servlet-name>GetUser</servlet-name>
     <url-pattern>/get-user.json</url-pattern>
   </servlet-mapping>
-  
-    <servlet>
+  <servlet>
     <description>Delete user</description>
     <display-name>DeleteUser</display-name>
     <servlet-name>DeleteUser</servlet-name>
@@ -175,9 +163,8 @@
   <servlet-mapping>
     <servlet-name>DeleteUser</servlet-name>
     <url-pattern>/delete-user</url-pattern>
-  </servlet-mapping>  
-  
-   <servlet>
+  </servlet-mapping>
+  <servlet>
     <description>Sign Up</description>
     <display-name>SignUp</display-name>
     <servlet-name>SignUp</servlet-name>
@@ -186,5 +173,15 @@
   <servlet-mapping>
     <servlet-name>SignUp</servlet-name>
     <url-pattern>/sign-up</url-pattern>
-  </servlet-mapping>    
+  </servlet-mapping>
+    <servlet>
+    <description>Login</description>
+    <display-name>Login</display-name>
+    <servlet-name>Login</servlet-name>
+    <servlet-class>unidaplan.Login</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Login</servlet-name>
+    <url-pattern>/login</url-pattern>
+  </servlet-mapping>
 </web-app>

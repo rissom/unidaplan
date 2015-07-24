@@ -51,7 +51,7 @@ function sampleController(restfactory,$translate,$scope,$stateParams){
 						 }
 						);
 			 } else {
-				var res = restfactory.POST('add-sample-parameter.json?sampleid='+this.sample.id,parameter);
+				var res = restfactory.POST('add-sample-parameter.json?sampleid='+$stateParams.sampleID,parameter);
 					res.then(function(data, status, headers, config) {
 							 },
 							 function(data, status, headers, config) {
@@ -124,11 +124,14 @@ function sampleController(restfactory,$translate,$scope,$stateParams){
 	
 	this.saveParameter = function(parameter) {
 		var res = restfactory.POST('savesampleparameter.json',parameter);
-		res.then(function(data, status, headers, config) {
-		},function(data, status, headers, config) {
-			console.log('verkackt');
-			console.log(data);		
-		});
+		res.then(
+				function(data, status, headers, config) {
+				},
+				function(data, status, headers, config) {
+					console.log('verkackt');
+					console.log(data);		
+				}
+		);
 	};
 	
     

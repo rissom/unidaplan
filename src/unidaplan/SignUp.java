@@ -9,6 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,8 +21,6 @@ import java.security.spec.InvalidKeySpecException;
 
 public class SignUp extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
-	final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
 	
 	
 @Override
@@ -45,12 +44,14 @@ public class SignUp extends HttpServlet {
 		jsonIn = new JSONObject(in);
 	    // get User details
 		id=jsonIn.getInt("id");
+		
 		fullname=jsonIn.getString("fullname");
 		username=jsonIn.getString("username");
 		email=jsonIn.getString("email");
 		token=jsonIn.getString("token");
 		password=jsonIn.getString("password");  //password should already be a hash
 	} catch (JSONException e){
+		e.printStackTrace();
 		System.err.println("SignUp: Problems reading JSON. Missing token?");
 		status="JSON Error: SignUp";
 	} try {
@@ -66,21 +67,29 @@ public class SignUp extends HttpServlet {
 	   	Timestamp validToDate = Timestamp.valueOf(validToString); 
 	   	pstmt1.close();
 	   	if (validToDate.getTime()>System.currentTimeMillis() && token.equals(dbtoken)) {
-	   		System.out.println("valid Token");	   	
+	   	// create a salted hash (salt is part of the hashstring)
+	   		hash=PasswordHash.createHash(password);   	
+	   		// store stuff in database
+	   		PreparedStatement pstmt2 = DBconn.conn.prepareStatement( 			
+					"UPDATE users SET fullname=(?), username=(?),email=(?),pw_hash=(?),token=(Null) "
+					+"WHERE id=?");
+		   	pstmt2.setString(1, fullname);
+		   	pstmt2.setString(2, username);
+		   	pstmt2.setString(3, email);
+		   	pstmt2.setString(4, hash);
+		   	pstmt2.setInt(5, id);
+		    pstmt2.executeUpdate();
+			pstmt2.close(); 
+			HttpSession session = request.getSession();
+			PreparedStatement pstmt3 = DBconn.conn.prepareStatement( 			
+					"INSERT INTO sessions VALUES (default, ?, ?)"); // userid + sessionid
+					
+			pstmt3.setInt(1, id);
+			pstmt3.setString(2, session.getId());
+			System.out.println(session.getId());
+			pstmt3.executeUpdate();
 	   	}
-		// create a salted hash (salt is part of the hashstring)
-   		hash=PasswordHash.createHash(password);   			
-   		// store stuff in database
-   		PreparedStatement pstmt2 = DBconn.conn.prepareStatement( 			
-				"UPDATE users SET fullname=(?), username=(?),email=(?),pw_hash=(?) "
-				+"WHERE id=?");
-	   	pstmt2.setString(1, fullname);
-	   	pstmt2.setString(2, username);
-	   	pstmt2.setString(3, email);
-	   	pstmt2.setString(4, hash);
-	   	pstmt2.setInt(5, id);
-	    pstmt2.executeUpdate();
-		pstmt2.close(); 
+		
 		DBconn.closeDB();
    	
 	} catch (NoSuchAlgorithmException e) {
