@@ -80,14 +80,8 @@ public class SignUp extends HttpServlet {
 		   	pstmt2.setInt(5, id);
 		    pstmt2.executeUpdate();
 			pstmt2.close(); 
-			HttpSession session = request.getSession();
-			PreparedStatement pstmt3 = DBconn.conn.prepareStatement( 			
-					"INSERT INTO sessions VALUES (default, ?, ?)"); // userid + sessionid
-					
-			pstmt3.setInt(1, id);
-			pstmt3.setString(2, session.getId());
-			System.out.println(session.getId());
-			pstmt3.executeUpdate();
+			HttpSession session = request.getSession();		
+			session.setAttribute("userID",id);
 	   	}
 		
 		DBconn.closeDB();

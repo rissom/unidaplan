@@ -64,14 +64,7 @@ public class Login extends HttpServlet {
 		System.out.println(hash);		
 		if (PasswordHash.validatePassword(pw,hash)){
 			out.println("{\"status\":\"Password correct\"}");
-			System.out.println("id: "+id);
-			System.out.println("sessionid: "+session.getId());
-			PreparedStatement pstmt2 = DBconn.conn.prepareStatement( 			
-					"INSERT INTO sessions VALUES (default, ?, ?)"); // userid + sessionid
-			pstmt2.setInt(1, id);
-			pstmt2.setString(2, session.getId());
-			pstmt2.executeUpdate();
-			pstmt2.close();
+		session.setAttribute("userID",id);
 		}else{
 			out.println("{\"status\":\"Password incorrect\"}");
 		}

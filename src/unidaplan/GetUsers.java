@@ -18,8 +18,8 @@ import org.json.JSONException;
 	@Override
 	  public void doGet(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {
-		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
+//		Authentificator authentificator = new Authentificator();
+//		int userID=authentificator.GetUserID(request,response);
 		PreparedStatement pstmt;
 	    response.setContentType("application/json");
 	    request.setCharacterEncoding("utf-8");

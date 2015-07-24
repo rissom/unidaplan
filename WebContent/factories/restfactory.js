@@ -1,5 +1,7 @@
+(function(){
 
-angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', '$state', function($q, $rootScope,$http) {
+
+angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', '$state', function($q, $rootScope,$http,$state) {
 
 	$http.defaults.headers.post["Content-Type"] = "application/json";
 	$http.defaults.headers.put["Content-Type"] = "application/json";
@@ -121,12 +123,15 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 						failedState=$state.current;
 					}
 				},
-				function(data, status, headers, config) {
-					console.log("restfactory.POST: error: ",[ data,status,headers,config ]);
-					defer.reject('some http error occured');
-					failedState=$state.current;
-					if (status==401) {
-						$state.go('Login');
+				function(data) {
+					console.log("restfactory.POST: error: ",data);
+					defer.reject('some http error occured Status: '+data.status);
+					rest.failedState=$state.current;
+					console.log("failed state: ");
+					console.log(failedState);
+					console.log("status: "+status);
+					if (data.status==401) {
+						$state.go('login');
 					}
 			    }
 			);
@@ -175,3 +180,6 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 	
 	return rest;
 }]);
+
+
+})();

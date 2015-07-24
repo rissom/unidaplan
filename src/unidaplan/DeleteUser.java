@@ -19,8 +19,8 @@ import org.json.JSONObject;
 	  public void doGet(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {		
 	    
-		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
+//		Authentificator authentificator = new Authentificator();
+//		int userID=authentificator.GetUserID(request,response);
 		request.setCharacterEncoding("utf-8");
 	    int id=0;
 	  	  try  {
