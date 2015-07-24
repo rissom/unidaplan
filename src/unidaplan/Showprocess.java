@@ -38,7 +38,10 @@ public class Showprocess extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
-
+    	
+    	Authentificator authentificator = new Authentificator();
+		int userID=authentificator.GetUserID(request,response);
+		
       ArrayList<String> stringkeys = new ArrayList<String>(); // Array for translation strings
       
       response.setContentType("application/json");

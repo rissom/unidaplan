@@ -24,6 +24,9 @@ public class Showsample extends HttpServlet {
 @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
+	
+	Authentificator authentificator = new Authentificator();
+	int userID=authentificator.GetUserID(request,response);
  	ArrayList<String> stringkeys = new ArrayList<String>(); 
  	Boolean Deletable=true;
     response.setContentType("application/json");

@@ -1,43 +1,41 @@
 package unidaplan;
 
-import java.util.ArrayList;
+import java.sql.PreparedStatement;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONObject;
+
 public class Authentificator {
- 	static ArrayList<String> userSessions = new ArrayList<String>();
- 	static ArrayList<Integer> userIDs = new ArrayList<Integer>(); 
 
 	
- 	// See if the current session is assgned to a known user
+ 	// See if the current session is assigned to a known user
 	public int GetUserID(HttpServletRequest request, HttpServletResponse response){		
 		HttpSession session = request.getSession();
 		int user=-1;
-		for (int i=0; i<userSessions.size(); i++)
-		 	{
-				if (session.getId()==userSessions.get(i)){ 
-					user=userIDs.get(i);
+		
+		PreparedStatement pstmt = null; 	// Declare variables
+	 	DBconnection DBconn=new DBconnection(); // New connection to the database
+	 	DBconn.startDB();
+	 	
+		// get Parameter for id
+		try{
+	 		// Check if a session with this id exists in the database
+	        pstmt = DBconn.conn.prepareStatement(	
+	    	"SELECT userid FROM sessions WHERE sessionid=?");
+			pstmt.setString(1,session.getId());
+			JSONObject sessionJS=DBconn.jsonObjectFromPreparedStmt(pstmt);
+			pstmt.close();
+			user=sessionJS.getInt("userid");
+		}catch (Exception e1) {
+					System.err.print("Authentificator: SessionID not found!");
 				}
-		 	}	
+		
+		DBconn.closeDB();
 		if (user==-1){
 			response.setStatus(401);
 		}
-		return user;
-	}
-	
-	
-	
-	// Ask user to enter his password 
-	public int Authentificate(HttpServletRequest request, HttpServletResponse response){
-		HttpSession session = request.getSession();
-		int user=-1;
-		for (int i=0; i<userSessions.size(); i++)
-		 	{
-				if (session.getId()==userSessions.get(i)){ 
-					user=userIDs.get(i);
-				}
-		 	}	
 		return user;
 	}
 }

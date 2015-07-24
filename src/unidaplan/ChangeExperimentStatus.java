@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +17,9 @@ public class ChangeExperimentStatus extends HttpServlet {
 		@Override
 		  public void doGet(HttpServletRequest request, HttpServletResponse response)
 			      throws ServletException, IOException {
+			
+			Authentificator authentificator = new Authentificator();
+			int userID=authentificator.GetUserID(request,response);
 		    request.setCharacterEncoding("utf-8");
 		    // look up the datatype in Database	    
 		    int id=-1;

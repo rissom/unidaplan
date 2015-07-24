@@ -19,15 +19,17 @@ import org.json.JSONObject;
 	@Override
 	  public void doGet(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {
+		Authentificator authentificator = new Authentificator();
+		int userID=authentificator.GetUserID(request,response);
 		PreparedStatement pstmt;
 	    response.setContentType("application/json");
 	    request.setCharacterEncoding("utf-8");
 	    response.setCharacterEncoding("utf-8");
-	    int userID=-1;
+	    int getUserID=-1;
 	    String token="";
 		// get Parameter for id
 		try{
-			 userID=Integer.parseInt(request.getParameter("id"));
+			 getUserID=Integer.parseInt(request.getParameter("id"));
 			 token=request.getParameter("token");
 		}
 		catch (Exception e1) {
@@ -40,7 +42,7 @@ import org.json.JSONObject;
 			pstmt= DBconn.conn.prepareStatement( 	
 			"SELECT id, fullname, username, email, lastchange, token, token_valid_to " 
 		   +"FROM users WHERE id=?");
-			pstmt.setInt(1, userID);
+			pstmt.setInt(1, getUserID);
 			JSONObject user=DBconn.jsonObjectFromPreparedStmt(pstmt);
 			pstmt.close();		
 		   	String validToString = user.optString("token_valid_to");

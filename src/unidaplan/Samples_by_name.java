@@ -29,7 +29,9 @@ public class Samples_by_name extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	    request.setCharacterEncoding("utf-8");
+		Authentificator authentificator = new Authentificator();
+		int userID=authentificator.GetUserID(request,response);
+		request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
 	    JSONObject  jsonIn = null;	 
 	    JSONArray samplelist =new JSONArray();

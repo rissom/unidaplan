@@ -18,7 +18,10 @@ import org.json.JSONObject;
 	@Override
 	  public void doGet(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {		
-	    request.setCharacterEncoding("utf-8");
+	    
+		Authentificator authentificator = new Authentificator();
+		int userID=authentificator.GetUserID(request,response);
+		request.setCharacterEncoding("utf-8");
 	    int id=0;
 	  	  try  {
 	   		 id=Integer.parseInt(request.getParameter("id")); 

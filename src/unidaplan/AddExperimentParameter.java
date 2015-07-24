@@ -4,10 +4,12 @@ import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -17,7 +19,9 @@ import org.json.JSONObject;
 	@SuppressWarnings("resource")
 	@Override
 	  public void doPost(HttpServletRequest request, HttpServletResponse response)
-	      throws ServletException, IOException {		
+	      throws ServletException, IOException {
+		Authentificator authentificator = new Authentificator();
+		int userID=authentificator.GetUserID(request,response);
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
 	    int pid=-1;
