@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-function menuf($translate,$rootScope) {
+function menuf(restfactory,$translate,$rootScope,$state) {
 
 	this.status = {
 	    isopen: false
@@ -20,6 +20,16 @@ function menuf($translate,$rootScope) {
 		}
 	}
 	
+	this.logout = function(){
+		var promise = restfactory.GET('logout');
+		promise.then(function(){
+			console.log("logged out");
+			$state.go('login');
+			},
+			function(){
+			console.log("Error!");	
+			});
+	}
 	
 	this.getUserName = function(){
 		return "Thorsten Rissom";
@@ -32,6 +42,6 @@ function menuf($translate,$rootScope) {
 	
 }
 
-angular.module('unidaplan').controller('menu',['$translate','$rootScope',menuf]);
+angular.module('unidaplan').controller('menu',['restfactory','$translate','$rootScope','$state',menuf]);
   
 })();

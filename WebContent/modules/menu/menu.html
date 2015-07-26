@@ -139,9 +139,10 @@
 			class="btn btn-default dropdown-toggle"
 			dropdown-toggle 
 			ng-disabled="disabled">
-			{{menuCtrl.language()}}
+			{{'User'|translate}}
 		</button>
 		<ul class="dropdown-menu" role="menu">
+
 			<li>
 				<a href ng-click="menuCtrl.setLanguage('de')">
 					de
@@ -150,6 +151,11 @@
 			<li>
 				<a href ng-click="menuCtrl.setLanguage('en')">
 					en
+				</a>
+			</li>
+			<li>
+				<a href ng-click="menuCtrl.logout()">
+					logout
 				</a>
 			</li>
 		</ul>
