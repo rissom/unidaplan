@@ -84,7 +84,9 @@ function sampleChoser($translate,$scope,restfactory) {
 				}
 			    if (oldUserinput==newUserinput){
 			    	if( thisController.selectedTypesVar.equals(oldTypeIDs)){
+			    		if (!thisController.firsttime){
 				    	thisController.loadSamples();
+			    		}
 			    	}
 			    }
 			   

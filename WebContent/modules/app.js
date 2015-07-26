@@ -71,6 +71,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
         url: '/about',
         templateUrl: 'modules/help/about.html'
         })
+        
     
     	.state('help', {
         url: '/help',
@@ -144,6 +145,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
   	'Delete Process' : 'Prozess löschen',
   	'Status of process run' : 'Verlauf des Prozesses',
   	'Processes' : 'Prozesse',
+  	'Logout' : 'Abmelden',
   	'Params' : 'Parameter',
   	'and' : 'und',
   	'Made with' : 'programmiert mit',

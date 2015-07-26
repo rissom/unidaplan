@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-var loginController=function($state,restfactory){
+var loginController=function($state,restfactory,$scope){
 	
 	var thisController=this;
 	
@@ -13,6 +13,7 @@ var loginController=function($state,restfactory){
 				console.log("logged in");
 				thisController.error="";
 				if (restfactory.failedState) {
+				  console.log("failed state: ",restfactory.failedState.name);
 				  if (restfactory.failedState.name!="login") {
 					  $state.go(restfactory.failedState);
 				  } else {
@@ -27,10 +28,17 @@ var loginController=function($state,restfactory){
 			}
 		)
 	}
+	
+	
+	this.keyUp = function(keyCode) {
+		if (keyCode===13) {  	// Return key pressed
+			this.userLogin();
+		}
+	}
 }	
 	
 
 
-angular.module('unidaplan').controller('loginController',['$state','restfactory','$translate',loginController])
+angular.module('unidaplan').controller('loginController',['$state','restfactory','$scope','$translate',loginController])
 	
 })();
