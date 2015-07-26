@@ -41,10 +41,13 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 						failedState=$state.current;
 					}
 				},
-				function(data, status, headers, config) {
-					console.log("restfactory.GET: error: ",[ data,status,headers,config ]);
+				function(data) {
+					console.log("restfactory.GET: error: ",data);
 					defer.reject('some http error occured');
 					failedState=$state.current;
+					if (data.status==401) {
+						$state.go('login');
+					}
 			    }
 			);
 		} catch(err) {
@@ -72,7 +75,7 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 			console.log("restfactory.PUT: trying to access: "+uri+"  "+angular.toJson(jsonParamObj));
 			var ret = $http.put(uri,jsonParamObj,config);
 			ret.then(
-				function(data, status, headers, config) {
+				function(data) {
 					try {
 //						var p = new DOMParser();
 //						var xml = p.parseFromString(data.data,'application/xml');
@@ -84,10 +87,13 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 						failedState=$state.current;
 					}
 				},
-				function(data, status, headers, config) {
+				function(data) {
 					console.log("restfactory.PUT: error: ",[ data,status,headers,config ]);
 					defer.reject('some http error occured');
 					failedState=$state.current;
+					if (data.status==401) {
+						$state.go('login');
+					}
 			    }
 			);
 		} catch(err) {
@@ -127,9 +133,6 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 					console.log("restfactory.POST: error: ",data);
 					defer.reject('some http error occured Status: '+data.status);
 					rest.failedState=$state.current;
-					console.log("failed state: ");
-					console.log(failedState);
-					console.log("status: "+status);
 					if (data.status==401) {
 						$state.go('login');
 					}

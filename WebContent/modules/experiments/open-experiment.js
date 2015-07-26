@@ -30,7 +30,6 @@ function oExpController(restfactory,$translate,$scope) {
 	    	expsCtrl.strings = rest.data.strings;
 	    	expsCtrl.translate($translate.use());
 	    }, function(rest) {
-	    	console.log("ERROR");
 	    });
 	};
 	

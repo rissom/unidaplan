@@ -5,6 +5,7 @@
        ng-model="loginCtrl.userinput" 
        style="width:300px;"
        placeholder="Enter your username here"><br />
+<br />
 <label>Password:</label>
 <input type="password"
 	   style="width:272px;"
@@ -12,5 +13,7 @@
 	   placeholder="Enter your password here">
 <br />
 <br />
-<p><p>
+<span style="color:red">{{loginCtrl.error}}</span>
+<br />
+<br />
 <button class="btn btn-default" ng-click="loginCtrl.userLogin()">Login</button>

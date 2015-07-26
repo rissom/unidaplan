@@ -2,7 +2,7 @@
 'use strict';
 
 
-function sampleChoser(sampleService,$translate,$scope,restfactory) {
+function sampleChoser($translate,$scope,restfactory) {
 
 	this.samples=[];
 	this.selectedTypesVar=[]
@@ -203,6 +203,6 @@ function sampleChoser(sampleService,$translate,$scope,restfactory) {
 };
 
         
-angular.module('unidaplan').controller('sampleChoser',['sampleService','$translate','$scope','restfactory',sampleChoser]);
+angular.module('unidaplan').controller('sampleChoser',['$translate','$scope','restfactory',sampleChoser]);
 
 })();

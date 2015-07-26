@@ -2,13 +2,9 @@
 'use strict';
 
 // How to build the ActivityService using the .service method
-var userService = function($http){
+var sampleService = function($http){
 
-  this.username = "";
-  
-  this.language = "en";
-  
-  this.getData =
+  this.samples = function() { return [{id:5},{id:6},{id:7}]};
 
 //  this.loadSamplesByName = function(type,name){
 //	 return	$http.get('samples_by_name.json?type='+type+'&name='+name);
@@ -18,6 +14,6 @@ var userService = function($http){
 };
 
 
-angular.module('unidaplan').service('userService', ['$http',userService]);
+angular.module('unidaplan').service('sampleService', ['$http',sampleService]);
 
 })();

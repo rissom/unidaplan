@@ -34,15 +34,11 @@ public class Login extends HttpServlet {
 	String pw="";
 	String user="";
 	  try  {
-		 System.out.print("pw: ");
 		 pw=request.getParameter("pw"); 
-		 System.out.println(pw);
-		 System.out.print("user: ");
 		 user=request.getParameter("user");
-		 System.out.println(user);
 	  }
 	  catch (Exception e1) {
-		 System.out.print("no password or userID given!");
+		 System.err.print("no password or userID given!");
 //		 e1.printStackTrace();
 	  }
 	  try{    
@@ -61,11 +57,11 @@ public class Login extends HttpServlet {
 
 		String hash= hashjs.getString("pw_hash");
 		int id = hashjs.getInt("id");
-		System.out.println(hash);		
 		if (PasswordHash.validatePassword(pw,hash)){
 			out.println("{\"status\":\"Password correct\"}");
 		session.setAttribute("userID",id);
 		}else{
+			response.setStatus(401);
 			out.println("{\"status\":\"Password incorrect\"}");
 		}
 		DBconn.closeDB();
@@ -75,10 +71,13 @@ public class Login extends HttpServlet {
 		e1.printStackTrace();
 	}		
 	} catch (SQLException e) {
-		System.err.println("Login: Problems with SQL quer2");
+		System.err.println("Login: Problems with SQL query");
+		response.setStatus(401);
 	} catch (JSONException e) {
-		System.err.println("Login: JSON Problem while getting Stringkeys");
+		System.err.println("Login: User not found or JSON error");
+		response.setStatus(401);
 	} catch (Exception e2) {
-		System.err.println("Login: Strange Problem while getting Stringkeys");
+		System.err.println("Login: Strange Problem while trying to log in");
+		response.setStatus(401);
 	}
 }}	
