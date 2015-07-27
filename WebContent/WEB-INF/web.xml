@@ -187,7 +187,7 @@
     <servlet-name>Login</servlet-name>
     <url-pattern>/login</url-pattern>
   </servlet-mapping>
-      <servlet>
+  <servlet>
     <description>Logout</description>
     <display-name>Logout</display-name>
     <servlet-name>Logout</servlet-name>
@@ -196,5 +196,15 @@
   <servlet-mapping>
     <servlet-name>Logout</servlet-name>
     <url-pattern>/logout</url-pattern>
+  </servlet-mapping>
+    <servlet>
+    <description>AddSample</description>
+    <display-name>AddSample</display-name>
+    <servlet-name>AddSample</servlet-name>
+    <servlet-class>unidaplan.AddSample</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddSample</servlet-name>
+    <url-pattern>/add-sample</url-pattern>
   </servlet-mapping>
 </web-app>

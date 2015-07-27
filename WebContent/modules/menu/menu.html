@@ -8,17 +8,13 @@
 	<div class="btn-group"  dropdown>
 		<button type="button" class="btn btn-default dropdown-toggle"
 			dropdown-toggle ng-disabled="disabled">
-				{{'Samples'|translate}}</button>
+				{{'Samples'|translate}}
+		</button>
 		<ul class="dropdown-menu" role="menu">
-			<li>
-				<a ui-sref="error">
+			<li class="dropdown-submenu">
+				<a  ui-sref="newsample">
 					{{'New Sample'|translate}} 
-				<b class="caret-right"></b>
 				</a>
-				<ul class="dropdown-menu" role=sub-menu">
-					<li><a ui-sref="error">Solarpanel</a></li>
-					<li><a ui-sref="error">Windrad</a></li>
-				</ul>
 			</li>
 			<li>
 				<a ui-sref="sChoser">
@@ -27,7 +23,7 @@
 			</li>
 			<li>
 				<a ui-sref="error">
-					{{'Recent Samples'|translate}} <b class="caret-right"></b>
+					{{'Recent Samples'|translate}}
 				</a>
 			</li>
 		</ul>
@@ -114,7 +110,7 @@
 		</ul>
 	</div>
 
-	<div class="btn-group" dropdown>
+	<div class="btn-group" dropdown >
 		<button type="button" 
 				class="btn btn-default dropdown-toggle"
 				dropdown-toggle ng-disabled="disabled">
@@ -144,17 +140,17 @@
 		<ul class="dropdown-menu" role="menu">
 
 			<li>
-				<a href ng-click="menuCtrl.setLanguage('de')">
+				<a ng-click="menuCtrl.setLanguage('de')">
 					de
 				</a>
 			</li>
 			<li>
-				<a href ng-click="menuCtrl.setLanguage('en')">
+				<a ng-click="menuCtrl.setLanguage('en')">
 					en
 				</a>
 			</li>
 			<li>
-				<a href ng-click="menuCtrl.logout()">
+				<a ng-click="menuCtrl.logout()">
 					logout
 				</a>
 			</li>

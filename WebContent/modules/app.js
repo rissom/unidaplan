@@ -24,6 +24,12 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
     	templateUrl: 'modules/signup/signup.html',
     	controller: 'signupController as signupCtrl'
     	})
+    	
+    	.state('newsample', {
+    	url: '/new-sample',
+        templateUrl: 'modules/sample/new-sample.html',
+        controller: 'newSampleController as newSampleCtrl'
+        })
         
         .state('sChoser', {
         url: '/sample',
@@ -48,6 +54,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
         templateUrl: 'modules/experiments/experiment.html',
         controller: 'expController as expCtrl'
         })
+        
         
         .state('users', {
     	url: '/admin/users',
@@ -101,6 +108,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
     'Other Experiments': 'Andere Experimente',
     'Base Parameters': 'Basisparameter',
     'created by' : 'erstellt von',
+    'Create Sample' : 'Probe erstellen',
     'Enter your e-mail here' : 'Bitte E-Mail-Adresse hier eingeben',
     'Enter full name here' : 'Bitte vollen Namen hier eingeben',
     'Files': 'Dateien',
@@ -109,27 +117,30 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
     'delete sample': 'Probe löschen',
     'Experiment': 'Experiment',
     'No.' : 'Nr.',
-    'Help': 'Hilfe',
-    'Sample': 'Probe',
-    'Samples': 'Proben',
-    'Process': 'Prozess',
+    'Help' : 'Hilfe',
+    'Sample' : 'Probe',
+    'Samples' : 'Proben',
+    'Process' : 'Prozess',
     'next': 'nächste',
-  	'previous': 'vorherige',
-  	'Is ancestor of': 'Vorfahr von',
-  	'Originates from': 'Stammt ab von',
-  	'Delete Sample': 'Probe löschen',
+  	'previous' : 'vorherige',
+  	'Is ancestor of' : 'Vorfahr von',
+  	'Originates from' : 'Stammt ab von',
+  	'Delete Sample' : 'Probe löschen',
   	'Delete Experiment' : 'Experiment löschen',
   	'Enter your password here' : 'Bitte Passwort hier eingeben',
   	'Enter your username here' : 'Bitte Benutzernamen hier eingeben',
   	'New Process' : 'Neuer Prozess',
   	'no.' : 'Nr.',  
-  	'Help page': 'Hilfe Seite',
+  	'Help page' : 'Hilfe Seite',
+  	'Log in' : 'Anmeldung',
+  	'Login' : 'Anmelden',
   	'New Sample': 'Neue Probe',
   	'Password' : 'Passwort',
   	'Re-enter Password' : 'Passwort wiederholen',
   	'Re-enter your password here' : 'Bitte Passwort hier wiederholen',
   	'Recent Samples' : 'zuvor geöffnete Proben',
   	'Recent Processes' : 'Zuvor geöffnete Prozesse',
+  	'Select sampletype' : 'Wähle Probentyp',
   	'set role' : 'Rolle setzen',
   	'Show Process' : 'Zeige Prozess',
   	'Show Sample' : 'Zeige Probe',

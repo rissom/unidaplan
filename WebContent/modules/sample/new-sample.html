@@ -1,0 +1,19 @@
+<p />
+<p />
+{{'Select sampletype'|translate}}
+<p />
+<div class="col-xs-6">
+	<select class="form-control" 
+		ng-model="newSampleCtrl.sampletype"
+		ng-options="stype.trname group by stype.group for stype in newSampleCtrl.sampletypes" 
+		>
+	</select>
+	<p />
+	<p />
+	<button class="btn btn-default"
+			ng-click="newSampleCtrl.addSample()"
+			ng-class= "{disabled: !newSampleCtrl.sampletype}">
+		{{'Create Sample'|translate}}
+	</button>	
+
+</div>

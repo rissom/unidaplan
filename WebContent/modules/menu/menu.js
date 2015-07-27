@@ -23,11 +23,10 @@ function menuf(restfactory,$translate,$rootScope,$state) {
 	this.logout = function(){
 		var promise = restfactory.GET('logout');
 		promise.then(function(){
-			console.log("logged out");
-			$state.go('login');
+				$state.go('login');
 			},
 			function(){
-			console.log("Error!");	
+				console.log("Error!");	
 			});
 	}
 	
