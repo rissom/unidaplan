@@ -10,10 +10,8 @@ var loginController=function($state,restfactory,$scope){
 	this.userLogin = function(){
 		var promise=restfactory.GET('login?user='+this.userinput+'&pw='+this.pwinput);
 		promise.then(function(data){
-				console.log("logged in");
 				thisController.error="";
 				if (restfactory.failedState) {
-				  console.log("failed state: ",restfactory.failedState.name);
 				  if (restfactory.failedState.name!="login") {
 					  $state.go(restfactory.failedState);
 				  } else {
@@ -23,7 +21,6 @@ var loginController=function($state,restfactory,$scope){
 					$state.go('openExperiment');	  
 				}
 			}, function(data){
-				console.log("unknown user or wrong password");
 				thisController.error="unknown user or wrong password";
 			}
 		)
@@ -31,7 +28,7 @@ var loginController=function($state,restfactory,$scope){
 	
 	
 	this.keyUp = function(keyCode) {
-		if (keyCode===13) {  	// Return key pressed
+		if (keyCode===13) {  	// Log in user if Return key is pressed in pw-inputfield
 			this.userLogin();
 		}
 	}

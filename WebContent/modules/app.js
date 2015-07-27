@@ -84,6 +84,12 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
         url: '/help',
         templateUrl: 'modules/help/help.html'
         })
+        
+        .state('recentsamples', {
+		url: '/recentsamples',
+		templateUrl: 'modules/sample/recent-samples.html',
+	    controller: 'recentSampleController as recentSampleCtrl'
+    	})
     
     	.state('error', {
     		url: '/error',
@@ -151,6 +157,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
   	'Groups and Users' : 'Benutzer und Gruppen',
   	'Parameters' : 'Parameter',
   	'Experiments' : 'Experimente',
+  	'Recently viewed Samples' : 'Zuletzt angesehene Proben',
   	'Samples in process' : 'Proben im Prozess',
   	'Add/Remove samples' : 'Proben hinzufügen/entfernen',
   	'Delete Process' : 'Prozess löschen',

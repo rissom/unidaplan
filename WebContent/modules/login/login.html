@@ -1,20 +1,20 @@
-<h3>Log in</h3>
+<h3>{{'Log in'|translate}}</h3>
 <br />
 <label>Name:</label>
 <input type="text" 
        ng-model="loginCtrl.userinput" 
        style="width:300px;"
-       placeholder="Enter your username here"><br />
+       placeholder="{{'Enter your username here'|translate}}"><br />
 <br />
-<label>Password:</label>
+<label>{{'Password'|translate}}:</label>
 <input type="password"
 	   style="width:272px;"
 	   ng-model="loginCtrl.pwinput"
-	   ng-keyup="inCtrl.keyUp($event.keyCode)"
-	   placeholder="Enter your password here">
+	   ng-keyup="loginCtrl.keyUp($event.keyCode)"
+	   placeholder="{{'Enter your password here'|translate}}">
 <br />
 <br />
 <span style="color:red">{{loginCtrl.error}}</span>
 <br />
 <br />
-<button class="btn btn-default" ng-click="loginCtrl.userLogin()">Login</button>
+<button class="btn btn-default" ng-click="loginCtrl.userLogin()">{{'Login'|translate}}</button>

@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-function sampleController(restfactory,$translate,$scope,$stateParams){
+function sampleController(restfactory,sampleService,$translate,$scope,$stateParams){
 	
 	var thisController = this;
 	
@@ -13,6 +13,7 @@ function sampleController(restfactory,$translate,$scope,$stateParams){
 		var ID= $stateParams.sampleID;
 		var promise = restfactory.GET("showsample.json?id="+ID);
 	    promise.then(function(rest) {
+	    	thisController.id = rest.data.id;
 	    	thisController.parameters = rest.data.parameters;
 	    	thisController.titleparameters = rest.data.titleparameters;
 	    	thisController.strings = rest.data.strings;
@@ -20,12 +21,20 @@ function sampleController(restfactory,$translate,$scope,$stateParams){
 	    	thisController.ancestors = rest.data.ancestors;
 	    	thisController.plans = rest.data.plans;
 	    	thisController.deletable = rest.data.deletable;
+	    	thisController.name = rest.data.name;
 	    	thisController.next = rest.data.next;
 	    	thisController.previous = rest.data.previous;
 	    	thisController.typestringkey = rest.data.typestringkey;
+	    	thisController.typeid = rest.data.typeid;
 	    	thisController.translate($translate.use()); // translate to active language
+	        var pSample = {"id"		  	   : rest.data.id,
+		    			   "typeid"		   : rest.data.typeid,
+		    			   "typestringkey" : rest.data.typestringkey,
+		    			   "trtype"		   : thisController.trtype,
+		    			   "name"		   : rest.data.name}
+	    sampleService.pushSample(pSample);
 	    }, function(rest) {
-	    	thisController.sample.error = "Not Found!";
+	    	thisController.error = "Not Found!";
 	    });
 	};
 	
@@ -142,6 +151,6 @@ function sampleController(restfactory,$translate,$scope,$stateParams){
 
 
 
-angular.module('unidaplan').controller('sampleController',['restfactory','$translate','$scope','$stateParams',sampleController]);
+angular.module('unidaplan').controller('sampleController',['restfactory','sampleService','$translate','$scope','$stateParams',sampleController]);
 
 })();

@@ -14,11 +14,11 @@ public class Authentificator {
  	// See if the current session is assigned to a known user
 	public int GetUserID(HttpServletRequest request, HttpServletResponse response){		
 		HttpSession session = request.getSession();		
-		Integer user=-1;
+		Integer user=1;
 		if (session.getAttribute("userID") != null) {
 			user=(Integer) session.getAttribute("userID");
 		} else {
-			response.setStatus(401);
+//			response.setStatus(401);
 		}
 		
 //		PreparedStatement pstmt = null; 	// Declare variables
