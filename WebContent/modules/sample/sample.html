@@ -1,133 +1,133 @@
-	<div ng-hide="sampleCtrl.sample.error">
+<div ng-hide="sampleCtrl.sample.error">
+
+	<!-- Heading with sample name -->
+	<h3>{{sampleCtrl.trtype}} 
+		<span ng-repeat="tparameter in sampleCtrl.titleparameters"
+			  ng-dblclick="tparameter.editing=true; newValue=tparameter.value">
+			<span ng-hide="tparameter.editing">{{tparameter.value|trailingzeros:tparameter.maxdigits}}
+			</span>
+			<input 						   
+				ng-keyup="sampleCtrl.keyUp($event.keyCode,newValue,tparameter)"
+				ng-show="tparameter.editing" type="text"
+			    ng-model="newValue" 
+			    ng-blur="tparameter.editing=false">
+			{{$last?'':'-'}}  <!-- Delimiter for name is '-' -->
+		</span>
+	</h3>
 	
-		<!-- Heading with sample name -->
-		<h3>{{sampleCtrl.trtype}} 
-			<span ng-repeat="tparameter in sampleCtrl.titleparameters"
-				  ng-dblclick="tparameter.editing=true; newValue=tparameter.value">
-				<span ng-hide="tparameter.editing">{{tparameter.value|trailingzeros:tparameter.maxdigits}}
+	
+	
+<br />
+	
+	
+	<!-- Parameters -->
+	<h4>{{'Base Parameters'|translate}}</h4>
+	<table class="table">
+		<tr ng-repeat="parameter in sampleCtrl.parameters| orderBy : sampleCtrl.parameters.pos" 
+		ng-dblclick="parameter.editing=true; newValue=parameter.value">
+			<td>
+			    {{parameter.trname}} :
+			</td>
+			<td >
+				<span ng-hide="parameter.editing">{{parameter.value}}
 				</span>
 				<input 						   
-					ng-keyup="sampleCtrl.keyUp($event.keyCode,newValue,tparameter)"
-					ng-show="tparameter.editing" type="text"
+					ng-keyup="sampleCtrl.keyUp($event.keyCode,newValue,parameter)"
+					ng-show="parameter.editing" type="text"
 				    ng-model="newValue" 
-				    ng-blur="tparameter.editing=false">
-				{{$last?'':'-'}}  <!-- Delimiter for name is '-' -->
-			</span>
-		</h3>
-		
-		
-		
-	<br />
-		
-		
-		<!-- Parameters -->
-		<h4>{{'Base Parameters'|translate}}</h4>
-		<table class="table">
-			<tr ng-repeat="parameter in sampleCtrl.parameters| orderBy : sampleCtrl.parameters.pos" 
-			ng-dblclick="parameter.editing=true; newValue=parameter.value">
-				<td>
-				    {{parameter.trname}} :
-				</td>
-				<td >
-					<span ng-hide="parameter.editing">{{parameter.value}}
-					</span>
-					<input 						   
-						ng-keyup="sampleCtrl.keyUp($event.keyCode,newValue,parameter)"
-						ng-show="parameter.editing" type="text"
-					    ng-model="newValue" 
-					    ng-blur="parameter.editing=false">
-					{{parameter.unit.length>0?parameter.unit:''}}
-				</td>
-			</tr>
-			<tr>
-				<td></td>
-				<td></td>
-			</tr>
-			<!-- um letzten Strich in Tabelle zu erzeugen -->
-		</table>
-		<h4>{{'Files' | translate}}</h4>
-		<button type="button" class="btn btn-default " ng-click="addFile()">
-			{{'Add File' | translate}}
-		</button>
-		<br /> <br />
+				    ng-blur="parameter.editing=false">
+				{{parameter.unit.length>0?parameter.unit:''}}
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+		</tr>
+		<!-- um letzten Strich in Tabelle zu erzeugen -->
+	</table>
+	<h4>{{'Files' | translate}}</h4>
+	<button type="button" class="btn btn-default " ng-click="addFile()">
+		{{'Add File' | translate}}
+	</button>
+	<br /> <br />
 
 
-		<!-- Ancestors and children -->
-		<h4>{{'Sample Tree' | translate}}</h4>
-		<table>
-			<tr>
-				<td>
-					<div ng-show="sampleCtrl.ancestors.length>0">{{'Originates from'|translate}}:</div> 
-						<span ng-repeat="bsample in sampleCtrl.ancestors"> 
-							<samplebutton buttonsample="bsample"  
-										  action="sampleCtrl.loadData(bsample.id)">
-							</samplebutton>
-						</span> 
-				</td>
-				<td width=20mm></td>
-				<td>
-					<div ng-show="sampleCtrl.children.length>0">{{'Is ancestor of'|translate}}:</div> 
-						<span ng-repeat="bsample in sampleCtrl.children">
-							 <samplebutton buttonsample="bsample" 
-							 			   action="sampleCtrl.loadData(bsample.id)">
-							 </samplebutton>
-						</span>
-				</td>
-			</tr>
-		</table>
-		<br />
-
-
-
-		<h4>{{'Planned Processes'|translate}}</h4>
-		<table>
-			<tr ng-repeat="experiment in sampleCtrl.plans">
-				<td>
-					<a ui-sref="experiment({experimentID:experiment.exp_id})">
-						 Experiment no. {{experiment.exp_id}}, "{{experiment.trname}}"
-					</td>
-			</tr>
-		</table>
-		<br />
-
-
-
-		<table> <!-- Buttonbar: previous/delete/next -->
-			<tr>
-				<td align="center">
-					<span ng-show="sampleCtrl.previous">&#x25c0; {{'previous'|translate}} <br /> 
-						<samplebutton buttonsample="sampleCtrl.previous" 
-									  action="sampleCtrl.loadData(sampleCtrl.sample.previous.id)">
+	<!-- Ancestors and children -->
+	<h4>{{'Sample Tree' | translate}}</h4>
+	<table>
+		<tr>
+			<td>
+				<div ng-show="sampleCtrl.ancestors.length>0">{{'Originates from'|translate}}:</div> 
+					<span ng-repeat="bsample in sampleCtrl.ancestors"> 
+						<samplebutton buttonsample="bsample"  
+									  action="sampleCtrl.loadData(bsample.id)">
 						</samplebutton>
+					</span> 
+			</td>
+			<td width=20mm></td>
+			<td>
+				<div ng-show="sampleCtrl.children.length>0">{{'Is ancestor of'|translate}}:</div> 
+					<span ng-repeat="bsample in sampleCtrl.children">
+						 <samplebutton buttonsample="bsample" 
+						 			   action="sampleCtrl.loadData(bsample.id)">
+						 </samplebutton>
 					</span>
-				</td>
-				<td align="center">&nbsp;<br /> &nbsp;
-					<button type="button" class="btn btn-danger"
-							ng-show="sampleCtrl.deletable==true"
-							ng-click="sampleCtrl.deleteSample()"
-							ui-sref="experiments">
-							{{'Delete Sample'|translate}}
-					</button>
-				</td>
-				<td align="center">	
-					<span ng-show="sampleCtrl.next"> &nbsp; {{'next'|translate}} &nbsp; &#9654;<br />
-						&nbsp;
-						<samplebutton buttonsample="sampleCtrl.next" 
-									  action="sampleCtrl.loadData(sampleCtrl.sample.next.id)">
-						</samplebutton>
-					</span>
-				</td>
-			</tr>
-		</table>
-	</div>
-	
-	<div ng-show=sampleCtrl.sample.error>
-		<!-- Error getting the sample -->
-		{{sampleCtrl.sample.error}}
-	</div>
-	
+			</td>
+		</tr>
+	</table>
 	<br />
+
+
+
+	<h4>{{'Planned Processes'|translate}}</h4>
+	<table>
+		<tr ng-repeat="experiment in sampleCtrl.plans">
+			<td>
+				<a ui-sref="experiment({experimentID:experiment.exp_id})">
+					 Experiment no. {{experiment.exp_id}}, "{{experiment.trname}}"
+				</a>
+			</td>
+		</tr>
+	</table>
 	<br />
-	<br />
-	<br />
+
+
+
+	<table> <!-- Buttonbar: previous/delete/next -->
+		<tr>
+			<td align="center">
+				<span ng-show="sampleCtrl.previous">&#x25c0; {{'previous'|translate}} <br /> 
+					<samplebutton buttonsample="sampleCtrl.previous" 
+								  action="sampleCtrl.loadData(sampleCtrl.sample.previous.id)">
+					</samplebutton>
+				</span>
+			</td>
+			<td align="center">&nbsp;<br /> &nbsp;
+				<button type="button" class="btn btn-danger"
+						ng-show="sampleCtrl.deletable==true"
+						ng-click="sampleCtrl.deleteSample()"
+						ui-sref="experiments">
+						{{'Delete Sample'|translate}}
+				</button>
+			</td>
+			<td align="center">	
+				<span ng-show="sampleCtrl.next"> &nbsp; {{'next'|translate}} &nbsp; &#9654;<br />
+					&nbsp;
+					<samplebutton buttonsample="sampleCtrl.next" 
+								  action="sampleCtrl.loadData(sampleCtrl.sample.next.id)">
+					</samplebutton>
+				</span>
+			</td>
+		</tr>
+	</table>
 </div>
+
+<div ng-show=sampleCtrl.sample.error>
+	<!-- Error getting the sample -->
+	{{sampleCtrl.sample.error}}
+</div>
+
+<br />
+<br />
+<br />
+<br />

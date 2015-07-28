@@ -1,25 +1,56 @@
 (function(){
   'use strict';
 
-function process(restfactory,$scope,$state,$translate){
+function process(restfactory,sampleService,avSampletypeService,$modal,$scope,$state,$stateParams,$translate){
   
+  var thisController=this;
+  
+  this.chosenSamples=[];
+	
   this.process={trprocesstype:""}; 
   
+  this.showtypes=function(){
+	  return sampleService.types
+  }
   
-  this.loadProcess = function(id){
+  this.loadProcess = function(){
   		var thisProcessController=this;
-		var promise = restfactory.GET("process.json?id="+id);
+		var promise = restfactory.GET("process.json?id="+$stateParams.processID);
 	    promise.then(function(rest) {
 	    	thisProcessController.process = rest.data;
 	    	thisProcessController.translate($translate.use());
 	    }, function(rest) {
 	    	console.log("Error loading process");
 	    });
-  }; 
+  };
+  
+ 
+  
+  this.openDialog = function () {
+	  var modalInstance = $modal.open({
+	    animation: false,
+	    templateUrl: 'modules/process/modal-sample-choser.html',
+	    controller: 'modalSampleChoser as mSampleChoserCtrl',
+	    size: 'lg',
+	    resolve: {
+	    	chosenSamples: function () {
+	        return thisController.chosenSamples;
+	      }
+	    }
+	  });
+	  
+	  
+	  modalInstance.result.then(function (myChosenSamples) {
+	      thisController.chosenSamples = myChosenSamples;
+	    }, function () {
+	      console.log('Modal dismissed at: ' + new Date());
+	    });
+  };
   
   
   $scope.$on('language changed', function(event, args) {
 		$scope.processCtrl.translate(args.language);
+		sampleService.translate();
 	});
 
 	
@@ -38,7 +69,6 @@ function process(restfactory,$scope,$state,$translate){
 		}
 	})
 	
-			
 		
 	angular.forEach(parameters, function(parameter) {  // Find all the parameter names.
 		notyetfound=true;
@@ -54,9 +84,10 @@ function process(restfactory,$scope,$state,$translate){
   };
 
   //activate function
-  this.loadProcess(1);
+  this.loadProcess();
+//  sampleService.loadTypes();
 };
 
-angular.module('unidaplan').controller('process', ['restfactory', '$scope', '$state', '$translate', process]);
+angular.module('unidaplan').controller('process', ['restfactory', 'sampleService', 'avSampletypeService', '$modal', '$scope', '$state', '$stateParams', '$translate', process]);
 
 })();

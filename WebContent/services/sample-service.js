@@ -4,7 +4,11 @@
 var sampleService = function(){
 // How to build the ActivityService using the .service method
 
-	this.recentSamples = []
+	var thisController=this;
+	this.recentSamples = [];
+	this.types = [];
+	this.strings =[];
+
 
 	
 	this.pushSample = function(sample){
@@ -22,7 +26,6 @@ var sampleService = function(){
 			this.recentSamples.slice(0,this.recentSamples.length-20);
 		}
 	}
-	
 	
 }
 

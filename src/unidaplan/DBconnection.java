@@ -132,7 +132,8 @@ public class DBconnection  {
 		              }
 	        	  }
 	        	  else {
-	        		  System.err.println("DBconnection: No result!");
+//	        		  it is perfectly normal to not have a result...
+//	        		  System.err.println("DBconnection: No result!");
 	        	  }
 	          }
 	          queryResult.close();

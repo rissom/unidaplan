@@ -38,7 +38,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
         })
         
         .state('process', {
-        url: '/process',
+        url: '/process/{processID:int}',
         templateUrl: 'modules/process/process.html',
         controller:"process as processCtrl"
         })
@@ -113,6 +113,9 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
     'My Experiments': 'Meine Experimente',
     'Other Experiments': 'Andere Experimente',
     'Base Parameters': 'Basisparameter',
+    'Cancel' : 'Abbrechen',
+    'chosen samples' : 'ausgewählte Proben',
+    'Assign to process' : 'Mit Prozess assozieren',
     'created by' : 'erstellt von',
     'Create Sample' : 'Probe erstellen',
     'Enter your e-mail here' : 'Bitte E-Mail-Adresse hier eingeben',

@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,20 +16,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Servlet implementation class Showprocess
+ * Servlet implementation class Process
  */
-@WebServlet("/showprocess.json")
-public class Showprocess extends HttpServlet {
+public class Process extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static JSONObject jsProcess;
        
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public Showprocess() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
+
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -53,6 +45,7 @@ public class Showprocess extends HttpServlet {
       
       int processID=1;
   	  int processTypeID=1;
+  	  int pnumber=0;
   	  try  {
   		 processID=Integer.parseInt(request.getParameter("id")); 
       }
@@ -69,16 +62,16 @@ public class Showprocess extends HttpServlet {
 		// get number and type 
 		pstmt= DBconn.conn.prepareStatement(	
 					"SELECT process_type_id, p_number, pt_string_key "
-					+"FROM pnumbers \n"
+					+"FROM pnumbers "
 				  	+"WHERE id=?");
 		pstmt.setInt(1, processID);
-		JSONArray table= DBconn.jsonArrayFromPreparedStmt(pstmt);
-		if (table.length()>0) {
-			jsProcess=table.getJSONObject(0);
+		jsProcess= DBconn.jsonObjectFromPreparedStmt(pstmt);
+		if (jsProcess.length()>0) {
 			processTypeID=jsProcess.getInt("process_type_id");
+			pnumber=jsProcess.getInt("p_number");
 			stringkeys.add(Integer.toString(jsProcess.getInt("pt_string_key")));
 		}else{
-			System.out.println("What the fuck");
+			System.err.println("no such process");
 		}
 		
 	  } catch (SQLException e) { 
@@ -96,13 +89,13 @@ public class Showprocess extends HttpServlet {
     // get next process
     try {       
 		pstmt=DBconn.conn.prepareStatement( 
-		"SELECT id,p_number FROM pnumbers \n"
-		+"WHERE (p_number>? AND process_type_id=?) \n");
-		pstmt.setInt(1,processID);
+		"SELECT id,p_number FROM pnumbers "
+		+"WHERE (p_number>? AND process_type_id=?) LIMIT 1");
+		pstmt.setInt(1,pnumber);
 		pstmt.setInt(2,processTypeID);
-		JSONArray table= DBconn.jsonArrayFromPreparedStmt(pstmt);
-		if (table.length()>0) {
-		jsProcess.put("next",table.getJSONObject(0)); } 
+		JSONObject next= DBconn.jsonObjectFromPreparedStmt(pstmt);
+		if (next.length()>0) {
+		jsProcess.put("next",next); } 
 	} catch (SQLException e) {
 		System.out.println("Problems with SQL query for next process");
 		e.printStackTrace();
@@ -114,6 +107,28 @@ public class Showprocess extends HttpServlet {
 		e.printStackTrace();
 	}	
 		
+    
+    // get previous process
+    try {       
+		pstmt=DBconn.conn.prepareStatement( 
+		"SELECT id,p_number FROM pnumbers "
+		+"WHERE (p_number<? AND process_type_id=?) ORDER BY p_number DESC LIMIT 1");
+		pstmt.setInt(1,pnumber);
+		pstmt.setInt(2,processTypeID);
+		JSONObject previous= DBconn.jsonObjectFromPreparedStmt(pstmt);
+		if (previous.length()>0) {
+		jsProcess.put("previous",previous); } 
+	} catch (SQLException e) {
+		System.out.println("Problems with SQL query for previous process");
+		e.printStackTrace();
+	} catch (JSONException e){
+		System.out.println("Problems creating JSON for previous process");
+		e.printStackTrace();
+	} catch (Exception e) {
+		System.out.println("Strange Problems with the previous process");
+		e.printStackTrace();
+	}	
+    
     
     // get the process Parameters:
     try{

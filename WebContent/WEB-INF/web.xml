@@ -27,17 +27,7 @@
     <servlet-name>Samples_by_name</servlet-name>
     <url-pattern>/samples_by_name.json</url-pattern>
   </servlet-mapping>
-  <servlet>
-    <description>shows available process-types</description>
-    <display-name>Available processtypes</display-name>
-    <servlet-name>Available_processtypes</servlet-name>
-    <servlet-class>unidaplan.Available_processtypes</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>Available_processtypes</servlet-name>
-    <url-pattern>/processtypes.json</url-pattern>
-  </servlet-mapping>
-  <servlet>
+   <servlet>
     <description>shows available sample types</description>
     <display-name>Available sampletypes</display-name>
     <servlet-name>AvailableSampletypes</servlet-name>
@@ -58,10 +48,10 @@
     <url-pattern>/experiments.json</url-pattern>
   </servlet-mapping>
   <servlet>
-    <description>show process</description>
+    <description>show a process</description>
     <display-name>Process</display-name>
     <servlet-name>Process</servlet-name>
-    <servlet-class>unidaplan.Showprocess</servlet-class>
+    <servlet-class>unidaplan.Process</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>Process</servlet-name>

@@ -1,7 +1,8 @@
 <p />
-<p />	
+<p />
 <p />
 <h3>{{processCtrl.process.trprocesstype}} {{processCtrl.process.p_number}}</h3>
+<br />
 <h4>{{'Params'|translate}}</h4>
 <table class="table">
 	<tr ng-repeat="parameter in processCtrl.process.parameters">
@@ -19,36 +20,52 @@
 
 
 {{'Status of process run'|translate}}
+<br />
+<br />
+
+
 <h4>{{'Samples in process'|translate}}</h4>
-<button>{{'Add/Remove samples'|translate}}</button>
+
+<span ng-repeat="sample in processCtrl.chosenSamples | orderBy:['trtype','name']">
+	<button class="btn btn-default" ui-sref="sample({sampleID:sample.id})">
+		{{sample.trname}} {{sample.name}}
+	</button>
+	&nbsp;
+</span>
+<br />
+<br />
+<button class="btn btn-default" ng-click="processCtrl.openDialog()">
+	{{'Add/Remove samples'|translate}}
+</button>
 <p />
 <p />
 <p />
 	<table>
-	<tr>
-		<td align="center">
-			<span ng-show="processCtrl.process.previous">&#x25c0; {{'previous'|translate}}<br />
-				<button class="btn btn-default">
-					{{'previous'|translate}}
-				</button>
-			</span>
-		</td>
-		<td align="center">&nbsp;<br /> &nbsp;
-			<button type="button" class="btn btn-danger">
-				{{'Delete Process'|translate}}
-			</button>
-		</td>
-		<td align="center">
-			<span ng-show="processCtrl.process.next"> &nbsp;
-				{{'next'|translate}} &nbsp; &#9654; &nbsp; <br />
-			<button class="btn btn-default">{{'next'|translate}}</button>			
-			</span>
-		</td>
-	</tr>
-</table>
-{{$state.current}}
-						
-						
-						
-</div> 
-</div>
+		<tr>
+			<td align="center">
+				<span ng-show="processCtrl.process.previous">&#x25c0; {{'previous'|translate}}<br />
+					<button class="btn btn-default"
+							ui-sref="process({processID:processCtrl.process.previous.id})">
+						{{processCtrl.process.trprocesstype}} {{processCtrl.process.previous.p_number}}
+					</button>
+				</span>
+			</td>
+			<td align="center">&nbsp;<br /> &nbsp;
+				<button type="button" class="btn btn-danger">
+					{{'Delete Process'|translate}}
+				</button>&nbsp;
+			</td>
+			<td align="center">
+				<span ng-show="processCtrl.process.next"> &nbsp;
+					{{'next'|translate}} &nbsp; &#9654; &nbsp; <br />
+					<button class="btn btn-default" 
+							ui-sref="process({processID:processCtrl.process.next.id})">
+						{{processCtrl.process.trprocesstype}} {{processCtrl.process.next.p_number}}
+					</button>	
+				</span>
+			</td>
+		</tr>
+	</table>
+	<p>
+	Hallo Thorse! 
+	{{processCtrl.showtypes()}}

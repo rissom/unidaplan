@@ -91,6 +91,8 @@ function sampleController(restfactory,sampleService,$translate,$scope,$statePara
 				 }
 		);
 	}
+	
+	
 		
 	this.stringFromKey = function(stringkey,strings) {
 		var keyfound=false;
