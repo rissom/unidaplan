@@ -32,7 +32,7 @@
 
 <!--  list of fitting samples  -->
 <ul> 
- 	<li ng-repeat="sample in mSampleChoserCtrl.samples | filter:sampleChoserCtrl.userinput | orderBy: ['typeid','name']" 
+ 	<li ng-repeat="sample in mSampleChoserCtrl.samples | filter:mSampleChoserCtrl.userinput | orderBy: ['typeid','name']" 
  		ng-show="mSampleChoserCtrl.typeSelected(sample)">
 					<!-- show only selected sample types -->
 		<a ng-click=mSampleChoserCtrl.choseSample(sample)> 

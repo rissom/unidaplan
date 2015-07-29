@@ -2,13 +2,11 @@
 'use strict';
 
 
-function sampleChoser($translate,$scope,restfactory,typen) {
+function sampleChoser($translate,$scope,restfactory,types) {
 
 	this.samples=[];
 	this.selectedTypesVar=[]
-	this.types=[];
-	this.strings=[];
-	this.selectortypes=[];
+	this.selectorTypes=[];
 	thisController=this;
 	
 	
@@ -39,21 +37,16 @@ function sampleChoser($translate,$scope,restfactory,typen) {
 	
 	
 	
-
-	this.gettypen=function(){
-		return typen;
-	}
-	
 	
 	$scope.$watch('sampleChoserCtrl.selectedtypes', function (seltypes){
 		var typeList=[];
 		if (seltypes==undefined || seltypes.length==0){  // Nothing selected => Everything selected
-			angular.forEach(thisController.types,function(type) {
+			angular.forEach(types,function(type) {
 				typeList.push(type.id);			
 			});
 		} else {
 		if (seltypes[0].id==0){  // all types field selected => Everything selected
-			angular.forEach(thisController.types,function(type) {
+			angular.forEach(types,function(type) {
 				typeList.push(type.id);
 			});
 		}else{										// make list of selected types
@@ -130,7 +123,7 @@ function sampleChoser($translate,$scope,restfactory,typen) {
 	// return the translated name string of a type for a sample
 	this.getType=function(sample){
 		var typeName
-		angular.forEach(typen,function(type) {
+		angular.forEach(types,function(type) {
 			if (sample.typeid==type.id){
 				typeName=type.trname;
 			}
@@ -151,24 +144,27 @@ function sampleChoser($translate,$scope,restfactory,typen) {
 	}
 	
 
-	
+	// build a new array of selectable processtypes, with an "all-types" option
 	this.init=function(lang){
-		this.selectortypes=[];
-		angular.forEach(typen,function(type) {
-			thisController.selectortypes.push(type);
-		})
-		if (lang=="de"){
-			thisController.selectortypes.unshift({trname:'alle Typen','id':0});
-		}else{
-			thisController.selectortypes.unshift({trname:'all types','id':0});
+		var selectorTypesTemp=[];
+		var allTypesString="all types";
+		if ($translate.use()=="de"){
+			allTypesString='alle Typen';
 		}
+		selectorTypesTemp.push({trname:allTypesString,'id':0});
+		angular.forEach(types,function(type) {
+			selectorTypesTemp.push(type);
+		})
+		this.selectorTypes=selectorTypesTemp;
+//		 funzt nicht:
+//		this.selectedtypes={trname:allTypesString,'id':0}
 	}
 
 	
 	
 	var thisController = this;
 	$scope.$on('language changed', function(event, args) {
-		thisController.translate(args.language);
+		thisController.init();
 	});
 	
 	
@@ -179,6 +175,6 @@ function sampleChoser($translate,$scope,restfactory,typen) {
 };
 
         
-angular.module('unidaplan').controller('sampleChoser',['$translate','$scope','restfactory','typen',sampleChoser]);
+angular.module('unidaplan').controller('sampleChoser',['$translate','$scope','restfactory','types',sampleChoser]);
 
 })();

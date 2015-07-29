@@ -38,7 +38,7 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 							console.log("restfactory.GET: "+uri+" no JSON warning: ",text);
 						}
 //						var serverObj = JSON.parse(data.data);
-//						console.log("restfactory.GET: from: "+uri+" got: ",data);
+						console.log("restfactory.GET: from: "+uri+" got: ",data);
 						defer.resolve(data);
 					} catch (err) {
 						console.log("restfactory.GET: "+uri+" parse error: "+data,err);

@@ -1,7 +1,7 @@
 (function(){
   'use strict';
 
-function process(restfactory,sampleService,avSampletypeService,$modal,$scope,$state,$stateParams,$translate){
+function process(restfactory,types,$modal,$scope,$state,$stateParams,$translate){
   
   var thisController=this;
   
@@ -10,7 +10,7 @@ function process(restfactory,sampleService,avSampletypeService,$modal,$scope,$st
   this.process={trprocesstype:""}; 
   
   this.showtypes=function(){
-	  return sampleService.types
+	  return types
   }
   
   this.loadProcess = function(){
@@ -33,12 +33,12 @@ function process(restfactory,sampleService,avSampletypeService,$modal,$scope,$st
 	    controller: 'modalSampleChoser as mSampleChoserCtrl',
 	    size: 'lg',
 	    resolve: {
-	    	chosenSamples: function () {
-	        return thisController.chosenSamples;
-	      }
-	    }
+	    	chosenSamples : function() {
+	    					return thisController.chosenSamples; },
+	        types         : function() {
+	        				return types; }
+	        }
 	  });
-	  
 	  
 	  modalInstance.result.then(function (myChosenSamples) {
 	      thisController.chosenSamples = myChosenSamples;
@@ -48,9 +48,22 @@ function process(restfactory,sampleService,avSampletypeService,$modal,$scope,$st
   };
   
   
+  // return the translated name string of a type for a sample
+  this.getType=function(sample){
+	var typeName
+	  angular.forEach(types,function(type) {
+		if (sample.typeid==type.id){
+		    typeName=type.trname;
+		}
+      })
+	return typeName;
+  }
+  
+  
+  
   $scope.$on('language changed', function(event, args) {
 		$scope.processCtrl.translate(args.language);
-		sampleService.translate();
+		// Probentypen müssen auch übersetzt werden!!!
 	});
 
 	
@@ -88,6 +101,6 @@ function process(restfactory,sampleService,avSampletypeService,$modal,$scope,$st
 //  sampleService.loadTypes();
 };
 
-angular.module('unidaplan').controller('process', ['restfactory', 'sampleService', 'avSampletypeService', '$modal', '$scope', '$state', '$stateParams', '$translate', process]);
+angular.module('unidaplan').controller('process', ['restfactory', 'types', '$modal', '$scope', '$state', '$stateParams', '$translate', process]);
 
 })();

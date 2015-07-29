@@ -28,7 +28,7 @@
 
 <span ng-repeat="sample in processCtrl.chosenSamples | orderBy:['trtype','name']">
 	<button class="btn btn-default" ui-sref="sample({sampleID:sample.id})">
-		{{sample.trname}} {{sample.name}}
+		{{processCtrl.getType(sample)}} {{sample.name}}
 	</button>
 	&nbsp;
 </span>
@@ -67,5 +67,3 @@
 		</tr>
 	</table>
 	<p>
-	Hallo Thorse! 
-	{{processCtrl.showtypes()}}

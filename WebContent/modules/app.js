@@ -36,14 +36,17 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
         templateUrl: 'modules/sample/sample-choser.html',
         controller: 'sampleChoser as sampleChoserCtrl',
         resolve: {
-	                typen: function(avSampleTypeService){return avSampleTypeService.getTypes()}
+	                types: function(avSampleTypeService){return avSampleTypeService.getTypes()}
         		 }
         })
         
         .state('process', {
         url: '/process/{processID:int}',
         templateUrl: 'modules/process/process.html',
-        controller:"process as processCtrl"
+        controller:"process as processCtrl",
+        resolve: {
+            types: function(avSampleTypeService){return avSampleTypeService.getTypes()}
+		 }
         })
         
         .state('openExperiment', {

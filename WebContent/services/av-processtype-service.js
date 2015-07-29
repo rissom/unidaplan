@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-function AvProcService(restfactory) {
+function AvProcService(restfactory,$translate,$scope) {
 	// restfactory is a wrapper for $html.
 
 	this.processes = [];
@@ -18,8 +18,9 @@ function AvProcService(restfactory) {
 		}, function(rest) {
 			console.log("Error loading processtypes");
 		});
-	};
+	}
 
+	
 	this.translate = function(lang) {
 		var strings=this.strings
 		angular.forEach(this.processes, function(proc) {
@@ -30,14 +31,12 @@ function AvProcService(restfactory) {
 		})
 	}
 
-	this.articleClicked = function(process) {
-		console.log('Process ' + process + ' clicked');
-	};
+
 
 }
-;
 
 
-angular.module('unidaplan').service('AvProcService', ['restfactory',AvProcService]);
+
+angular.module('unidaplan').service('AvProcService', ['restfactory','$translate','$scope',AvProcService]);
 
 })();

@@ -2,7 +2,7 @@
 'use strict';
 
 
-function modalSampleChoser($translate,$scope,$modalInstance,restfactory,avSampleService,chosenSamples) {
+function modalSampleChoser($translate,$scope,$modalInstance,restfactory,types,chosenSamples) {
 
 	this.chosenSamples=chosenSamples;
 	this.oldChosenSamples=chosenSamples;
@@ -40,30 +40,15 @@ function modalSampleChoser($translate,$scope,$modalInstance,restfactory,avSample
 	}   
 	
 	
-	
-	// get all available sample types
-	this.loadTypes=function(){
-		var promise=restfactory.GET('/sampletypes.json');
-		promise.then(function(data){
-			thisController.types=data.data.sampletypes;
-			thisController.strings=data.data.strings;
-			angular.forEach(thisController.types,function(type) {
-				thisController.selectedTypesVar.push(type.id);			
-			});			
-		});
-	}
-	
-	
-	
 	$scope.$watch('mSampleChoserCtrl.selectedtypes', function (seltypes){
 		var typeList=[];
 		if (seltypes==undefined || seltypes.length==0){  // Nothing selected => Everything selected
-			angular.forEach(thisController.types,function(type) {
+			angular.forEach(types,function(type) {
 				typeList.push(type.id);			
 			});
 		} else {
 		if (seltypes[0].id==0){  // all types field selected => Everything selected
-			angular.forEach(thisController.types,function(type) {
+			angular.forEach(types,function(type) {
 				typeList.push(type.id);			
 			});
 		}else{										// make list of selected types
@@ -146,7 +131,7 @@ function modalSampleChoser($translate,$scope,$modalInstance,restfactory,avSample
 			promise.then(function(data){
 				thisController.samples=data.data;
 				if (thisController.firsttime) {
-					thisController.translate();
+					thisController.init();
 					thisController.firsttime=false;
 				}
 			});		
@@ -157,13 +142,14 @@ function modalSampleChoser($translate,$scope,$modalInstance,restfactory,avSample
 	// return the translated name string of a type for a sample
 	this.getType=function(sample){
 		var typeName
-		angular.forEach(thisController.types,function(type) {
+		angular.forEach(types,function(type) {
 			if (sample.typeid==type.id){
 				typeName=type.trname;
 			}
 		})
 		return typeName;
 	}
+	
 	
 	
 	// Check if the sampletype is selected
@@ -185,17 +171,19 @@ function modalSampleChoser($translate,$scope,$modalInstance,restfactory,avSample
 	
 	
 	
-	this.translate=function(lang){
-		this.selectortypes=[];
-		angular.forEach(thisController.types,function(type) {
-			type.trname=thisController.stringFromKey(type.string_key,thisController.strings);
-			thisController.selectortypes.push(type);
+	this.init=function(){
+        var selectorTypesTemp=[];
+        var allTypesString="all types";
+        if ($translate.use()=="de"){
+            allTypesString='alle Typen';
+        }
+        selectorTypesTemp.push({trname:allTypesString,'id':0});
+
+		angular.forEach(types,function(type) {
+			selectorTypesTemp.push(type);
 		})
-		if (lang=="de"){
-			thisController.selectortypes.unshift({trname:'alle Typen','id':0});
-		}else{
-			thisController.selectortypes.unshift({trname:'all types','id':0});
-		}
+        this.selectortypes=selectorTypesTemp;
+		
 	}
 	
 	
@@ -236,10 +224,10 @@ function modalSampleChoser($translate,$scope,$modalInstance,restfactory,avSample
 	
 	//activate function
 	this.firsttime=true;
-	this.loadTypes();
+	this.init();
 };
 
         
-angular.module('unidaplan').controller('modalSampleChoser',['$translate','$scope','$modalInstance','restfactory','avSampleService','chosenSamples',modalSampleChoser]);
+angular.module('unidaplan').controller('modalSampleChoser',['$translate','$scope','$modalInstance','restfactory','types','chosenSamples',modalSampleChoser]);
 
 })();
