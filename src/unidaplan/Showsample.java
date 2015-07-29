@@ -283,8 +283,8 @@ public class Showsample extends HttpServlet {
 		// Can we delete this sample?
 		try{
 	        pstmt = DBconn.conn.prepareStatement(	
-	    	"SELECT processid, objectid FROM objectinprocess "
-	 		+"WHERE objectid=?");
+	    	"SELECT processid, sampleid FROM samplesinprocess "
+	 		+"WHERE sampleid=?");
 			pstmt.setInt(1,objID);
 			ResultSet resultset=pstmt.executeQuery();
 			if (resultset.next()) {Deletable=false;}
@@ -299,11 +299,11 @@ public class Showsample extends HttpServlet {
 			pstmt.close();
 			jsSample.put("deletable", Deletable);
 		} catch (SQLException e) {
-			System.err.println("Showsample: Problems with SQL query for next sample");
+			System.err.println("Showsample: Problems with SQL query for deletable");
 		} catch (JSONException e) {
-			System.err.println("Showsample: JSON Problem while getting next sample");
+			System.err.println("Showsample: JSON Problem while getting deletable");
 		} catch (Exception e2) {
-			System.err.println("Showsample: Strange Problem while getting next sample");
+			System.err.println("Showsample: Strange Problem while getting deletable");
 		}
 			
 		

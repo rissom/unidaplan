@@ -1,29 +1,29 @@
 (function(){
   'use strict';
 
-function process(restfactory,types,$modal,$scope,$state,$stateParams,$translate){
+function process(restfactory,types,$modal,$scope,$state,$translate,processData){
   
   var thisController=this;
   
-  this.chosenSamples=[];
+  this.chosenSamples=[]; // Kunst? Oder kann das weg?
 	
-  this.process={trprocesstype:""}; 
+  this.process=processData;
   
   this.showtypes=function(){
 	  return types
   }
   
-  this.loadProcess = function(){
-  		var thisProcessController=this;
-		var promise = restfactory.GET("process.json?id="+$stateParams.processID);
-	    promise.then(function(rest) {
-	    	thisProcessController.process = rest.data;
-	    	thisProcessController.translate($translate.use());
-	    }, function(rest) {
-	    	console.log("Error loading process");
-	    });
-  };
-  
+//  this.loadProcess = function(){
+//  		var thisProcessController=this;
+//		var promise = restfactory.GET("process.json?id="+$stateParams.processID);
+//	    promise.then(function(rest) {
+//	    	thisProcessController.process = rest.data;
+//	    	thisProcessController.translate($translate.use());
+//	    }, function(rest) {
+//	    	console.log("Error loading process");
+//	    });
+//  };
+//  
  
   
   this.openDialog = function () {
@@ -33,15 +33,15 @@ function process(restfactory,types,$modal,$scope,$state,$stateParams,$translate)
 	    controller: 'modalSampleChoser as mSampleChoserCtrl',
 	    size: 'lg',
 	    resolve: {
-	    	chosenSamples : function() {
-	    					return thisController.chosenSamples; },
+	    	samples 	  : function() {
+	    					return thisController.process.samples; },
 	        types         : function() {
 	        				return types; }
 	        }
 	  });
 	  
 	  modalInstance.result.then(function (myChosenSamples) {
-	      thisController.chosenSamples = myChosenSamples;
+	      thisController.process.samples = myChosenSamples;
 	    }, function () {
 	      console.log('Modal dismissed at: ' + new Date());
 	    });
@@ -95,12 +95,13 @@ function process(restfactory,types,$modal,$scope,$state,$stateParams,$translate)
 		})
 	})	
   };
+  
 
   //activate function
-  this.loadProcess();
+//  this.loadProcess();
 //  sampleService.loadTypes();
 };
 
-angular.module('unidaplan').controller('process', ['restfactory', 'types', '$modal', '$scope', '$state', '$stateParams', '$translate', process]);
+angular.module('unidaplan').controller('process', ['restfactory', 'types', '$modal', '$scope', '$state', '$translate', 'processData',process]);
 
 })();

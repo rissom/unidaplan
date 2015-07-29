@@ -26,8 +26,8 @@
 
 <h4>{{'Samples in process'|translate}}</h4>
 
-<span ng-repeat="sample in processCtrl.chosenSamples | orderBy:['trtype','name']">
-	<button class="btn btn-default" ui-sref="sample({sampleID:sample.id})">
+<span ng-repeat="sample in processCtrl.process.samples | orderBy:['trtype','name']">
+	<button class="btn btn-default" ui-sref="sample({sampleID:sample.sampleid})">
 		{{processCtrl.getType(sample)}} {{sample.name}}
 	</button>
 	&nbsp;

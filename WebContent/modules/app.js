@@ -44,8 +44,15 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
         url: '/process/{processID:int}',
         templateUrl: 'modules/process/process.html',
         controller:"process as processCtrl",
-        resolve: {
-            types: function(avSampleTypeService){return avSampleTypeService.getTypes()}
+        resolve:{
+            types: 
+        	    function(avSampleTypeService){
+        	   	    return avSampleTypeService.getTypes()
+                },
+            processData: 
+            	function(processService,$stateParams){
+        			return processService.getProcess($stateParams.processID)
+        	    }
 		 }
         })
         

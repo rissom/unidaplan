@@ -2,10 +2,10 @@
 'use strict';
 
 
-function modalSampleChoser($translate,$scope,$modalInstance,restfactory,types,chosenSamples) {
+function modalSampleChoser($translate,$scope,$modalInstance,restfactory,types,samples) {
 
-	this.chosenSamples=chosenSamples;
-	this.oldChosenSamples=chosenSamples;
+	this.chosenSamples=samples;
+	this.oldChosenSamples=samples;
 	this.samples=[];
 	this.selectedTypesVar=[]
 	this.types=[];
@@ -228,6 +228,6 @@ function modalSampleChoser($translate,$scope,$modalInstance,restfactory,types,ch
 };
 
         
-angular.module('unidaplan').controller('modalSampleChoser',['$translate','$scope','$modalInstance','restfactory','types','chosenSamples',modalSampleChoser]);
+angular.module('unidaplan').controller('modalSampleChoser',['$translate','$scope','$modalInstance','restfactory','types','samples',modalSampleChoser]);
 
 })();
