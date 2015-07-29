@@ -119,7 +119,7 @@ function sampleChoser($translate,$scope,restfactory,typen) {
 			promise.then(function(data){
 				thisController.samples=data.data;
 				if (thisController.firsttime) {
-					thisController.translate();
+					thisController.init();
 					thisController.firsttime=false;
 				}
 			});		
