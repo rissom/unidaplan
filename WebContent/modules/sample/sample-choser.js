@@ -2,7 +2,7 @@
 'use strict';
 
 
-function sampleChoser($translate,$scope,restfactory) {
+function sampleChoser($translate,$scope,restfactory,typen) {
 
 	this.samples=[];
 	this.selectedTypesVar=[]
@@ -39,18 +39,10 @@ function sampleChoser($translate,$scope,restfactory) {
 	
 	
 	
-	// get all available sample types
-	this.loadTypes=function(){
-		var promise=restfactory.GET('/sampletypes.json');
-		promise.then(function(data){
-			thisController.types=data.data.sampletypes;
-			thisController.strings=data.data.strings;
-			angular.forEach(thisController.types,function(type) {
-				thisController.selectedTypesVar.push(type.id);			
-			});			
-		});
+
+	this.gettypen=function(){
+		return typen;
 	}
-	
 	
 	
 	$scope.$watch('sampleChoserCtrl.selectedtypes', function (seltypes){
@@ -62,7 +54,7 @@ function sampleChoser($translate,$scope,restfactory) {
 		} else {
 		if (seltypes[0].id==0){  // all types field selected => Everything selected
 			angular.forEach(thisController.types,function(type) {
-				typeList.push(type.id);			
+				typeList.push(type.id);
 			});
 		}else{										// make list of selected types
 			angular.forEach(thisController.selectedtypes,function(type) {
@@ -117,23 +109,6 @@ function sampleChoser($translate,$scope,restfactory) {
 	
 
 	
-	// get the translated string for a string key
-	this.stringFromKey = function(stringkey,strings) {
-		var keyfound=false;
-		var returnString="@@@ no string! @@@";
-		angular.forEach(strings, function(translation) {
-			if (!keyfound && stringkey==translation.string_key) {
-				returnString = translation.value;
-				if (translation.language==$translate.use()) {
-					keyfound=true;
-				}
-			}
-		})
-		return returnString;
-	};
-	
-	
-	
 	// get a bunch of fitting samples
 	this.loadSamples=function(){
 		var details={}
@@ -155,7 +130,7 @@ function sampleChoser($translate,$scope,restfactory) {
 	// return the translated name string of a type for a sample
 	this.getType=function(sample){
 		var typeName
-		angular.forEach(thisController.types,function(type) {
+		angular.forEach(typen,function(type) {
 			if (sample.typeid==type.id){
 				typeName=type.trname;
 			}
@@ -177,10 +152,9 @@ function sampleChoser($translate,$scope,restfactory) {
 	
 
 	
-	this.translate=function(lang){
+	this.init=function(lang){
 		this.selectortypes=[];
-		angular.forEach(thisController.types,function(type) {
-			type.trname=thisController.stringFromKey(type.string_key,thisController.strings);
+		angular.forEach(typen,function(type) {
 			thisController.selectortypes.push(type);
 		})
 		if (lang=="de"){
@@ -200,11 +174,11 @@ function sampleChoser($translate,$scope,restfactory) {
 	
 	
 	//activate function
+	this.init();
 	this.firsttime=true;
-	this.loadTypes();
 };
 
         
-angular.module('unidaplan').controller('sampleChoser',['$translate','$scope','restfactory',sampleChoser]);
+angular.module('unidaplan').controller('sampleChoser',['$translate','$scope','restfactory','typen',sampleChoser]);
 
 })();

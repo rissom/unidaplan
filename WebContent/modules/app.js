@@ -11,7 +11,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
     
     $stateProvider
         
-        // UI-Router STATES AND NESTED VIEWS ========================================
+        // UI-Router STATES AND NESTED VIEWS
         
         .state('sample', {
         url: '/sample/{sampleID:int}',
@@ -31,10 +31,13 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
         controller: 'newSampleController as newSampleCtrl'
         })
         
-        .state('sChoser', {
+        .state('sampleChoser', {
         url: '/sample',
         templateUrl: 'modules/sample/sample-choser.html',
-        controller: 'sampleChoser as sampleChoserCtrl'
+        controller: 'sampleChoser as sampleChoserCtrl',
+        resolve: {
+	                typen: function(avSampleTypeService){return avSampleTypeService.getTypes()}
+        		 }
         })
         
         .state('process', {
