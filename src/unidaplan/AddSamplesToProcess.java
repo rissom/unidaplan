@@ -32,9 +32,6 @@ import org.json.JSONObject;
 		} catch (JSONException e) {
 			System.err.println("AddSamplesToProcess: Input is not valid JSON");
 		}
-	    System.out.println("jsonIn:");
-		System.out.println(jsonIn.toString());
-		
 		
 		response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
@@ -43,7 +40,6 @@ import org.json.JSONObject;
 	    int processid=-1;
 	    try {
 			 processid=jsonIn.getInt("id");
-			 System.out.println("processid: "+processid);
 		} catch (JSONException e) {
 			System.err.println("AddSamplesToProcess: Error parsing process ID-Field");
 			response.setStatus(404);
@@ -70,21 +66,16 @@ import org.json.JSONObject;
 			for (int i=0;i<assignedSamples.length();i++){ 
 			 	assignedSamplesList.add((Integer)((JSONObject)assignedSamples.get(i)).getInt("sampleid"));
 			}
-		 	System.out.println("assigned: "+assignedSamplesList.toString());
 		 	
 		 	// insert database entries for not already assigned samples
 			pstmt= DBconn.conn.prepareStatement( 			
 					 "INSERT INTO samplesinprocess values(default,?,?,NOW(),?)");
 			for (int i=0;i<samples.length();i++){
-				System.out.println("yeah");
 				JSONObject sample=(JSONObject)samples.get(i);
-				System.out.println("yippieh");
 				newSamplesList.add(sample.getInt("sampleid"));
-				System.out.println(sample.toString());
 				if (!assignedSamplesList.contains(sample.getInt("sampleid"))){
 					newlyCreatedSamples.put(sample);
 					newlyCreatedSamplesList.add(sample.getInt("sampleid"));
-					System.out.println("adding: "+sample.getInt("sampleid"));
 					pstmt.setInt(1, processid);
 					pstmt.setInt(2, sample.getInt("sampleid"));
 					pstmt.setInt(3, userID);
@@ -93,25 +84,18 @@ import org.json.JSONObject;
 			}
 			pstmt.executeBatch();
 			pstmt.close();
-			System.out.println("length:");
-			System.out.println(assignedSamples.length());
-			System.out.println("newSampleList:");
-			System.out.println(newSamplesList.toString());
 
 			// make a list of samples to delete
 			for (int i=0;i<assignedSamples.length();i++){
 				if (!newSamplesList.contains(assignedSamplesList.get(i))){
-					System.out.println("Loeschkandidat: "+assignedSamplesList.get(i));
 					samplesToDeleteList.add((Integer) assignedSamplesList.get(i));
 				}
 			}
-			System.out.println(samplesToDeleteList.toString());
 			
 			// Delete the samples
 			pstmt= DBconn.conn.prepareStatement( 			
 					 "DELETE FROM samplesinprocess WHERE sampleid=? AND processid=?");
 			for(Integer sample: samplesToDeleteList){
-				System.out.println(sample);
 				pstmt.setInt(1, sample);
 				pstmt.setInt(2, processid);
 				pstmt.addBatch();
