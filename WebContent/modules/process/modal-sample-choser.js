@@ -104,22 +104,6 @@ function modalSampleChoser($translate,$scope,$modalInstance,restfactory,types,sa
 	
 
 	
-	// get the translated string for a string key
-	this.stringFromKey = function(stringkey,strings) {
-		var keyfound=false;
-		var returnString="@@@ no string! @@@";
-		angular.forEach(strings, function(translation) {
-			if (!keyfound && stringkey==translation.string_key) {
-				returnString = translation.value;
-				if (translation.language==$translate.use()) {
-					keyfound=true;
-				}
-			}
-		})
-		return returnString;
-	};
-	
-	
 	
 	// get a bunch of fitting samples
 	this.loadSamples=function(){

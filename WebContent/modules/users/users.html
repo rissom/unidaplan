@@ -39,7 +39,7 @@
 			<tr  ng-show=userCtrl.edit>
 				<td><input type="text" ng-model="userCtrl.fullname" 
 				   placeholder="{{'Enter full name here'|translate}}"
-				   style="width:300px;"
+				   style="width:240px;"
 				   required >				   
 				</td>
 				<td><input type="text" ng-model="userCtrl.username" 
@@ -54,6 +54,10 @@
 					<input type="submit" 
 						   class="btn btn-default" 
 						   value="{{'Add User'|translate}}">
+					<button ng-click="userCtrl.cancel()"
+							class="btn btn-default">
+							{{'cancel'|translate}}
+					</button>
 				</td>
 			</tr>
 			<tr>

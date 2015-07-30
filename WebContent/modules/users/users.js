@@ -1,15 +1,17 @@
 (function(){
 'use strict';
 
-function userController(restfactory,$translate,$scope) {
+function userController(users,userService) {
 	
-	this.users =  [];		
+	this.users =  users;
 	
 	this.edit = false;
 	
 	this.actions = ['block','edit'];
 	
 	var thisController = this;
+	
+	
 
 	this.performAction=function(index,user){
 		if (index==1){
@@ -19,6 +21,8 @@ function userController(restfactory,$translate,$scope) {
 			this.deleteUser(user);
 		}
 	}
+	
+	
 	
 	this.getActions = function(user){
 		var actions=[];
@@ -35,24 +39,18 @@ function userController(restfactory,$translate,$scope) {
 		return actions
 	}
 	
-	this.loadData = function() {
-		var promise = restfactory.GET("get-users.json");
-		promise.then(function(rest) {
-	    	thisController.users = rest.data;
-	    }, function(rest) {
-	    	console.log("ERROR");
-	    });
-	};
 	
 
 	this.deleteUser = function(user) {
-		var promise = restfactory.GET("delete-user?id="+user.id);
+		var promise = userService.deleteUser(user);
 	    promise.then(function(rest) {
-	    	thisController.loadData();
+	    	var promise2 = userService.getUsers();
+	    	promise2.then(function(users){thisController.users=users}, console.log("fehler"));
 	    }, function(rest) {
 	    	console.log("ERROR");
 	    });
 	}	
+	
 	
 	
 	this.addUser = function() {
@@ -60,28 +58,29 @@ function userController(restfactory,$translate,$scope) {
 	}
 	
 	
-	this.submitUser = function() {
-		var newUser=  { "fullname" : this.fullname,
-						"username" : this.username,
-						   "email" : this.email}
-		var promise = restfactory.POST("add-user.json",newUser);
-		promise.then(function(data, status, headers, config){
-				thisController.loadData();
-				thisController.edit=false;
-			},
-					 function(data, status, headers, config){
-				console.log('Error');
-			});
+	
+	this.cancel = function() {
+		this.edit=false;
 	}
 	
 	
 	
+	this.submitUser = function() {
+		var newUser=  { "fullname" : this.fullname,
+						"username" : this.username,
+						   "email" : this.email};
+		var promise = userService.submitUser(newUser);
+		thisController.edit=false;
+		promise.then(
+				function(users){
+					thisController.users=users
+				}, 
+				function(users){console.log("fehler")});
+	}
 	
-	// Activate function:
-	this.loadData();
 };
     
         
-angular.module('unidaplan').controller('userController',['restfactory','$translate','$scope',userController]);
+angular.module('unidaplan').controller('userController',['users','userService',userController]);
 
 })();

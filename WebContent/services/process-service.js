@@ -1,24 +1,9 @@
 (function(){
 'use strict';
 
-var processService = function (restfactory,$q,$translate) {
+var processService = function (restfactory,$q,$translate,key2string) {
 	// restfactory is a wrapper for $html.
 
-
-	this.stringFromKey = function(stringkey,strings) {
-		var keyfound=false;
-		var returnString="@@@ no string! @@@";
-		angular.forEach(strings, function(translation) {
-			if (!keyfound && stringkey==translation.string_key) {
-				returnString = translation.value;
-				if (translation.language==$translate.use()) {
-					keyfound=true;
-				}
-			}
-		})
-		return returnString;
-	};
-	
 	
 	
 	this.getProcess = function(id) {
@@ -40,16 +25,16 @@ var processService = function (restfactory,$q,$translate) {
 	
 	this.translate = function() {
 		
-		this.process.trprocesstype = this.stringFromKey(this.process.pt_string_key,this.strings)		
+		this.process.trprocesstype = key2string.key2string(this.process.pt_string_key,this.strings)		
 		var thisController=this;
 		angular.forEach(thisController.process.parameters, function(parameter) {
-			parameter.trname=thisController.stringFromKey(parameter.stringkeyname,thisController.strings);
+			parameter.trname= key2string.key2string(parameter.stringkeyname,thisController.strings);
 		})
 	}
 	
 }
 
 
-angular.module('unidaplan').service('processService', ['restfactory','$q','$translate',processService]);
+angular.module('unidaplan').service('processService', ['restfactory','$q','$translate','key2string',processService]);
 
 })();

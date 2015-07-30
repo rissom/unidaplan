@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-function sampleController(restfactory,sampleService,$translate,$scope,$stateParams){
+function sampleController(restfactory,sampleService,$translate,$scope,$stateParams,key2string){
 	
 	var thisController = this;
 	
@@ -93,41 +93,26 @@ function sampleController(restfactory,sampleService,$translate,$scope,$statePara
 	}
 	
 	
-		
-	this.stringFromKey = function(stringkey,strings) {
-		var keyfound=false;
-		var returnString="@@@ no string! @@@";
-		angular.forEach(strings, function(translation) {
-			if (!keyfound && stringkey==translation.string_key) {
-				returnString = translation.value;
-				if (translation.language==$translate.use()) {
-					keyfound=true;
-				}
-			}
-		})
-		return returnString;
-	};
-	
 	
 
 	this.translate = function(lang) {
 
-		var trtypename=this.stringFromKey(thisController.typestringkey,thisController.strings)
+		var trtypename=key2string.key2string(thisController.typestringkey,thisController.strings)
 			this.trtype=trtypename;
 			if (this.next) 	   { this.next.trtypename=trtypename; }
 			if (this.previous) { this.previous.trtypename=trtypename; }
 			
 		angular.forEach(this.parameters, function(parameter) {
-			parameter.trname=thisController.stringFromKey(parameter.stringkeyname,thisController.strings) 
+			parameter.trname=key2string.key2string(parameter.stringkeyname,thisController.strings) 
 		})
 		angular.forEach(this.children, function(child) {
-			child.trtypename=thisController.stringFromKey(child.typestringkey,thisController.strings) 
+			child.trtypename=key2string.key2string(child.typestringkey,thisController.strings) 
 		})	
 		angular.forEach(this.ancestors, function(ancestor) {
-			ancestor.trtypename=thisController.stringFromKey(ancestor.typestringkey,thisController.strings) 
+			ancestor.trtypename=key2string.key2string(ancestor.typestringkey,thisController.strings) 
 		})	
 		angular.forEach(this.plans, function(plan) {
-			plan.trname=thisController.stringFromKey(plan.name,thisController.strings) 
+			plan.trname=key2string.key2string(plan.name,thisController.strings) 
 		})	
 	}
 
@@ -153,6 +138,6 @@ function sampleController(restfactory,sampleService,$translate,$scope,$statePara
 
 
 
-angular.module('unidaplan').controller('sampleController',['restfactory','sampleService','$translate','$scope','$stateParams',sampleController]);
+angular.module('unidaplan').controller('sampleController',['restfactory','sampleService','$translate','$scope','$stateParams','key2string',sampleController]);
 
 })();

@@ -1,24 +1,10 @@
 (function(){
 'use strict';
 
-var avSampleTypeService = function (restfactory,$q,$translate) {
+var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	// restfactory is a wrapper for $html.
 
 
-	this.stringFromKey = function(stringkey,strings) {
-		var keyfound=false;
-		var returnString="@@@ no string! @@@";
-		angular.forEach(strings, function(translation) {
-			if (!keyfound && stringkey==translation.string_key) {
-				returnString = translation.value;
-				if (translation.language==$translate.use()) {
-					keyfound=true;
-				}
-			}
-		})
-		return returnString;
-	};
-	
 	
 	
 	 // return the translated name string of a type for a sample
@@ -64,13 +50,13 @@ var avSampleTypeService = function (restfactory,$q,$translate) {
 	this.translate = function() {
 		var thisController=this;
 		angular.forEach(thisController.sampleTypes, function(sampletype) {
-			sampletype.trname=thisController.stringFromKey(sampletype.string_key,thisController.strings);
+			sampletype.trname=key2string.key2string(sampletype.string_key,thisController.strings);
 		})
 	}
 	
 }
 
 
-angular.module('unidaplan').service('avSampleTypeService', ['restfactory','$q','$translate',avSampleTypeService]);
+angular.module('unidaplan').service('avSampleTypeService', ['restfactory','$q','$translate','key2string',avSampleTypeService]);
 
 })();

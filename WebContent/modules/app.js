@@ -28,7 +28,13 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
     	.state('newsample', {
     	url: '/new-sample',
         templateUrl: 'modules/sample/new-sample.html',
-        controller: 'newSampleController as newSampleCtrl'
+        controller: 'newSampleController as newSampleCtrl',
+        resolve:{
+                types: 
+            	    function(avSampleTypeService){
+            	   	    return avSampleTypeService.getTypes()
+                    }
+    		 }
         })
         
         .state('sampleChoser', {
@@ -36,7 +42,10 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
         templateUrl: 'modules/sample/sample-choser.html',
         controller: 'sampleChoser as sampleChoserCtrl',
         resolve: {
-	                types: function(avSampleTypeService){return avSampleTypeService.getTypes()}
+	                types: 
+	                	function(avSampleTypeService){
+	                	return avSampleTypeService.getTypes()
+	                	}
         		 }
         })
         
@@ -68,11 +77,16 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
         controller: 'expController as expCtrl'
         })
         
-        
         .state('users', {
     	url: '/admin/users',
         templateUrl: 'modules/users/users.html',
-        controller: 'userController as userCtrl'
+        controller: 'userController as userCtrl',
+        resolve:{
+            users: 
+        	    function(userService){
+        	   	    return userService.getUsers()
+                }
+		 }
         })
         
         .state('groups', {
