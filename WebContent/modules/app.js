@@ -20,33 +20,43 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
         })
             	
         .state('signup', {
-    	url: '/signup/{userID:int}/{token:string}',
-    	templateUrl: 'modules/signup/signup.html',
-    	controller: 'signupController as signupCtrl'
+	    	url: '/signup/{userID:int}/{token:string}',
+	    	templateUrl: 'modules/signup/signup.html',
+	    	controller: 'signupController as signupCtrl',
+	    	resolve:{
+	            user: 
+	        	    function(userService,$stateParams){
+	        	   	    return userService.getUser($stateParams.userID,$stateParams.token);
+	            },
+	        	token: 
+	        	   	function($stateParams){
+	        			return $stateParams.token;
+	            	}
+	    	}
     	})
     	
     	.state('newsample', {
-    	url: '/new-sample',
-        templateUrl: 'modules/sample/new-sample.html',
-        controller: 'newSampleController as newSampleCtrl',
-        resolve:{
+	    	url: '/new-sample',
+	        templateUrl: 'modules/sample/new-sample.html',
+	        controller: 'newSampleController as newSampleCtrl',
+	        resolve:{
                 types: 
             	    function(avSampleTypeService){
-            	   	    return avSampleTypeService.getTypes()
-                    }
-    		 }
+        	   	    	return avSampleTypeService.getTypes()
+                	}
+	        }
         })
         
         .state('sampleChoser', {
-        url: '/sample',
-        templateUrl: 'modules/sample/sample-choser.html',
-        controller: 'sampleChoser as sampleChoserCtrl',
-        resolve: {
-	                types: 
-	                	function(avSampleTypeService){
-	                	return avSampleTypeService.getTypes()
-	                	}
-        		 }
+	        url: '/sample',
+	        templateUrl: 'modules/sample/sample-choser.html',
+	        controller: 'sampleChoser as sampleChoserCtrl',
+	        resolve: {
+	            types: 
+                    function(avSampleTypeService){
+                		return avSampleTypeService.getTypes()
+                	}
+	        }
         })
         
         .state('process', {

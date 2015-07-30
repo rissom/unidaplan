@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-var userService = function(restfactory,$q,$stateParams){
+var userService = function(restfactory,$q){
 
 	var thisController=this;
 	
@@ -47,26 +47,30 @@ var userService = function(restfactory,$q,$stateParams){
 	
 	
 	
+	// sign up a new User (needs to have the correct token)
+	this.signUpUser = function(userData){
+		return restfactory.POST("sign-up",userData);
+	}
+
+	
 	  
 	// return a single user
-	this.getUser = function(token){
+	this.getUser = function(userID,token){
         var defered=$q.defer();
         var user;
-		var promise = restfactory.GET("get-user.json?id="+$stateParams.userID+"&token="+token);
+		var promise = restfactory.GET("get-user.json?id="+userID+"&token="+token);
 	    promise.then(
 	    	function(rest) {
 	    		if (rest.data.token==(token)){
-			    	user.fullname = rest.data.fullname;
-			    	user.username = rest.data.username;
-			    	user.email = rest.data.email;
+	    			user = rest.data;
 	    	    	defered.resolve(user);
 	    		}else{
 	    			thisController.error="wrong token";
-	    	    	defered.resolve(Null);
+	    	    	defered.reject("wrong token");
 	    		} 
 		    }, function(rest) {
 		    	console.log("Error getting user");
-		    	defered.resolve(Null);
+		    	defered.reject("Error connecting to server");
 		    }
 	    );
 		return defered.promise;

@@ -19,17 +19,15 @@ import org.json.JSONObject;
 	@Override
 	  public void doGet(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {
-//		Authentificator authentificator = new Authentificator();
-//		int userID=authentificator.GetUserID(request,response);
 		PreparedStatement pstmt;
 	    response.setContentType("application/json");
 	    request.setCharacterEncoding("utf-8");
 	    response.setCharacterEncoding("utf-8");
-	    int getUserID=-1;
+	    int userID=-1;
 	    String token="";
 		// get Parameter for id
 		try{
-			 getUserID=Integer.parseInt(request.getParameter("id"));
+			 userID=Integer.parseInt(request.getParameter("id"));
 			 token=request.getParameter("token");
 		}
 		catch (Exception e1) {
@@ -42,16 +40,16 @@ import org.json.JSONObject;
 			pstmt= DBconn.conn.prepareStatement( 	
 			"SELECT id, fullname, username, email, lastchange, token, token_valid_to " 
 		   +"FROM users WHERE id=?");
-			pstmt.setInt(1, getUserID);
+			pstmt.setInt(1, userID);
 			JSONObject user=DBconn.jsonObjectFromPreparedStmt(pstmt);
-			pstmt.close();		
+			pstmt.close();
 		   	String validToString = user.optString("token_valid_to");
-		   	Timestamp validToDate = Timestamp.valueOf(validToString); 
+		   	Timestamp validToDate = Timestamp.valueOf(validToString);
 			if (user.getString("token").equals(token) &&
 					validToDate.getTime()>System.currentTimeMillis()){
-				System.out.println("korrektes Token");
 				out.println(user.toString());
 			} else {
+				System.out.println("wrong or timedout token");
 				out.println("{\"error\":\"invalid token\"}");
 			}
 			DBconn.closeDB();
