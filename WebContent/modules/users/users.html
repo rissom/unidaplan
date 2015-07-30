@@ -42,7 +42,7 @@
 				   style="width:240px;"
 				   required >				   
 				</td>
-				<td><input type="text" ng-model="userCtrl.username" 
+				<td><input type="text" ng-model="userCtrl.username" username
 				    placeholder="{{'Enter your username here'|translate}}"
 				    required>
 				</td>
@@ -52,12 +52,14 @@
 				</td>
 				<td>
 					<input type="submit" 
-						   class="btn btn-default" 
+						   class="btn btn-default"
+						   ng-class="{'disabled':!addUserForm.$valid}"
 						   value="{{'Add User'|translate}}">
-					<button ng-click="userCtrl.cancel()"
-							class="btn btn-default">
-							{{'cancel'|translate}}
-					</button>
+						   
+					<a 	ng-click="userCtrl.cancel()"
+						class="btn btn-default">
+						{{'cancel'|translate}}
+					</a>
 				</td>
 			</tr>
 			<tr>
@@ -75,3 +77,5 @@
 					ng-click="userCtrl.addUser()" >
 					+  {{'Add User'|translate}}
 			</button>
+			dublicate: {{userCtrl.duplicateUsername()}}
+			

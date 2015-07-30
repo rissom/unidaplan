@@ -53,6 +53,7 @@ function userController(users,userService) {
 	
 	
 	
+	
 	this.addUser = function() {
 		this.edit=true;
 	}
@@ -69,6 +70,9 @@ function userController(users,userService) {
 		var newUser=  { "fullname" : this.fullname,
 						"username" : this.username,
 						   "email" : this.email};
+		this.fullname="";
+		this.username="";
+		this.email="";
 		var promise = userService.submitUser(newUser);
 		thisController.edit=false;
 		promise.then(
@@ -79,8 +83,30 @@ function userController(users,userService) {
 	}
 	
 };
-    
+  
         
 angular.module('unidaplan').controller('userController',['users','userService',userController]);
+
+angular.module('unidaplan').directive('username', function() {
+	  return {
+	    require: 'ngModel',
+	    link: function(scope, elm, attrs, ctrl) {
+	      ctrl.$validators.integer = function(modelValue, viewValue) {
+	        if (ctrl.$isEmpty(modelValue)) {
+	        	return true;
+	        }
+	        	var valid=true;
+	    		angular.forEach(scope.userCtrl.users, function(existinguser){
+	    			if (existinguser.username==viewValue)
+	    				{
+	    					valid=false;
+	    				}
+	    		})
+	    		return valid;
+	      	};
+	    }
+	  };
+	});
+	
 
 })();
