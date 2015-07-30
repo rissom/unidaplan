@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,47 +24,111 @@ import org.json.JSONObject;
 		int userID=authentificator.GetUserID(request,response);
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
-	    int pid=-1;
+	    String status = "ok";
+
 	    JSONObject  jsonIn = null;	    
 	    try {
 			  jsonIn = new JSONObject(in);
 		} catch (JSONException e) {
 			System.err.println("AddSamplesToProcess: Input is not valid JSON");
 		}
+	    System.out.println("jsonIn:");
+		System.out.println(jsonIn.toString());
+		
+		
 		response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
 	    
 	    // get the process id
-	    int id=0;
 	    int processid=-1;
 	    try {
-//			 processid=Integer.parseInt(request.getParameter("processid")); 
-			 processid=jsonIn.getInt("processid");			 
+			 processid=jsonIn.getInt("id");
+			 System.out.println("processid: "+processid);
 		} catch (JSONException e) {
-			System.err.println("AddSampleParameter: Error parsing process ID-Field");
+			System.err.println("AddSamplesToProcess: Error parsing process ID-Field");
 			response.setStatus(404);
 		}
-	      ArrayList<Integer> samples = new ArrayList<Integer>(); // Array for translation strings
-
 	    
-	    // look up the datatype in Database	    
 	 	DBconnection DBconn=new DBconnection();
 	    DBconn.startDB();	   
 	    PreparedStatement pstmt = null;
+	    
+		
 		try {	
+			JSONArray samples=(JSONArray) jsonIn.get("samples");
+			pstmt= DBconn.conn.prepareStatement( 
+					"SELECT sampleid FROM samplesinprocess WHERE processid=?");
+			pstmt.setInt(1, processid);
+			JSONArray assignedSamples=DBconn.jsonArrayFromPreparedStmt(pstmt);
+		 	JSONArray newlyCreatedSamples= new JSONArray();
+			ArrayList<Integer> assignedSamplesList = new ArrayList<Integer>();
+		 	ArrayList<Integer> newlyCreatedSamplesList = new ArrayList<Integer>();
+		 	ArrayList<Integer> newSamplesList = new ArrayList<Integer>();
+		 	ArrayList<Integer> samplesToDeleteList = new ArrayList<Integer>();
+
+		 	// create a List of already assigned Samples
+			for (int i=0;i<assignedSamples.length();i++){ 
+			 	assignedSamplesList.add((Integer)((JSONObject)assignedSamples.get(i)).getInt("sampleid"));
+			}
+		 	System.out.println("assigned: "+assignedSamplesList.toString());
+		 	
+		 	// insert database entries for not already assigned samples
 			pstmt= DBconn.conn.prepareStatement( 			
-					 "SELECT paramdef.datatype FROM Ot_parameters otp \n"
-					+"JOIN paramdef ON otp.definition=paramdef.id \n"
-					+"WHERE otp.id=? \n");
-		   	pstmt.setInt(1, id);
-		   	JSONObject answer=DBconn.jsonObjectFromPreparedStmt(pstmt);
+					 "INSERT INTO samplesinprocess values(default,?,?,NOW(),?)");
+			for (int i=0;i<samples.length();i++){
+				System.out.println("yeah");
+				JSONObject sample=(JSONObject)samples.get(i);
+				System.out.println("yippieh");
+				newSamplesList.add(sample.getInt("sampleid"));
+				System.out.println(sample.toString());
+				if (!assignedSamplesList.contains(sample.getInt("sampleid"))){
+					newlyCreatedSamples.put(sample);
+					newlyCreatedSamplesList.add(sample.getInt("sampleid"));
+					System.out.println("adding: "+sample.getInt("sampleid"));
+					pstmt.setInt(1, processid);
+					pstmt.setInt(2, sample.getInt("sampleid"));
+					pstmt.setInt(3, userID);
+					pstmt.addBatch();
+				}
+			}
+			pstmt.executeBatch();
+			pstmt.close();
+			System.out.println("length:");
+			System.out.println(assignedSamples.length());
+			System.out.println("newSampleList:");
+			System.out.println(newSamplesList.toString());
+
+			// make a list of samples to delete
+			for (int i=0;i<assignedSamples.length();i++){
+				if (!newSamplesList.contains(assignedSamplesList.get(i))){
+					System.out.println("Loeschkandidat: "+assignedSamplesList.get(i));
+					samplesToDeleteList.add((Integer) assignedSamplesList.get(i));
+				}
+			}
+			System.out.println(samplesToDeleteList.toString());
+			
+			// Delete the samples
+			pstmt= DBconn.conn.prepareStatement( 			
+					 "DELETE FROM samplesinprocess WHERE sampleid=? AND processid=?");
+			for(Integer sample: samplesToDeleteList){
+				System.out.println(sample);
+				pstmt.setInt(1, sample);
+				pstmt.setInt(2, processid);
+				pstmt.addBatch();
+				} 
+			pstmt.executeBatch();
+			pstmt.close();
+			
 
 		} catch (SQLException e) {
 			System.err.println("AddSamplesToProcess: Problems with SQL query");
+			status="SQL error";
 		} catch (JSONException e){
 			System.err.println("AddSamplesToProcess: Problems creating JSON");
+			status="JSON error";
 		} catch (Exception e) {
 			System.err.println("AddSamplesToProcess: Strange Problems");
+			status="error";
 		}	
 		
 		DBconn.closeDB();
@@ -71,7 +136,7 @@ import org.json.JSONObject;
 		
     // tell client that everything is fine
     PrintWriter out = response.getWriter();
-    out.print("{\"pid\":"+pid+",");
-	out.println("\"status\":\"ok\"}");
+    out.print("{\"processid\":"+processid+",");
+	out.println("\"status\":\""+status+"\"}");
 	}
 }	

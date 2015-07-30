@@ -66,6 +66,7 @@ public class Process extends HttpServlet {
 				  	+"WHERE id=?");
 		pstmt.setInt(1, processID);
 		jsProcess= DBconn.jsonObjectFromPreparedStmt(pstmt);
+		jsProcess.put("id",processID);
 		if (jsProcess.length()>0) {
 			processTypeID=jsProcess.getInt("process_type_id");
 			pnumber=jsProcess.getInt("p_number");
@@ -193,6 +194,7 @@ public class Process extends HttpServlet {
 			e.printStackTrace();
 		}	  	
 	  	
+
 	
 		// get the strings
 		try{

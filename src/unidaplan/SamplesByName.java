@@ -22,7 +22,7 @@ import org.json.JSONObject;
  * of the type given in the argument "type"
  */
 @WebServlet("/Samples_by_name")
-public class Samples_by_name extends HttpServlet {
+public class SamplesByName extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
 	/**
@@ -56,7 +56,7 @@ public class Samples_by_name extends HttpServlet {
 	    try {
 	       JSONArray typeArray=jsonIn.getJSONArray("sampletypes");
 	       if (typeArray.length()>0){
-		       String query="SELECT  samplenames.id, samplenames.name, samplenames.typeid \n"
+		       String query="SELECT  samplenames.id AS sampleid, samplenames.name, samplenames.typeid \n"
 		    		   		+"FROM samplenames \n" 
 		    		   		+"WHERE samplenames.name LIKE '%"+name+"%' AND "
 		    		   		+"samplenames.typeID = ANY ('{";

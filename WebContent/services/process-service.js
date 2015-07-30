@@ -19,18 +19,6 @@ var processService = function (restfactory,$q,$translate) {
 		return returnString;
 	};
 	
-//	
-//	  this.loadProcess = function(){
-//			var promise = restfactory.GET("process.json?id="+$stateParams.processID);
-//		    promise.then(function(rest) {
-//		    	thisProcessController.process = rest.data;
-//		    	thisProcessController.translate($translate.use());
-//		    }, function(rest) {
-//		    	console.log("Error loading process");
-//		    });
-//	  };
-//	  
-	
 	
 	
 	this.getProcess = function(id) {

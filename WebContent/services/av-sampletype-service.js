@@ -21,6 +21,20 @@ var avSampleTypeService = function (restfactory,$q,$translate) {
 	
 	
 	
+	 // return the translated name string of a type for a sample
+	  this.getType=function(sample,types){
+//		  console.log
+		var typeName
+		  angular.forEach(types,function(type) {
+			if (sample.typeid==type.id){
+			    typeName=type.trname;
+			}
+	      })
+		return typeName;
+	  }
+	
+	
+	
 	this.getTypes = function() {
         var defered=$q.defer();
         var now = new Date();
@@ -36,6 +50,7 @@ var avSampleTypeService = function (restfactory,$q,$translate) {
 	    	    	thisController.lastTimeLoaded=new Date();
 	    	    	thisController.translate();
 	    	    	thisController.loaded=true;
+	    	    	thisController.sampleTypes.getType=thisController.getType;
 	    	    	defered.resolve(thisController.sampleTypes)
     	    	}, function(rest) {
     	    		console.log("Error loading sampletypes");

@@ -19,12 +19,12 @@
   </servlet-mapping>
   <servlet>
     <description>shows samples with a name close to parameter name</description>
-    <display-name>Samples by name</display-name>
-    <servlet-name>Samples_by_name</servlet-name>
-    <servlet-class>unidaplan.Samples_by_name</servlet-class>
+    <display-name>SamplesByName</display-name>
+    <servlet-name>SamplesByName</servlet-name>
+    <servlet-class>unidaplan.SamplesByName</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>Samples_by_name</servlet-name>
+    <servlet-name>SamplesByName</servlet-name>
     <url-pattern>/samples_by_name.json</url-pattern>
   </servlet-mapping>
    <servlet>
@@ -187,7 +187,7 @@
     <servlet-name>Logout</servlet-name>
     <url-pattern>/logout</url-pattern>
   </servlet-mapping>
-    <servlet>
+  <servlet>
     <description>AddSample</description>
     <display-name>AddSample</display-name>
     <servlet-name>AddSample</servlet-name>
@@ -197,4 +197,15 @@
     <servlet-name>AddSample</servlet-name>
     <url-pattern>/add-sample</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description>AddSamplesToProcess</description>
+    <display-name>AddSamplesToProcess</display-name>
+    <servlet-name>AddSamplesToProcess</servlet-name>
+    <servlet-class>unidaplan.AddSamplesToProcess</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddSamplesToProcess</servlet-name>
+    <url-pattern>/add-sample-to-process</url-pattern>
+  </servlet-mapping>
+  
 </web-app>
