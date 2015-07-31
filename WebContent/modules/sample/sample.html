@@ -53,21 +53,27 @@
 	<table>
 		<tr>
 			<td>
-				<div ng-show="sampleCtrl.ancestors.length>0">{{'Originates from'|translate}}:</div> 
+				<div >{{'Originates from'|translate}}:</div> 
 					<span ng-repeat="bsample in sampleCtrl.ancestors"> 
 						<button class="btn btn-default" ui-sref="sample({sampleID:bsample.id})">
 							{{sampleCtrl.getType(bsample)}} {{bsample.name}}
 						</button>
 					</span> 
+					<button class="btn btn-default" ng-click="processCtrl.openDialog()">
+						{{'Add/Remove samples'|translate}}
+					</button>
 			</td>
 			<td width=20mm></td>
 			<td>
-				<div ng-show="sampleCtrl.children.length>0">{{'Is ancestor of'|translate}}:</div> 
+				<div>{{'Is ancestor of'|translate}}:</div> 
 					<span ng-repeat="bsample in sampleCtrl.children">
 						 <button class="btn btn-default" ui-sref="sample({sampleID:bsample.id})">
 							{{sampleCtrl.getType(bsample)}} {{bsample.name}}
 						</button>
 					</span>
+					<button class="btn btn-default" ng-click="processCtrl.openDialog()">
+						{{'Add/Remove samples'|translate}}
+					</button>
 			</td>
 		</tr>
 	</table>

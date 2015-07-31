@@ -12,7 +12,7 @@ function process(avSampleTypeService,types,$modal,processData,restfactory){
 	  
 	  var modalInstance = $modal.open({
 	    animation: false,
-	    templateUrl: 'modules/process/modal-sample-choser.html',
+	    templateUrl: 'modules/modal-sample-choser/modal-sample-choser.html',
 	    controller: 'modalSampleChoser as mSampleChoserCtrl',
 	    size: 'lg',
 	    resolve: {

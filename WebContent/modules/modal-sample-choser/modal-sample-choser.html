@@ -28,11 +28,11 @@
 <br /><br />
 
 
-
+{{mSampleChoserCtrl.isNotSelected({dings:"bums"})}}
 
 <!--  list of fitting samples  -->
 <ul> 
- 	<li ng-repeat="sample in mSampleChoserCtrl.unselectedSamples() | filter:mSampleChoserCtrl.userinput | orderBy: ['typeid','name']" 
+ 	<li ng-repeat="sample in mSampleChoserCtrl.samples | filter:isNotSelected | filter:{name:mSampleChoserCtrl.userinput} | orderBy: ['typeid','name']" 
  		ng-show="mSampleChoserCtrl.typeSelected(sample)">
 					<!-- show only selected sample types -->
 		<a ng-click=mSampleChoserCtrl.choseSample(sample)> 

@@ -27,7 +27,7 @@
 
 <!--  list of fitting samples  -->
 <ul> 
- 	<li ng-repeat="sample in sampleChoserCtrl.samples | filter:sampleChoserCtrl.userinput | orderBy: ['typeid','name']" 
+ 	<li ng-repeat="sample in sampleChoserCtrl.samples | filter:{name:sampleChoserCtrl.userinput} | orderBy: ['typeid','name']" 
  		ng-show="sampleChoserCtrl.typeSelected(sample)">
 					<!-- show only selected sample types -->
 		<a ui-sref="sample({sampleID:sample.sampleid})">

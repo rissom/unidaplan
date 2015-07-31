@@ -77,12 +77,6 @@ function sampleController(sample,types,sampleService,avSampleTypeService,$transl
 	
 	
 	
-	this.sayHello=function(){
-		console.log("Hello");
-	}
-	
-	
-	
 	this.getType = function(sample){
 		return avSampleTypeService.getType(sample,types);
 	}

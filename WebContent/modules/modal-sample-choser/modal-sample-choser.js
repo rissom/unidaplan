@@ -115,22 +115,15 @@ function modalSampleChoser(avSampleTypeService,$translate,$scope,$modalInstance,
 	
 	
 	
-	this.unselectedSamples=function(){
-		var unselectedSamples=[];
-		var found;
-		var chosenSamples=this.chosenSamples;
-		angular.forEach(this.samples, function(sample){
-			found=false;
+	$scope.isNotSelected=function(sample){
+		var chosenSamples=thisController.chosenSamples;
+		var found=false;
 			angular.forEach(chosenSamples, function(csample){
 				if (csample.name==sample.name){
 					found=true
 				}
 			});
-			if (!found){
-				unselectedSamples.push(sample);
-			}
-		})				
-		return unselectedSamples;
+		return !found;
 	}
 	
 	
