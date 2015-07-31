@@ -23,9 +23,11 @@ function process(avSampleTypeService,types,$modal,processData,restfactory){
 	        }
 	  });
 	  
-	  modalInstance.result.then(function (myChosenSamples) {
-	      thisController.process.samples = myChosenSamples;
-	      thisController.assign();
+	  modalInstance.result.then(function (result) {  // get the new Samplelist + Info if it is changed from Modal. 
+	      thisController.process.samples = result.chosen;
+	      if (result.changed) {
+	    	  thisController.assign();
+	      }
 	    }, function () {
 	      console.log('Strange Error: Modal dismissed at: ' + new Date());
 	    });
@@ -41,7 +43,6 @@ function process(avSampleTypeService,types,$modal,processData,restfactory){
   this.assign=function(){
 	  var samples2assign={samples:this.process.samples, id:processData.id};
 	  var promise = restfactory.POST("add-sample-to-process",samples2assign);
-	  console.log(samples2assign);
   }
  
   

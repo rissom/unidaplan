@@ -7,6 +7,7 @@ function AvProcService(restfactory,$translate,$scope) {
 	this.processes = [];
 	this.strings = [];
 
+	
 
 	this.loadProcesses = function(id) {
 		var thisProcessesController = this;
@@ -21,6 +22,7 @@ function AvProcService(restfactory,$translate,$scope) {
 	}
 
 	
+	
 	this.translate = function(lang) {
 		var strings=this.strings
 		angular.forEach(this.processes, function(proc) {
@@ -32,9 +34,7 @@ function AvProcService(restfactory,$translate,$scope) {
 	}
 
 
-
 }
-
 
 
 angular.module('unidaplan').service('AvProcService', ['restfactory','$translate','$scope',AvProcService]);

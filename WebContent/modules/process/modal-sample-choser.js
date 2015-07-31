@@ -4,40 +4,12 @@
 
 function modalSampleChoser(avSampleTypeService,$translate,$scope,$modalInstance,restfactory,types,samples) {
 
-	this.chosenSamples=samples;
-	this.oldChosenSamples=samples;
+	this.chosenSamples=samples.slice(0);
+	this.oldChosenSamples=samples.slice(0);
 	this.samples=[];
 	this.selectedTypesVar=[]
-	this.types=[];
-	this.strings=[];
 	this.selectortypes=[];
 	thisController=this;
-	
-	
-	// attach the .equals method to Array's prototype to call it on any array
-	Array.prototype.equals = function (array) {
-	    // if the other array is a falsy value, return
-	    if (!array)
-	        return false;
-
-	    // compare lengths - can save a lot of time 
-	    if (this.length != array.length)
-	        return false;
-
-	    for (var i = 0, l=this.length; i < l; i++) {
-	        // Check if we have nested arrays
-	        if (this[i] instanceof Array && array[i] instanceof Array) {
-	            // recurse into the nested arrays
-	            if (!this[i].equals(array[i]))
-	                return false;       
-	        }           
-	        else if (this[i] != array[i]) { 
-	            // Warning - two different object instances will never be equal: {x:20} != {x:20}
-	            return false;   
-	        }           
-	    }       
-	    return true;
-	}   
 	
 	
 	$scope.$watch('mSampleChoserCtrl.selectedtypes', function (seltypes){
@@ -143,8 +115,28 @@ function modalSampleChoser(avSampleTypeService,$translate,$scope,$modalInstance,
 	
 	
 	
+	this.unselectedSamples=function(){
+		var unselectedSamples=[];
+		var found;
+		var chosenSamples=this.chosenSamples;
+		angular.forEach(this.samples, function(sample){
+			found=false;
+			angular.forEach(chosenSamples, function(csample){
+				if (csample.name==sample.name){
+					found=true
+				}
+			});
+			if (!found){
+				unselectedSamples.push(sample);
+			}
+		})				
+		return unselectedSamples;
+	}
+	
+	
+	
 	this.close=function(){
-	    $modalInstance.close(this.oldChosenSamples);
+	    $modalInstance.close({chosen:this.oldChosenSamples,changed:false});
 	}
 	
 	
@@ -165,8 +157,9 @@ function modalSampleChoser(avSampleTypeService,$translate,$scope,$modalInstance,
 	}
 	
 	
-	this.assignSamples=function(){
-	    $modalInstance.close(this.chosenSamples);
+	this.assignSamples=function(){    // pass the new list of samples and if it changed
+		var assignedSamplesChanged=!this.oldChosenSamples.equals(this.chosenSamples)
+	    $modalInstance.close({chosen: this.chosenSamples, changed : assignedSamplesChanged});
 	}
 	
 	
