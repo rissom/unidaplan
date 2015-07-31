@@ -1,47 +1,28 @@
 (function(){
 'use strict';
 
-function sampleController(restfactory,sampleService,$translate,$scope,$stateParams,key2string){
+function sampleController(restfactory,sample,sampleService,$translate,$scope,key2string){
 	
 	var thisController = this;
 	
 	this.sample = {};
 	
 	this.strings = [];
-			
-	this.loadData = function() {			// Load data and filter Titleparameters
-		var ID= $stateParams.sampleID;
-		var promise = restfactory.GET("showsample.json?id="+ID);
-	    promise.then(function(rest) {
-	    	thisController.id = rest.data.id;
-	    	thisController.parameters = rest.data.parameters;
-	    	thisController.titleparameters = rest.data.titleparameters;
-	    	thisController.strings = rest.data.strings;
-	    	thisController.children = rest.data.children;
-	    	thisController.ancestors = rest.data.ancestors;
-	    	thisController.plans = rest.data.plans;
-	    	thisController.deletable = rest.data.deletable;
-	    	thisController.name = rest.data.name;
-	    	thisController.next = rest.data.next;
-	    	thisController.previous = rest.data.previous;
-	    	thisController.typestringkey = rest.data.typestringkey;
-	    	thisController.typeid = rest.data.typeid;
-	    	thisController.translate($translate.use()); // translate to active language
-	        var pSample = {"id"		  	   : rest.data.id,
-		    			   "typeid"		   : rest.data.typeid,
-		    			   "typestringkey" : rest.data.typestringkey,
-		    			   "trtype"		   : thisController.trtype,
-		    			   "name"		   : rest.data.name}
-	    sampleService.pushSample(pSample);
-	    }, function(rest) {
-	    	thisController.error = "Not Found!";
-	    });
-	};
+		
+	this.id = sample.id;
+	this.parameters = sample.parameters;
+	this.titleparameters = sample.titleparameters;
+	this.strings = sample.strings;
+	this.children = sample.children;
+	this.ancestors = sample.ancestors;
+	this.plans = sample.plans;
+	this.deletable = sample.deletable;
+	this.name = sample.name;
+	this.next = sample.next;
+	this.previous = sample.previous;
+	this.typestringkey = sample.typestringkey;
+	this.typeid = sample.typeid;
 	
-
-	$scope.$on('language changed', function(event, args) {
-		thisController.translate(args.language);
-	});
 	
 	
 	this.keyUp = function(keyCode,newValue,parameter) {
@@ -50,7 +31,7 @@ function sampleController(restfactory,sampleService,$translate,$scope,$statePara
 			var oldValue=parameter.value;
 			parameter.value=newValue;
 			 if (parameter.pid) {
-				var res = restfactory.POST('update-sample-parameter.json',parameter);
+				var res = SampleServie.updateSampleParamter(parameter) 
 				res.then(function(data, status, headers, config) {
 						 },
 						 function(data, status, headers, config) {
@@ -60,10 +41,10 @@ function sampleController(restfactory,sampleService,$translate,$scope,$statePara
 						 }
 						);
 			 } else {
-				var res = restfactory.POST('add-sample-parameter.json?sampleid='+$stateParams.sampleID,parameter);
-					res.then(function(data, status, headers, config) {
+				var res = sampleService.addSampleParameter(this.id,parameter);
+					res.then(function(data) {
 							 },
-							 function(data, status, headers, config) {
+							 function(data) {
 								parameter.value=oldValue;
 								console.log('verkackt');
 								console.log(data);
@@ -80,20 +61,19 @@ function sampleController(restfactory,sampleService,$translate,$scope,$statePara
 	
 	this.deleteSample = function()
 	{  
-		var id=this.sample.id;
-		var res = restfactory.GET("delete-sample?id="+id);
-		res.then(function(data, status, headers, config) {   // success
-						// gehe zur Experimentseite			
-				 },
-					function(data, status, headers, config) { 	 // fail
-				    console.log("Error deleting Sample");
-					console.log("Sample id: ",id);
-				 }
+		var promise = sampleService.deleteSample(sample.id);
+		promise.then(function(data) {  			// success
+				$state.go('experiments')	// go to experiments			
+			},
+				function(data) { 	 // fail
+			    console.log("Error deleting Sample");
+				console.log("Sample id: ",id);
+				$state.go(error)
+			}
 		);
 	}
 	
-	
-	
+
 
 	this.translate = function(lang) {
 
@@ -118,26 +98,33 @@ function sampleController(restfactory,sampleService,$translate,$scope,$statePara
 
 	
 	
+	$scope.$on('language changed', function(event, args) {
+		thisController.translate(args.language);
+	});
+	
+	
+	
 	this.saveParameter = function(parameter) {
-		var res = restfactory.POST('savesampleparameter.json',parameter);
-		res.then(
-				function(data, status, headers, config) {
+		var promise = sampleService.saveParameter(parameter);
+		promise.then(
+				function(data) {
 				},
-				function(data, status, headers, config) {
+				function(data) {
 					console.log('verkackt');
 					console.log(data);		
 				}
 		);
 	};
 	
-    
-    
-    //activation 
-    this.loadData();
+	
+	
+	// activate function
+	this.translate($translate.use()); // translate to active language
+
 }  
 
 
 
-angular.module('unidaplan').controller('sampleController',['restfactory','sampleService','$translate','$scope','$stateParams','key2string',sampleController]);
+angular.module('unidaplan').controller('sampleController',['restfactory','sample','sampleService','$translate','$scope','key2string','sample',sampleController]);
 
 })();

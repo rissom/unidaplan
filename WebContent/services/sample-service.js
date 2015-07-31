@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-var sampleService = function(){
+var sampleService = function(restfactory,avSampleTypeService,$q){
 // How to build the ActivityService using the .service method
 
 	var thisController=this;
@@ -9,7 +9,50 @@ var sampleService = function(){
 	this.types = [];
 	this.strings =[];
 
+	
+	this.loadSample = function(id) {			// Load data and filter Titleparameters
+    	var defered=$q.defer()
+		var promise = restfactory.GET("showsample.json?id="+id);
+	    promise.then(function(rest) {			// save the sample for recent samples
+	        var sample = {"id"		  	   : rest.data.id,
+		    			   "typeid"		   : rest.data.typeid,
+		    			   "typestringkey" : rest.data.typestringkey,
+		    			   "name"		   : rest.data.name,
+		    			   "trtype"		   : avSampleTypeService.getType(rest.data.typeid)}
+		    thisController.pushSample(sample);
+		    defered.resolve(rest.data);
+	    }, function(rest) {
+	    	console.log("Sample not found");
+	    	defered.reject({"error":"Not Found!"});
+	    });
+	    return defered.promise;
+	}
 
+	
+	
+	this.deleteSample = function(id){
+		return restfactory.GET("delete-sample?id="+id);
+	}
+	
+	
+	
+	this.saveParameter = function(parameter) {
+		return restfactory.POST('savesampleparameter.json',parameter);
+	}
+	
+	
+	
+	this.addSampleParameter = function(id,parameter){
+		return restfactory.POST('add-sample-parameter.json?sampleid='+id,parameter);
+	}
+	
+	
+	
+	this.updateSampleParameter = function(parameter){
+		return restfactory.POST('update-sample-parameter.json',parameter);
+	}
+
+	
 	
 	this.pushSample = function(sample){
 		var i;
@@ -30,6 +73,6 @@ var sampleService = function(){
 }
 
 
-angular.module('unidaplan').service('sampleService', sampleService);
+angular.module('unidaplan').service('sampleService', ['restfactory','avSampleTypeService','$q',sampleService]);
 
 })();

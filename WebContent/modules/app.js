@@ -14,9 +14,14 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
         // UI-Router STATES AND NESTED VIEWS
         
         .state('sample', {
-        url: '/sample/{sampleID:int}',
-        templateUrl: 'modules/sample/sample.html',
-        controller: "sampleController as sampleCtrl"  
+	        url: '/sample/{sampleID:int}',
+	        templateUrl: 'modules/sample/sample.html',
+	        controller: "sampleController as sampleCtrl",
+	        resolve: {
+	        	sample: function($stateParams,sampleService){
+	        				return sampleService.loadSample($stateParams.sampleID);
+	        	}
+	        }
         })
             	
         .state('signup', {
@@ -31,7 +36,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	        	token: 
 	        	   	function($stateParams){
 	        			return $stateParams.token;
-	            	}
+	            }
 	    	}
     	})
     	
@@ -60,72 +65,78 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
         })
         
         .state('process', {
-        url: '/process/{processID:int}',
-        templateUrl: 'modules/process/process.html',
-        controller:"process as processCtrl",
-        resolve:{
-            types: 
-        	    function(avSampleTypeService){
-        	   	    return avSampleTypeService.getTypes()
-                },
-            processData: 
-            	function(processService,$stateParams){
-        			return processService.getProcess($stateParams.processID)
-        	    }
-		 }
+	        url: '/process/{processID:int}',
+	        templateUrl: 'modules/process/process.html',
+	        controller:"process as processCtrl",
+	        resolve:{
+	            types: 
+	        	    function(avSampleTypeService){
+	        	   	    return avSampleTypeService.getTypes()
+	                },
+	            processData: 
+	            	function(processService,$stateParams){
+	        			return processService.getProcess($stateParams.processID)
+	        	    }
+			}
         })
         
         .state('openExperiment', {
-        url: '/experiments',
-        controller:'oExpController as oexpCtrl',
-        templateUrl: "modules/experiments/open-experiment.html"
+	        url: '/experiments',
+	        controller:'oExpController as oexpCtrl',
+	        templateUrl: "modules/experiments/open-experiment.html"
         })
         
         .state('experiment', {
-    	url: '/experiment/{experimentID:int}',
-        templateUrl: 'modules/experiments/experiment.html',
-        controller: 'expController as expCtrl'
+	    	url: '/experiment/{experimentID:int}',
+	        templateUrl: 'modules/experiments/experiment.html',
+	        controller: 'expController as expCtrl'
         })
         
         .state('users', {
-    	url: '/admin/users',
-        templateUrl: 'modules/users/users.html',
-        controller: 'userController as userCtrl',
-        resolve:{
-            users: 
-        	    function(userService){
-        	   	    return userService.getUsers()
-                }
-		 }
+	    	url: '/admin/users',
+	        templateUrl: 'modules/users/users.html',
+	        controller: 'userController as userCtrl',
+	        resolve:{
+	            users: 
+	        	    function(userService){
+	        	   	    return userService.getUsers()
+	                }
+			 }
         })
         
         .state('groups', {
-    	url: '/admin/groups',
-        templateUrl: 'modules/groups/groups.html',
-        controller: 'groupController as groupCtrl'
+	    	url: '/admin/groups',
+	        templateUrl: 'modules/groups/groups.html',
+	        controller: 'groupController as groupCtrl'
         })
         
         .state('login', {
-    	url: '/login',
-    	templateUrl: 'modules/login/login.html',
-    	controller: 'loginController as loginCtrl'
+	    	url: '/login',
+	    	templateUrl: 'modules/login/login.html',
+	    	controller: 'loginController as loginCtrl'
     	})
     	
         .state('about', {
-        url: '/about',
-        templateUrl: 'modules/help/about.html'
+	        url: '/about',
+	        templateUrl: 'modules/help/about.html'
         })
         
     
     	.state('help', {
-        url: '/help',
-        templateUrl: 'modules/help/help.html'
+	        url: '/help',
+	        templateUrl: 'modules/help/help.html'
         })
         
         .state('recentsamples', {
-		url: '/recentsamples',
-		templateUrl: 'modules/sample/recent-samples.html',
-	    controller: 'recentSampleController as recentSampleCtrl'
+			url: '/recentsamples',
+			templateUrl: 'modules/sample/recent-samples.html',
+		    controller: 'recentSampleController as recentSampleCtrl',
+		    resolve:{
+	                types: 
+	            	    function(avSampleTypeService){
+	        	   	    	return avSampleTypeService.getTypes()
+	                	}
+		    }
     	})
     
     	.state('error', {

@@ -15,8 +15,9 @@ var processService = function (restfactory,$q,$translate,key2string) {
 	    	    	thisController.strings = rest.data.strings;
 	    	    	thisController.translate();
 	    	    	defered.resolve(thisController.process)
-    	    	}, function(rest) {
+    	    	}, function(rest) {    	    		
     	    		console.log("Error loading sampletypes");
+    	    		defered.reject({"error":"Error loading sampletypes"});
     	    	});
 		return defered.promise;
 	}

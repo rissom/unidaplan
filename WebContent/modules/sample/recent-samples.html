@@ -3,7 +3,7 @@
 </h3>
 <div ng-repeat="sample in recentSampleCtrl.getRecentSamples() | orderBy:['trtype','name']">  <!-- noch nach Typ sortieren!  -->
 	<button class="btn btn-default" ui-sref="sample({sampleID:sample.id})">
-				{{sample.trtype}} {{sample.name}}
+				{{recentSampleCtrl.getType(sample)}} {{sample.name}}
 	</button>
 </div>	
 
