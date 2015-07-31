@@ -3,9 +3,11 @@
 function samplebutton(){
 	return {
 		restrict: 'E',		
+		scope: { getTypeAction : '&',
+				 buttonsample : '='
+		},
 		template: '<button class="btn btn-default" ui-sref="sample({sampleID:buttonsample.id})">'
-					+'{{buttonsample.trtypename}} {{buttonsample.name}}</button>',
-		scope: { buttonsample : '=' }
+		+'{{getTypeAction()}} {{buttonsample.name}}</button>'
 	}
 };
 

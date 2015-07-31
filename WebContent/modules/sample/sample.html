@@ -1,5 +1,5 @@
 <div ng-hide="sampleCtrl.sample.error">
-
+	types: {{sampleCtrl.getType({typeid:2})}};{{sampleCtrl.getType({typeid:1})}}
 	<!-- Heading with sample name -->
 	<h3>{{sampleCtrl.trtype}} 
 		<span ng-repeat="tparameter in sampleCtrl.titleparameters"
@@ -56,8 +56,9 @@
 			<td>
 				<div ng-show="sampleCtrl.ancestors.length>0">{{'Originates from'|translate}}:</div> 
 					<span ng-repeat="bsample in sampleCtrl.ancestors"> 
+					{{sampleCtrl.getType(bsample)}}
 						<samplebutton buttonsample="bsample"  
-									  action="sampleCtrl.loadData(bsample.id)">
+									  getTypeAction="sampleCtrl.getType">
 						</samplebutton>
 					</span> 
 			</td>
@@ -66,7 +67,7 @@
 				<div ng-show="sampleCtrl.children.length>0">{{'Is ancestor of'|translate}}:</div> 
 					<span ng-repeat="bsample in sampleCtrl.children">
 						 <samplebutton buttonsample="bsample" 
-						 			   action="sampleCtrl.loadData(bsample.id)">
+						 			   getTypeAction="sampleCtrl.sayHello">
 						 </samplebutton>
 					</span>
 			</td>

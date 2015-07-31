@@ -19,8 +19,11 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	        controller: "sampleController as sampleCtrl",
 	        resolve: {
 	        	sample: function($stateParams,sampleService){
-	        				return sampleService.loadSample($stateParams.sampleID);
-	        	}
+	        				return sampleService.loadSample($stateParams.sampleID)
+	        			},
+			    types:  function(avSampleTypeService){
+        	   	    	return avSampleTypeService.getTypes()
+        	   	    	}
 	        }
         })
             	
@@ -32,11 +35,11 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	            user: 
 	        	    function(userService,$stateParams){
 	        	   	    return userService.getUser($stateParams.userID,$stateParams.token);
-	            },
+	            	},
 	        	token: 
 	        	   	function($stateParams){
 	        			return $stateParams.token;
-	            }
+	            	}
 	    	}
     	})
     	

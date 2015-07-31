@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-function sampleController(restfactory,sample,sampleService,$translate,$scope,key2string){
+function sampleController(sample,types,sampleService,avSampleTypeService,$translate,$scope,key2string){
 	
 	var thisController = this;
 	
@@ -73,8 +73,21 @@ function sampleController(restfactory,sample,sampleService,$translate,$scope,key
 		);
 	}
 	
+	
+	
+	this.sayHello=function(){
+		console.log("Hello");
+	}
+	
+	
+	
+	this.getType = function(sample){
+//		console.log("called from",sample)
+		return avSampleTypeService.getType(sample,types);
+	}
 
-
+	
+	
 	this.translate = function(lang) {
 
 		var trtypename=key2string.key2string(thisController.typestringkey,thisController.strings)
@@ -125,6 +138,6 @@ function sampleController(restfactory,sample,sampleService,$translate,$scope,key
 
 
 
-angular.module('unidaplan').controller('sampleController',['restfactory','sample','sampleService','$translate','$scope','key2string','sample',sampleController]);
+angular.module('unidaplan').controller('sampleController',['sample','types','sampleService','avSampleTypeService','$translate','$scope','key2string','sample',sampleController]);
 
 })();
