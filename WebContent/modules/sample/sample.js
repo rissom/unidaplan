@@ -19,7 +19,9 @@ function sampleController(sample,types,sampleService,avSampleTypeService,$transl
 	this.deletable = sample.deletable;
 	this.name = sample.name;
 	this.next = sample.next;
+	if (this.next){this.next.typeid = sample.typeid;}
 	this.previous = sample.previous;
+	if (this.previous) {this.previous.typeid = sample.typeid;}
 	this.typestringkey = sample.typestringkey;
 	this.typeid = sample.typeid;
 	
@@ -82,28 +84,15 @@ function sampleController(sample,types,sampleService,avSampleTypeService,$transl
 	
 	
 	this.getType = function(sample){
-//		console.log("called from",sample)
 		return avSampleTypeService.getType(sample,types);
 	}
 
 	
 	
-	this.translate = function(lang) {
-
-		var trtypename=key2string.key2string(thisController.typestringkey,thisController.strings)
-			this.trtype=trtypename;
-			if (this.next) 	   { this.next.trtypename=trtypename; }
-			if (this.previous) { this.previous.trtypename=trtypename; }
-			
+	this.translate = function(lang) {			
 		angular.forEach(this.parameters, function(parameter) {
 			parameter.trname=key2string.key2string(parameter.stringkeyname,thisController.strings) 
 		})
-		angular.forEach(this.children, function(child) {
-			child.trtypename=key2string.key2string(child.typestringkey,thisController.strings) 
-		})	
-		angular.forEach(this.ancestors, function(ancestor) {
-			ancestor.trtypename=key2string.key2string(ancestor.typestringkey,thisController.strings) 
-		})	
 		angular.forEach(this.plans, function(plan) {
 			plan.trname=key2string.key2string(plan.name,thisController.strings) 
 		})	

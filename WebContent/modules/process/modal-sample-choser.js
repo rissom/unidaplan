@@ -2,7 +2,7 @@
 'use strict';
 
 
-function modalSampleChoser($translate,$scope,$modalInstance,restfactory,types,samples) {
+function modalSampleChoser(avSampleTypeService,$translate,$scope,$modalInstance,restfactory,types,samples) {
 
 	this.chosenSamples=samples;
 	this.oldChosenSamples=samples;
@@ -124,14 +124,8 @@ function modalSampleChoser($translate,$scope,$modalInstance,restfactory,types,sa
 	
 	
 	// return the translated name string of a type for a sample
-	this.getType=function(sample){
-		var typeName
-		angular.forEach(types,function(type) {
-			if (sample.typeid==type.id){
-				typeName=type.trname;
-			}
-		})
-		return typeName;
+	this.getType=function(sample){		
+		return avSampleTypeService.getType(sample,types);
 	}
 	
 	
@@ -212,6 +206,6 @@ function modalSampleChoser($translate,$scope,$modalInstance,restfactory,types,sa
 };
 
         
-angular.module('unidaplan').controller('modalSampleChoser',['$translate','$scope','$modalInstance','restfactory','types','samples',modalSampleChoser]);
+angular.module('unidaplan').controller('modalSampleChoser',['avSampleTypeService','$translate','$scope','$modalInstance','restfactory','types','samples',modalSampleChoser]);
 
 })();

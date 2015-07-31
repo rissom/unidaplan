@@ -1,7 +1,7 @@
 (function(){
   'use strict';
 
-function process(types,$modal,processData,restfactory){
+function process(avSampleTypeService,types,$modal,processData,restfactory){
   
   var thisController=this;
   	
@@ -34,7 +34,7 @@ function process(types,$modal,processData,restfactory){
   
   // return the translated name string of a type for a sample
   this.getType=function(sample){
-	  return types.getType(sample,types);
+	  return avSampleTypeService.getType(sample,types);
   }
   
   
@@ -47,6 +47,6 @@ function process(types,$modal,processData,restfactory){
   
 };
 
-angular.module('unidaplan').controller('process', ['types', '$modal', 'processData','restfactory',process]);
+angular.module('unidaplan').controller('process', ['avSampleTypeService','types', '$modal', 'processData','restfactory',process]);
 
 })();

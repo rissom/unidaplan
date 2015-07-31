@@ -1,7 +1,6 @@
 <div ng-hide="sampleCtrl.sample.error">
-	types: {{sampleCtrl.getType({typeid:2})}};{{sampleCtrl.getType({typeid:1})}}
 	<!-- Heading with sample name -->
-	<h3>{{sampleCtrl.trtype}} 
+	<h3>{{sampleCtrl.getType({typeid:sampleCtrl.typeid})}} 
 		<span ng-repeat="tparameter in sampleCtrl.titleparameters"
 			  ng-dblclick="tparameter.editing=true; newValue=tparameter.value">
 			<span ng-hide="tparameter.editing">{{tparameter.value|trailingzeros:tparameter.maxdigits}}
@@ -56,19 +55,18 @@
 			<td>
 				<div ng-show="sampleCtrl.ancestors.length>0">{{'Originates from'|translate}}:</div> 
 					<span ng-repeat="bsample in sampleCtrl.ancestors"> 
-					{{sampleCtrl.getType(bsample)}}
-						<samplebutton buttonsample="bsample"  
-									  getTypeAction="sampleCtrl.getType">
-						</samplebutton>
+						<button class="btn btn-default" ui-sref="sample({sampleID:bsample.id})">
+							{{sampleCtrl.getType(bsample)}} {{bsample.name}}
+						</button>
 					</span> 
 			</td>
 			<td width=20mm></td>
 			<td>
 				<div ng-show="sampleCtrl.children.length>0">{{'Is ancestor of'|translate}}:</div> 
 					<span ng-repeat="bsample in sampleCtrl.children">
-						 <samplebutton buttonsample="bsample" 
-						 			   getTypeAction="sampleCtrl.sayHello">
-						 </samplebutton>
+						 <button class="btn btn-default" ui-sref="sample({sampleID:bsample.id})">
+							{{sampleCtrl.getType(bsample)}} {{bsample.name}}
+						</button>
 					</span>
 			</td>
 		</tr>
@@ -95,8 +93,9 @@
 		<tr>
 			<td align="center">
 				<span ng-show="sampleCtrl.previous">&#x25c0; {{'previous'|translate}} <br /> 
-					<samplebutton buttonsample="sampleCtrl.previous" 
-								  action="sampleCtrl.loadData(sampleCtrl.sample.previous.id)">
+					<button class="btn btn-default" ui-sref="sample({sampleID:sampleCtrl.previous.id})">
+							{{sampleCtrl.previous?sampleCtrl.getType(sampleCtrl.previous):''}} {{sampleCtrl.previous.name}}
+						</button>
 					</samplebutton>
 				</span>
 			</td>
@@ -111,9 +110,9 @@
 			<td align="center">	
 				<span ng-show="sampleCtrl.next"> &nbsp; {{'next'|translate}} &nbsp; &#9654;<br />
 					&nbsp;
-					<samplebutton buttonsample="sampleCtrl.next" 
-								  action="sampleCtrl.loadData(sampleCtrl.sample.next.id)">
-					</samplebutton>
+					<button class="btn btn-default" ui-sref="sample({sampleID:sampleCtrl.next.id})">
+							{{sampleCtrl.next?sampleCtrl.getType(sampleCtrl.next):''}} {{sampleCtrl.next.name}}
+					</button>
 				</span>
 			</td>
 		</tr>
