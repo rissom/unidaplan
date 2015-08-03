@@ -207,5 +207,24 @@
     <servlet-name>AddSamplesToProcess</servlet-name>
     <url-pattern>/add-sample-to-process</url-pattern>
   </servlet-mapping>
-  
+  <servlet>
+    <description>AddAncestors</description>
+    <display-name>AddAncestors</display-name>
+    <servlet-name>AddAncestors</servlet-name>
+    <servlet-class>unidaplan.AddAncestors</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddAncestors</servlet-name>
+    <url-pattern>/add-ancestors</url-pattern>
+  </servlet-mapping>
+   <servlet>
+    <description>AddChildren</description>
+    <display-name>AddChildren</display-name>
+    <servlet-name>AddChildren</servlet-name>
+    <servlet-class>unidaplan.AddChildren</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddChildren</servlet-name>
+    <url-pattern>/add-children</url-pattern>
+  </servlet-mapping>
 </web-app>

@@ -18,7 +18,7 @@ var sampleService = function(restfactory,avSampleTypeService,$q){
 		    			   "typeid"		   : rest.data.typeid,
 		    			   "typestringkey" : rest.data.typestringkey,
 		    			   "name"		   : rest.data.name,
-		    			   "trtype"		   : avSampleTypeService.getType(rest.data.typeid)}
+		    			   "trtype"		   : avSampleTypeService.getType(rest.data.typeid)} // TODO: Weg damit???
 		    thisController.pushSample(sample);
 		    defered.resolve(rest.data);
 	    }, function(rest) {
@@ -28,6 +28,22 @@ var sampleService = function(restfactory,avSampleTypeService,$q){
 	    return defered.promise;
 	}
 
+	
+	
+	this.addAncestors= function(sampleID,ancestors){
+		console.log("sampleID",sampleID);
+		console.log("ancestors",ancestors);
+		return restfactory.POST('add-ancestors',{"sampleid":sampleID,"ancestors":ancestors});
+	}
+	
+	
+	
+	this.addChildren= function(sampleID,children){
+		console.log("sampleID",sampleID);
+		console.log("children",children);
+		return restfactory.POST('add-children',{"sampleid":sampleID,"children":children});
+	}
+	
 	
 	
 	this.deleteSample = function(id){

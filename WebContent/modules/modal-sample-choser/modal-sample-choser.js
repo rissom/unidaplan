@@ -2,12 +2,16 @@
 'use strict';
 
 
-function modalSampleChoser(avSampleTypeService,$translate,$scope,$modalInstance,restfactory,types,samples) {
+function modalSampleChoser(avSampleTypeService,$translate,$scope,$modalInstance,restfactory,types,samples,except,buttonLabel) {
 
-	this.chosenSamples=samples.slice(0);
-	this.oldChosenSamples=samples.slice(0);
+	if (samples) {
+		this.chosenSamples=samples.slice(0);
+	} else {
+		this.chosenSamples=[];
+	}
+	this.oldChosenSamples=this.chosenSamples.slice(0);
 	this.samples=[];
-	this.selectedTypesVar=[]
+	this.selectedTypesVar=[];
 	this.selectortypes=[];
 	thisController=this;
 	
@@ -77,7 +81,7 @@ function modalSampleChoser(avSampleTypeService,$translate,$scope,$modalInstance,
 
 	
 	
-	// get a bunch of fitting samples
+	// get a bunch of fitting samples. Remove Samples in except.
 	this.loadSamples=function(){
 		var details={}
 		details.sampletypes=this.selectedTypesVar;	
@@ -85,12 +89,16 @@ function modalSampleChoser(avSampleTypeService,$translate,$scope,$modalInstance,
 		if (thisController.userinput!=undefined){name=thisController.userinput}
 			var promise=restfactory.POST('/samples_by_name.json?name='+name,details);
 			promise.then(function(data){
-				thisController.samples=data.data;
+				thisController.samples=data.data.filter(
+					function(element,index,array){ // filter for exception
+						return (element.sampleid!=except.sampleid)
+					}
+				);
 				if (thisController.firsttime) {
 					thisController.init();
 					thisController.firsttime=false;
 				}
-			});		
+			});	
 	}
 	
 	
@@ -156,6 +164,12 @@ function modalSampleChoser(avSampleTypeService,$translate,$scope,$modalInstance,
 	}
 	
 	
+	
+	this.getButtonLabel = function(){
+		return buttonLabel;
+	}
+	
+	
 	this.removeSample=function(sample){
 		for (var i=0;i<this.chosenSamples.length;i++){
 			if (this.chosenSamples[i].name==sample.name){
@@ -192,6 +206,6 @@ function modalSampleChoser(avSampleTypeService,$translate,$scope,$modalInstance,
 };
 
         
-angular.module('unidaplan').controller('modalSampleChoser',['avSampleTypeService','$translate','$scope','$modalInstance','restfactory','types','samples',modalSampleChoser]);
+angular.module('unidaplan').controller('modalSampleChoser',['avSampleTypeService','$translate','$scope','$modalInstance','restfactory','types','samples','except','buttonLabel',modalSampleChoser]);
 
 })();

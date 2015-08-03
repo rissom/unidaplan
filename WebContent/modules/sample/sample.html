@@ -1,4 +1,6 @@
 <div ng-hide="sampleCtrl.sample.error">
+
+
 	<!-- Heading with sample name -->
 	<h3>{{sampleCtrl.getType({typeid:sampleCtrl.typeid})}} 
 		<span ng-repeat="tparameter in sampleCtrl.titleparameters"
@@ -17,7 +19,9 @@
 	
 	
 	<!-- Parameters -->
+	<div class="row">
 	<h4>{{'Base Parameters'|translate}}</h4>
+	<div class=col-md-6>
 	<table class="table">
 		<tr ng-repeat="parameter in sampleCtrl.parameters| orderBy : sampleCtrl.parameters.pos" 
 		ng-dblclick="parameter.editing=true; newValue=parameter.value">
@@ -41,6 +45,12 @@
 		</tr>
 		<!-- um letzten Strich in Tabelle zu erzeugen -->
 	</table>
+	</div>
+	</div>
+	
+	
+	
+	<!-- Files -->
 	<h4>{{'Files' | translate}}</h4>
 	<button type="button" class="btn btn-default " ng-click="addFile()">
 		{{'Add File' | translate}}
@@ -48,40 +58,44 @@
 	<br /> <br />
 
 
+
 	<!-- Ancestors and children -->
 	<h4>{{'Sample Tree' | translate}}</h4>
-	<table>
-		<tr>
-			<td>
-				<div >{{'Originates from'|translate}}:</div> 
+	<div class=row>
+				<div class="col-md-6">{{'Originates from'|translate}}:<br />
 					<span ng-repeat="bsample in sampleCtrl.ancestors"> 
-						<button class="btn btn-default" ui-sref="sample({sampleID:bsample.id})">
+						<button class="btn btn-default" ui-sref="sample({sampleID:bsample.sampleid})">
 							{{sampleCtrl.getType(bsample)}} {{bsample.name}}
 						</button>
 					</span> 
-					<button class="btn btn-default" ng-click="processCtrl.openDialog()">
+					<br />
+					<button class="btn btn-default"
+							ng-click="sampleCtrl.openDialog('ancestors')">
 						{{'Add/Remove samples'|translate}}
-					</button>
-			</td>
-			<td width=20mm></td>
-			<td>
-				<div>{{'Is ancestor of'|translate}}:</div> 
+					</button>				
+				</div>
+				<br />
+				
+				<div class="col-md-6">{{'Is ancestor of'|translate}}:<br />
 					<span ng-repeat="bsample in sampleCtrl.children">
-						 <button class="btn btn-default" ui-sref="sample({sampleID:bsample.id})">
+						 <button class="btn btn-default" ui-sref="sample({sampleID:bsample.sampleid})">
 							{{sampleCtrl.getType(bsample)}} {{bsample.name}}
 						</button>
 					</span>
-					<button class="btn btn-default" ng-click="processCtrl.openDialog()">
+					<br />
+					<button class="btn btn-default" ng-click="sampleCtrl.openDialog('children')">
 						{{'Add/Remove samples'|translate}}
 					</button>
-			</td>
-		</tr>
-	</table>
+				</div>
+				<br />
+	</div>
 	<br />
-
-
-
+	
+	<!-- Planned Processes -->
 	<h4>{{'Planned Processes'|translate}}</h4>
+	
+	<!-- Experiments -->
+	<h4>{{'Experiments'|translate}}</h4>
 	<table>
 		<tr ng-repeat="experiment in sampleCtrl.plans">
 			<td>
@@ -94,42 +108,40 @@
 	<br />
 
 
-
-	<table> <!-- Buttonbar: previous/delete/next -->
-		<tr>
-			<td align="center">
+	<!-- Buttonbar: previous/delete/next -->
+	<div class=row> 
+    <div class="center-block">  
+    <div class=row>
+    <div class=col-md-4>
 				<span ng-show="sampleCtrl.previous">&#x25c0; {{'previous'|translate}} <br /> 
-					<button class="btn btn-default" ui-sref="sample({sampleID:sampleCtrl.previous.id})">
-							{{sampleCtrl.previous?sampleCtrl.getType(sampleCtrl.previous):''}} {{sampleCtrl.previous.name}}
-						</button>
-					</samplebutton>
-				</span>
-			</td>
-			<td align="center">&nbsp;<br /> &nbsp;
+				<button class="btn btn-default" ui-sref="sample({sampleID:sampleCtrl.previous.id})">
+						{{sampleCtrl.previous?sampleCtrl.getType(sampleCtrl.previous):''}} {{sampleCtrl.previous.name}}
+				</button>
+			</span>		
+	</div>
+	<div class=col-md-4>		
 				<button type="button" class="btn btn-danger"
-						ng-show="sampleCtrl.deletable==true"
+						ng-class="{'disabled':!sampleCtrl.deletable}"
 						ng-click="sampleCtrl.deleteSample()"
 						ui-sref="experiments">
 						{{'Delete Sample'|translate}}
-				</button>
-			</td>
-			<td align="center">	
+				</button>	
+	</div>
+	<div class=col-md-4>			
 				<span ng-show="sampleCtrl.next"> &nbsp; {{'next'|translate}} &nbsp; &#9654;<br />
 					&nbsp;
 					<button class="btn btn-default" ui-sref="sample({sampleID:sampleCtrl.next.id})">
 							{{sampleCtrl.next?sampleCtrl.getType(sampleCtrl.next):''}} {{sampleCtrl.next.name}}
 					</button>
 				</span>
-			</td>
-		</tr>
-	</table>
+	</div>
+	</div>
 </div>
-
+</div>
 <div ng-show=sampleCtrl.sample.error>
 	<!-- Error getting the sample -->
 	{{sampleCtrl.sample.error}}
 </div>
-
 <br />
 <br />
 <br />

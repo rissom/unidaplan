@@ -180,7 +180,7 @@ public class Showsample extends HttpServlet {
 		// Find all child objects
     	try{
 		    pstmt=  DBconn.conn.prepareStatement( 	
-			"SELECT originates_from.id, samplenames.id, samplenames.name, samplenames.typeid \n"+
+			"SELECT originates_from.id, samplenames.id AS sampleid, samplenames.name, samplenames.typeid \n"+
 			"FROM originates_from \n"+
 			"JOIN samplenames ON (samplenames.id=originates_from.child) \n"+
 			"WHERE originates_from.parent=? \n");
@@ -209,7 +209,7 @@ public class Showsample extends HttpServlet {
 		// find all parent objects
 		try{    
 		    pstmt=  DBconn.conn.prepareStatement( 	
-			"SELECT originates_from.id, samplenames.id, samplenames.name, samplenames.typeid \n" +
+			"SELECT originates_from.id, samplenames.id AS sampleid, samplenames.name, samplenames.typeid \n" +
 			"FROM originates_from \n" +
 			"JOIN samplenames ON (samplenames.id=originates_from.parent) \n" +
 			"WHERE originates_from.child=? \n");
@@ -287,7 +287,9 @@ public class Showsample extends HttpServlet {
 	 		+"WHERE sampleid=?");
 			pstmt.setInt(1,objID);
 			ResultSet resultset=pstmt.executeQuery();
-			if (resultset.next()) {Deletable=false;}
+			if (resultset.next()) {
+				Deletable=false;
+			}
 			pstmt.close();
 			
 			// Check if experiments with this sample exist

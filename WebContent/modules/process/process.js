@@ -19,8 +19,14 @@ function process(avSampleTypeService,types,$modal,processData,restfactory){
 	    	samples 	  : function() {
 	    					return thisController.process.samples; },
 	        types         : function() {
-	        				return types; }
-	        }
+	        				return types; },
+	    	except		  : function() {
+		        				return {};
+		        			},
+		    buttonLabel	  : function() { 
+		        				return 'assign to process';
+		        			}
+		    }		        
 	  });
 	  
 	  modalInstance.result.then(function (result) {  // get the new Samplelist + Info if it is changed from Modal. 

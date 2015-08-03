@@ -60,7 +60,7 @@ public class DeleteSample extends HttpServlet {
 
 		 		// Check if processes with this sample exist
 		        pstmt = DBconn.conn.prepareStatement(	
-		    	"SELECT processid, objectid FROM objectinprocess "
+		    	"SELECT processid, sampleid FROM samplesinprocess "
 		 		+"WHERE objectid=?");
 				pstmt.setInt(1,objID);
 				ResultSet resultset=pstmt.executeQuery();

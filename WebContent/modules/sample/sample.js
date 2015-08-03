@@ -1,18 +1,13 @@
 (function(){
 'use strict';
 
-function sampleController(sample,types,sampleService,avSampleTypeService,$translate,$scope,key2string){
+function sampleController(sample,$modal,types,sampleService,avSampleTypeService,$translate,$scope,key2string){
 	
 	var thisController = this;
-	
-	this.sample = {};
-	
-	this.strings = [];
 		
-	this.id = sample.id;
+		
 	this.parameters = sample.parameters;
 	this.titleparameters = sample.titleparameters;
-	this.strings = sample.strings;
 	this.children = sample.children;
 	this.ancestors = sample.ancestors;
 	this.plans = sample.plans;
@@ -24,6 +19,78 @@ function sampleController(sample,types,sampleService,avSampleTypeService,$transl
 	if (this.previous) {this.previous.typeid = sample.typeid;}
 	this.typestringkey = sample.typestringkey;
 	this.typeid = sample.typeid;
+
+	
+
+	this.openDialog = function (mode) {			
+		var mSamples;
+		if (mode=="ancestors"){ 		
+			var mSamples=this.ancestors
+		} else {
+			mSamples=this.children
+		}		
+			
+	    var modalInstance = $modal.open({
+		    animation: false,
+		    templateUrl: 'modules/modal-sample-choser/modal-sample-choser.html',
+		    controller: 'modalSampleChoser as mSampleChoserCtrl',
+		    size: 'lg',
+		    resolve: {
+		    	samples 	  : function() {
+		    					return mSamples; },
+		        types         : function() {
+		        				return types; },
+		        except		  : function() {
+		        				return {sampleid:sample.id,
+		        						typeid:sample.typeid,
+		        						name:sample.name}
+		        				},
+		        buttonLabel	  : function() { 
+		        				return 'assign to sample';
+		        				}
+		    }		        
+		});
+	    
+	  	modalInstance.result.then(function (result) {  // get the new Samplelist + Info if it is changed from Modal. 
+			if (mode=="ancestors"){ 
+				thisController.ancestors=result.chosen;
+				if (result.changed) {
+		    	    thisController.assignAncestors(result.chosen);
+		        }
+			} else {
+				thisController.children=result.chosen;
+				if (result.changed) {
+		    	    thisController.assignChildren(result.chosen);
+		        }
+			}
+	        
+	    }, function () {
+	        console.log('Strange Error: Modal dismissed at: ' + new Date());
+	    });
+	};
+
+	
+	
+	// store ancestors in database
+	this.assignAncestors = function(ancestors){
+		var a2=[];
+		for (var i=0; i<ancestors.length; i++) {
+			a2.push(ancestors[i].sampleid);
+		}
+		console.log ("sample",sample);
+		sampleService.addAncestors(sample.id,a2);
+	}
+	
+	
+	
+	// store children in database
+	this.assignChildren = function(children){
+		var c2=[];
+		for (var i=0; i<children.length; i++) {
+			c2.push(children[i].sampleid);
+		}		
+		sampleService.addChildren(sample.id,c2);
+	}
 	
 	
 	
@@ -75,7 +142,7 @@ function sampleController(sample,types,sampleService,avSampleTypeService,$transl
 		);
 	}
 	
-	
+
 	
 	this.getType = function(sample){
 		return avSampleTypeService.getType(sample,types);
@@ -85,10 +152,10 @@ function sampleController(sample,types,sampleService,avSampleTypeService,$transl
 	
 	this.translate = function(lang) {			
 		angular.forEach(this.parameters, function(parameter) {
-			parameter.trname=key2string.key2string(parameter.stringkeyname,thisController.strings) 
+			parameter.trname=key2string.key2string(parameter.stringkeyname,sample.strings) 
 		})
 		angular.forEach(this.plans, function(plan) {
-			plan.trname=key2string.key2string(plan.name,thisController.strings) 
+			plan.trname=key2string.key2string(plan.name,sample.strings) 
 		})	
 	}
 
@@ -121,6 +188,6 @@ function sampleController(sample,types,sampleService,avSampleTypeService,$transl
 
 
 
-angular.module('unidaplan').controller('sampleController',['sample','types','sampleService','avSampleTypeService','$translate','$scope','key2string','sample',sampleController]);
+angular.module('unidaplan').controller('sampleController',['sample','$modal','types','sampleService','avSampleTypeService','$translate','$scope','key2string','sample',sampleController]);
 
 })();
