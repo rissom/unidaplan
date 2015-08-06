@@ -6,18 +6,23 @@
 	<select class="form-control" 
 		style="width:300px;"	
 		ng-model="choseProcessCtrl.processType"
-		ng-options="ptype.trname group by ptype.group for ptype in newProcessCtrl.processTypes" 	
+		ng-options="ptype.trname group by ptype.group for ptype in choseProcessCtrl.processTypes" 	
 		ng-selected="$first">
 	</select>
+	
+	<p />
 
 
-	<input>
+	<input type="number" 
+	   ng-model="choseProcessCtrl.pnumber"
+	   style="width: 253px;" 
+	   placeholder="{{'Enter processnumber here'|translate}}">
 
 	<p />
 	<p />
 	<button class="btn btn-default"
-			ng-click="choseProcessCtrl.addProcess()"
-			ng-class= "{disabled: !newProcessCtrl.processType}">
+			ng-click="choseProcessCtrl.choseProcess()"
+			ng-class= "{disabled: !choseProcessCtrl.pnumber}">
 		{{'Go to process'|translate}}
 	</button>	
 

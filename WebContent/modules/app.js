@@ -99,6 +99,18 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 			}
         })
         
+        .state('choseProcess', {
+	        url: '/chose-process',
+	        templateUrl: 'modules/process/chose-process.html',
+	        controller:"choseProcessController as choseProcessCtrl",
+	        resolve:{
+                ptypes: 
+                	function(avProcessTypeService){
+        	   	    	return avProcessTypeService.getProcessTypes()
+        	   	    }
+	        }
+        })
+        
         .state('openExperiment', {
 	        url: '/experiments',
 	        controller:'oExpController as oexpCtrl',
@@ -216,6 +228,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
   	'Delete Experiment' : 'Experiment löschen',
   	'Enter your password here' : 'Bitte Passwort hier eingeben',
   	'Enter your username here' : 'Bitte Benutzernamen hier eingeben',
+  	'Enter processnumber here' : 'Bitte Prozessnumber hier eingeben',
   	'New Process' : 'Neuer Prozess',
   	'no.' : 'Nr.',  
 	'day' : 'Tag',

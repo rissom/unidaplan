@@ -12,14 +12,21 @@ function choseProcessController(restfactory,$state,ptypes,avProcessTypeService){
 	
 	this.keyUp = function(keyCode,newValue,parameter) {
 		if (keyCode===13) {				// Return key pressed
-			this.addProcess();
+			this.choseProcess();
 		}
 	}
 
 		
 	this.choseProcess = function() {
-				
+		var promise = restfactory.GET("process-by-number?number="+thisController.pnumber+"&type="+thisController.processType.id)
+		promise.then( function(rest){
+			$state.go('process',{processID:rest.data.processid});	
+			},function(){
+				console.log("Error");
+			});
 	}
+	
+	
 	
 	// activate function (prefill selector)
 	if (ptypes){

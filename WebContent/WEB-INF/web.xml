@@ -247,4 +247,14 @@
     <servlet-name>AddProcess</servlet-name>
     <url-pattern>/add-process</url-pattern>
   </servlet-mapping>
+      <servlet>
+    <description>ProcessByNumber</description>
+    <display-name>ProcessByNumber</display-name>
+    <servlet-name>ProcessByNumber</servlet-name>
+    <servlet-class>unidaplan.ProcessByNumber</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ProcessByNumber</servlet-name>
+    <url-pattern>/process-by-number</url-pattern>
+  </servlet-mapping>
 </web-app>
