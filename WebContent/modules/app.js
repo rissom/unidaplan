@@ -22,8 +22,12 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	        				return sampleService.loadSample($stateParams.sampleID)
 	        			},
 			    types:  function(avSampleTypeService){
-        	   	    	return avSampleTypeService.getTypes()
-        	   	    	}
+        	   	    		return avSampleTypeService.getTypes()
+        	   	    	},
+        	   	ptypes: function(avProcessTypeService){
+            	   	    	return avProcessTypeService.getProcessTypes()
+//        	   				return [{"processtype":"waschen"}]
+            	   	    }
 	        }
         })
             	
@@ -166,12 +170,21 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
     'Base Parameters': 'Basisparameter',
     'Cancel' : 'Abbrechen',
     'chosen samples' : 'ausgewählte Proben',
+    'Divide sample in several new samples' : 'Probe in neue Proben aufteilen',
     'Assign to process' : 'Mit Prozess assozieren',
     'created by' : 'erstellt von',
     'Create Sample' : 'Probe erstellen',
     'Enter your e-mail here' : 'Bitte E-Mail-Adresse hier eingeben',
     'Enter full name here' : 'Bitte vollen Namen hier eingeben',
     'Files': 'Dateien',
+    'Finished Processes' : 'Durchgeführte Prozesse',
+    'Mon' : 'Mo',
+    'Tue' : 'Di',
+    'Wed' : 'Mi',
+    'Thu' : 'Do',
+    'Fri' : 'Fr',
+    'Sat' : 'Sa',
+    'Sun' : 'So',
     'Sample Tree': 'Probenbaum',
     'Planned Processes': 'Planung',
     'delete sample': 'Probe löschen',
@@ -191,6 +204,10 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
   	'Enter your username here' : 'Bitte Benutzernamen hier eingeben',
   	'New Process' : 'Neuer Prozess',
   	'no.' : 'Nr.',  
+	'day' : 'Tag',
+	'days' : 'Tage',
+	'hour' : 'Stunde',
+	'hours' : 'Stunden',
   	'Help page' : 'Hilfe Seite',
   	'Log in' : 'Anmeldung',
   	'Login' : 'Anmelden',

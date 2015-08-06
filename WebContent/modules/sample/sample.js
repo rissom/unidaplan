@@ -1,12 +1,13 @@
 (function(){
 'use strict';
 
-function sampleController(sample,$modal,types,sampleService,avSampleTypeService,$translate,$scope,key2string){
+function sampleController(sample,$modal,$filter,types,sampleService,avSampleTypeService,$translate,$scope,key2string,ptypes,avProcessTypeService){
 	
 	var thisController = this;
 		
 		
 	this.parameters = sample.parameters;
+	this.processes = $filter('orderBy')(sample.processes, 'date', false)
 	this.titleparameters = sample.titleparameters;
 	this.children = sample.children;
 	this.ancestors = sample.ancestors;
@@ -20,6 +21,23 @@ function sampleController(sample,$modal,types,sampleService,avSampleTypeService,
 	this.typestringkey = sample.typestringkey;
 	this.typeid = sample.typeid;
 
+	
+	
+	// returns the translated name of a process
+	this.getProcessType = function(process){
+		return avProcessTypeService.getProcessType(process,ptypes);
+	}
+	
+	
+	
+	// returns the duration between 2 processes
+	this.getDuration = function(index){
+		var duration = 0;
+		if (this.processes.length>index+1) {
+			duration = this.processes[index+1].date-this.processes[index].date;
+		}
+		return duration;
+	}
 	
 
 	this.openDialog = function (mode) {			
@@ -156,7 +174,10 @@ function sampleController(sample,$modal,types,sampleService,avSampleTypeService,
 		})
 		angular.forEach(this.plans, function(plan) {
 			plan.trname=key2string.key2string(plan.name,sample.strings) 
-		})	
+		})
+//		angular.forEach(this.plans, function(plan) {
+//			plan.trname=key2string.key2string(plan.name,sample.strings) 
+//		})	
 	}
 
 	
@@ -188,6 +209,7 @@ function sampleController(sample,$modal,types,sampleService,avSampleTypeService,
 
 
 
-angular.module('unidaplan').controller('sampleController',['sample','$modal','types','sampleService','avSampleTypeService','$translate','$scope','key2string','sample',sampleController]);
+angular.module('unidaplan').controller('sampleController',['sample','$modal','$filter','types',
+     'sampleService','avSampleTypeService','$translate','$scope','key2string','ptypes','avProcessTypeService',sampleController]);
 
 })();

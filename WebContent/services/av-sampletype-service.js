@@ -10,8 +10,6 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	 // return the translated name string of a type for a sample
 	  this.getType=function(sample,types){
 		var typeName
-//		console.log("types:",types)
-//		console.log("sample", sample)
 		  angular.forEach(types,function(type) {
 			if (sample.typeid==type.id){
 			    typeName=type.trname;

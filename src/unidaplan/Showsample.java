@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import javax.servlet.ServletException;
@@ -157,6 +158,51 @@ public class Showsample extends HttpServlet {
 		e.printStackTrace();
 	}	
     	
+	// find all corresponding processes + timestamp
+	try {
+		pstmt= DBconn.conn.prepareStatement( 
+		   "SELECT samplesinprocess.processid, processes.processtypesid as ptype, ptd.value AS date, n.value AS number "
+		  +"FROM samplesinprocess "
+		  +"JOIN processes ON (processes.id=samplesinprocess.processid) " 
+		  +"JOIN processtypes ON (processes.processtypesid=processtypes.id) "  
+		  +"JOIN p_parameters pp ON (pp.definition=10) " // date
+		  +"JOIN p_parameters pp2 ON (pp2.definition=8) "  // number
+		  +"JOIN p_timestamp_data ptd ON (ptd.processID=samplesinprocess.processid AND ptd.P_Parameter_ID=pp.id) "
+		  +"JOIN p_integer_data n ON (n.ProcessID=samplesinprocess.processid AND n.P_Parameter_ID=pp2.id) "
+		  +"WHERE sampleid=?");
+		pstmt.setInt(1,objID);
+		JSONArray processes=DBconn.jsonArrayFromPreparedStmt(pstmt);
+//	   	String validToString = jsToken.optString("token_valid_to");
+//	   	Timestamp validToDate = Timestamp.valueOf(validToString); 
+		if (processes.length()>0) {
+			JSONArray processes2 = new JSONArray();
+	      	for (int i=0; i<processes.length();i++) {	      		
+	      		JSONObject tempObj=(JSONObject) processes.get(i);
+	      		JSONObject tempObj2=new JSONObject();
+	      		int number= ((JSONObject) processes.get(i)).getInt("number");
+	      		tempObj2.put("number",number);
+	      		int ptype= ((JSONObject) processes.get(i)).getInt("ptype");
+	      		tempObj2.put("ptype",ptype);
+	      		int processid= ((JSONObject) processes.get(i)).getInt("processid");
+	      		tempObj2.put("processid",processid);
+	    	   	String dateString = tempObj.optString("date");
+	    	   	Timestamp date = Timestamp.valueOf(dateString); 	    	   	
+	      		tempObj2.put("date", date.getTime());	      		
+	      		processes2.put(tempObj2);
+	      	}
+			jsSample.put("processes",processes2);
+		}	
+	} catch (SQLException e) {
+		System.err.println("Showsample: Problems with SQL query for processes");
+		e.printStackTrace();
+	} catch (JSONException e){
+		System.err.println("Showsample: Problems creating JSON for processes");
+		e.printStackTrace();
+	} catch (Exception e) {
+		System.err.println("Showsample: Strange Problems with the sample processes");
+		e.printStackTrace();
+	}
+	
 	
 	// Find all experiment plans
 	try {pstmt= DBconn.conn.prepareStatement( 
@@ -280,6 +326,7 @@ public class Showsample extends HttpServlet {
 			System.err.println("Showsample: Strange Problem while getting next sample");
     	}
 
+		
 		// Can we delete this sample?
 		try{
 	        pstmt = DBconn.conn.prepareStatement(	

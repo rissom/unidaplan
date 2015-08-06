@@ -1,42 +1,63 @@
 (function(){
 'use strict';
 
-function AvProcService(restfactory,$translate,$scope) {
+var avProcessTypeService = function (restfactory,$q,key2string,$translate) {
 	// restfactory is a wrapper for $html.
 
-	this.processes = [];
-	this.strings = [];
-
 	
-
-	this.loadProcesses = function(id) {
-		var thisProcessesController = this;
-		var promise = restfactory.GET("available_processtypes.json?id="+id);
-		promise.then(function(rest) {
-			thisProcessesController.processes = rest.data.processes;
-			thisProcessesController.strings = rest.data.strings;
-			thisProcessesController.translate('de');
-		}, function(rest) {
-			console.log("Error loading processtypes");
-		});
+	
+	this.getProcessType = function(process,pTypes) {
+		var processTypeName
+//		var pTypes=this.processTypes;
+		  angular.forEach(pTypes,function(ptype) {
+			if (process.ptype==ptype.id){
+				processTypeName=ptype.trname;
+			}
+	      })
+		return processTypeName; 
 	}
 
 	
 	
-	this.translate = function(lang) {
-		var strings=this.strings
-		angular.forEach(this.processes, function(proc) {
-			angular.forEach(strings, function(translation) {
-				if (proc.name==translation.string_key && translation.language=="de")
-					{proc.trname=translation.value;}
-			})
+	this.getProcessTypes = function() {
+        var defered=$q.defer();
+        var thisController=this;
+        var now = new Date();
+	    if  ((this.loaded)&&((now-this.lastTimeLoaded)<5*60*1000)){
+	    	this.translate();
+	  	    defered.resolve(this.processTypes)
+	    }else{
+	    	var promise = restfactory.GET("available-processtypes");
+	    	promise.then(function(rest) {
+	    		thisController.processTypes = rest.data.processes;
+	    		thisController.strings = rest.data.strings;
+	    		thisController.lastTimeLoaded=new Date();
+	    		thisController.translate();
+	    		thisController.loaded=true;
+	    		console.log("processes",thisController.processTypes);
+	    		defered.resolve(thisController.processTypes)	    	
+		   }, function(rest) {
+			console.log("Error loading processtypes");
+		   });
+	    }
+	    return defered.promise;
+	}
+
+	
+	
+	this.translate = function() {
+        var thisController=this;
+		var strings=thisController.strings
+		angular.forEach(thisController.processTypes, function(proc) {
+			proc.trname=key2string.key2string(proc.name,thisController.strings);
 		})
 	}
+
 
 
 }
 
 
-angular.module('unidaplan').service('AvProcService', ['restfactory','$translate','$scope',AvProcService]);
+angular.module('unidaplan').service('avProcessTypeService', ['restfactory','$q','key2string','$translate',avProcessTypeService]);
 
 })();
