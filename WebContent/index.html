@@ -14,7 +14,13 @@
 <script type="text/javascript" src='modules/app.js'></script>
 <script type="text/javascript" src='factories/restfactory.js'></script>
 <script type="text/javascript" src='services/sample-service.js'></script>
-<script type="text/javascript" src='directives/sample-button.js'></script>
+<script type="text/javascript" src='filters/trailingzeros.js'></script> 
+<script type="text/javascript" src='filters/duration.js'></script>
+<script type="text/javascript" src='services/av-sampletype-service.js'></script>
+<script type="text/javascript" src='services/av-processtype-service.js'></script>
+<script type="text/javascript" src='services/process-service.js'></script>
+<script type="text/javascript" src='services/key2string-service.js'></script>
+<script type="text/javascript" src='services/user-service.js'></script>
 <script type="text/javascript" src='modules/sample/new-sample.js'></script>
 <script type="text/javascript" src='modules/sample/sample-choser.js'></script>
 <script type="text/javascript" src='modules/sample/sample.js'></script>
@@ -24,28 +30,19 @@
 <script type="text/javascript" src='modules/users/users.js'></script>
 <script type="text/javascript" src='modules/groups/groups.js'></script>
 <script type="text/javascript" src='modules/signup/signup.js'></script>
-<script type="text/javascript" src='filters/trailingzeros.js'></script> 
-<script type="text/javascript" src='filters/duration.js'></script>  
 <script type="text/javascript" src='modules/experiments/open-experiment.js'></script>
 <script type="text/javascript" src='modules/experiments/experiment.js'></script>
 <script type="text/javascript" src='modules/process/process.js'></script>
+<script type="text/javascript" src='modules/process/new-process.js'></script>
+<script type="text/javascript" src='modules/process/chose-process.js'></script>
 <script type="text/javascript" src='modules/modal-sample-choser/modal-sample-choser.js'></script>
-<script type="text/javascript" src='services/av-sampletype-service.js'></script>
-<script type="text/javascript" src='services/av-processtype-service.js'></script>
-<script type="text/javascript" src='services/process-service.js'></script>
-<script type="text/javascript" src='services/key2string-service.js'></script>
-<script type="text/javascript" src='services/user-service.js'></script>
-
-
-
-
 <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
 <link rel="stylesheet" href="css/unidaplan.css" type="text/css">
 </head>
 
 <body>
 	<div ng-controller="menu as menuCtrl"> 
-		<ng-include src="'modules/menu/menu.html'"></ng-include>
+		<div ng-include="'modules/menu/menu.html'"></div>
 			<div class="container">
 				<div ui-view></div>
 			</div>

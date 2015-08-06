@@ -237,4 +237,14 @@
     <servlet-name>AvailableProcesstypes</servlet-name>
     <url-pattern>/available-processtypes</url-pattern>
   </servlet-mapping>
+    <servlet>
+    <description>AddProcess</description>
+    <display-name>AddProcess</display-name>
+    <servlet-name>AddProcess</servlet-name>
+    <servlet-class>unidaplan.AddProcess</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddProcess</servlet-name>
+    <url-pattern>/add-process</url-pattern>
+  </servlet-mapping>
 </web-app>

@@ -1,21 +1,21 @@
 <p />
 <p />
-{{'Select sampletype'|translate}}
+{{'Select processtype'|translate}}
 <p />
 
 	<select class="form-control" 
 		style="width:300px;"	
-		ng-model="newSampleCtrl.sampletype"
-		ng-options="stype.trname group by stype.group for stype in newSampleCtrl.sampletypes" 	
+		ng-model="newProcessCtrl.processType"
+		ng-options="ptype.trname group by ptype.group for ptype in newProcessCtrl.processTypes" 	
 		ng-selected="$first">
 	</select>
 
 
-<div ng-show="newSampleCtrl.sampletype.recipes" class="col-xs-6">
+<div ng-show="newProcessCtrl.processType.recipes" class="col-xs-6">
 	<select class="form-control" 
 		style="width:300px;"	
-		ng-model="newSampleCtrl.recipe"
-		ng-options="recipe.trname for recipe in newSampleCtrl.recipes" 	
+		ng-model="newProcessCtrl.recipe"
+		ng-options="recipe.trname for recipe in newProcessCtrl.recipes" 	
 		ng-selected="$first">
 	</select>
 </div>
@@ -23,8 +23,8 @@
 	<p />
 	<p />
 	<button class="btn btn-default"
-			ng-click="newSampleCtrl.addSample()"
-			ng-class= "{disabled: !newSampleCtrl.sampletype}">
-		{{'Create Sample'|translate}}
+			ng-click="newProcessCtrl.addProcess()"
+			ng-class= "{disabled: !newProcessCtrl.processType}">
+		{{'Create Process'|translate}}
 	</button>	
 

@@ -26,7 +26,6 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
         	   	    	},
         	   	ptypes: function(avProcessTypeService){
             	   	    	return avProcessTypeService.getProcessTypes()
-//        	   				return [{"processtype":"waschen"}]
             	   	    }
 	        }
         })
@@ -47,7 +46,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	    	}
     	})
     	
-    	.state('newsample', {
+    	.state('newSample', {
 	    	url: '/new-sample',
 	        templateUrl: 'modules/sample/new-sample.html',
 	        controller: 'newSampleController as newSampleCtrl',
@@ -56,6 +55,19 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
             	    function(avSampleTypeService){
         	   	    	return avSampleTypeService.getTypes()
                 	}
+	        }
+        })
+        
+        
+        .state('newProcess', {
+	    	url: '/new-process',
+	        templateUrl: 'modules/process/new-process.html',
+	        controller: 'newProcessController as newProcessCtrl',
+	        resolve:{
+                ptypes: 
+                	function(avProcessTypeService){
+        	   	    	return avProcessTypeService.getProcessTypes()
+        	   	    }
 	        }
         })
         
@@ -170,6 +182,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
     'Base Parameters': 'Basisparameter',
     'Cancel' : 'Abbrechen',
     'chosen samples' : 'ausgewählte Proben',
+    'Create Process' : 'Prozess erstellen',
     'Divide sample in several new samples' : 'Probe in neue Proben aufteilen',
     'Assign to process' : 'Mit Prozess assozieren',
     'created by' : 'erstellt von',
@@ -178,6 +191,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
     'Enter full name here' : 'Bitte vollen Namen hier eingeben',
     'Files': 'Dateien',
     'Finished Processes' : 'Durchgeführte Prozesse',
+    'Go to process' : 'Zum Prozess gehen',
     'Mon' : 'Mo',
     'Tue' : 'Di',
     'Wed' : 'Mi',
@@ -212,6 +226,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
   	'Log in' : 'Anmeldung',
   	'Login' : 'Anmelden',
   	'New Sample': 'Neue Probe',
+  	'Select processtype' : 'Prozesstyp wählen',
   	'Password' : 'Passwort',
   	'Re-enter Password' : 'Passwort wiederholen',
   	'Re-enter your password here' : 'Bitte Passwort hier wiederholen',

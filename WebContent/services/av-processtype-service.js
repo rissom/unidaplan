@@ -34,7 +34,6 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate) {
 	    		thisController.lastTimeLoaded=new Date();
 	    		thisController.translate();
 	    		thisController.loaded=true;
-	    		console.log("processes",thisController.processTypes);
 	    		defered.resolve(thisController.processTypes)	    	
 		   }, function(rest) {
 			console.log("Error loading processtypes");

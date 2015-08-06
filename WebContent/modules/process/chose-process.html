@@ -1,0 +1,23 @@
+<p />
+<p />
+{{'Select processtype'|translate}}
+<p />
+
+	<select class="form-control" 
+		style="width:300px;"	
+		ng-model="choseProcessCtrl.processType"
+		ng-options="ptype.trname group by ptype.group for ptype in newProcessCtrl.processTypes" 	
+		ng-selected="$first">
+	</select>
+
+
+	<input>
+
+	<p />
+	<p />
+	<button class="btn btn-default"
+			ng-click="choseProcessCtrl.addProcess()"
+			ng-class= "{disabled: !newProcessCtrl.processType}">
+		{{'Go to process'|translate}}
+	</button>	
+
