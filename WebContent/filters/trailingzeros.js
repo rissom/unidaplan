@@ -1,20 +1,19 @@
 (function(){
 'use strict';
 
-angular.module('unidaplan')
-    .filter('trailingzeros', function () {
-        return function (n, len) {
-            var num = parseInt(n, 10);
-            len = parseInt(len, 10);
-            if (isNaN(num) || isNaN(len)) {
-                return n;
-            }
-            num = ''+num;
-            while (num.length < len) {
-                num = '0'+num;
-            }
-            return num;
-        };
-    });
+angular.module('unidaplan').filter('trailingzeros', function () {
+    return function (n, len) {
+        var num = parseInt(n, 10);
+        len = parseInt(len, 10);
+        if (isNaN(num) || isNaN(len)) {
+            return n;
+        }
+        num = ''+num;
+        while (num.length < len) {
+            num = '0'+num;
+        }
+        return num;
+    };
+});
 
 })();
