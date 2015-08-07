@@ -3,12 +3,12 @@
 
 var recentProcessController = function(ptypes,avProcessTypeService,processService) {
 
-	this.getRecentSamples=function(){
+	this.getRecentProcesses=function(){
 		return processService.recentProcesses;
 	}
 	
-	this.getType = function(sample){
-		return avProcessTypeService.getType(process,ptypes);
+	this.getType = function(process){
+		return avProcessTypeService.getProcessType(process,ptypes);
 	}
 	
 };

@@ -10,7 +10,7 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate) {
 		var processTypeName
 //		var pTypes=this.processTypes;
 		  angular.forEach(pTypes,function(ptype) {
-			if (process.ptype==ptype.id){
+			if (process.processtype==ptype.id){
 				processTypeName=ptype.trname;
 			}
 	      })

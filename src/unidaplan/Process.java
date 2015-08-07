@@ -61,15 +61,15 @@ public class Process extends HttpServlet {
 		  
 		// get number and type 
 		pstmt= DBconn.conn.prepareStatement(	
-					"SELECT process_type_id, p_number, pt_string_key "
+					"SELECT process_type_id AS processtype, p_number AS pnumber, pt_string_key "
 					+"FROM pnumbers "
 				  	+"WHERE id=?");
 		pstmt.setInt(1, processID);
 		jsProcess= DBconn.jsonObjectFromPreparedStmt(pstmt);
 		jsProcess.put("id",processID);
 		if (jsProcess.length()>0) {
-			processTypeID=jsProcess.getInt("process_type_id");
-			pnumber=jsProcess.getInt("p_number");
+			processTypeID=jsProcess.getInt("processtype");
+			pnumber=jsProcess.getInt("pnumber");
 			stringkeys.add(Integer.toString(jsProcess.getInt("pt_string_key")));
 			found=true;
 		}else{

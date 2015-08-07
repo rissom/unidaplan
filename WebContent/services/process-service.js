@@ -27,15 +27,18 @@ var processService = function (restfactory,$q,$translate,key2string) {
 	this.pushProcess = function(process){
 		var i;
 		var found=false;
-		if (this.recentProcesses==undefined) {this.recentProcesses=[]}
+		if (this.recentProcesses==undefined) {
+			this.recentProcesses=[]
+		}
+		var tProcess={"id":process.id,"processtype":process.processtype,"pnumber":process.pnumber};
 		for (i=0;i<this.recentProcesses.length;i++){
-			if (this.recentProcesses[i].pnumber==process.pnumber &&
-				this.recentProcesses[i].processtype==process.processtype){
+			if (this.recentProcesses[i].pnumber==tProcess.pnumber &&
+				this.recentProcesses[i].processtype==tProcess.processtype){
 				found=true			
 			}
 		}
 		if (!found) {
-			this.recentProcesses.push(process);
+			this.recentProcesses.push(tProcess);
 		}
 		if (this.recentProcesses.length>20){
 			this.recentProcesses.slice(0,this.recentProcesses.length-20);
