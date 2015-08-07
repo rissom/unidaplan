@@ -161,7 +161,7 @@ public class Showsample extends HttpServlet {
 	// find all corresponding processes + timestamp
 	try {
 		pstmt= DBconn.conn.prepareStatement( 
-		   "SELECT samplesinprocess.processid, processes.processtypesid as ptype, ptd.value AS date, n.value AS number "
+		   "SELECT samplesinprocess.processid, processes.processtypesid as processtype, ptd.value AS date, n.value AS number "
 		  +"FROM samplesinprocess "
 		  +"JOIN processes ON (processes.id=samplesinprocess.processid) " 
 		  +"JOIN processtypes ON (processes.processtypesid=processtypes.id) "  
@@ -181,8 +181,8 @@ public class Showsample extends HttpServlet {
 	      		JSONObject tempObj2=new JSONObject();
 	      		int number= ((JSONObject) processes.get(i)).getInt("number");
 	      		tempObj2.put("number",number);
-	      		int ptype= ((JSONObject) processes.get(i)).getInt("ptype");
-	      		tempObj2.put("ptype",ptype);
+	      		int ptype= ((JSONObject) processes.get(i)).getInt("processtype");
+	      		tempObj2.put("processtype",ptype);
 	      		int processid= ((JSONObject) processes.get(i)).getInt("processid");
 	      		tempObj2.put("processid",processid);
 	    	   	String dateString = tempObj.optString("date");

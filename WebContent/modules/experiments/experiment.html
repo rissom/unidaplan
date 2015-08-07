@@ -1,16 +1,14 @@
-<div ng-init="expCtrl.loadData()"></div>
 <h3>
-{{'Experiment'|translate}} {{'no.'|translate}} {{expCtrl.ID()}} : 
-{{expCtrl.trname}}
+{{'Experiment'|translate}} {{'no.'|translate}} {{experimentCtrl.experiment.id}} : 
+{{experimentCtrl.experiment.trname}}
 </h3>
-{{'created by'|translate}} {{expCtrl.experiment.creator}}
+{{'created by'|translate}} {{experimentCtrl.experiment.creator}}
 <br />
 <br />
-
 		<!-- Parameters -->
 		<h4>{{'Parameters'|translate}}</h4>
 		<table class="table">
-			<tr ng-repeat="parameter in expCtrl.experiment.parameters| orderBy : expCtrl.experiment.parameters.pos" 
+			<tr ng-repeat="parameter in experimentCtrl.experiment.parameters| orderBy : experimentCtrl.experiment.parameters.pos" 
 			ng-dblclick="parameter.editing=true; newValue=parameter.value">
 				<td>
 				    {{parameter.trname}} :
@@ -32,3 +30,49 @@
 			</tr>
 			<!-- um letzten Strich in Tabelle zu erzeugen -->
 		</table>
+		
+		
+		
+		<!-- planned processes -->
+		<h4>{{'Planned Processes'|translate}}</h4>
+		<table>
+			<tr>
+				<td>
+					&nbsp;
+					Sample 
+					&nbsp;
+				</td>
+				<td>&nbsp;
+					Comment
+					&nbsp;
+				</td>
+				<td>&nbsp;
+					Washing
+					&nbsp;
+				</td>
+				<td>
+					&nbsp;
+					Polishing
+					&nbsp;
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<button class="btn btn-default" ui-sref="sample({sampleID:1})">
+									{{experimentCtrl.getSampleType({"typeid":1})}} 4711-1
+					</button>
+				</td>
+				<td>
+					Nice Solar cell
+				</td>
+			</tr>
+			<tr>
+				<td>
+				</td>		
+			</tr>
+			<tr>
+				<td>
+				</td>		
+			</tr>
+		</table>
+		

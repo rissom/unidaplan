@@ -95,7 +95,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>Experiment</servlet-name>
-    <url-pattern>/experiment.json</url-pattern>
+    <url-pattern>/experiment</url-pattern>
   </servlet-mapping>
   <servlet>
     <description>Update a parameter of an experiment</description>

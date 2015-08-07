@@ -1,54 +1,14 @@
 (function(){
 'use strict';
 
-function experiment(restfactory,$translate,$stateParams,$scope) {
+function experimentController(restfactory,avSampleTypeService,experimentData,ptypes,stypes) {
 	
-	this.experiment =  {};		
-
-	this.strings = [];
+	this.experiment =  experimentData;
 	
-	this.trname= "empty";
-	
-	this.ID = function(){
-		return $stateParams.experimentID;
+	this.getSampleType = function(sample) {
+//		console.log ("getting Sampletype with id:", id)
+		return avSampleTypeService.getType(sample,stypes);
 	}
-		
-	var thisExpCtrl = this;
-	$scope.$on('language changed', function(event, args) {
-		thisExpCtrl.translate(args.language);
-	});
-	
-	
-	
-	this.loadData = function() {
-		var promise = restfactory.GET("experiment.json?id="+$stateParams.experimentID),
-			expsCtrl=this;
-		
-	    promise.then(function(rest) {
-	    	expsCtrl.experiment = rest.data.experiment;
-	    	expsCtrl.strings = rest.data.strings;
-	    	expsCtrl.translate($translate.use());
-	    }, function(rest) {
-	    	console.log("ERROR");
-	    });
-	};
-	
-	
-	
-	this.stringFromKey = function(stringkey,strings) {
-		var keyfound=false;
-		var returnString="@@@ no string! @@@";
-		angular.forEach(strings, function(translation) {
-			if (!keyfound && stringkey==translation.string_key) {
-				returnString = translation.value;
-				if (translation.language==$translate.use()) {
-					keyfound=true;
-				}
-			}
-		})
-		return returnString;
-	};
-	
 	
 	
 	this.keyUp = function(keyCode,newValue,parameter) {
@@ -84,17 +44,9 @@ function experiment(restfactory,$translate,$stateParams,$scope) {
 	}
 	
 	
-	
-	
-	this.translate = function(lang) {
-		this.trname=thisExpCtrl.stringFromKey(this.experiment.name,this.strings);
-		angular.forEach(this.experiment.parameters, function(parameter) {
-			parameter.trname=thisExpCtrl.stringFromKey(parameter.stringkeyname,thisExpCtrl.strings);
-		})
-	}
 };
     
         
-angular.module('unidaplan').controller('expController',['restfactory','$translate','$stateParams','$scope',experiment]);
+angular.module('unidaplan').controller('experimentController',['restfactory','avSampleTypeService','experimentData','ptypes','stypes',experimentController]);
 
 })();

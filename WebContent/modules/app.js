@@ -143,7 +143,21 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
         .state('experiment', {
 	    	url: '/experiment/{experimentID:int}',
 	        templateUrl: 'modules/experiments/experiment.html',
-	        controller: 'expController as expCtrl'
+	        controller: 'experimentController as experimentCtrl',
+	        resolve:{
+	            stypes: 
+	        	    function(avSampleTypeService){
+	        	   	    return avSampleTypeService.getTypes()
+	                },
+                ptypes: 
+                	function(avProcessTypeService){
+        	   	    	return avProcessTypeService.getProcessTypes()
+        	   	    },
+	            experimentData: 
+	            	function(experimentService,$stateParams){
+	        			return experimentService.getExperiment($stateParams.experimentID)
+	        	    }
+	        }
         })
         
         .state('users', {

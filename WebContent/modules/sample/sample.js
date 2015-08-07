@@ -118,7 +118,7 @@ function sampleController(sample,$state,$modal,$filter,types,sampleService,avSam
 			var oldValue=parameter.value;
 			parameter.value=newValue;
 			 if (parameter.pid) {
-				var res = SampleServie.updateSampleParamter(parameter) 
+				var res = sampleService.updateSampleParamter(parameter) 
 				res.then(function(data, status, headers, config) {
 						 },
 						 function(data, status, headers, config) {
