@@ -1,9 +1,11 @@
 (function(){
   'use strict';
 
-function process(avSampleTypeService,types,$modal,processData,restfactory){
+function process(avSampleTypeService,types,$modal,processData,restfactory,processService){
   
   var thisController=this;
+  
+  this.deletable=true;
   	
   this.process=processData;
 
@@ -45,6 +47,10 @@ function process(avSampleTypeService,types,$modal,processData,restfactory){
 	  return avSampleTypeService.getType(sample,types);
   }
   
+  this.deleteProcess = function(){
+//	  console.log(this.process)
+	  return processService.deleteProcess(this.process.id);
+  }
   
   this.assign=function(){
 	  var samples2assign={samples:this.process.samples, id:processData.id};
@@ -54,6 +60,6 @@ function process(avSampleTypeService,types,$modal,processData,restfactory){
   
 };
 
-angular.module('unidaplan').controller('process', ['avSampleTypeService','types', '$modal', 'processData','restfactory',process]);
+angular.module('unidaplan').controller('process', ['avSampleTypeService','types', '$modal', 'processData','restfactory','processService',process]);
 
 })();

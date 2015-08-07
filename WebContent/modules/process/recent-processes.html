@@ -1,0 +1,8 @@
+<h3 >
+	{{'Recently viewed Processes'|translate }}
+</h3>
+<div ng-repeat="process in recentProcessCtrl.getRecentProcesses() | orderBy:['processtype','name']">  <!-- noch nach Typ sortieren!  -->
+	<button class="btn btn-default" ui-sref="process({processID:process.processid})">
+				{{recentSampleCtrl.getType(sample)}} {{sample.name}}
+	</button>
+</div>	

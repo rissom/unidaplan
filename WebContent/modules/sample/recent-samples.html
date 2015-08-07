@@ -1,7 +1,7 @@
 <h3 >
 	{{'Recently viewed Samples'|translate }}
 </h3>
-<div ng-repeat="sample in recentSampleCtrl.getRecentSamples() | orderBy:['trtype','name']">  <!-- noch nach Typ sortieren!  -->
+<div ng-repeat="sample in recentSampleCtrl.getRecentSamples() | orderBy:['typeid','name']">  <!-- noch nach Typ sortieren!  -->
 	<button class="btn btn-default" ui-sref="sample({sampleID:sample.id})">
 				{{recentSampleCtrl.getType(sample)}} {{sample.name}}
 	</button>

@@ -50,8 +50,12 @@
 					</button>
 				</span>
 			</td>
-			<td align="center">&nbsp;<br /> &nbsp;
-				<button type="button" class="btn btn-danger">
+			<td>&nbsp;<br /> &nbsp;
+				<button type="button" 
+						class="btn btn-danger"
+						ng-class="{'disabled':!processCtrl.deletable}"
+						ng-click="processCtrl.deleteProcess()"
+						ui-sref="openExperiment">
 					{{'Delete Process'|translate}}
 				</button>&nbsp;
 			</td>

@@ -5,7 +5,6 @@ var processService = function (restfactory,$q,$translate,key2string) {
 	// restfactory is a wrapper for $html.
 
 	
-	
 	this.getProcess = function(id) {
         var defered=$q.defer();
     	    	var thisController=this;
@@ -14,6 +13,7 @@ var processService = function (restfactory,$q,$translate,key2string) {
 	    	    	thisController.process = rest.data;
 	    	    	thisController.strings = rest.data.strings;
 	    	    	thisController.translate();
+	    	    	thisController.pushProcess(thisController.process);
 	    	    	defered.resolve(thisController.process)
     	    	}, function(rest) {    	    		
     	    		console.log("Error loading sampletypes");
@@ -22,7 +22,39 @@ var processService = function (restfactory,$q,$translate,key2string) {
 		return defered.promise;
 	}
       
-
+	
+	
+	this.pushProcess = function(process){
+		var i;
+		var found=false;
+		if (this.recentProcesses==undefined) {this.recentProcesses=[]}
+		for (i=0;i<this.recentProcesses.length;i++){
+			if (this.recentProcesses[i].pnumber==process.pnumber &&
+				this.recentProcesses[i].processtype==process.processtype){
+				found=true			
+			}
+		}
+		if (!found) {
+			this.recentProcesses.push(process);
+		}
+		if (this.recentProcesses.length>20){
+			this.recentProcesses.slice(0,this.recentProcesses.length-20);
+		}
+	}
+	
+	
+	// delete a process (also from recent processes)
+	this.deleteProcess = function(id){
+			for (var i=0;i<this.recentProcesses.length;i++){
+				if (this.recentProcesses[i].id==id){
+					this.recentProcesses.splice(i,1);
+				}
+			}
+		return restfactory.POST("delete-process?id="+id);
+	}
+	
+	
+	
 	
 	this.translate = function() {
 		

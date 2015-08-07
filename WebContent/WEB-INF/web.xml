@@ -247,7 +247,7 @@
     <servlet-name>AddProcess</servlet-name>
     <url-pattern>/add-process</url-pattern>
   </servlet-mapping>
-      <servlet>
+  <servlet>
     <description>ProcessByNumber</description>
     <display-name>ProcessByNumber</display-name>
     <servlet-name>ProcessByNumber</servlet-name>
@@ -256,5 +256,25 @@
   <servlet-mapping>
     <servlet-name>ProcessByNumber</servlet-name>
     <url-pattern>/process-by-number</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description>DeleteProcess</description>
+    <display-name>DeleteProcess</display-name>
+    <servlet-name>DeleteProcess</servlet-name>
+    <servlet-class>unidaplan.DeleteProcess</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeleteProcess</servlet-name>
+    <url-pattern>/delete-process</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description>DeleteSample</description>
+    <display-name>DeleteSample</display-name>
+    <servlet-name>DeleteSample</servlet-name>
+    <servlet-class>unidaplan.DeleteSample</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeleteSample</servlet-name>
+    <url-pattern>/delete-sample</url-pattern>
   </servlet-mapping>
 </web-app>

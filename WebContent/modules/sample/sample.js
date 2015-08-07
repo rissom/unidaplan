@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-function sampleController(sample,$modal,$filter,types,sampleService,avSampleTypeService,$translate,$scope,key2string,ptypes,avProcessTypeService){
+function sampleController(sample,$state,$modal,$filter,types,sampleService,avSampleTypeService,$translate,$scope,key2string,ptypes,avProcessTypeService){
 	
 	var thisController = this;
 		
@@ -150,11 +150,10 @@ function sampleController(sample,$modal,$filter,types,sampleService,avSampleType
 	{  
 		var promise = sampleService.deleteSample(sample.id);
 		promise.then(function(data) {  			// success
-				$state.go('experiments')	// go to experiments			
+				$state.go('openExperiment')	// go to experiments			
 			},
 				function(data) { 	 // fail
 			    console.log("Error deleting Sample");
-				console.log("Sample id: ",id);
 				$state.go(error)
 			}
 		);
@@ -209,7 +208,7 @@ function sampleController(sample,$modal,$filter,types,sampleService,avSampleType
 
 
 
-angular.module('unidaplan').controller('sampleController',['sample','$modal','$filter','types',
+angular.module('unidaplan').controller('sampleController',['sample','$state','$modal','$filter','types',
      'sampleService','avSampleTypeService','$translate','$scope','key2string','ptypes','avProcessTypeService',sampleController]);
 
 })();

@@ -11,6 +11,7 @@ var recentSampleController = function(types,avSampleTypeService,sampleService) {
 		return avSampleTypeService.getType(sample,types);
 	}
 	
+	
 };
     
         

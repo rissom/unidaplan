@@ -45,9 +45,14 @@ var sampleService = function(restfactory,avSampleTypeService,$q){
 	}
 	
 	
-	
+	// delete a sample (also from recent samples)
 	this.deleteSample = function(id){
-		return restfactory.GET("delete-sample?id="+id);
+		for (var i=0;i<this.recentSamples.length;i++){
+			if (this.recentSamples[i].id==id){
+				this.recentSamples.splice(i,1);
+			}
+		}
+		return restfactory.POST("delete-sample?id="+id);
 	}
 	
 	

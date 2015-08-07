@@ -58,6 +58,29 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	        }
         })
         
+        .state('sampleChoser', {
+	        url: '/sample',
+	        templateUrl: 'modules/sample/sample-choser.html',
+	        controller: 'sampleChoser as sampleChoserCtrl',
+	        resolve: {
+	            types: 
+                    function(avSampleTypeService){
+                		return avSampleTypeService.getTypes()
+                	}
+	        }
+        })
+        
+        .state('recentSamples', {
+			url: '/recentsamples',
+			templateUrl: 'modules/sample/recent-samples.html',
+		    controller: 'recentSampleController as recentSampleCtrl',
+		    resolve:{
+	                types: 
+	            	    function(avSampleTypeService){
+	        	   	    	return avSampleTypeService.getTypes()
+	                	}
+		    }
+    	})
         
         .state('newProcess', {
 	    	url: '/new-process',
@@ -68,18 +91,6 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
                 	function(avProcessTypeService){
         	   	    	return avProcessTypeService.getProcessTypes()
         	   	    }
-	        }
-        })
-        
-        .state('sampleChoser', {
-	        url: '/sample',
-	        templateUrl: 'modules/sample/sample-choser.html',
-	        controller: 'sampleChoser as sampleChoserCtrl',
-	        resolve: {
-	            types: 
-                    function(avSampleTypeService){
-                		return avSampleTypeService.getTypes()
-                	}
 	        }
         })
         
@@ -102,7 +113,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
         .state('choseProcess', {
 	        url: '/chose-process',
 	        templateUrl: 'modules/process/chose-process.html',
-	        controller:"choseProcessController as choseProcessCtrl",
+	        controller:'choseProcessController as choseProcessCtrl',
 	        resolve:{
                 ptypes: 
                 	function(avProcessTypeService){
@@ -110,6 +121,18 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
         	   	    }
 	        }
         })
+        
+        .state('recentProcesses', {
+			url: '/recent-processes',
+			templateUrl: 'modules/process/recent-processes.html',
+		    controller: 'recentProcessController as recentProcessCtrl',
+		    resolve:{
+	                ptypes: 
+	            	    function(avProcessTypeService){
+	        	   	    	return avProcessTypeService.getProcessTypes()
+	                	}
+		    }
+    	})
         
         .state('openExperiment', {
 	        url: '/experiments',
@@ -157,18 +180,6 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	        url: '/help',
 	        templateUrl: 'modules/help/help.html'
         })
-        
-        .state('recentsamples', {
-			url: '/recentsamples',
-			templateUrl: 'modules/sample/recent-samples.html',
-		    controller: 'recentSampleController as recentSampleCtrl',
-		    resolve:{
-	                types: 
-	            	    function(avSampleTypeService){
-	        	   	    	return avSampleTypeService.getTypes()
-	                	}
-		    }
-    	})
     
     	.state('error', {
     		url: '/error',
@@ -267,6 +278,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
   	'and' : 'und',
   	'Made with' : 'programmiert mit',
   	'abouttext' : 'Software für die Verwaltung wissenschaftlicher Proben',
+  	'Recently viewed Processes' : 'Zuletzt aufgerufene Prozesse',
   	'see license' : 'Lizenz',
   	'as well as' : 'So wie',
   	'HELPTEXT' : 'Unidaplan ist eine Webbasierte Software um wissenschaftliche Proben zu verwalten. Es können Probentypen'+

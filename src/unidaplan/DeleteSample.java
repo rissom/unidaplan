@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Servlet implementation class DeleteSample
  */
-@WebServlet("/delete-sample")
 public class DeleteSample extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -30,7 +29,7 @@ public class DeleteSample extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
@@ -61,7 +60,7 @@ public class DeleteSample extends HttpServlet {
 		 		// Check if processes with this sample exist
 		        pstmt = DBconn.conn.prepareStatement(	
 		    	"SELECT processid, sampleid FROM samplesinprocess "
-		 		+"WHERE objectid=?");
+		 		+"WHERE sampleid=?");
 				pstmt.setInt(1,objID);
 				ResultSet resultset=pstmt.executeQuery();
 				if (resultset.next()) {DeletionPossible=false;}
