@@ -17,7 +17,7 @@
 					<span ng-hide="parameter.editing">{{parameter.value}}
 					</span>
 					<input 						   
-						ng-keyup="expCtrl.keyUp($event.keyCode,newValue,parameter)"
+						ng-keyup="experimentCtrl.keyUp($event.keyCode,newValue,parameter)"
 						ng-show="parameter.editing" type="text"
 					    ng-model="newValue" 
 					    ng-blur="parameter.editing=false">

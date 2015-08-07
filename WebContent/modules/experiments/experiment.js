@@ -13,6 +13,7 @@ function experimentController(restfactory,avSampleTypeService,experimentData,pty
 	
 	this.keyUp = function(keyCode,newValue,parameter) {
 		if (keyCode===13) {				// Return key pressed
+			console.log ("fertisch!")
 			parameter.editing=false; 
 			var oldValue=parameter.value;
 			parameter.value=newValue;
