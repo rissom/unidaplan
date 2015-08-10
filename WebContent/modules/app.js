@@ -245,6 +245,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
     'Sample' : 'Probe',
     'Samples' : 'Proben',
     'Process' : 'Prozess',
+    'Processes' : 'Prozesse',
     'next': 'nächste',
   	'previous' : 'vorherige',
   	'Is ancestor of' : 'Vorfahr von',

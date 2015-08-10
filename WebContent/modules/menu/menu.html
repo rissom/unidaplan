@@ -1,163 +1,76 @@
-<div class="btn-group btn-group-justified" role="toolbar">
 
-<!-- Samples -->
-	<div class="btn-group"  dropdown>
-		<button type="button" class="btn btn-default dropdown-toggle"
-			dropdown-toggle ng-disabled="disabled">
-				{{'Samples'|translate}}
+<!-- Fixed navbar -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="navbar-header">
+		<button type="button" class="navbar-toggle"
+			ng-click="menuCtrl.navCollapsed = !menuCtrl.navCollapsed">
+			<span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span>
+			<span class="icon-bar"></span> <span class="icon-bar"></span>
 		</button>
-		<ul class="dropdown-menu" role="menu">
-			<li class="dropdown-submenu">
-				<a  ui-sref="newSample">
-					{{'New Sample'|translate}} 
-				</a>
-			</li>
-			<li>
-				<a ui-sref="sampleChoser">
-					{{'Show Samples'|translate}}
-				</a>
-			</li>
-			<li>
-				<a ui-sref="recentSamples">
-					{{'Recent Samples'|translate}}
-				</a>
-			</li>
-		</ul>
+		<a class="navbar-brand" ui-sref="openExperiment">Unidaplan</a>
 	</div>
-	<div class="btn-group" dropdown>
-		<button type="button" 
-				class="btn btn-default 
-				dropdown-toggle"
-				dropdown-toggle 
-				ng-disabled="disabled">
-				{{'Process'|translate}}
-		</button>
-		<ul class="dropdown-menu" role="menu">
-			<li>
-				<a ui-sref="newProcess">
-					{{'New Process'|translate}}
-				</a>
-			</li>
-			<li>
-				<a ui-sref="choseProcess">
-					{{'Show Process'|translate}}
-				</a>
-			</li>
-			<li>
-				<a ui-sref="recentProcesses">
-					{{'Recent Processes'|translate}}
-				</a>
-			</li>
-		</ul>
-	</div>
+	<div class="collapse navbar-collapse" collapse="menuCtrl.navCollapsed">
+		<ul class="nav navbar-nav">
 
-<!-- Experiments -->
-	<div class="btn-group" dropdown>
-		<button type="button" 
-				class="btn btn-default dropdown-toggle"
-				dropdown-toggle 
-				ng-disabled="disabled">
-				{{'Experiment'|translate}}
-		</button>
-		<ul class="dropdown-menu" role="menu">
-			<li>
-				<a ui-sref="error">
-					{{'New Experiment'|translate}}
+			<li class="dropdown" dropdown="">
+				<a href="#" class="dropdown-toggle" dropdown-toggle="" ng-disabled="disabled">
+					{{'Samples'|translate}} 
 				</a>
+				<ul class="dropdown-menu" role="menu">
+					<li class="dropdown-submenu"><a ui-sref="newSample">
+							{{'New Sample'|translate}} </a></li>
+					<li><a ui-sref="sampleChoser"> {{'Show Samples'|translate}} </a></li>
+					<li><a ui-sref="recentSamples"> {{'Recent Samples'|translate}} </a></li>
+				</ul>
 			</li>
-			<li>
-				<a ui-sref="openExperiment">
-					{{'Open Experiments'|translate}}
-				</a>
-			</li>
-		</ul>
-	</div>
 
-	<div class="btn-group" dropdown>
-		<button type="button"
-			    class="btn btn-default dropdown-toggle"
-				dropdown-toggle
-				ng-disabled="disabled">
-					{{'Administration'|translate}}
-		</button>
-		<ul class="dropdown-menu" role="menu">
-			<li>
-				<a ui-sref="users">
-					{{'Users'|translate}}
-				</a>
-			</li>
-			<li>
-				<a ui-sref="groups">
-					{{'Groups'|translate}}
-				</a>
-			</li>
-			<li>
-				<a ui-sref="error">
-					{{'Samples'|translate}}
-				</a>
-			</li>
-			<li>
-				<a ui-sref="error">
+			<li class="dropdown" dropdown="">
+				<a href="#" class="dropdown-toggle" dropdown-toggle="" ng-disabled="disabled">
 					{{'Processes'|translate}}
 				</a>
+				<ul class="dropdown-menu" role="menu">
+					<li class="dropdown-submenu"><a ui-sref="newProcess">{{'New Process'|translate}} </a></li>
+					<li><a ui-sref="choseProcess"> 
+						{{'Show	Process'|translate}} </a></li>
+					<li><a ui-sref="recentProcesses">{{'Recent Processes'|translate}} </a></li>
+				</ul>
 			</li>
-			<li>
-				<a ui-sref="error">
-					{{'Parameters'|translate}}
+
+			<li class="dropdown" dropdown="">
+				<a href="#" class="dropdown-toggle" dropdown-toggle="" ng-disabled="disabled">
+					{{'Experiment'|translate}}
 				</a>
+				<ul class="dropdown-menu" role="menu">
+					<li><a ui-sref="error">{{'New Experiment'|translate}} </a></li>
+					<li><a ui-sref="openExperiment"> {{'Open Experiments'|translate}} </a></li>
+				</ul>
 			</li>
-			<li><a ui-sref="error">{{'Experiments'|translate}}</a></li>
+			<li class="dropdown" dropdown="">
+				<a href="#" class="dropdown-toggle" dropdown-toggle="" ng-disabled="disabled">
+					{{'Administration'|translate}} 
+				</a>
+				<ul class="dropdown-menu" role="menu">
+					<li><a ui-sref="users"> {{'Users'|translate}} </a></li>
+					<li><a ui-sref="groups"> {{'Groups'|translate}} </a></li>
+					<li><a ui-sref="error"> {{'Samples'|translate}} </a></li>
+					<li><a ui-sref="error"> {{'Processes'|translate}} </a></li>
+					<li><a ui-sref="error"> {{'Parameters'|translate}} </a></li>
+					<li><a ui-sref="error"> {{'Experiments'|translate}} </a></li>
+				</ul>
+			</li>
+
+		</ul>
+ 		<ul class="nav navbar-nav navbar-right">
+			<li class="dropdown" dropdown="">
+				<a href="#" class="dropdown-toggle" dropdown-toggle="" ng-disabled="disabled">
+					{{'Help page'|translate}} &nbsp;  &nbsp;
+				</a>
+				<ul class="dropdown-menu" role="menu">
+					<li><a ui-sref="about"> {{'About Unidaplan'|translate}} </a></li>
+					<li><a ui-sref="help"> {{'Help page'|translate}} </a></li>
+				</ul>
+			</li>
 		</ul>
 	</div>
-
-	<div class="btn-group" dropdown >
-		<button type="button" 
-				class="btn btn-default dropdown-toggle"
-				dropdown-toggle ng-disabled="disabled">
-				{{'Help' | translate}} 
-		</button>
-		<ul class="dropdown-menu" role="menu">
-			<li>
-				<a ui-sref="about">
-					{{'About Unidaplan'|translate}}
-				</a>
-			</li>
-			<li>
-				<a ui-sref="help">
-					{{'Help page'|translate}}
-				</a>
-			</li>
-		</ul>
-	</div>
-	
-	<div class="btn-group" dropdown>
-		<button type="button" 
-			class="btn btn-default dropdown-toggle"
-			dropdown-toggle 
-			ng-disabled="disabled">
-			{{'User'|translate}}
-		</button>
-		<ul class="dropdown-menu" role="menu">
-
-			<li>
-				<a ng-click="menuCtrl.setLanguage('de')">
-					de
-				</a>
-			</li>
-			<li>
-				<a ng-click="menuCtrl.setLanguage('en')">
-					en
-				</a>
-			</li>
-			<li>
-				<a ng-click="menuCtrl.logout()">
-					logout
-				</a>
-			</li>
-		</ul>
-
-	</div>			
-</div>
-<small>
-	{{'User'|translate}}: {{menuCtrl.getUserName()}}, {{'last Login'|translate}}: {{menuCtrl.getLastLogin()}}
-</small>
+	<!--/.nav-collapse -->
+</nav>

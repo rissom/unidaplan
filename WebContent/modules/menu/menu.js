@@ -3,9 +3,13 @@
 
 function menuf(restfactory,$translate,$rootScope,$state) {
 
-	this.status = {
-	    isopen: false
-	};
+	var thisController=this;
+	
+	this.navCollapsed=true;
+	
+//	this.status = {
+//	    isopen: false
+//	};
 
 	this.oldlanguage='en';  
 	
@@ -19,6 +23,11 @@ function menuf(restfactory,$translate,$rootScope,$state) {
 			$rootScope.$broadcast('language changed',{'language':lang});
 		}
 	}
+	
+	$rootScope.$on('$stateChangeStart', 
+			function(event, toState, toParams, fromState, fromParams){ 
+				thisController.navCollapsed = true;
+	})
 	
 	this.logout = function(){
 		var promise = restfactory.GET('logout');
