@@ -17,9 +17,18 @@
 	border-color: #78FA89;
 }
 
-.vcenter {
-    display: inline-block;
-    vertical-align: middle;
-    float: none;
+
+.exptable    {
+	border: 1px;
+	margin-bottom: 5px;
 }
 
+.exptd    {
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	border-width: 1px;
+	border-style: solid;
+	border-color: #888888;
+}

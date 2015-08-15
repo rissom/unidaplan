@@ -35,43 +35,97 @@
 		
 		<!-- planned processes -->
 		<h4>{{'Planned Processes'|translate}}</h4>
-		<table>
+		<table class="exptable">
 			<tr>
-				<td>
+				<td class="exptd">
 					&nbsp;
 					Sample 
 					&nbsp;
 				</td>
-				<td>&nbsp;
+				<td class="exptd">&nbsp;
 					Comment
 					&nbsp;
 				</td>
-				<td>&nbsp;
+				<td class="exptd">&nbsp;
 					Washing
 					&nbsp;
 				</td>
-				<td>
+				<td class="exptd">
 					&nbsp;
 					Polishing
 					&nbsp;
 				</td>
 			</tr>
 			<tr>
-				<td>
+				<td class="exptd">
 					<button class="btn btn-default" ui-sref="sample({sampleID:1})">
 									{{experimentCtrl.getSampleType({"typeid":1})}} 4711-1
 					</button>
 				</td>
-				<td>
+				<td class="exptd">
 					Nice Solar cell
+				</td>
+				<td class="exptd" bgcolor="#88FF88">
+					<button class="btn btn-default" ui-sref="process({processID:1})">
+									{{experimentCtrl.getProcessType({"processtype":1})}} 1
+					</button>
+				</td>		
+				<td class="exptd" bgcolor="#88FF88">
+					<button class="btn btn-default" ui-sref="process({processID:4})">
+									{{experimentCtrl.getProcessType({"processtype":2})}} 1
+					</button>
+				</td>		
+			</tr>
+		</table>
+		
+		<table class="exptable">
+			<tr>
+				<td class="exptd">
+					&nbsp;
+					Sample 
+					&nbsp;
+				</td>
+				<td class="exptd">&nbsp;
+					Comment
+					&nbsp;
+				</td>
+				<td class="exptd" >&nbsp;
+					Washing
+					&nbsp;
+				</td>
+				<td class="exptd" >&nbsp;
+					Washing
+					&nbsp;
+				</td>
+				<td class="exptd">
+					&nbsp;
+					Polishing
+					&nbsp;
 				</td>
 			</tr>
 			<tr>
-				<td>
-				</td>		
-			</tr>
-			<tr>
-				<td>
+				<td class="exptd" >
+					<button class="btn btn-default" ui-sref="sample({sampleID:2})" bgcolor="#FF8888">
+									{{experimentCtrl.getSampleType({"typeid":1})}} 4711-2
+					</button>
+				</td>
+				<td class="exptd">
+					also a nice solar cell
+				</td>
+				<td class="exptd" bgcolor="#FF8888">
+					<button class="btn btn-default" ui-sref="process({processID:1})">
+									{{experimentCtrl.getProcessType({"processtype":1})}} 1
+					</button>
+				</td>
+				<td class="exptd" bgcolor="#88FF88">
+					<button class="btn btn-default" ui-sref="process({processID:2})">
+									{{experimentCtrl.getProcessType({"processtype":1})}} 2
+					</button>
+				</td>			
+				<td class="exptd" bgcolor="#88FF88">
+					<button class="btn btn-default" ui-sref="process({processID:4})">
+									{{experimentCtrl.getProcessType({"processtype":2})}} 1
+					</button>
 				</td>		
 			</tr>
 		</table>

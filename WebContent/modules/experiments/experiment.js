@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-function experimentController(restfactory,avSampleTypeService,experimentData,ptypes,stypes) {
+function experimentController(restfactory,avSampleTypeService,avProcessTypeService,experimentData,ptypes,stypes) {
 	
 	this.experiment =  experimentData;
 	
@@ -10,6 +10,11 @@ function experimentController(restfactory,avSampleTypeService,experimentData,pty
 		return avSampleTypeService.getType(sample,stypes);
 	}
 	
+	
+	this.getProcessType = function(process) {
+//		console.log ("getting Sampletype with id:", id)
+		return avProcessTypeService.getProcessType(process,ptypes);
+	}
 	
 	this.keyUp = function(keyCode,newValue,parameter) {
 		if (keyCode===13) {				// Return key pressed
@@ -48,6 +53,6 @@ function experimentController(restfactory,avSampleTypeService,experimentData,pty
 };
     
         
-angular.module('unidaplan').controller('experimentController',['restfactory','avSampleTypeService','experimentData','ptypes','stypes',experimentController]);
+angular.module('unidaplan').controller('experimentController',['restfactory','avSampleTypeService','avProcessTypeService','experimentData','ptypes','stypes',experimentController]);
 
 })();
