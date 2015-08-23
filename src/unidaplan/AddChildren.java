@@ -54,7 +54,7 @@ import org.json.JSONObject;
 			if (jsonIn.has("children")){
 				JSONArray newChildren=(JSONArray) jsonIn.get("children");
 				pstmt= DBconn.conn.prepareStatement( 
-					"SELECT parent FROM originates_from WHERE child=?");
+					"SELECT child FROM originates_from WHERE parent=?");
 				pstmt.setInt(1, sampleID);
 				JSONArray oldChildren=DBconn.jsonArrayFromPreparedStmt(pstmt);
 				ArrayList<Integer> assignedChildrenList = new ArrayList<Integer>();
@@ -64,7 +64,7 @@ import org.json.JSONObject;
 
 		 	// create a List of already assigned Samples
 			for (int i=0;i<oldChildren.length();i++){ 
-				assignedChildrenList.add((Integer)((JSONObject)oldChildren.get(i)).getInt("parent"));
+				assignedChildrenList.add((Integer)((JSONObject)oldChildren.get(i)).getInt("child"));
 			}
 
 		 	
@@ -75,7 +75,6 @@ import org.json.JSONObject;
 				int child=newChildren.getInt(i);
 				newChildrenList.add(child);
 				if (!assignedChildrenList.contains(child)){
-//					newlyCreatedChildren.put(ancestor);
 					newlyCreatedChildrenList.add(child);
 					pstmt.setInt(1, sampleID);
 					pstmt.setInt(2, child);					
