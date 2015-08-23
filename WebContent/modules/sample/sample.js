@@ -95,7 +95,6 @@ function sampleController(sample,$state,$modal,$filter,types,sampleService,avSam
 		for (var i=0; i<ancestors.length; i++) {
 			a2.push(ancestors[i].sampleid);
 		}
-		console.log ("sample",sample);
 		sampleService.addAncestors(sample.id,a2);
 	}
 	
@@ -118,12 +117,12 @@ function sampleController(sample,$state,$modal,$filter,types,sampleService,avSam
 			var oldValue=parameter.value;
 			parameter.value=newValue;
 			 if (parameter.pid) {
-				var res = sampleService.updateSampleParamter(parameter) 
+				var res = sampleService.updateSampleParameter(parameter)
 				res.then(function(data, status, headers, config) {
 						 },
 						 function(data, status, headers, config) {
 							parameter.value=oldValue;
-							console.log('verkackt');
+							console.log('error');
 							console.log(data);
 						 }
 						);
@@ -133,7 +132,7 @@ function sampleController(sample,$state,$modal,$filter,types,sampleService,avSam
 							 },
 							 function(data) {
 								parameter.value=oldValue;
-								console.log('verkackt');
+								console.log('error');
 								console.log(data);
 							 }
 							);
@@ -193,7 +192,7 @@ function sampleController(sample,$state,$modal,$filter,types,sampleService,avSam
 				function(data) {
 				},
 				function(data) {
-					console.log('verkackt');
+					console.log('error');
 					console.log(data);		
 				}
 		);

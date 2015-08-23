@@ -31,16 +31,12 @@ var sampleService = function(restfactory,avSampleTypeService,$q){
 	
 	
 	this.addAncestors= function(sampleID,ancestors){
-		console.log("sampleID",sampleID);
-		console.log("ancestors",ancestors);
 		return restfactory.POST('add-ancestors',{"sampleid":sampleID,"ancestors":ancestors});
 	}
 	
 	
 	
 	this.addChildren= function(sampleID,children){
-		console.log("sampleID",sampleID);
-		console.log("children",children);
 		return restfactory.POST('add-children',{"sampleid":sampleID,"children":children});
 	}
 	
