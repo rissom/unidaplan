@@ -20,6 +20,8 @@ public class ChangeExperimentStatus extends HttpServlet {
 			
 			Authentificator authentificator = new Authentificator();
 			int userID=authentificator.GetUserID(request,response);
+			userID=userID+1; // Remove me!!
+			userID=userID-1;
 		    request.setCharacterEncoding("utf-8");
 		    // look up the datatype in Database	    
 		    int id=-1;

@@ -137,7 +137,13 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
         .state('openExperiment', {
 	        url: '/experiments',
 	        controller:'oExpController as oexpCtrl',
-	        templateUrl: "modules/experiments/open-experiment.html"
+	        templateUrl: "modules/experiments/open-experiment.html",
+	        resolve: {
+	        	experiments:
+	        		function(experimentService){
+	        			return experimentService.getExperiments();
+	        		}
+	        }
         })
         
         .state('experiment', {
@@ -159,6 +165,12 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	        	    }
 	        }
         })
+        
+        .state('recentExperiments', {
+			url: '/recent-experiments',
+			templateUrl: 'modules/experiments/recent-experiments.html',
+		    controller: 'recentExperimentsController as recentExperimentsCtrl'
+    	})
         
         .state('users', {
 	    	url: '/admin/users',
@@ -283,6 +295,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
   	'Parameters' : 'Parameter',
   	'Experiments' : 'Experimente',
   	'Recently viewed Samples' : 'Zuletzt angesehene Proben',
+  	'Recent Experiments' : 'Zuletzt angesehene Experimente',
   	'Samples in process' : 'Proben im Prozess',
   	'Add/Remove samples' : 'Proben hinzufügen/entfernen',
   	'Delete Process' : 'Prozess löschen',

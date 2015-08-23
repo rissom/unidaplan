@@ -1,10 +1,12 @@
 (function(){
 'use strict';
 
-function oExpController(restfactory,$translate,$scope) {
+function oExpController(restfactory,$translate,$scope,$state,experimentService,experiments) {
 	
-	this.experiments =  [];			
+	var thisController=this;
 
+	this.experiments=experiments;
+	
 	this.strings = [];
 	
 	this.myName='Thorsten Rissom';
@@ -20,18 +22,6 @@ function oExpController(restfactory,$translate,$scope) {
 	    });
 	}
 	
-	this.loadData = function() {
-		var promise = restfactory.GET("experiments.json"),
-		 	expsCtrl=this;
-		
-		
-	    promise.then(function(rest) {
-	    	expsCtrl.experiments = rest.data.experiments;
-	    	expsCtrl.strings = rest.data.strings;
-	    	expsCtrl.translate($translate.use());
-	    }, function(rest) {
-	    });
-	};
 	
 	var thisOExpCtrl = this;
 	$scope.$on('language changed', function(event, args) {
@@ -66,16 +56,18 @@ function oExpController(restfactory,$translate,$scope) {
 		return otherExps;
 	};
 	
+	this.deleteExperiment = function(experiment) {
+		experimentService.deleteExperiment(experiment.id);
+		$scope.$state = $state;
+        $scope.$watch('$state.$current.locals.globals.experiments', function (experiments) {
+          thisController.experiments = experiments;
+        });
+		$state.reload();
+//		$scope.$watch('thisController.experiments');
+	};
+	
 	
 	this.translate = function(lang) {
-		var strings=this.strings;
-		var exps=this.experiments;
-		angular.forEach(exps, function(anExp) {
-			angular.forEach(strings, function(translation) {
-				if (anExp.name==translation.string_key && translation.language==lang)
-					{anExp.trname=translation.value;}
-			})
-		})	
 		if (lang=='en') {
 			this.statusItems=["planning phase","planned","running","completed"];
 		}else{
@@ -83,12 +75,10 @@ function oExpController(restfactory,$translate,$scope) {
 		}
 	};
 	
-	//activate function:
-	this.loadData();
 
 };
     
         
-angular.module('unidaplan').controller('oExpController',['restfactory','$translate','$scope',oExpController]);
+angular.module('unidaplan').controller('oExpController',['restfactory','$translate','$scope','$state','experimentService','experiments',oExpController]);
 
 })();

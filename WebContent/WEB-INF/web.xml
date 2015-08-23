@@ -277,4 +277,14 @@
     <servlet-name>DeleteSample</servlet-name>
     <url-pattern>/delete-sample</url-pattern>
   </servlet-mapping>
+    <servlet>
+    <description>DeleteExperiment</description>
+    <display-name>DeleteExperiment</display-name>
+    <servlet-name>DeleteExperiment</servlet-name>
+    <servlet-class>unidaplan.DeleteExperiment</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeleteExperiment</servlet-name>
+    <url-pattern>/delete-experiment</url-pattern>
+  </servlet-mapping>
 </web-app>

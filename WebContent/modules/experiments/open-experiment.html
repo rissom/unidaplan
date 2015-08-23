@@ -29,7 +29,7 @@
 	  				 </div>
 				</td>
 				<td>
-					<button type="button" class="btn btn-danger">
+					<button type="button" class="btn btn-danger"  ng-click="oexpCtrl.deleteExperiment(experiment)">
 						{{'Delete Experiment'|translate}}
 					</button>
 				</td>
@@ -65,20 +65,19 @@
 					</a>
 				</td>
 				<td>
-					    <div class="dropdown" dropdown on-toggle="toggled(open)">
-					      <a class="dropdown-toggle" dropdown-toggle>
-				  			{{oexpCtrl.getStatus(experiment)}}
-					      </a>
-					      <ul class="dropdown-menu">
-					        <li ng-repeat="choice in oexpCtrl.statusItems">
-					          <a ng-click="oexpCtrl.setStatus($index,experiment)">{{choice}}</a>
-					        </li>
-					      </ul>
-	  				  </div>
-				
+				    <div class="dropdown" dropdown on-toggle="toggled(open)">
+				     	<a class="dropdown-toggle" dropdown-toggle>
+			  				{{oexpCtrl.getStatus(experiment)}}
+				      	</a>
+				      	<ul class="dropdown-menu">
+				        	<li ng-repeat="choice in oexpCtrl.statusItems">
+				          		<a ng-click="oexpCtrl.setStatus($index,experiment)">{{choice}}</a>
+				        	</li>
+				      	</ul>
+  				  	</div>
 				</td>
 				<td>
-					<button type="button" class="btn btn-danger">
+					<button type="button" class="btn btn-danger"  ng-click="oexpCtrl.deleteExperiment(experiment)">
 						{{'Delete Experiment'|translate}}
 					</button>
 				</td>
