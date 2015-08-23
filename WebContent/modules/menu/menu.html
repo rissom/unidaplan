@@ -43,6 +43,7 @@
 				<ul class="dropdown-menu" role="menu">
 					<li><a ui-sref="error">{{'New Experiment'|translate}} </a></li>
 					<li><a ui-sref="openExperiment"> {{'Open Experiments'|translate}} </a></li>
+					<li><a ui-sref="recentExperiments"> {{'Recent Experiments'|translate}} </a></li>
 				</ul>
 			</li>
 			<li class="dropdown" dropdown="">
@@ -58,12 +59,22 @@
 					<li><a ui-sref="error"> {{'Experiments'|translate}} </a></li>
 				</ul>
 			</li>
+			<li class="dropdown" dropdown="">
+				<a href="#" class="dropdown-toggle" dropdown-toggle="" ng-disabled="disabled">
+					{{'User'|translate}} 
+				</a>
+				<ul class="dropdown-menu" role="menu">
+					<li><a ng-click="menuCtrl.setLanguage('en')">EN</a></li>
+					<li><a ng-click="menuCtrl.setLanguage('de')">DE</a></li>
+					<li><a ng-click="menuCtrl.logout()"> {{'Logout'|translate}} </a></li>
+				</ul>
+			</li>
 
 		</ul>
  		<ul class="nav navbar-nav navbar-right">
 			<li class="dropdown" dropdown="">
 				<a href="#" class="dropdown-toggle" dropdown-toggle="" ng-disabled="disabled">
-					{{'Help page'|translate}} &nbsp;  &nbsp;
+					{{'Help'|translate}} &nbsp;  &nbsp;
 				</a>
 				<ul class="dropdown-menu" role="menu">
 					<li><a ui-sref="about"> {{'About Unidaplan'|translate}} </a></li>
