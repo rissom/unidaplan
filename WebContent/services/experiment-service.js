@@ -31,6 +31,7 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 	    	    	thisController.experiment = rest.data.experiment;
 	    	    	thisController.strings = rest.data.strings;
 	    	    	thisController.translate();
+	    		    thisController.pushExperiment(thisController.experiment);
 	    	    	defered.resolve(thisController.experiment)
     	    	}, function(rest) {    	    		
     	    		console.log("Error loading experiment");
@@ -59,6 +60,7 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 		if (this.recentExperiments.length>20){
 			this.recentExperiments.slice(0,this.recentExperiments.length-20);
 		}
+		console.log(this.recentExperiments);
 	}
 	
 	

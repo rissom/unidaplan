@@ -57,12 +57,17 @@ function oExpController(restfactory,$translate,$scope,$state,experimentService,e
 	};
 	
 	this.deleteExperiment = function(experiment) {
-		experimentService.deleteExperiment(experiment.id);
-		$scope.$state = $state;
-        $scope.$watch('$state.$current.locals.globals.experiments', function (experiments) {
-          thisController.experiments = experiments;
-        });
-		$state.reload();
+		var promise=experimentService.deleteExperiment(experiment.id);
+		promise.then(function(){
+				$scope.$state = $state;
+				$scope.$watch('$state.$current.locals.globals.experiments', function (experiments) {
+			          thisController.experiments = experiments;
+			        });
+				$state.reload();
+			},
+			function(){
+				console.log("error deleting experiment");
+			})       
 //		$scope.$watch('thisController.experiments');
 	};
 	

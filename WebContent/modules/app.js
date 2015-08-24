@@ -223,6 +223,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
   });
  
   $translateProvider.translations('de', {
+	'1': 'teststring 1',
 	'About Unidaplan': 'Über Unidaplan',	
     'Add File': 'Datei hinzufügen',
     'administration': 'Administration',	
@@ -296,6 +297,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
   	'Experiments' : 'Experimente',
   	'Recently viewed Samples' : 'Zuletzt angesehene Proben',
   	'Recent Experiments' : 'Zuletzt angesehene Experimente',
+  	'Recently viewed Experiments' : 'Zuletzt angesehene Experimente',
   	'Samples in process' : 'Proben im Prozess',
   	'Add/Remove samples' : 'Proben hinzufügen/entfernen',
   	'Delete Process' : 'Prozess löschen',
