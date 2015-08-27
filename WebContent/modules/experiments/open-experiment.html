@@ -4,6 +4,7 @@
 		<h3 ng-show="oexpCtrl.myexperiments().length>0">
 			{{ 'My Experiments' | translate }}
 		</h3>
+	
 		<table class="table">
 			<tr><td><b>{{'No.'|translate}}</b></td>
 				<td><b>Name</b></td><td><b>Status</b></td>
@@ -11,7 +12,7 @@
 			</tr>
 			<tr ng-repeat="experiment in oexpCtrl.myexperiments()">
 				<td>
-				<a ui-sref="experiment({experimentID:experiment.id})">{{experiment.id}}</a>
+				<a ui-sref="experiment({experimentID:experiment.id})">{{experiment.number}}</a>
 				</td>
 				<td>
 				<a ui-sref="experiment({experimentID:experiment.id})">{{experiment.trname}}</a>
@@ -53,7 +54,7 @@
 			<tr ng-repeat="experiment in oexpCtrl.otherexperiments()">
 				<td>
 					<a ui-sref="experiment({experimentID:experiment.id})">
-						{{experiment.id}}
+						{{experiment.number}}
 					</a>
 				</td>
 				<td>

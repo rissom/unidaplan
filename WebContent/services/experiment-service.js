@@ -60,7 +60,6 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 		if (this.recentExperiments.length>20){
 			this.recentExperiments.slice(0,this.recentExperiments.length-20);
 		}
-		console.log(this.recentExperiments);
 	}
 	
 	
@@ -89,7 +88,14 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 				experiment.trname=key2string.key2string(experiment.name,thisController.strings);
 			})
 		}
+		angular.forEach(this.experiment.samples, function(sample){
+			if (sample.note!=undefined) {
+				sample.trnote=key2string.key2string(sample.note,thisController.strings);
+			}
+		});
 	}
+	
+	
 	
 	this.translateExps = function() {
 		var strings=this.expsStrings;

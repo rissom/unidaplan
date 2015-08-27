@@ -11,7 +11,10 @@ function oExpController(restfactory,$translate,$scope,$state,experimentService,e
 	
 	this.myName='Thorsten Rissom';
 	
-	this.statusItems=["planning phase","planned","running","completed"]
+	this.statusItems=[$translate.instant("planning phase"),$translate.instant("planned"),
+	                  $translate.instant("running"),$translate.instant("completed")]
+	
+
 	
 	this.setStatus=function(status,experiment){
 		experiment.status=status;
@@ -72,15 +75,6 @@ function oExpController(restfactory,$translate,$scope,$state,experimentService,e
 	};
 	
 	
-	this.translate = function(lang) {
-		if (lang=='en') {
-			this.statusItems=["planning phase","planned","running","completed"];
-		}else{
-			this.statusItems=["Planungsphase","geplant","läuft","abgeschlossen"];
-		}
-	};
-	
-
 };
     
         
