@@ -1,13 +1,14 @@
 (function(){
 'use strict';
 
-var sampleService = function(restfactory,avSampleTypeService,$q){
+var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 // How to build the ActivityService using the .service method
 
 	var thisController=this;
 	this.recentSamples = [];
 	this.types = [];
 	this.strings =[];
+
 
 	
 	this.loadSample = function(id) {			// Load data and filter Titleparameters
@@ -20,7 +21,9 @@ var sampleService = function(restfactory,avSampleTypeService,$q){
 		    			   "name"		   : rest.data.name,
 		    			   "trtype"		   : avSampleTypeService.getType(rest.data.typeid)} // TODO: Weg damit???
 		    thisController.pushSample(sample);
-		    defered.resolve(rest.data);
+	        thisController.sample = rest.data;
+	        thisController.translate();
+		    defered.resolve(thisController.sample);
 	    }, function(rest) {
 	    	console.log("Sample not found");
 	    	defered.reject({"error":"Not Found!"});
@@ -87,9 +90,27 @@ var sampleService = function(restfactory,avSampleTypeService,$q){
 		}
 	}
 	
+	
+	this.translate = function() {
+		angular.forEach(this.sample.parameters, function(parameter) {
+			parameter.trname=key2string.key2string(parameter.stringkeyname,thisController.sample.strings) 
+		});
+		angular.forEach(this.sample.plans, function(plan) {
+			plan.trname=key2string.key2string(plan.name,thisController.sample.strings) 
+			plan.trnote=key2string.key2string(plan.note,thisController.sample.strings) 
+			angular.forEach(plan.plannedprocesses, function(process) {
+				if (process.note!=undefined) {
+					process.trnote=key2string.key2string(process.note,thisController.sample.strings);
+				}
+				if (process.recipename!=undefined) {
+					process.trrecipe=key2string.key2string(process.recipename,thisController.sample.strings);
+				}
+			})
+		})
+	}
 }
 
 
-angular.module('unidaplan').service('sampleService', ['restfactory','avSampleTypeService','$q',sampleService]);
+angular.module('unidaplan').service('sampleService', ['restfactory','key2string','avSampleTypeService','$q',sampleService]);
 
 })();

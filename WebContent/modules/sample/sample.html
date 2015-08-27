@@ -101,35 +101,25 @@
 		</button>
 		<br />
 		<div ng-hide="$last">--- {{sampleCtrl.getDuration($index)|duration}} ---
-	</div>
-	</div>
-	<br />
-	
-	
-	
-	
-		<!-- planned processes -->
-	<h4>{{'Planned Processes'|translate}}</h4>
-	<div>
-		11.1. 2015
-		<button  class="btn btn-default" ui-sref="process({processID:process.processid})">
-			Prozesstype 666
-		</button>
+		</div>
 	</div>
 	<br />
+	
 	
 	
 	<!-- Experiments -->
 	<h4>{{'Experiments'|translate}}</h4>
-	<table>
-		<tr ng-repeat="experiment in sampleCtrl.plans">
-			<td>
-				<a ui-sref="experiment({experimentID:experiment.exp_id})">
-					 Experiment no. {{experiment.exp_id}}, "{{experiment.trname}}"
-				</a>
-			</td>
-		</tr>
-	</table>
+		<div ng-repeat="experiment in sampleCtrl.plans">
+			<a ui-sref="experiment({experimentID:experiment.exp_id})">
+				 Experiment no. {{experiment.exp_id}}, "{{experiment.trname}}"
+			</a>
+				<div ng-repeat="process in experiment.plannedprocesses">
+					{{sampleCtrl.getProcessType(process)}}<br />
+					{{'comment'|translate}}: {{process.trnote}}<br />
+					{{'recipe'|translate}}: {{process.trrecipe}}<br /><br />
+					
+				</div>
+		</div>
 	<br />
 
 

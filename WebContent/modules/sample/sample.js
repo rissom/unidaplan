@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-function sampleController(sample,$state,$modal,$filter,types,sampleService,avSampleTypeService,$translate,$scope,key2string,ptypes,avProcessTypeService){
+function sampleController(sample,$state,$modal,$filter,types,sampleService,avSampleTypeService,$scope,key2string,ptypes,avProcessTypeService){
 	
 	var thisController = this;
 		
@@ -166,25 +166,6 @@ function sampleController(sample,$state,$modal,$filter,types,sampleService,avSam
 
 	
 	
-	this.translate = function(lang) {			
-		angular.forEach(this.parameters, function(parameter) {
-			parameter.trname=key2string.key2string(parameter.stringkeyname,sample.strings) 
-		})
-		angular.forEach(this.plans, function(plan) {
-			plan.trname=key2string.key2string(plan.name,sample.strings) 
-		})
-//		angular.forEach(this.plans, function(plan) {
-//			plan.trname=key2string.key2string(plan.name,sample.strings) 
-//		})	
-	}
-
-	
-	
-	$scope.$on('language changed', function(event, args) {
-		thisController.translate(args.language);
-	});
-	
-	
 	
 	this.saveParameter = function(parameter) {
 		var promise = sampleService.saveParameter(parameter);
@@ -199,15 +180,12 @@ function sampleController(sample,$state,$modal,$filter,types,sampleService,avSam
 	};
 	
 	
-	
-	// activate function
-	this.translate($translate.use()); // translate to active language
 
 }  
 
 
 
 angular.module('unidaplan').controller('sampleController',['sample','$state','$modal','$filter','types',
-     'sampleService','avSampleTypeService','$translate','$scope','key2string','ptypes','avProcessTypeService',sampleController]);
+     'sampleService','avSampleTypeService','$scope','key2string','ptypes','avProcessTypeService',sampleController]);
 
 })();

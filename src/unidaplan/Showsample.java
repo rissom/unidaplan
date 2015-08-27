@@ -28,14 +28,16 @@ public class Showsample extends HttpServlet {
 	
 	Authentificator authentificator = new Authentificator();
 	int userID=authentificator.GetUserID(request,response);
+	userID=userID+1;
+	userID=userID-1;
  	ArrayList<String> stringkeys = new ArrayList<String>(); 
  	Boolean Deletable=true;
     response.setContentType("application/json");
     request.setCharacterEncoding("utf-8");
     response.setCharacterEncoding("utf-8");
     PrintWriter out = response.getWriter();
- 	DBconnection DBconn=new DBconnection();
-    DBconn.startDB();
+ 	DBconnection dBconn=new DBconnection();
+    dBconn.startDB();
 	int objID=1;      // variable initialisation
 	int typeid=1;
 	JSONObject jsSample=new JSONObject(); // variable initialisation
@@ -50,16 +52,16 @@ public class Showsample extends HttpServlet {
 	   
     // fetch name and type of the object from the database (samplenames is a view)
     try{
-		pstmt= DBconn.conn.prepareStatement( 	
+		pstmt= dBconn.conn.prepareStatement( 	
 				"SELECT name, typeid, id FROM samplenames WHERE id=?");
 		pstmt.setInt(1,objID);
-		jsSample= DBconn.jsonObjectFromPreparedStmt(pstmt);
+		jsSample= dBconn.jsonObjectFromPreparedStmt(pstmt);
 		if (jsSample.length()>0) {
 			typeid=jsSample.getInt("typeid");
-			pstmt= DBconn.conn.prepareStatement( 	
+			pstmt= dBconn.conn.prepareStatement( 	
 			"SELECT string_key FROM objecttypes WHERE id=?");
 			pstmt.setInt(1,typeid);
-			int stringkey= DBconn.jsonObjectFromPreparedStmt(pstmt).getInt("string_key");
+			int stringkey= dBconn.jsonObjectFromPreparedStmt(pstmt).getInt("string_key");
 			stringkeys.add(Integer.toString(stringkey));
 			jsSample.put("typestringkey", stringkey);
 		}
@@ -87,7 +89,7 @@ public class Showsample extends HttpServlet {
     	
 	//get the title parameters
 	try {
-		pstmt= DBconn.conn.prepareStatement( 	 
+		pstmt= dBconn.conn.prepareStatement( 	 
 		   "SELECT ot_parameters.id, parametergroup, compulsory, ot_parameters.pos, "
 		   +"ot_parameters.stringkeyname,  pid, value, ot_parametergrps.id AS pgrpid, "
 		   +" ot_parametergrps.stringkey as parametergrp_key, st.description, paramdef.datatype, " 
@@ -102,7 +104,7 @@ public class Showsample extends HttpServlet {
 		   +"ORDER BY pos");
 		pstmt.setInt(1,objID);
 		pstmt.setInt(2,typeid);
-		JSONArray parameters=DBconn.jsonArrayFromPreparedStmt(pstmt);
+		JSONArray parameters=dBconn.jsonArrayFromPreparedStmt(pstmt);
 		if (parameters.length()>0) {
 			jsSample.put("titleparameters",parameters);
 	      	for (int i=0; i<parameters.length();i++) {
@@ -124,7 +126,7 @@ public class Showsample extends HttpServlet {
     	
 	//get the parameters
 	try {
-		pstmt= DBconn.conn.prepareStatement( 	 
+		pstmt= dBconn.conn.prepareStatement( 	 
 		   "SELECT ot_parameters.id, parametergroup, compulsory, ot_parameters.pos, "
 		   +"ot_parameters.stringkeyname,  pid, value, ot_parametergrps.id AS pgrpid, "
 		   +" ot_parametergrps.stringkey as parametergrp_key, st.description, paramdef.datatype, " 
@@ -139,7 +141,7 @@ public class Showsample extends HttpServlet {
 		   +"ORDER BY pos");
 		pstmt.setInt(1,objID);
 		pstmt.setInt(2,typeid);
-		JSONArray parameters=DBconn.jsonArrayFromPreparedStmt(pstmt);
+		JSONArray parameters=dBconn.jsonArrayFromPreparedStmt(pstmt);
 		if (parameters.length()>0) {
 			jsSample.put("parameters",parameters);
 	      	for (int i=0; i<parameters.length();i++) {
@@ -160,7 +162,7 @@ public class Showsample extends HttpServlet {
     	
 	// find all corresponding processes + timestamp
 	try {
-		pstmt= DBconn.conn.prepareStatement( 
+		pstmt= dBconn.conn.prepareStatement( 
 		   "SELECT samplesinprocess.processid, processes.processtypesid as processtype, ptd.value AS date, n.value AS number "
 		  +"FROM samplesinprocess "
 		  +"JOIN processes ON (processes.id=samplesinprocess.processid) " 
@@ -171,7 +173,7 @@ public class Showsample extends HttpServlet {
 		  +"JOIN p_integer_data n ON (n.ProcessID=samplesinprocess.processid AND n.P_Parameter_ID=pp2.id) "
 		  +"WHERE sampleid=?");
 		pstmt.setInt(1,objID);
-		JSONArray processes=DBconn.jsonArrayFromPreparedStmt(pstmt);
+		JSONArray processes=dBconn.jsonArrayFromPreparedStmt(pstmt);
 //	   	String validToString = jsToken.optString("token_valid_to");
 //	   	Timestamp validToDate = Timestamp.valueOf(validToString); 
 		if (processes.length()>0) {
@@ -205,16 +207,37 @@ public class Showsample extends HttpServlet {
 	
 	
 	// Find all experiment plans
-	try {pstmt= DBconn.conn.prepareStatement( 
+	try {pstmt= dBconn.conn.prepareStatement( 
 		"SELECT ep.id as exp_id, name, creator, status FROM exp_plan ep "
 		+"JOIN expp_samples es ON es.expp_ID=ep.id "
 		+"WHERE sample=?");
 		pstmt.setInt(1,objID);
-		JSONArray eps = DBconn.jsonArrayFromPreparedStmt(pstmt);
+		JSONArray eps = dBconn.jsonArrayFromPreparedStmt(pstmt);
 		pstmt.close();
 		for (int i=0; i<eps.length();i++) {
-      		  JSONObject tempObj=(JSONObject) eps.get(i);
-      		  stringkeys.add(Integer.toString(tempObj.getInt("name")));
+      		  stringkeys.add(Integer.toString(eps.getJSONObject(i).getInt("name")));
+      		// get planned processes
+      		pstmt= dBconn.conn.prepareStatement("SELECT expp_samples.expp_ID, eps.id AS process_step_id, "
+				+"eps.position AS processposition, eps.ptid AS processtype, eps.recipe, eps.note, " 
+				+"p_recipes.name as recipename " 
+				+"FROM expp_samples "
+				+"JOIN exp_plan_steps eps ON (eps.expp_s_ID=expp_samples.expp_id) "
+				+"LEFT JOIN p_recipes ON (p_recipes.id=eps.recipe) " 
+				+"WHERE expp_samples.sample=? AND expp_id=? "
+				+"ORDER BY processposition");
+      		pstmt.setInt(1,objID);
+      		int experimentID=eps.getJSONObject(i).getInt("exp_id");
+      		pstmt.setInt(2,experimentID);
+      		JSONArray pprocesses = dBconn.jsonArrayFromPreparedStmt(pstmt);
+      		for (int j=0; j<pprocesses.length();j++){
+      			if (!pprocesses.getJSONObject(j).isNull("recipename")){
+      				stringkeys.add(Integer.toString(pprocesses.getJSONObject(j).getInt("recipename")));
+      			}
+      			if (!pprocesses.getJSONObject(j).isNull("note")){
+      				stringkeys.add(Integer.toString(pprocesses.getJSONObject(j).getInt("note")));
+      			}
+      		}
+      		eps.getJSONObject(i).put("plannedprocesses",pprocesses);
       	  }
 		jsSample.put("plans",eps);
 			
@@ -225,19 +248,19 @@ public class Showsample extends HttpServlet {
 			
 		// Find all child objects
     	try{
-		    pstmt=  DBconn.conn.prepareStatement( 	
+		    pstmt=  dBconn.conn.prepareStatement( 	
 			"SELECT originates_from.id, samplenames.id AS sampleid, samplenames.name, samplenames.typeid \n"+
 			"FROM originates_from \n"+
 			"JOIN samplenames ON (samplenames.id=originates_from.child) \n"+
 			"WHERE originates_from.parent=? \n");
 			pstmt.setInt(1,objID);
-			table= DBconn.jsonArrayFromPreparedStmt(pstmt);
+			table= dBconn.jsonArrayFromPreparedStmt(pstmt);
 			if (table.length()>0) {
 				for(int i=0;i<table.length();i++) {
-					pstmt= DBconn.conn.prepareStatement( 	
+					pstmt= dBconn.conn.prepareStatement( 	
 					"SELECT string_key FROM objecttypes WHERE id=?");
 					pstmt.setInt(1,((JSONObject)table.get(i)).getInt("typeid"));
-					int stringkey= DBconn.jsonObjectFromPreparedStmt(pstmt).getInt("string_key");
+					int stringkey= dBconn.jsonObjectFromPreparedStmt(pstmt).getInt("string_key");
 					((JSONObject)table.get(i)).put("typestringkey", stringkey);
 					stringkeys.add(Integer.toString(stringkey));
 				} 
@@ -254,19 +277,19 @@ public class Showsample extends HttpServlet {
     	
 		// find all parent objects
 		try{    
-		    pstmt=  DBconn.conn.prepareStatement( 	
+		    pstmt=  dBconn.conn.prepareStatement( 	
 			"SELECT originates_from.id, samplenames.id AS sampleid, samplenames.name, samplenames.typeid \n" +
 			"FROM originates_from \n" +
 			"JOIN samplenames ON (samplenames.id=originates_from.parent) \n" +
 			"WHERE originates_from.child=? \n");
 			pstmt.setInt(1,objID);
-			table= DBconn.jsonArrayFromPreparedStmt(pstmt);
+			table= dBconn.jsonArrayFromPreparedStmt(pstmt);
 			if (table.length()>0) {
 				for(int i=0;i<table.length();i++) {
-					pstmt= DBconn.conn.prepareStatement( 	
+					pstmt= dBconn.conn.prepareStatement( 	
 					"SELECT string_key FROM objecttypes WHERE id=?");
 					pstmt.setInt(1,((JSONObject)table.get(i)).getInt("typeid"));
-					int stringkey= DBconn.jsonObjectFromPreparedStmt(pstmt).getInt("string_key");
+					int stringkey= dBconn.jsonObjectFromPreparedStmt(pstmt).getInt("string_key");
 					stringkeys.add(Integer.toString(stringkey));
 					((JSONObject)table.get(i)).put("typestringkey", stringkey);
 				}
@@ -283,7 +306,7 @@ public class Showsample extends HttpServlet {
 		
 		// find the previous sample
 		try{
-		    pstmt=  DBconn.conn.prepareStatement( 	
+		    pstmt=  dBconn.conn.prepareStatement( 	
     		"SELECT  samplenames.id, samplenames.name, samplenames.typeid \n"
 			+"FROM samplenames \n"
 			+"WHERE ((samplenames.name < (SELECT samplenames.name FROM samplenames WHERE samplenames.id=?)) \n"
@@ -292,7 +315,7 @@ public class Showsample extends HttpServlet {
 			+"LIMIT 1");
 			pstmt.setInt(1,objID);
 			pstmt.setInt(2,objID);
-			table= DBconn.jsonArrayFromPreparedStmt(pstmt);
+			table= dBconn.jsonArrayFromPreparedStmt(pstmt);
 			if (table.length()>0) {
 				jsSample.put("previous",table.get(0)); }
 	    } catch (SQLException e) {
@@ -306,7 +329,7 @@ public class Showsample extends HttpServlet {
 		
 		// find next sample	
 		try{
-		    pstmt=  DBconn.conn.prepareStatement( 	
+		    pstmt=  dBconn.conn.prepareStatement( 	
     		"SELECT  samplenames.id, samplenames.name, samplenames.typeid \n"
 			+"FROM samplenames \n"
 			+"WHERE ((samplenames.name > (SELECT samplenames.name FROM samplenames WHERE samplenames.id=?)) \n"
@@ -315,7 +338,7 @@ public class Showsample extends HttpServlet {
     		+"LIMIT 1 \n");
 			pstmt.setInt(1,objID);
 			pstmt.setInt(2,objID); 
-			table= DBconn.jsonArrayFromPreparedStmt(pstmt);
+			table= dBconn.jsonArrayFromPreparedStmt(pstmt);
 			if (table.length()>0) {
 				jsSample.put("next",table.get(0)); }	
 		} catch (SQLException e) {
@@ -329,7 +352,7 @@ public class Showsample extends HttpServlet {
 		
 		// Can we delete this sample?
 		try{
-	        pstmt = DBconn.conn.prepareStatement(	
+	        pstmt = dBconn.conn.prepareStatement(	
 	    	"SELECT processid, sampleid FROM samplesinprocess "
 	 		+"WHERE sampleid=?");
 			pstmt.setInt(1,objID);
@@ -340,7 +363,7 @@ public class Showsample extends HttpServlet {
 			pstmt.close();
 			
 			// Check if experiments with this sample exist
-	        pstmt = DBconn.conn.prepareStatement(	
+	        pstmt = dBconn.conn.prepareStatement(	
 	        	"SELECT id FROM expp_samples WHERE sample=?");
 			pstmt.setInt(1,objID);
 			resultset=pstmt.executeQuery();
@@ -368,7 +391,7 @@ public class Showsample extends HttpServlet {
          	    sep = ",";
 	        }
 	        query+= buff.toString() + "}'::int[])";
-	        JSONArray theStrings=DBconn.jsonfromquery(query);
+	        JSONArray theStrings=dBconn.jsonfromquery(query);
 	        jsSample.put("strings", theStrings);
 		} catch (SQLException e) {
     		System.err.println("Showsample: Problems with SQL query for Stringkeys");
@@ -379,6 +402,6 @@ public class Showsample extends HttpServlet {
     	}
     }
 	out.println(jsSample.toString());
-	DBconn.closeDB();
+	dBconn.closeDB();
   	}
 }

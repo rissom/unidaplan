@@ -34,9 +34,10 @@ import org.json.JSONObject;
 	    JSONObject expPlans = new JSONObject();
 	    try {  
 			pstmt= DBconn.conn.prepareStatement( 	
-			"SELECT exp_plan.ID AS ID,users.fullname as creator, exp_plan.name ,status "
-		    + "FROM  exp_plan \n"
-		    + "JOIN users ON (users.id=exp_plan.Creator)");
+			"SELECT exp_plan.ID AS ID, intd.value AS number, users.fullname as creator, exp_plan.name ,status "
+			+"FROM exp_plan " 
+			+"JOIN users ON (users.id=exp_plan.Creator) "
+			+"JOIN expp_integer_data intd ON (intd.expp_id=exp_plan.ID)");
 			experiments=DBconn.jsonArrayFromPreparedStmt(pstmt);
 			pstmt.close();
 			  for (int i=0; i<experiments.length();i++) {
