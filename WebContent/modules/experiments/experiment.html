@@ -33,100 +33,36 @@
 		
 		
 		
-		<!-- planned processes -->
-		<h4>{{'Planned Processes'|translate}}</h4>
-		<table class="exptable">
-			<tr>
-				<td class="exptd">
-					&nbsp;
-					Sample 
-					&nbsp;
-				</td>
-				<td class="exptd">&nbsp;
-					Comment
-					&nbsp;
-				</td>
-				<td class="exptd">&nbsp;
-					Washing
-					&nbsp;
-				</td>
-				<td class="exptd">
-					&nbsp;
-					Polishing
-					&nbsp;
-				</td>
-			</tr>
-			<tr>
-				<td class="exptd">
-					<button class="btn btn-default" ui-sref="sample({sampleID:1})">
-									{{experimentCtrl.getSampleType({"typeid":1})}} 4711-1
-					</button>
-				</td>
-				<td class="exptd">
-					Nice Solar cell
-				</td>
-				<td class="exptd" bgcolor="#88FF88">
-					<button class="btn btn-default" ui-sref="process({processID:1})">
-									{{experimentCtrl.getProcessType({"processtype":1})}} 1
-					</button>
-				</td>		
-				<td class="exptd" bgcolor="#88FF88">
-					<button class="btn btn-default" ui-sref="process({processID:4})">
-									{{experimentCtrl.getProcessType({"processtype":2})}} 1
-					</button>
-				</td>		
-			</tr>
-		</table>
+		<!-- processes -->
+		<h4>{{'Processes'|translate}}</h4>
 		
-		<table class="exptable">
-			<tr>
-				<td class="exptd">
-					&nbsp;
-					Sample 
-					&nbsp;
-				</td>
-				<td class="exptd">&nbsp;
-					Comment
-					&nbsp;
-				</td>
-				<td class="exptd" >&nbsp;
-					Washing
-					&nbsp;
-				</td>
-				<td class="exptd" >&nbsp;
-					Washing
-					&nbsp;
-				</td>
-				<td class="exptd">
-					&nbsp;
-					Polishing
-					&nbsp;
-				</td>
-			</tr>
-			<tr>
-				<td class="exptd" >
-					<button class="btn btn-default" ui-sref="sample({sampleID:2})" bgcolor="#FF8888">
-									{{experimentCtrl.getSampleType({"typeid":1})}} 4711-2
-					</button>
-				</td>
-				<td class="exptd">
-					also a nice solar cell
-				</td>
-				<td class="exptd" bgcolor="#FF8888">
-					<button class="btn btn-default" ui-sref="process({processID:1})">
-									{{experimentCtrl.getProcessType({"processtype":1})}} 1
-					</button>
-				</td>
-				<td class="exptd" bgcolor="#88FF88">
-					<button class="btn btn-default" ui-sref="process({processID:2})">
-									{{experimentCtrl.getProcessType({"processtype":1})}} 2
-					</button>
-				</td>			
-				<td class="exptd" bgcolor="#88FF88">
-					<button class="btn btn-default" ui-sref="process({processID:4})">
-									{{experimentCtrl.getProcessType({"processtype":2})}} 1
-					</button>
-				</td>		
-			</tr>
-		</table>
+		<ol ng-repeat="sample in experimentCtrl.experiment.samples" class="exp_ol">
+			<li class="exp_li"> 
+			
+				<ol class="exp_ol2" >
+					<li class="exp_li2 title"> {{'Sample'|translate}} </li>
+					<li class="exp_li2 button_li">
+						<button class="btn btn-default" ui-sref="sample({sampleID:sample.id})">
+							{{experimentCtrl.getSampleType(sample)}} {{sample.name}}
+						</button>
+					</li>
+				</ol>
+			</li>
+			<li class="exp_li noleftborder"> 
+				<ol class="exp_ol2">
+					<li class="exp_li2 title "> {{'Comment'|translate}}</li>
+					<li class="exp_li2 button_li" >{{sample.trnote}}</li>
+				</ol>
+			</li>
+			<li class="exp_li noleftborder" ng-repeat="process in sample.mprocesses"> 
+				<ol class="exp_ol2">
+					<li class="exp_li2 title ">&nbsp;{{experimentCtrl.getProcessType({"processtype":process.pprocess.processtype})}}</li>
+					<li class="exp_li2 button_li green"> 
+						<button class="btn btn-default" ui-sref="process({processID:process.fprocess.processid})" ng-show=process.fprocess.number>
+							{{experimentCtrl.getProcessType({"processtype":process.fprocess.processtype})}} {{process.fprocess.number}}
+						</button>
+					</li>
+				</ol>
+			</li>
+		</ol>
 		

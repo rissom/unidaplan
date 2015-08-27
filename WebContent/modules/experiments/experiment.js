@@ -1,24 +1,40 @@
 (function(){
 'use strict';
 
-function experimentController(restfactory,avSampleTypeService,avProcessTypeService,experimentData,ptypes,stypes) {
+function experimentController(restfactory,key2string,avSampleTypeService,avProcessTypeService,experimentData,ptypes,stypes) {
 	
-	this.experiment =  experimentData;
-	
+	this.experiment = experimentData;
+
 	this.getSampleType = function(sample) {
 //		console.log ("getting Sampletype with id:", id)
 		return avSampleTypeService.getType(sample,stypes);
 	}
-	
 	
 	this.getProcessType = function(process) {
 //		console.log ("getting Sampletype with id:", id)
 		return avProcessTypeService.getProcessType(process,ptypes);
 	}
 	
+//	var thisController=this;
+	angular.forEach (experimentData.samples, function(sample){
+		var mprocesses=[];
+		var j = Math.max (sample.fprocesses.length,sample.pprocesses.length)
+			for (var i=0;i<j;i++){
+				var fp={}
+				if (sample.fprocesses[i]!=undefined) {
+					fp=sample.fprocesses[i]}
+				var pp={}
+				if (sample.pprocesses[i]!=undefined) {
+					pp=sample.pprocesses[i]}
+				mprocesses.push({"fprocess":fp,"pprocess":pp})
+			}
+		sample.mprocesses=mprocesses;
+	})
+		
+			
+	
 	this.keyUp = function(keyCode,newValue,parameter) {
 		if (keyCode===13) {				// Return key pressed
-			console.log ("fertisch!")
 			parameter.editing=false; 
 			var oldValue=parameter.value;
 			parameter.value=newValue;
@@ -53,6 +69,7 @@ function experimentController(restfactory,avSampleTypeService,avProcessTypeServi
 };
     
         
-angular.module('unidaplan').controller('experimentController',['restfactory','avSampleTypeService','avProcessTypeService','experimentData','ptypes','stypes',experimentController]);
+angular.module('unidaplan').controller('experimentController',['restfactory','key2string','avSampleTypeService',
+               'avProcessTypeService','experimentData','ptypes','stypes',experimentController]);
 
 })();
