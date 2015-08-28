@@ -277,7 +277,7 @@
     <servlet-name>DeleteSample</servlet-name>
     <url-pattern>/delete-sample</url-pattern>
   </servlet-mapping>
-    <servlet>
+  <servlet>
     <description>DeleteExperiment</description>
     <display-name>DeleteExperiment</display-name>
     <servlet-name>DeleteExperiment</servlet-name>
@@ -286,5 +286,25 @@
   <servlet-mapping>
     <servlet-name>DeleteExperiment</servlet-name>
     <url-pattern>/delete-experiment</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description>DeleteSampleFromExperiment</description>
+    <display-name>DeleteSampleFromExperiment</display-name>
+    <servlet-name>DeleteSampleFromExperiment</servlet-name>
+    <servlet-class>unidaplan.DeleteSampleFromExperiment</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeleteSampleFromExperiment</servlet-name>
+    <url-pattern>/delete-sample-from-experiment</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description>ReplaceSampleInExperiment</description>
+    <display-name>ReplaceSampleInExperiment</display-name>
+    <servlet-name>ReplaceSampleInExperiment</servlet-name>
+    <servlet-class>unidaplan.ReplaceSampleInExperiment</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ReplaceSampleInExperiment</servlet-name>
+    <url-pattern>/replace-sample-in-experiment</url-pattern>
   </servlet-mapping>
 </web-app>

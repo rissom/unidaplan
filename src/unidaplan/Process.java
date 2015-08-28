@@ -33,6 +33,8 @@ public class Process extends HttpServlet {
     	
     	Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
+		userID = userID+1;
+		userID = userID-1;
 		
       ArrayList<String> stringkeys = new ArrayList<String>(); // Array for translation strings
       
@@ -60,18 +62,23 @@ public class Process extends HttpServlet {
 	  try {
 		  
 		// get number and type 
-		pstmt= DBconn.conn.prepareStatement(	
-					"SELECT process_type_id AS processtype, p_number AS pnumber, pt_string_key "
-					+"FROM pnumbers "
-				  	+"WHERE id=?");
+		pstmt= DBconn.conn.prepareStatement(
+					"SELECT processes.id, processes.processtypesid as processtype, ptd.value AS date, n.value AS pnumber, processtypes.name AS pt_string_key "
+					+"FROM processes "
+					+"JOIN processtypes ON (processes.processtypesid=processtypes.id) "
+					+"JOIN p_parameters pp ON (pp.definition=10) " // date
+					+"JOIN p_parameters pp2 ON (pp2.definition=8) " // number
+					+"JOIN p_timestamp_data ptd ON (ptd.processID=processes.id AND ptd.P_Parameter_ID=pp.id) "
+					+"JOIN p_integer_data n ON (n.ProcessID=processes.id AND n.P_Parameter_ID=pp2.id) "
+					+"WHERE processes.id=?");
 		pstmt.setInt(1, processID);
 		jsProcess= DBconn.jsonObjectFromPreparedStmt(pstmt);
 		jsProcess.put("id",processID);
 		if (jsProcess.length()>0) {
 			processTypeID=jsProcess.getInt("processtype");
 			pnumber=jsProcess.getInt("pnumber");
-			stringkeys.add(Integer.toString(jsProcess.getInt("pt_string_key")));
 			found=true;
+			stringkeys.add(Integer.toString(jsProcess.getInt("pt_string_key")));
 		}else{
 			System.err.println("no such process");
 			response.setStatus(404);
@@ -79,35 +86,34 @@ public class Process extends HttpServlet {
 		}
 		
 	  } catch (SQLException e) { 
-		System.out.println("Problems with SQL query");
+		System.err.println("Problems with SQL query");
 		e.printStackTrace();
 	  } catch (JSONException e){
-		System.out.println("Problems creating JSON");
+		System.err.println("Problems creating JSON");
 		e.printStackTrace();
 	  } catch (Exception e) {
-		System.out.println("Strange Problems");
+		System.err.println("Strange Problems");
 		e.printStackTrace();
 	  }
 			
 	if (found){
 	    // get next process
-	    try {       
+	    try {      
 			pstmt=DBconn.conn.prepareStatement( 
 			"SELECT id,p_number FROM pnumbers "
-			+"WHERE (p_number>? AND process_type_id=?) LIMIT 1");
+			+"WHERE (p_number>? AND processtype=?) LIMIT 1");
 			pstmt.setInt(1,pnumber);
 			pstmt.setInt(2,processTypeID);
 			JSONObject next= DBconn.jsonObjectFromPreparedStmt(pstmt);
 			if (next.length()>0) {
 			jsProcess.put("next",next); } 
 		} catch (SQLException e) {
-			System.out.println("Problems with SQL query for next process");
 			e.printStackTrace();
 		} catch (JSONException e){
-			System.out.println("Problems creating JSON for next process");
+			System.err.println("Problems creating JSON for next process");
 			e.printStackTrace();
 		} catch (Exception e) {
-			System.out.println("Strange Problems with the next process");
+			System.err.println("Strange Problems with the next process");
 			e.printStackTrace();
 		}	
 			
@@ -116,20 +122,20 @@ public class Process extends HttpServlet {
 	    try {       
 			pstmt=DBconn.conn.prepareStatement( 
 			"SELECT id,p_number FROM pnumbers "
-			+"WHERE (p_number<? AND process_type_id=?) ORDER BY p_number DESC LIMIT 1");
+			+"WHERE (p_number<? AND processtype=?) ORDER BY p_number DESC LIMIT 1");
 			pstmt.setInt(1,pnumber);
 			pstmt.setInt(2,processTypeID);
 			JSONObject previous= DBconn.jsonObjectFromPreparedStmt(pstmt);
 			if (previous.length()>0) {
 			jsProcess.put("previous",previous); } 
 		} catch (SQLException e) {
-			System.out.println("Problems with SQL query for previous process");
+			System.err.println("Process: Problems with SQL query for previous process");
 			e.printStackTrace();
 		} catch (JSONException e){
-			System.out.println("Problems creating JSON for previous process");
+			System.err.println("Process: Problems creating JSON for previous process");
 			e.printStackTrace();
 		} catch (Exception e) {
-			System.out.println("Strange Problems with the previous process");
+			System.err.println("Process: Strange Problems with the previous process");
 			e.printStackTrace();
 		}	
 	    
@@ -157,7 +163,7 @@ public class Process extends HttpServlet {
 				
 	      		// extract the Stringkeys
 		      	for (int i=0; i<parameters.length();i++) {  
-		      		JSONObject tempObj=(JSONObject) parameters.get(i);
+		      		JSONObject tempObj=parameters.getJSONObject(i);
 		      		stringkeys.add(Integer.toString(tempObj.getInt("stringkeyname")));
 		      	}
 			}	

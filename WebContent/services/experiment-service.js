@@ -41,16 +41,16 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 	}
 	
     
+	
 	// save experiment for "recent experiments"
 	this.pushExperiment = function(experiment){
-		var i;
 		var found=false;
 		if (this.recentExperiments==undefined) {
 			this.recentExperiments=[]
 		}
 		var tExperiment={"id":experiment.id,"number":experiment.number,"trname":experiment.trname,"name":experiment.name};
-		for (i=0;i<this.recentExperiments.length;i++){
-			if (this.recentExperiments[i].number==tExperiment.number) {
+		for (var i=0;i<this.recentExperiments.length;i++){
+			if (this.recentExperiments[i].id==tExperiment.id) {
 				found=true			
 			}
 		}
@@ -78,16 +78,30 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 	
 	
 	
+	this.deleteSampleFromExperiment = function(id){
+		// Removes a sample from an experiment. 
+		return restfactory.POST("delete-sample-from-experiment?id="+id);
+	}
+	
+	
+	
+	this.replaceSampleInExperiment = function(id, newSampleId){
+		// replaces a sample in an experiment
+		return restfactory.POST("replace-sample-in-experiment?id="+id+"&sampleid="+newSampleId);
+	}
+	
+	
+	
 	this.translate = function() {
 		this.experiment.trname=key2string.key2string(this.experiment.name,this.strings);
 		angular.forEach(this.experiment.parameters, function(parameter) {
 			parameter.trname=key2string.key2string(parameter.stringkeyname,thisController.strings);
 		})
-		if (this.recentExperiments!=undefined){
-			angular.forEach(this.recentExperiments, function(experiment) {
-				experiment.trname=key2string.key2string(experiment.name,thisController.strings);
-			})
-		}
+//		if (this.recentExperiments!=undefined){
+//			angular.forEach(this.recentExperiments, function(experiment) {
+//				experiment.trname=key2string.key2string(experiment.name,thisController.strings);
+//			})
+//		}
 		angular.forEach(this.experiment.samples, function(sample){
 			if (sample.note!=undefined) {
 				sample.trnote=key2string.key2string(sample.note,thisController.strings);
@@ -98,19 +112,9 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 	
 	
 	this.translateExps = function() {
-		var strings=this.expsStrings;
-		var exps=this.experiments;
-		angular.forEach(exps, function(anExp) {
-			angular.forEach(strings, function(translation) {
-				if (anExp.name==translation.string_key && translation.language==$translate.use())
-					{anExp.trname=translation.value;}
-			})
+		angular.forEach(this.experiments, function(anExp) {
+			anExp.trname=key2string.key2string(anExp.name,thisController.expsStrings)
 		})	
-//		if ($translate.use()=='en') {
-//			this.statusItems=["planning phase","planned","running","completed"];
-//		}else{
-//			this.statusItems=["Planungsphase","geplant","läuft","abgeschlossen"];
-//		}
 	};
 	
 }

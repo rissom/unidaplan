@@ -106,7 +106,10 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	            processData: 
 	            	function(processService,$stateParams){
 	        			return processService.getProcess($stateParams.processID)
-	        	    }
+	        	    },
+               	ptypes: function(avProcessTypeService){
+        	   	    	return avProcessTypeService.getProcessTypes()
+        	   	    }
 			}
         })
         

@@ -1,10 +1,12 @@
 (function(){
 'use strict';
 
-function experimentController(restfactory,key2string,avSampleTypeService,avProcessTypeService,experimentData,ptypes,stypes) {
+function experimentController($scope,$stateParams,experimentService,restfactory,$translate,$state,key2string,avSampleTypeService,avProcessTypeService,experimentData,ptypes,stypes) {
 	
 	this.experiment = experimentData;
 
+	this.sampleActions = [$translate.instant("Go to sample"),$translate.instant("Delete Sample from Experiment"),$translate.instant("Replace sample")];
+	
 	this.getSampleType = function(sample) {
 //		console.log ("getting Sampletype with id:", id)
 		return avSampleTypeService.getType(sample,stypes);
@@ -18,14 +20,24 @@ function experimentController(restfactory,key2string,avSampleTypeService,avProce
 //	var thisController=this;
 	angular.forEach (experimentData.samples, function(sample){
 		var mprocesses=[];
-		var j = Math.max (sample.fprocesses.length,sample.pprocesses.length)
+		var fplength=0;
+		var pplength=0;
+		if (sample.fprocesses!=undefined) {
+			fplength=sample.fprocesses.length
+		}
+		if (sample.pprocesses!=undefined){
+			pplength=sample.pprocesses.length;
+		}
+		var j = Math.max (fplength,pplength)
 			for (var i=0;i<j;i++){
 				var fp={}
-				if (sample.fprocesses[i]!=undefined) {
-					fp=sample.fprocesses[i]}
-				var pp={}
-				if (sample.pprocesses[i]!=undefined) {
-					pp=sample.pprocesses[i]}
+				if (sample.fprocesses!=undefined && i<sample.fprocesses.length) {
+					fp=sample.fprocesses[i]
+				}
+				var pp={};
+				if (sample.pprocesses!=undefined && i<sample.pprocesses.length) {
+					pp=sample.pprocesses[i]
+				}
 				mprocesses.push({"fprocess":fp,"pprocess":pp})
 			}
 		sample.mprocesses=mprocesses;
@@ -66,10 +78,34 @@ function experimentController(restfactory,key2string,avSampleTypeService,avProce
 	}
 	
 	
+	
+	var reload=function() {
+	    var current = $state.current;
+	    var params = angular.copy($stateParams);
+	    return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
+	}
+	
+	this.action = function(index,sample){
+		if (index==0){
+			$state.go("sample",{sampleID:sample.sample})
+		}
+		if (index==1){
+			var promise= experimentService.deleteSampleFromExperiment(sample.id);
+			promise.then(function(){reload();});
+		}
+		if (index==2){
+			console.log("Replace Sample");
+			var sample2=1;
+			var promise=experimentService.replaceSampleInExperiment(sample.id,sample2);
+			promise.then(function(){reload();});
+
+		}
+	}
+	
 };
     
         
-angular.module('unidaplan').controller('experimentController',['restfactory','key2string','avSampleTypeService',
+angular.module('unidaplan').controller('experimentController',['$scope','$stateParams','experimentService','restfactory','$translate','$state','key2string','avSampleTypeService',
                'avProcessTypeService','experimentData','ptypes','stypes',experimentController]);
 
 })();

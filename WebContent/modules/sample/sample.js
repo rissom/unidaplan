@@ -5,7 +5,7 @@ function sampleController(sample,$state,$modal,$filter,types,sampleService,avSam
 	
 	var thisController = this;
 		
-		
+	if (sample.error) this.error=sample.error;
 	this.parameters = sample.parameters;
 	this.processes = $filter('orderBy')(sample.processes, 'date', false)
 	this.titleparameters = sample.titleparameters;

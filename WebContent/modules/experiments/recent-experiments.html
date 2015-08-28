@@ -4,6 +4,6 @@
 
 <div ng-repeat="experiment in recentExperimentsCtrl.getRecentExperiments() | orderBy:'number'">  <!-- noch nach Typ sortieren!  -->
 	<button class="btn btn-default" ui-sref="experiment({experimentID:experiment.id})">
-				{{experiment.id}} {{experiment.trname}}
+				{{experiment.number}} {{experiment.trname}}
 	</button>
 </div>	

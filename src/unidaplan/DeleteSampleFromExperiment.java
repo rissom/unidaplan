@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-	public class DeleteUser extends HttpServlet {
+	public class DeleteSampleFromExperiment extends HttpServlet {
 		private static final long serialVersionUID = 1L;
 
 	@Override
@@ -23,12 +23,12 @@ import org.json.JSONObject;
 //		int userID=authentificator.GetUserID(request,response);
 		request.setCharacterEncoding("utf-8");
 	    int id=0;
-	  	  try  {
-	   		 id=Integer.parseInt(request.getParameter("id")); 
-	       }
-	   	  catch (Exception e1) {
-	   		System.err.print("DeleteUser: no user ID given!");
-	   	  }
+	  	  	try{
+	  	  		id=Integer.parseInt(request.getParameter("id")); 
+	  	  	}
+	  	  	catch (Exception e1) {
+	  	  		System.err.print("DeleteSampleFromExperiment: no user ID given!");
+	  	  	}
 	    String status="ok";
 
 	    try {
@@ -37,17 +37,17 @@ import org.json.JSONObject;
 	    DBconn.startDB();	   
 	    PreparedStatement pstmt = null;
 			pstmt= DBconn.conn.prepareStatement( 			
-					"DELETE FROM users WHERE id=? \n");
+					"DELETE FROM expp_samples WHERE id=?");
 		   	pstmt.setInt(1, id);
 		   	pstmt.executeUpdate();
 			pstmt.close();
 			DBconn.closeDB();
 		} catch (SQLException e) {
-			System.err.println("DeleteUser: Problems with SQL query");
-			status="SQL Error; DeleteUser";
+			System.err.println("DeleteSampleFromExperiment: Problems with SQL query");
+			status="SQL Error; DeleteSampleFromExperiment";
 		} catch (Exception e) {
-			System.err.println("DeleteUser: Strange Problems");
-			status="Error DeleteUser";
+			System.err.println("DeleteSampleFromExperiment: Strange Problems");
+			status="Error DeleteSampleFromExperiment";
 		}	
 		
 	    // tell client that everything is fine
@@ -60,7 +60,7 @@ import org.json.JSONObject;
 			answer.put("id", id);
 			out.println(answer.toString());
 		} catch (JSONException e) {
-			System.err.println("DeleteUser: Problems creating JSON answer");
+			System.err.println("DeleteSampleFromExperiment: Problems creating JSON answer");
 		}    
 	}
 }	

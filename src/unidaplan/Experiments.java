@@ -22,6 +22,8 @@ import org.json.JSONObject;
 	      throws ServletException, IOException {
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
+		userID=userID+1;
+		userID=userID-1;
 		PreparedStatement pstmt;
 		ArrayList<String> stringkeys = new ArrayList<String>(); 
 		JSONArray experiments = null;
@@ -34,10 +36,11 @@ import org.json.JSONObject;
 	    JSONObject expPlans = new JSONObject();
 	    try {  
 			pstmt= DBconn.conn.prepareStatement( 	
-			"SELECT exp_plan.ID AS ID, intd.value AS number, users.fullname as creator, exp_plan.name ,status "
+			"SELECT exp_plan.ID AS ID, intd.value AS number, users.fullname as creator, exp_plan.name ,status " 
 			+"FROM exp_plan " 
-			+"JOIN users ON (users.id=exp_plan.Creator) "
-			+"JOIN expp_integer_data intd ON (intd.expp_id=exp_plan.ID)");
+			+"JOIN users ON (users.id=exp_plan.Creator) " 
+			+"JOIN expp_integer_data intd ON (intd.expp_id=exp_plan.ID) "
+			+"JOIN expp_param ON (intd.expp_param_id=expp_param.id AND expp_param.definition=2)");
 			experiments=DBconn.jsonArrayFromPreparedStmt(pstmt);
 			pstmt.close();
 			  for (int i=0; i<experiments.length();i++) {

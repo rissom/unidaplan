@@ -1,5 +1,5 @@
 <h3>
-{{'Experiment'|translate}} {{'no.'|translate}} {{experimentCtrl.experiment.id}} : 
+{{'Experiment'|translate}} {{'no.'|translate}} {{experimentCtrl.experiment.number}} : 
 {{experimentCtrl.experiment.trname}}
 </h3>
 {{'created by'|translate}} {{experimentCtrl.experiment.creator}}
@@ -42,9 +42,18 @@
 				<ol class="exp_ol2" >
 					<li class="exp_li2 title"> {{'Sample'|translate}} </li>
 					<li class="exp_li2 button_li">
-						<button class="btn btn-default" ui-sref="sample({sampleID:sample.id})">
-							{{experimentCtrl.getSampleType(sample)}} {{sample.name}}
-						</button>
+						<div class="dropdown" dropdown on-toggle="toggled(open)">
+							<button class="btn btn-default dropdown-toggle"  dropdown-toggle>
+							<!-- ui-sref="sample({sampleID:sample.id})" -->
+								{{experimentCtrl.getSampleType(sample)}} {{sample.name}}
+							</button>
+					     
+					      	<ul class="dropdown-menu">
+						        <li ng-repeat="choice in experimentCtrl.sampleActions">
+						          <a  ng-click="experimentCtrl.action($index,sample)">{{choice}}</a>
+						        </li>
+					      	</ul>
+	  				 	</div>
 					</li>
 				</ol>
 			</li>

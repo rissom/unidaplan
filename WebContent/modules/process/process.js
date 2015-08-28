@@ -47,6 +47,10 @@ function process(avSampleTypeService,types,$modal,processData,restfactory,proces
 	  return avSampleTypeService.getType(sample,types);
   }
   
+//  this.getProcesstype=function(process,ptypes){
+//	  return avProcessTypeService.getProcessType(process,ptypes);
+//  }
+  
   this.deleteProcess = function(){
 //	  console.log(this.process)
 	  return processService.deleteProcess(this.process.id);

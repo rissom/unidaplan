@@ -1,5 +1,3 @@
-<div ng-hide="sampleCtrl.sample.error">
-
 	<!-- Heading with sample name -->
 	<h3>{{sampleCtrl.getType({typeid:sampleCtrl.typeid})}} 
 		<span ng-repeat="tparameter in sampleCtrl.titleparameters"
@@ -114,9 +112,9 @@
 				 Experiment no. {{experiment.exp_id}}, "{{experiment.trname}}"
 			</a>
 				<div ng-repeat="process in experiment.plannedprocesses">
-					{{sampleCtrl.getProcessType(process)}}<br />
+					{{sampleCtrl.getProcessType(process)}}<br /><em>
 					{{'comment'|translate}}: {{process.trnote}}<br />
-					{{'recipe'|translate}}: {{process.trrecipe}}<br /><br />
+					{{'recipe'|translate}}: {{process.trrecipe}}</em><br /><br />
 					
 				</div>
 		</div>
@@ -159,16 +157,6 @@
 			</table>
 		</div>
 	</div>
-</div>
-
-
-<div ng-show=sampleCtrl.sample.error>
-	<!-- Error getting the sample -->
-	{{sampleCtrl.sample.error}}
-</div>
-
-
-
 <br />
 <br />
 <br />
