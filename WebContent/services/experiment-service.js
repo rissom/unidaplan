@@ -78,9 +78,48 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 	
 	
 	
+	this.addSampleToExperiment = function (expid,sampleid,pos){
+		return  restfactory.POST("add-sample-to-experiment?experimentid="+expid+"&position="+pos+"&sampleid="+sampleid);
+	}
+
+	
+	
+	this.addProcessToExperiment = function(processType,experimentID){
+		return restfactory.POST("add-process-to-experiment?processtype="+processType+"&experimentid="+experimentID);
+	};
+	
+	
+	
+	this.markAllProcesses = function(experimentID,processID){
+		return restfactory.POST("mark-all-processes-in-experiment?experimentid="+experimentID+"&processid="+processID);
+	};
+	
+	
+	
+	this.deactivateProcessStep = function(processStepID){
+		return restfactory.POST("http://localhost:8080/unidaplan/deactivate-process-step?processstepid="+processStepID);
+	};
+
+	
+	
+	this.updatePositionsForProcessesInExperiment=function(processes){
+		console.log ("immer noch alles gut?")
+		return restfactory.POST("update-positions-for-processes-in-experiment",processes);
+		console.log ("hmm.")
+	}
+	
+	
+	
 	this.deleteSampleFromExperiment = function(id){
 		// Removes a sample from an experiment. 
 		return restfactory.POST("delete-sample-from-experiment?id="+id);
+	}
+	
+	
+	
+	this.deleteProcess=function(id){
+		//removes a proces from an experiment
+		return restfactory.POST("delete-process-from-experiment?id="+id);
 	}
 	
 	
@@ -114,7 +153,7 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 	this.translateExps = function() {
 		angular.forEach(this.experiments, function(anExp) {
 			anExp.trname=key2string.key2string(anExp.name,thisController.expsStrings)
-		})	
+		})
 	};
 	
 }

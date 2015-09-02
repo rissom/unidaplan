@@ -111,12 +111,13 @@
 			<a ui-sref="experiment({experimentID:experiment.exp_id})">
 				 Experiment no. {{experiment.exp_id}}, "{{experiment.trname}}"
 			</a>
-				<div ng-repeat="process in experiment.plannedprocesses">
-					{{sampleCtrl.getProcessType(process)}}<br /><em>
-					{{'comment'|translate}}: {{process.trnote}}<br />
-					{{'recipe'|translate}}: {{process.trrecipe}}</em><br /><br />
-					
-				</div>
+			<ul>
+				<li ng-repeat="process in experiment.plannedprocesses">
+					{{sampleCtrl.getProcessType(process)}}<br />
+					<div ng-show="process.trnote"><em>({{process.trnote}})</em></div>
+					<div ng-show="process.trrecipe"><em>{{'recipe'|translate}}: {{process.trrecipe}}</em></div>
+				</li>
+			</ul>
 		</div>
 	<br />
 

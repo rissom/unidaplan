@@ -59,7 +59,7 @@
 		class="btn btn-default">
 	{{'Cancel'|translate}}
 </button>&nbsp;
-<button ng-click="mSampleChoserCtrl.assignSamples()" 
+<button ng-hide="mSampleChoserCtrl.immediate" ng-click="mSampleChoserCtrl.assignSamples()" 
 		class="btn btn-primary">
 	{{mSampleChoserCtrl.getButtonLabel()}}
 </button>

@@ -12,10 +12,10 @@
 			</tr>
 			<tr ng-repeat="experiment in oexpCtrl.myexperiments()">
 				<td>
-				<a ui-sref="experiment({experimentID:experiment.id})">{{experiment.number}}</a>
+				<a ui-sref="experiment({experimentID:experiment.id,editmode:'false'})">{{experiment.number}}</a>
 				</td>
 				<td>
-				<a ui-sref="experiment({experimentID:experiment.id})">{{experiment.trname}}</a>
+				<a ui-sref="experiment({experimentID:experiment.id,editmode:'false'})">{{experiment.trname}}</a>
 				</td>
 				<td>
 	  				<div class="dropdown" dropdown on-toggle="toggled(open)">
@@ -53,7 +53,7 @@
 			</tr>
 			<tr ng-repeat="experiment in oexpCtrl.otherexperiments()">
 				<td>
-					<a ui-sref="experiment({experimentID:experiment.id})">
+					<a ui-sref="experiment({experimentID:experiment.id,editmode:'false'})">
 						{{experiment.number}}
 					</a>
 				</td>
@@ -61,7 +61,7 @@
 					{{experiment.creator}}
 				</td>	
 				<td>
-					<a ui-sref="experiment({experimentID:experiment.id})">
+					<a ui-sref="experiment({experimentID:experiment.id,editmode:'false'})">
 						{{experiment.trname}}
 					</a>
 				</td>

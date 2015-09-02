@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-	public class DeleteSampleFromExperiment extends HttpServlet {
+	public class DeactivateProcessStep extends HttpServlet {
 		private static final long serialVersionUID = 1L;
 
 	@Override
@@ -22,12 +22,12 @@ import org.json.JSONObject;
 //		Authentificator authentificator = new Authentificator();
 //		int userID=authentificator.GetUserID(request,response);
 		request.setCharacterEncoding("utf-8");
-	    int id=0;
+	    int processStepID=0;
 	  	  	try{
-	  	  		id=Integer.parseInt(request.getParameter("id")); 
+	  	  		processStepID=Integer.parseInt(request.getParameter("processstepid")); 
 	  	  	}
 	  	  	catch (Exception e1) {
-	  	  		System.err.print("DeleteSampleFromExperiment: no user ID given!");
+	  	  		System.err.print("DeactivateProcessStep: no user ID given!");
 	  	  	}
 	    String status="ok";
 
@@ -36,25 +36,18 @@ import org.json.JSONObject;
 		 	DBconnection DBconn=new DBconnection();
 		    DBconn.startDB();	   
 		    // decrease positions behind the sample to delete
-		    PreparedStatement pstmt = DBconn.conn.prepareStatement(    		
-	    		"UPDATE expp_samples SET position = position - 1 "
-	    		+"WHERE expp_id=(SELECT expp_id FROM expp_samples WHERE id=?) "
-	    		+" AND position>(SELECT position FROM expp_samples WHERE id=?)");
-	    	pstmt.setInt(1,id);
-	    	pstmt.setInt(2,id);
-	    	pstmt.executeUpdate();
-			pstmt= DBconn.conn.prepareStatement( 			
-					"DELETE FROM expp_samples WHERE id=?");
-		   	pstmt.setInt(1, id);
+		    PreparedStatement pstmt = DBconn.conn.prepareStatement(    	
+				"DELETE FROM exp_plan_steps WHERE id=?");
+		   	pstmt.setInt(1, processStepID);
 		   	pstmt.executeUpdate();
 			pstmt.close();
 			DBconn.closeDB();
 		} catch (SQLException e) {
-			System.err.println("DeleteSampleFromExperiment: Problems with SQL query");
-			status="SQL Error; DeleteSampleFromExperiment";
+			System.err.println("DeactivateProcessStep: Problems with SQL query");
+			status="SQL Error; DeactivateProcessStep";
 		} catch (Exception e) {
-			System.err.println("DeleteSampleFromExperiment: Strange Problems");
-			status="Error DeleteSampleFromExperiment";
+			System.err.println("DeactivateProcessStep: Strange Problems");
+			status="Error DeactivateProcessStep";
 		}	
 		
 	    // tell client that everything is fine
@@ -64,10 +57,9 @@ import org.json.JSONObject;
 	    try {
 	        JSONObject answer = new JSONObject();
 			answer.put("status", status);
-			answer.put("id", id);
 			out.println(answer.toString());
 		} catch (JSONException e) {
-			System.err.println("DeleteSampleFromExperiment: Problems creating JSON answer");
+			System.err.println("DeactivateProcessStep: Problems creating JSON answer");
 		}    
 	}
 }	 

@@ -218,12 +218,13 @@ public class Showsample extends HttpServlet {
       		  stringkeys.add(Integer.toString(eps.getJSONObject(i).getInt("name")));
       		// get planned processes
       		pstmt= dBconn.conn.prepareStatement("SELECT expp_samples.expp_ID, eps.id AS process_step_id, "
-				+"eps.position AS processposition, eps.ptid AS processtype, eps.recipe, eps.note, " 
+				+"epp.position AS processposition, epp.ptid AS processtype, eps.recipe, eps.note, " 
 				+"p_recipes.name as recipename " 
 				+"FROM expp_samples "
 				+"JOIN exp_plan_steps eps ON (eps.expp_s_ID=expp_samples.expp_id) "
 				+"LEFT JOIN p_recipes ON (p_recipes.id=eps.recipe) " 
-				+"WHERE expp_samples.sample=? AND expp_id=? "
+				+"JOIN exp_plan_processes epp ON (epp.id=eps.exp_plan_pr) "
+				+"WHERE expp_samples.sample=? AND expp_samples.expp_id=? "
 				+"ORDER BY processposition");
       		pstmt.setInt(1,objID);
       		int experimentID=eps.getJSONObject(i).getInt("exp_id");

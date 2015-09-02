@@ -55,6 +55,7 @@ import org.json.JSONObject;
 			response.setStatus(404);
 	   	}
 	    try {  
+	    	// get basic experiment data (creator, id, name, status, number)
 			pstmt= dBconn.conn.prepareStatement( 	
 			"SELECT exp_plan.ID AS ID,users.fullname as creator, exp_plan.name ,status , intd.value AS number "
 			+"FROM  exp_plan "
@@ -80,7 +81,7 @@ import org.json.JSONObject;
 		    try {
 		    		// Get the default processes for this experiment
 		 			pstmt= dBconn.conn.prepareStatement( 
-		 			"SELECT p_recipes.name AS recipename, position, ptid AS processtype, recipe, note "
+		 			"SELECT exp_plan_processes.id, p_recipes.name AS recipename, position, ptid AS processtype, recipe, note "
 					+"FROM exp_plan_processes "
 					+"LEFT JOIN p_recipes ON (p_recipes.id=exp_plan_processes.recipe) " 
 					+"WHERE expp_id=? ORDER BY exp_plan_processes.position");
@@ -122,9 +123,10 @@ import org.json.JSONObject;
 		 					
 		 					// get planned Processes for a sample
 	 						pstmt= dBconn.conn.prepareStatement("SELECT eps.id as process_step_id, "
-								+"eps.position AS processposition, eps.ptid AS processtype, eps.recipe, eps.note, " 
-								+"p_recipes.name as recipename "
+								+"epp.position AS processposition, epp.ptid AS processtype, eps.recipe, eps.note, " 
+								+"p_recipes.name AS recipename, epp.id AS eppprocess "
 								+"FROM exp_plan_steps eps "
+								+"JOIN exp_plan_processes epp ON (epp.id=eps.exp_plan_pr) "
 								+"LEFT JOIN p_recipes ON (p_recipes.id=eps.recipe) " 
 								+"WHERE eps.expp_s_id=? "
 								+"ORDER BY processposition");
@@ -168,7 +170,7 @@ import org.json.JSONObject;
 	     		// Output the Parameters
 				pstmt= dBconn.conn.prepareStatement( 	
 	     		"SELECT expp_param.id, compulsory, expp_param.pos, "
-				+"expp_param.stringkeyname,  pid, value, " 
+				+"expp_param.stringkeyname,  pid, value, "
 				+"st.description, paramdef.datatype "
 				+"FROM expp_param "
 				+"JOIN paramdef ON (paramdef.id=expp_param.definition) " 

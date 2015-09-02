@@ -2,7 +2,7 @@
 'use strict';
 
 
-function modalSampleChoser(avSampleTypeService,$translate,$scope,$modalInstance,restfactory,types,samples,except,buttonLabel) {
+function modalSampleChoser(avSampleTypeService,$translate,$scope,$modalInstance,restfactory,types,samples,except,buttonLabel,mode) {
 
 	if (samples) {
 		this.chosenSamples=samples.slice(0);
@@ -14,6 +14,8 @@ function modalSampleChoser(avSampleTypeService,$translate,$scope,$modalInstance,
 	this.selectedTypesVar=[];
 	this.selectortypes=[];
 	thisController=this;
+	this.immediate= (mode=='immediate');
+	
 	
 	
 	$scope.$watch('mSampleChoserCtrl.selectedtypes', function (seltypes){
@@ -190,6 +192,7 @@ function modalSampleChoser(avSampleTypeService,$translate,$scope,$modalInstance,
 		if (!found) {
 			this.chosenSamples.push(sample);
 		}
+		if (this.immediate){this.assignSamples()}
 	}
 	
 	
@@ -206,6 +209,6 @@ function modalSampleChoser(avSampleTypeService,$translate,$scope,$modalInstance,
 };
 
         
-angular.module('unidaplan').controller('modalSampleChoser',['avSampleTypeService','$translate','$scope','$modalInstance','restfactory','types','samples','except','buttonLabel',modalSampleChoser]);
+angular.module('unidaplan').controller('modalSampleChoser',['avSampleTypeService','$translate','$scope','$modalInstance','restfactory','types','samples','except','buttonLabel','mode',modalSampleChoser]);
 
 })();

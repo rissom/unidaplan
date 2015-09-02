@@ -32,6 +32,9 @@
 	border-style: solid;
 	border-color: #888888;
 	background-color: #F7F7F7;
+	text-align: center;
+	margin-left: auto;
+    margin-right: auto;
 }
 
 .exptd {
@@ -66,7 +69,7 @@ ol {
 		margin-left: 0px;
 	margin-right: 0px;
   	display: inline-block;
-  	text-align: center;
+  	align: center;
   	border: 1px solid grey;
 }
 
@@ -99,3 +102,10 @@ ol {
 	border-left: 0;
 }
 
+.sideways{
+	-moz-transform: rotate(90deg);
+	-ms-transform: rotate(90deg);
+	-o-transform: rotate(90deg);
+	-webkit-transform: rotate(90deg);
+	transform: rotate(90deg);
+}

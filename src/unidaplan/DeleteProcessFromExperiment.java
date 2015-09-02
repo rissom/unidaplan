@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-	public class DeleteSampleFromExperiment extends HttpServlet {
+	public class DeleteProcessFromExperiment extends HttpServlet {
 		private static final long serialVersionUID = 1L;
 
 	@Override
@@ -27,7 +27,7 @@ import org.json.JSONObject;
 	  	  		id=Integer.parseInt(request.getParameter("id")); 
 	  	  	}
 	  	  	catch (Exception e1) {
-	  	  		System.err.print("DeleteSampleFromExperiment: no user ID given!");
+	  	  		System.err.print("DeleteProcessFromExperiment: no user ID given!");
 	  	  	}
 	    String status="ok";
 
@@ -37,24 +37,24 @@ import org.json.JSONObject;
 		    DBconn.startDB();	   
 		    // decrease positions behind the sample to delete
 		    PreparedStatement pstmt = DBconn.conn.prepareStatement(    		
-	    		"UPDATE expp_samples SET position = position - 1 "
-	    		+"WHERE expp_id=(SELECT expp_id FROM expp_samples WHERE id=?) "
-	    		+" AND position>(SELECT position FROM expp_samples WHERE id=?)");
+	    		"UPDATE exp_plan_processes SET position = position - 1 "
+		    	+"WHERE expp_id=(SELECT expp_id FROM exp_plan_processes WHERE id=?) " 
+		    	+"AND position>(SELECT position FROM exp_plan_processes WHERE id=?)");
 	    	pstmt.setInt(1,id);
 	    	pstmt.setInt(2,id);
 	    	pstmt.executeUpdate();
 			pstmt= DBconn.conn.prepareStatement( 			
-					"DELETE FROM expp_samples WHERE id=?");
+					"DELETE FROM exp_plan_processes WHERE id=?");
 		   	pstmt.setInt(1, id);
 		   	pstmt.executeUpdate();
 			pstmt.close();
 			DBconn.closeDB();
 		} catch (SQLException e) {
-			System.err.println("DeleteSampleFromExperiment: Problems with SQL query");
-			status="SQL Error; DeleteSampleFromExperiment";
+			System.err.println("DeleteProcessFromExperiment: Problems with SQL query");
+			status="SQL Error; DeleteProcessFromExperiment";
 		} catch (Exception e) {
-			System.err.println("DeleteSampleFromExperiment: Strange Problems");
-			status="Error DeleteSampleFromExperiment";
+			System.err.println("DeleteProcessFromExperiment: Strange Problems");
+			status="Error DeleteProcessFromExperiment";
 		}	
 		
 	    // tell client that everything is fine
@@ -67,7 +67,7 @@ import org.json.JSONObject;
 			answer.put("id", id);
 			out.println(answer.toString());
 		} catch (JSONException e) {
-			System.err.println("DeleteSampleFromExperiment: Problems creating JSON answer");
+			System.err.println("DeleteProcessFromExperiment: Problems creating JSON answer");
 		}    
 	}
 }	 

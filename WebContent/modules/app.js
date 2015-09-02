@@ -150,7 +150,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
         })
         
         .state('experiment', {
-	    	url: '/experiment/{experimentID:int}',
+	    	url: '/experiment?:experimentID&:editmode',
 	        templateUrl: 'modules/experiments/experiment.html',
 	        controller: 'experimentController as experimentCtrl',
 	        resolve:{
@@ -166,6 +166,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	            	function(experimentService,$stateParams){
 	        			return experimentService.getExperiment($stateParams.experimentID)
 	        	    }
+	        	
 	        }
         })
         

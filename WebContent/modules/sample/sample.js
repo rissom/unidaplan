@@ -54,18 +54,15 @@ function sampleController(sample,$state,$modal,$filter,types,sampleService,avSam
 		    controller: 'modalSampleChoser as mSampleChoserCtrl',
 		    size: 'lg',
 		    resolve: {
-		    	samples 	  : function() {
-		    					return mSamples; },
-		        types         : function() {
-		        				return types; },
+		    	samples 	  : function() { return mSamples; },
+		        types         : function() { return types; },
 		        except		  : function() {
 		        				return {sampleid:sample.id,
 		        						typeid:sample.typeid,
 		        						name:sample.name}
 		        				},
-		        buttonLabel	  : function() { 
-		        				return 'assign to sample';
-		        				}
+		        mode		  : function() { return "multiple"},
+		        buttonLabel	  : function() { return 'assign to sample'; }
 		    }		        
 		});
 	    
