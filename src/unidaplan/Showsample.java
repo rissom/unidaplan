@@ -221,7 +221,7 @@ public class Showsample extends HttpServlet {
 				+"epp.position AS processposition, epp.ptid AS processtype, eps.recipe, eps.note, " 
 				+"p_recipes.name as recipename " 
 				+"FROM expp_samples "
-				+"JOIN exp_plan_steps eps ON (eps.expp_s_ID=expp_samples.expp_id) "
+				+"JOIN exp_plan_steps eps ON (eps.expp_s_ID=expp_samples.id) "
 				+"LEFT JOIN p_recipes ON (p_recipes.id=eps.recipe) " 
 				+"JOIN exp_plan_processes epp ON (epp.id=eps.exp_plan_pr) "
 				+"WHERE expp_samples.sample=? AND expp_samples.expp_id=? "
