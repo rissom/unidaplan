@@ -25,19 +25,26 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 	
 	this.getExperiment = function(id) {
         var defered=$q.defer();
-    	    	var thisController=this;
-    			var promise = restfactory.GET("experiment?id="+id);
-    	    	promise.then(function(rest) {
-	    	    	thisController.experiment = rest.data.experiment;
-	    	    	thisController.strings = rest.data.strings;
-	    	    	thisController.translate();
-	    		    thisController.pushExperiment(thisController.experiment);
-	    	    	defered.resolve(thisController.experiment)
-    	    	}, function(rest) {    	    		
-    	    		console.log("Error loading experiment");
-    	    		defered.reject({"error":"Error loading experiment"});
-    	    	});
+	    	var thisController=this;
+			var promise = restfactory.GET("experiment?id="+id);
+	    	promise.then(function(rest) {
+    	    	thisController.experiment = rest.data.experiment;
+    	    	thisController.strings = rest.data.strings;
+    	    	thisController.translate();
+    		    thisController.pushExperiment(thisController.experiment);
+    	    	defered.resolve(thisController.experiment)
+	    	}, function(rest) {    	    		
+	    		console.log("Error loading experiment");
+	    		defered.reject({"error":"Error loading experiment"});
+	    	});
 		return defered.promise;
+	}
+	
+	
+	
+	this.ExpStepChangeRecipe = function(id,recipe) {
+		console.log("id,recipe",id,recipe)
+		return restfactory.POST("exp-step-change-recipe?processstepid="+id+"&recipe="+recipe);
 	}
 	
     
@@ -97,15 +104,19 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 	
 	
 	this.deactivateProcessStep = function(processStepID){
-		return restfactory.POST("http://localhost:8080/unidaplan/deactivate-process-step?processstepid="+processStepID);
-	};
+		return restfactory.POST("deactivate-process-step?processstepid="+processStepID);
+	};							
 
 	
 	
+	this.addProcessStep = function(processid, sampleid){
+		return restfactory.POST("add-process-step?pprocess="+processid+"&expsample="+sampleid); 
+	};
+	
+	
+	
 	this.updatePositionsForProcessesInExperiment=function(processes){
-		console.log ("immer noch alles gut?")
 		return restfactory.POST("update-positions-for-processes-in-experiment",processes);
-		console.log ("hmm.")
 	}
 	
 	

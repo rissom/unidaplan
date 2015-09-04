@@ -367,4 +367,24 @@
     <servlet-name>DeactivateProcessStep</servlet-name>
     <url-pattern>/deactivate-process-step</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description>AddProcessStep</description>
+    <display-name>AddProcessStep</display-name>
+    <servlet-name>AddProcessStep</servlet-name>
+    <servlet-class>unidaplan.AddProcessStep</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddProcessStep</servlet-name>
+    <url-pattern>/add-process-step</url-pattern>
+  </servlet-mapping>
+    <servlet>
+    <description>ExpStepChangeRecipe</description>
+    <display-name>ExpStepChangeRecipe</display-name>
+    <servlet-name>ExpStepChangeRecipe</servlet-name>
+    <servlet-class>unidaplan.ExpStepChangeRecipe</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ExpStepChangeRecipe</servlet-name>
+    <url-pattern>/exp-step-change-recipe</url-pattern>
+  </servlet-mapping>
 </web-app>

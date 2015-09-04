@@ -124,7 +124,7 @@ function sampleController(sample,$state,$modal,$filter,types,sampleService,avSam
 						 }
 						);
 			 } else {
-				var res = sampleService.addSampleParameter(this.id,parameter);
+				var res = sampleService.addSampleParameter(sample.id,parameter);
 					res.then(function(data) {
 							 },
 							 function(data) {

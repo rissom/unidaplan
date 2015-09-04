@@ -2,13 +2,12 @@
 'use strict';
 
 var avProcessTypeService = function (restfactory,$q,key2string,$translate) {
-	// restfactory is a wrapper for $html.
+	// get the available processtypes and their names and recipes.
 
 	
 	
 	this.getProcessType = function(process,pTypes) {
 		var processTypeName
-//		var pTypes=this.processTypes;
 		  angular.forEach(pTypes,function(ptype) {
 			if (process.processtype==ptype.id){
 				processTypeName=ptype.trname;
@@ -17,6 +16,17 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate) {
 		return processTypeName; 
 	}
 
+	
+	
+	this.getProcessRecipes = function(process,pTypes){
+		var recipes=[];
+		angular.forEach(pTypes,function(ptype) {
+			if (process.processtype==ptype.id){
+				recipes=ptype.recipes;
+			}
+	      })
+		return recipes
+	}
 	
 	
 	this.getProcessTypes = function() {
@@ -49,6 +59,9 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate) {
 		var strings=thisController.strings
 		angular.forEach(thisController.processTypes, function(proc) {
 			proc.trname=key2string.key2string(proc.name,thisController.strings);
+			angular.forEach(proc.recipes, function(recipe) {
+				recipe.trname=key2string.key2string(recipe.name,thisController.strings);
+			})
 		})
 	}
 

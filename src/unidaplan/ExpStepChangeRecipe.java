@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-	public class DeactivateProcessStep extends HttpServlet {
+	public class ExpStepChangeRecipe extends HttpServlet {
 		private static final long serialVersionUID = 1L;
 
 	@Override
@@ -23,11 +23,13 @@ import org.json.JSONObject;
 //		int userID=authentificator.GetUserID(request,response);
 		request.setCharacterEncoding("utf-8");
 	    int processStepID=0;
+	    int newRecipe=0;
 	  	  	try{
-	  	  		processStepID=Integer.parseInt(request.getParameter("processstepid")); 
+	  	  		processStepID=Integer.parseInt(request.getParameter("processstepid"));
+	  	  		newRecipe=Integer.parseInt(request.getParameter("recipe")); 
 	  	  	}
 	  	  	catch (Exception e1) {
-	  	  		System.err.print("DeactivateProcessStep: no processstep ID given!");
+	  	  		System.err.print("ExpStepChangeRecipe: no processstep ID given!");
 	  	  	}
 	    String status="ok";
 
@@ -37,17 +39,18 @@ import org.json.JSONObject;
 		    DBconn.startDB();	   
 		    // decrease positions behind the sample to delete
 		    PreparedStatement pstmt = DBconn.conn.prepareStatement(    	
-				"DELETE FROM exp_plan_steps WHERE id=?");
-		   	pstmt.setInt(1, processStepID);
+				"UPDATE exp_plan_steps SET recipe=? WHERE id=?");
+		    pstmt.setInt(1, newRecipe);
+		    pstmt.setInt(2, processStepID);
 		   	pstmt.executeUpdate();
 			pstmt.close();
 			DBconn.closeDB();
 		} catch (SQLException e) {
-			System.err.println("DeactivateProcessStep: Problems with SQL query");
-			status="SQL Error; DeactivateProcessStep";
+			System.err.println("ExpStepChangeRecipe: Problems with SQL query");
+			status="SQL Error; ExpStepChangeRecipe";
 		} catch (Exception e) {
-			System.err.println("DeactivateProcessStep: Strange Problems");
-			status="Error DeactivateProcessStep";
+			System.err.println("ExpStepChangeRecipe: Strange Problems");
+			status="Error ExpStepChangeRecipe";
 		}	
 		
 	    // tell client that everything is fine
@@ -59,7 +62,7 @@ import org.json.JSONObject;
 			answer.put("status", status);
 			out.println(answer.toString());
 		} catch (JSONException e) {
-			System.err.println("DeactivateProcessStep: Problems creating JSON answer");
+			System.err.println("ExpStepChangeRecipe: Problems creating JSON answer");
 		}    
 	}
 }	 

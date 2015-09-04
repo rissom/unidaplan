@@ -47,21 +47,7 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 		    });
 	  };
 	  
-//	  
-//	this.addSingleSample=function(sample){
-//		// contact the server
-//
-//	};
 	
-		
-		this.replaceSample = function(sample){
-			var sample2=1;
-			
-			promise.then(function(){reload();});
-		}
-		
-		
-		
 	
 	this.replaceSample = function (sample) {
 		 console.log ("replacing")
@@ -103,6 +89,8 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 		return avSampleTypeService.getType(sample,stypes);
 	}
 	
+	
+	
 	this.getProcessType = function(process) {
 //		console.log ("getting Sampletype with id:", id)
 		return avProcessTypeService.getProcessType(process,ptypes);
@@ -110,9 +98,48 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 	
 	
 	
+	this.getProcessRecipes = function(process){
+		return avProcessTypeService.getProcessRecipes(process,ptypes)
+	}
+	
+	
 	this.setProcesstype = function(process, processtype){
 		var promise= experimentService.setProcesstype(process.id, processtype.id);
 		promise.then(function(){reload();});
+	}
+	
+	
+	this.changeRecipe = function(pprocess){
+		var promise=experimentService.ExpStepChangeRecipe(pprocess.process_step_id,pprocess.recipe);
+		promise.then(function(){reload();});
+	}
+	
+	
+	
+	this.getWidth = function(){
+		//adjusts the width of a div for the experiment in edit-mode. 
+		// So big tables are not squeezed
+		var numProc=0;
+		if (this.experiment.processes) { 
+			numProc=this.experiment.processes.length; 
+		}
+		var mystyle= {'width':400+180*numProc+'px'};
+		return mystyle;
+	}
+	
+	
+	
+	this.changeProcessStep = function($event,process,sample){
+		
+			// unchecking a process step
+			if (!$event.target.checked) {
+				var p=this.getPlannedProcess(process,sample.pprocesses)
+				var promise = experimentService.deactivateProcessStep(p.process_step_id);
+				promise.then(function(){reload();});
+			} else{
+				var promise = experimentService.addProcessStep(process.id, sample.id);
+				promise.then(function(){reload();});
+			}
 	}
 	
 	
@@ -131,7 +158,6 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 			}
 		}
 		process.position=process.position+1;
-		console.log ("noch alles gut.")
 		this.updatePositionsForProcesses();
 	}
 	
@@ -167,6 +193,7 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 		var promise = experimentService.deleteProcess(process.id);
 		promise.then(function(){reload();});
 	}
+	
 	
 	
 	this.getPlannedProcess = function(process,pprocesses){

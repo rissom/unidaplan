@@ -21,53 +21,65 @@ public class AvailableProcesstypes extends HttpServlet {
         super();
     }
 
-	  @Override
-	  protected void doGet(HttpServletRequest request, HttpServletResponse response) 
-			  throws ServletException, IOException {
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+		throws ServletException, IOException {
 		  
-			Authentificator authentificator = new Authentificator();
-			int userID=authentificator.GetUserID(request,response);
-			request.setCharacterEncoding("utf-8");
-		    response.setContentType("application/json");
-		    response.setCharacterEncoding("utf-8");
-		    PrintWriter out = response.getWriter(); 
-		    
-			PreparedStatement pstmt = null; 	// Declare variables
-		    JSONArray processList= null;		
-		 	DBconnection DBconn=new DBconnection(); // New connection to the database
-		 	DBconn.startDB();
-		 			 	
-		 	ArrayList<String> stringkeys = new ArrayList<String>(); 
+		Authentificator authentificator = new Authentificator();
+		int userID=authentificator.GetUserID(request,response);
+		userID=userID+1;
+		userID=userID-1;
+		request.setCharacterEncoding("utf-8");
+	    response.setContentType("application/json");
+	    response.setCharacterEncoding("utf-8");
+	    PrintWriter out = response.getWriter(); 
+	    
+		PreparedStatement pstmt = null; 	// Declare variables
+	    JSONArray processList= null;
+	    JSONArray recipes= null;		
+	 	DBconnection DBconn=new DBconnection(); // New connection to the database
+	 	DBconn.startDB();
+	 			 	
+	 	ArrayList<String> stringkeys = new ArrayList<String>(); 
 		 	
 		 	
-		    try {
-		       pstmt = DBconn.conn.prepareStatement(	
-				"SELECT pt.id, pt.name FROM processtypes pt");
-		       processList=DBconn.jsonArrayFromPreparedStmt(pstmt); // get ResultSet from the database using the query
-	            if (processList.length()>0) {
-	           	  for (int i=0; i<processList.length();i++) {
-	           		  JSONObject dings=(JSONObject) processList.get(i);
-	           		  stringkeys.add(Integer.toString(dings.getInt("name")));
-	           	  }
-		          String query="SELECT id,string_key,language,value FROM Stringtable WHERE string_key=ANY('{";
+	 		try{
+	 			pstmt = DBconn.conn.prepareStatement(	
+				  "SELECT pt.id, pt.name FROM processtypes pt");
+	 			processList=DBconn.jsonArrayFromPreparedStmt(pstmt); // get ResultSet from the database using the query
+	 			pstmt.close();
+	           	if (processList.length()>0) {
+	           		for (int i=0; i<processList.length();i++) {
+	           			JSONObject tempObj=processList.getJSONObject(i);
+	           			stringkeys.add(Integer.toString(tempObj.getInt("name")));
+	           			pstmt = DBconn.conn.prepareStatement(
+	           					"SELECT id, name FROM p_recipes WHERE ot_id=?");
+	           			pstmt.setInt(1, tempObj.getInt("id"));
+	           			recipes=DBconn.jsonArrayFromPreparedStmt(pstmt); // get ResultSet from the database using the query
+	           			processList.getJSONObject(i).put("recipes", recipes);
+	    	           	if (recipes.length()>0) {
+	    	           		for (int j=0; j<recipes.length();j++) {
+	    	           			stringkeys.add(Integer.toString(recipes.getJSONObject(j).getInt("name")));
+	    	           		}
+	    	           	}
+	           		}
+	           		String query="SELECT id,string_key,language,value FROM Stringtable WHERE string_key=ANY('{";
 		           	
-		          StringBuilder buff = new StringBuilder(); // join numbers with commas
-		          String sep = "";
-		          for (String str : stringkeys) {
-		           	    buff.append(sep);
-		           	    buff.append(str);
-		           	    sep = ",";
-		          }
-		          query+= buff.toString() + "}'::int[])";
-		          JSONArray theStrings=DBconn.jsonfromquery(query);
-		          JSONObject jsAvailable=new JSONObject();
-		          jsAvailable.put("processes", processList);
-		          jsAvailable.put("strings", theStrings);
-		          out.println(jsAvailable.toString());
-
-	  	        }
-	  	        else {					
-	  	    	  out.println("[]");			// return empty array
+           			StringBuilder buff = new StringBuilder(); // join numbers with commas
+			        String sep = "";
+			        for (String str : stringkeys) {
+			        	buff.append(sep);
+			           	buff.append(str);
+			           	sep = ",";
+			        }
+			        query+= buff.toString() + "}'::int[])";
+			        JSONArray theStrings=DBconn.jsonfromquery(query);
+			        JSONObject jsAvailable=new JSONObject();
+			        jsAvailable.put("processes", processList);
+			        jsAvailable.put("strings", theStrings);
+			        out.println(jsAvailable.toString());
+           		}else {					
+           			out.println("[]");			// return empty array
 	  	        }       
 	            
 		    } catch (SQLException eS) {
