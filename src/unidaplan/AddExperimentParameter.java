@@ -36,10 +36,10 @@ import org.json.JSONObject;
 	    
 	    // get the id
 	    int id=0;
-	    int sampleid=-1;
+	    int experimentID=-1;
 	    try {
 			 id=jsonIn.getInt("id");	
-			 sampleid=Integer.parseInt(request.getParameter("sampleid")); 
+			 experimentID=Integer.parseInt(request.getParameter("experimentid")); 
 //			 sampleid=jsonIn.getInt("sampleid");			 
 		} catch (JSONException e) {
 			System.err.println("AddExperimentParameter: Error parsing ID-Field");
@@ -75,14 +75,14 @@ import org.json.JSONObject;
 	        case 1: {   pstmt= DBconn.conn.prepareStatement( 			// Integer values
 			   					 "INSERT INTO expp_integer_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
 			   			pstmt.setInt(1, id);
-				        pstmt.setInt(2, sampleid);
+				        pstmt.setInt(2, experimentID);
 			   			pstmt.setInt(3, jsonIn.getInt("value"));
 			   			pstmt.setInt(4, userID);
 			   			break;
 			        }
 	        case 2: {   pstmt= DBconn.conn.prepareStatement( 			// Double values
 	   					 		"INSERT INTO expp_float_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
-				        pstmt.setInt(1, sampleid);
+				        pstmt.setInt(1, experimentID);
 			   			pstmt.setInt(2, id);				        
 				        pstmt.setDouble(3, jsonIn.getDouble("value"));
 				        pstmt.setInt(4, userID);
@@ -90,7 +90,7 @@ import org.json.JSONObject;
         			}
 	        case 3: {   pstmt= DBconn.conn.prepareStatement( 			// Measurement data
 						 		"INSERT INTO expp_measurement_data VALUES(DEFAULT,?,?,?,?,NOW(),?) RETURNING ID");
-	        			pstmt.setInt(1, sampleid);
+	        			pstmt.setInt(1, experimentID);
 	        			pstmt.setInt(2, id);
 						pstmt.setDouble(3, Double.parseDouble(jsonIn.getString("value").split("±")[0]));
 						pstmt.setDouble(4, Double.parseDouble(jsonIn.getString("value").split("±")[1]));
@@ -99,7 +99,7 @@ import org.json.JSONObject;
 			        }
 	        case 4:  { pstmt= DBconn.conn.prepareStatement( 			// String data	
 				 		"INSERT INTO expp_string_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
-				        pstmt.setInt(1, sampleid);
+				        pstmt.setInt(1, experimentID);
 				        pstmt.setInt(2, id);
 				        pstmt.setString(3, jsonIn.getString("value"));
 				        pstmt.setInt(4, userID);
@@ -107,7 +107,7 @@ import org.json.JSONObject;
 			        }
 	        case 5: {  pstmt= DBconn.conn.prepareStatement( 			
 	        		 	"INSERT INTO expp_string_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
-				        pstmt.setInt(1, sampleid);
+				        pstmt.setInt(1, experimentID);
 				        pstmt.setInt(2, id);
 				        pstmt.setString(3, jsonIn.getString("value"));
 				        pstmt.setInt(4, userID);

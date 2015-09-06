@@ -149,6 +149,37 @@ public class DBconnection  {
 }
   
   
+  public int getSingleIntValue(PreparedStatement pStmt) throws Exception{
+	  int result = -1;
+	  ResultSet queryResult=null;
+	  	  try{
+	          if (pStmt==null) {
+		          System.err.println("DBconnection: prepared statement null! " );
+	          } else {
+	        	  queryResult = pStmt.executeQuery(); 
+	          }
+	          if (queryResult==null) {
+	        	  System.err.println("DBconnection: statement result null! ");
+	          } else {
+	        	  if ( queryResult.next() ){
+		                  result=queryResult.getInt(1);
+		              }
+	        	  else {
+//	        		  it is perfectly normal to not have a result...
+//	        		  System.err.println("DBconnection: No result!");
+	        	  }
+	          }
+	          queryResult.close();
+	          pStmt.close();
+	  	  } catch (SQLException e) {   // Exception for SQL database
+	  		  System.err.println("DBconnection: No result, or problem with the database");
+	  	  } catch (Exception e) {
+	  		  System.err.println("DBconnection: Some problem with database query. Error! ");
+//	  		  e.printStackTrace();
+		  }
+      return result;
+      }
+  
   
   public JSONArray table2json(ResultSet rs) throws Exception {
         JSONArray jsArray = new JSONArray();        

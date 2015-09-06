@@ -43,7 +43,6 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 	
 	
 	this.ExpStepChangeRecipe = function(id,recipe) {
-		console.log("id,recipe",id,recipe)
 		return restfactory.POST("exp-step-change-recipe?processstepid="+id+"&recipe="+recipe);
 	}
 	
@@ -121,12 +120,28 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 	
 	
 	
+	this.updateExperimentSampleComment = function(id,comment){
+		var promise = restfactory.POST('update-experiment-sample-comment',
+				{"id":id,"comment":comment});
+		return promise;
+	}
+	
+	
+
+	this.updateExperimentStepComment = function(id,comment){
+		var promise = restfactory.POST('update-experiment-step-comment',
+						{"id":id,"comment":comment});
+		return promise;
+	}
+	
+	
+	
 	this.deleteSampleFromExperiment = function(id){
 		// Removes a sample from an experiment. 
 		return restfactory.POST("delete-sample-from-experiment?id="+id);
 	}
 	
-	
+
 	
 	this.deleteProcess=function(id){
 		//removes a proces from an experiment
@@ -155,6 +170,11 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 		angular.forEach(this.experiment.samples, function(sample){
 			if (sample.note!=undefined) {
 				sample.trnote=key2string.key2string(sample.note,thisController.strings);
+				angular.forEach(sample.pprocesses, function(pprocess){
+					if (pprocess.note){
+						pprocess.trnote=key2string.key2string(pprocess.note,thisController.strings);
+					}
+				})
 			}
 		});
 	}

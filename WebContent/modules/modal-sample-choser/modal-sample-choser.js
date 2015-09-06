@@ -91,11 +91,20 @@ function modalSampleChoser(avSampleTypeService,$translate,$scope,$modalInstance,
 		if (thisController.userinput!=undefined){name=thisController.userinput}
 			var promise=restfactory.POST('/samples_by_name.json?name='+name,details);
 			promise.then(function(data){
-				thisController.samples=data.data.filter(
-					function(element,index,array){ // filter for exception
-						return (element.sampleid!=except.sampleid)
+				var tempSamples=[];
+				for(var i=0; i<data.data.length; i++){
+					var inExceptionList=false;
+					for(var j=0; j<except.length; j++){
+						if (data.data[i].sampleid==except[j].sampleid){
+							inExceptionList=true;
+						}
+							
 					}
-				);
+					if (!inExceptionList){
+						tempSamples.push(data.data[i]);
+					}					
+				}
+				thisController.samples=tempSamples;
 				if (thisController.firsttime) {
 					thisController.init();
 					thisController.firsttime=false;

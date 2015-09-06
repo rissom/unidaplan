@@ -8,7 +8,9 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 	
 	this.editmode=$stateParams.editmode;
 	
-	this.sampleActions = [$translate.instant("Go to sample"),$translate.instant("Delete Sample from Experiment"),$translate.instant("Replace sample")];	
+	this.sampleActions = [$translate.instant("Go to sample"),
+	                      $translate.instant("Delete Sample from Experiment"),
+	                      $translate.instant("Replace sample")];	
 
 	var thisController =this;	
 	
@@ -27,9 +29,11 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 		        types         : function(){return stypes; },
 		    	except		  : function(){
 		    		console.log("thisSamples",thisController.experiment.samples);
-		    		return {sampleid:thisController.experiment.samples[0].sample,
-						    typeid:thisController.experiment.samples[0].typeid,
-						    name:thisController.experiment.samples[0].name}
+		    		return thisController.experiment.samples?thisController.experiment.samples:[];
+		    		
+//		    		{sampleid:thisController.experiment.samples[0].sampleid,
+//						    typeid:thisController.experiment.samples[0].typeid,
+//						    name:thisController.experiment.samples[0].name}
 		    	},
 			    buttonLabel	  : function(){return ''; } 	// there is no button
 			}		        
@@ -39,6 +43,9 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 		      if (result.changed) {
 		    	  if (result.chosen.length>0){
 		    		   console.log("result",result.chosen);
+		    		    if (thisController.experiment.samples==undefined) {
+		    		    	thisController.experiment.samples=[];
+		    		    }
 		    			var promise=experimentService.addSampleToExperiment(thisController.experiment.id,result.chosen[0].sampleid,thisController.experiment.samples.length+1);
 		    			promise.then(function(){reload();});		    	  }
 		      }
@@ -61,10 +68,10 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 		    	samples 	  : function(){return []; },
 		        types         : function(){return stypes; },
 		    	except		  : function(){
-		    		console.log("thisSamples",sample);
-		    		return {sampleid:sample.sample,
+//		    		console.log("thisSamples",sample);
+		    		return [{sampleid:sample.sampleid,
 						    typeid:sample.typeid,
-						    name:sample.name}
+						    name:sample.name}]
 		    	},
 			    buttonLabel	  : function(){return ''; } 	// there is no button
 			}
@@ -123,14 +130,13 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 		if (this.experiment.processes) { 
 			numProc=this.experiment.processes.length; 
 		}
-		var mystyle= {'width':400+180*numProc+'px'};
+		var mystyle= {'width':500+230*numProc+'px'};
 		return mystyle;
 	}
 	
 	
 	
 	this.changeProcessStep = function($event,process,sample){
-		
 			// unchecking a process step
 			if (!$event.target.checked) {
 				var p=this.getPlannedProcess(process,sample.pprocesses)
@@ -145,6 +151,7 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 	
 	
 	this.addProcessToExperiment = function(processtype){
+		// add a process (not a single step) to the experiment
 		var promise= experimentService.addProcessToExperiment(processtype.id, this.experiment.id);
 		promise.then(function(){reload();});
 	}
@@ -254,10 +261,10 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 						 }
 						);
 			 } else {
-				var res = restfactory.POST('add-experiment-parameter.json?sampleid='+this.experiment.id,parameter);
-					res.then(function(data, status, headers, config) {
+				var res = restfactory.POST('add-experiment-parameter.json?experimentid='+this.experiment.id,parameter);
+					res.then(function(data) {
 							 },
-							 function(data, status, headers, config) {
+							 function(data) {
 								parameter.value=oldValue;
 								console.log('verkackt');
 								console.log(data);
@@ -267,6 +274,53 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 		}
 		if (keyCode===27) {		// Escape key pressed
 			parameter.editing=false;		
+		}
+	}
+	
+	
+	
+	this.commentKeyUp = function(keyCode,newValue,sample) {
+		if (keyCode===13) {				// Return key pressed
+			sample.editing=false; 
+			var oldValue=sample.trnote;
+			sample.trnote=newValue;
+			// save new comment in database.
+			var res = experimentService.updateExperimentSampleComment(sample.id,newValue);
+				res.then(function(data) {
+						 },
+						 function(data) {
+							sample.trnote=oldValue;
+							console.log('error');
+							console.log(data);
+						 }
+						);
+		}
+		if (keyCode===27) {		// Escape key pressed
+			sample.editing=false;		
+		}
+	}
+	
+	
+	
+	this.commentKeyUp2 = function(keyCode,newValue,pprocesses,process) {
+		var step=this.getPlannedProcess(process,pprocesses);
+		if (keyCode===13) {				// Return key pressed
+			step.edit=false; 
+			var oldValue=step.trnote;
+			step.trnote=newValue;
+			// save new comment in database.
+			var promise = experimentService.updateExperimentStepComment(step.process_step_id,newValue);
+			promise.then(function(data) {
+						 },
+						 function(data) {
+							step.trnote=oldValue;
+							console.log('error');
+							console.log(data);
+						 }
+						);
+		}
+		if (keyCode===27) {		// Escape key pressed
+			step.edit=false;		
 		}
 	}
 	

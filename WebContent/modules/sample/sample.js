@@ -9,8 +9,8 @@ function sampleController(sample,$state,$modal,$filter,types,sampleService,avSam
 	this.parameters = sample.parameters;
 	this.processes = $filter('orderBy')(sample.processes, 'date', false)
 	this.titleparameters = sample.titleparameters;
-	this.children = sample.children;
-	this.ancestors = sample.ancestors;
+	this.children = sample.children?sample.children:[];
+	this.ancestors = sample.ancestors?sample.ancestors:[];
 	this.plans = sample.plans;
 	this.deletable = sample.deletable;
 	this.name = sample.name;
@@ -42,10 +42,13 @@ function sampleController(sample,$state,$modal,$filter,types,sampleService,avSam
 
 	this.openDialog = function (mode) {			
 		var mSamples;
+		var eSamples;
 		if (mode=="ancestors"){ 		
-			var mSamples=this.ancestors
+			mSamples=this.ancestors;
+			eSamples=this.children;
 		} else {
-			mSamples=this.children
+			mSamples=this.children;
+			eSamples=this.ancestors;
 		}		
 			
 	    var modalInstance = $modal.open({
@@ -54,15 +57,15 @@ function sampleController(sample,$state,$modal,$filter,types,sampleService,avSam
 		    controller: 'modalSampleChoser as mSampleChoserCtrl',
 		    size: 'lg',
 		    resolve: {
-		    	samples 	  : function() { return mSamples; },
-		        types         : function() { return types; },
-		        except		  : function() {
-		        				return {sampleid:sample.id,
-		        						typeid:sample.typeid,
-		        						name:sample.name}
+		    	samples 	: function() { return mSamples; },
+		        types       : function() { return types; },
+		        except		: function() {
+		        				var eSamples2=eSamples.slice(0);
+		        				eSamples2.push({sampleid:sample.id,typeid:sample.typeid,name:sample.name});
+		        				return eSamples2;
 		        				},
-		        mode		  : function() { return "multiple"},
-		        buttonLabel	  : function() { return 'assign to sample'; }
+		        mode		: function() { return "multiple"},
+		        buttonLabel	: function() { return 'assign to sample'; }
 		    }		        
 		});
 	    

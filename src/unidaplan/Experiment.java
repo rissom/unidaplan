@@ -106,7 +106,7 @@ import org.json.JSONObject;
 		 			
 		 			// Get the associated samples and their associated processes
 		 			pstmt= dBconn.conn.prepareStatement( 
-		 			"SELECT expp_samples.id,expp_samples.position AS sampleposition,expp_samples.sample, "
+		 			"SELECT expp_samples.id,expp_samples.position AS sampleposition,expp_samples.sample AS sampleid, "
 		 			+"samplenames.typeid, samplenames.name, note "
 		 			+"FROM expp_samples "
 		 			+"JOIN samplenames ON expp_samples.sample=samplenames.id "
@@ -134,7 +134,14 @@ import org.json.JSONObject;
 	 			 			JSONArray pprocesses=dBconn.jsonArrayFromPreparedStmt(pstmt);
 	 			 			if (pprocesses.length()>0) {
 	 			 				samples.getJSONObject(i).put("pprocesses",pprocesses);
-	 			 			}	
+	 			 				for (int j=0; j<pprocesses.length();j++){
+	 			 					JSONObject tempPProcess = pprocesses.getJSONObject(j);
+	 			 					if (!tempPProcess.isNull("note")){
+				 						int processNote=tempPProcess.getInt("note");
+				 						stringkeys.add(Integer.toString(processNote));
+	 			 					}
+	 			 				}
+		 					}
 	 			 			
 		 					// get finished Processes for a sample
 	 			 			pstmt= dBconn.conn.prepareStatement( 
@@ -147,7 +154,7 @@ import org.json.JSONObject;
 	 			 				  +"JOIN p_timestamp_data ptd ON (ptd.processID=samplesinprocess.processid AND ptd.P_Parameter_ID=pp.id) "
 	 			 				  +"JOIN p_integer_data n ON (n.ProcessID=samplesinprocess.processid AND n.P_Parameter_ID=pp2.id) "
 	 			 				  +"WHERE sampleid=?");
-	 			 			pstmt.setInt(1,samples.getJSONObject(i).getInt("sample"));
+	 			 			pstmt.setInt(1,samples.getJSONObject(i).getInt("sampleid"));
 	 			 			JSONArray fprocesses=dBconn.jsonArrayFromPreparedStmt(pstmt);
 	 			 			if (fprocesses.length()>0) {
 	 			 				samples.getJSONObject(i).put("fprocesses",fprocesses);

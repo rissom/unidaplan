@@ -387,4 +387,25 @@
     <servlet-name>ExpStepChangeRecipe</servlet-name>
     <url-pattern>/exp-step-change-recipe</url-pattern>
   </servlet-mapping>
+     <servlet>
+    <description>UpdateExperimentSampleComment</description>
+    <display-name>UpdateExperimentSampleComment</display-name>
+    <servlet-name>UpdateExperimentSampleComment</servlet-name>
+    <servlet-class>unidaplan.UpdateExperimentSampleComment</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateExperimentSampleComment</servlet-name>
+    <url-pattern>/update-experiment-sample-comment</url-pattern>
+  </servlet-mapping>
+       <servlet>
+    <description>UpdateExperimentStepComment</description>
+    <display-name>UpdateExperimentStepComment</display-name>
+    <servlet-name>UpdateExperimentStepComment</servlet-name>
+    <servlet-class>unidaplan.UpdateExperimentStepComment</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateExperimentStepComment</servlet-name>
+    <url-pattern>/update-experiment-step-comment</url-pattern>
+  </servlet-mapping>
+  
 </web-app>

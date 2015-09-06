@@ -64,6 +64,9 @@
 				<ol class="exp_ol2">
 					<li class="exp_li2 title ">&nbsp;
 						{{experimentCtrl.getProcessType({"processtype":process.pprocess.processtype})}}
+						<span ng-show="process.pprocess.note">
+							({{process.pprocess.trnote}})
+						</span>
 					</li>
 					<li class="exp_li2 button_li green"> 
 						<button class="btn btn-default" 
@@ -82,47 +85,50 @@
 		<div  ng-show="experimentCtrl.editmode=='true'" style="overflow: auto; width:'100%';" >
 			<div ng-style="experimentCtrl.getWidth()">
 				<table class="exptable"> 
-				<tr>
-					<td class="exptdtitle"> {{'Sample'|translate}} </td>
-					<td class="exptdtitle"> {{'Comment'|translate}}</td>
-					<td class="exptdtitle" 
-						ng-repeat="process in  experimentCtrl.experiment.processes | orderBy : 'position'">
-						<!-- move process left -->
-						<button ng-hide=$first type="button" class="btn btn-default btn-xs pull-left"
-								ng-click="experimentCtrl.moveProcessLeft(process)"> 
-					    	&#9668;
-					    </button>
-						<!--  <span class="glyphicon glyphicon-menu-hamburger sideways"></span>  -->
-						<button type="button" class="btn btn-default btn-xs" 
-								ng-click="experimentCtrl.deleteProcess(process)">
-								<span class="glyphicon glyphicon-remove"></span>
-						</button>
-						{{experimentCtrl.getProcessType(process)}}
-						
-						<!-- move process right -->
-						<button  ng-hide=$last type="button" class="btn btn-default btn-xs pull-right" 
-								 ng-click="experimentCtrl.moveProcessRight(process)"> 
-								 &#9658;
-						</button>
-					</td>
-					<td class="dropdown" dropdown on-toggle="toggled(open)">
-						&nbsp;
-						<button type="button" class="btn btn-default btn-xs dropdown-toggle" dropdown-toggle>
-							<b>+</b> {{'Add process'|translate}}
-						</button>
-						<ul class="dropdown-menu">
-				        	<li ng-repeat="processtype in experimentCtrl.avProcesses">
-				          		<a ng-click="experimentCtrl.addProcessToExperiment(processtype)">
-				          			{{processtype.trname}}
-				          		
-				          		</a>
-				        	</li>
-						</ul>
-					</td>
 					<tr>
-				</tr>	
+						<td class="exptdtitle"> {{'Sample'|translate}} </td>
+						<td class="exptdtitle"> {{'Comment'|translate}}</td>
+						<td class="exptdtitle" 
+							ng-repeat="process in  experimentCtrl.experiment.processes | orderBy : 'position'">
+							<div style="white-space: nowrap">
+								<!-- move process left -->
+								<button ng-hide=$first type="button" class="btn btn-default btn-xs pull-left"
+										ng-click="experimentCtrl.moveProcessLeft(process)"> 
+							    	&#9668;
+							    </button>
+								<!--  <span class="glyphicon glyphicon-menu-hamburger sideways"></span>  -->
+								<button type="button" class="btn btn-default btn-xs" 
+										ng-click="experimentCtrl.deleteProcess(process)">
+										<span class="glyphicon glyphicon-remove"></span>
+								</button>
+								{{experimentCtrl.getProcessType(process)}}
+								
+								<!-- move process right -->
+								<button  ng-hide=$last type="button" class="btn btn-default btn-xs pull-right" 
+										 ng-click="experimentCtrl.moveProcessRight(process)"> 
+										 &#9658;
+								</button>
+							</div>
+						</td>
+						<td class="dropdown" dropdown on-toggle="toggled(open)">
+							&nbsp;
+							<button type="button" class="btn btn-default btn-xs dropdown-toggle" dropdown-toggle>
+								<b>+</b> {{'Add process'|translate}}
+							</button>
+							<ul class="dropdown-menu">
+					        	<li ng-repeat="processtype in experimentCtrl.avProcesses">
+					          		<a ng-click="experimentCtrl.addProcessToExperiment(processtype)">
+					          			{{processtype.trname}}
+					          		
+					          		</a>
+					        	</li>
+							</ul>
+						</td>
+					</tr>	
+					
 					<tr ng-repeat="sample in experimentCtrl.experiment.samples | orderBy : 'position'" >
-						<td class="exptd">
+						<td class="exptd" >
+							<span style="white-space: nowrap">
 							<span class="glyphicon glyphicon-menu-hamburger">&nbsp;</span>
 							
 							<button type="button" class="btn btn-default btn-xs" 
@@ -134,15 +140,24 @@
 									ng-click="experimentCtrl.deleteSample(sample)">
 								<span class="glyphicon glyphicon-remove"></span>
 							</button>
-							
 								{{experimentCtrl.getSampleType(sample)}} {{sample.name}}
-							
+							</span>
 			  			</td>
-				  		<td class="exptd">
-				  			{{sample.trnote}}
+			  			
+				  		<td class="exptd" ng-dblclick="sample.editing=true; newValue=sample.trnote">
+				  			<span ng-hide="sample.editing">
+							 	  {{sample.trnote}}
+							</span>
+							<input 						   
+								ng-keyup="experimentCtrl.commentKeyUp($event.keyCode,newValue,sample)"
+								ng-show="sample.editing" type="text"
+							    ng-model="newValue" 
+							    ng-blur="sample.editing=false">
 				  		</td>
+				  		
 				  		<td class="exptd" 
-				  			ng-repeat="process in  experimentCtrl.experiment.processes | orderBy : 'position'"> 
+				  			ng-repeat="process in  experimentCtrl.experiment.processes | orderBy : 'position'">
+				  			<span style="white-space: nowrap">
 				  			<input type="checkbox" 
 				  				   ng-checked="experimentCtrl.getPlannedProcess(process,sample.pprocesses)"
 				  				   ng-click="experimentCtrl.changeProcessStep($event, process,sample)">
@@ -152,9 +167,32 @@
 			            		ng-options="r.id as r.trname for r in experimentCtrl.getProcessRecipes(process)"
 			            		ng-change="experimentCtrl.changeRecipe(experimentCtrl.getPlannedProcess(process,sample.pprocesses))">
 			            		<option value="">-</option>
-			            	</select>        
+			            	</select>
+			            	</span>
+			            	<span>
+			            	<span  ng-dblclick="experimentCtrl.getPlannedProcess(process,sample.pprocesses).edit=true;
+			            		   newValue=experimentCtrl.getPlannedProcess(process,sample.pprocesses).trnote"
+			            		   style="display: inline-block;"
+			            		   ng-show="{{experimentCtrl.getPlannedProcess(process,sample.pprocesses)}}">
+				            	(
+			            		<input 						   
+								ng-keyup="experimentCtrl.commentKeyUp2($event.keyCode,newValue,sample.pprocesses,process)"
+								ng-show="experimentCtrl.getPlannedProcess(process,sample.pprocesses).edit" type="text"
+							    ng-model="newValue"
+							    ng-blur="experimentCtrl.getPlannedProcess(process,sample.pprocesses).edit=false"> 	    
+							    <span ng-hide="experimentCtrl.getPlannedProcess(process,sample.pprocesses).edit||
+							    experimentCtrl.getPlannedProcess(process,sample.pprocesses).trnote">
+							     -
+							    </span>
+							    <span ng-hide="experimentCtrl.getPlannedProcess(process,sample.pprocesses).edit">
+							    {{experimentCtrl.getPlannedProcess(process,sample.pprocesses).trnote}}
+							    </span>
+								)
+							</span>
+							</span>
 				  		</td>
 			  		</tr>
+			  		
 			  		<tr>
 				  		<td>
 				  			<button type="button" 

@@ -23,11 +23,14 @@ function process(avSampleTypeService,types,$modal,processData,restfactory,proces
 	        types         : function() {
 	        				return types; },
 	    	except		  : function() {
-		        				return {};
+		        				return [];
 		        			},
 		    buttonLabel	  : function() { 
 		        				return 'assign to process';
-		        			}
+		        			},
+		    mode		  : function() {
+		    					return 'multiple';
+		    				}
 		    }		        
 	  });
 	  
