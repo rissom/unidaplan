@@ -170,12 +170,12 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 		angular.forEach(this.experiment.samples, function(sample){
 			if (sample.note!=undefined) {
 				sample.trnote=key2string.key2string(sample.note,thisController.strings);
-				angular.forEach(sample.pprocesses, function(pprocess){
-					if (pprocess.note){
-						pprocess.trnote=key2string.key2string(pprocess.note,thisController.strings);
-					}
-				})
 			}
+			angular.forEach(sample.pprocesses, function(pprocess){
+				if (pprocess.note){
+					pprocess.trnote=key2string.key2string(pprocess.note,thisController.strings);
+				}
+			})
 		});
 	}
 	
