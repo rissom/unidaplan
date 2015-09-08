@@ -66,8 +66,6 @@ function process($state,$stateParams,avSampleTypeService,types,$modal,processDat
   
   
   this.setStatus=function(){
-	  console.log("pd",processData);
-	  console.log("newStatus",this.newStatus);
 	  var promise=processService.setStatus(processData,this.newStatus);
 	  promise.then(function(){
 		  reload();});

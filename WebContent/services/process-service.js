@@ -13,7 +13,6 @@ var processService = function (restfactory,$q,$translate,key2string) {
 		var statusObj={	"pid":process.statuspid,
 						"processid":process.id,
 						"value":status };
-		console.log("statusObj",statusObj)
 		var promise = restfactory.POST('update-process-parameter',statusObj);
 		return promise;
 	}
