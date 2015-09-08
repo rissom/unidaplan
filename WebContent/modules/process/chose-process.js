@@ -10,8 +10,8 @@ function choseProcessController(restfactory,$state,ptypes,avProcessTypeService){
 	this.strings = [];
 			
 	
-	this.keyUp = function(keyCode,newValue,parameter) {
-		if (keyCode===13) {				// Return key pressed
+	this.keyUp = function(keyCode) {
+		if (keyCode==13) {				// Return key pressed
 			this.choseProcess();
 		}
 	}

@@ -15,6 +15,7 @@
 
 	<input type="number" 
 	   ng-model="choseProcessCtrl.pnumber"
+	   ng-keyup="choseProcessCtrl.keyUp($event.keyCode)"
 	   style="width: 253px;" 
 	   placeholder="{{'Enter processnumber here'|translate}}">
 
