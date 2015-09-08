@@ -94,8 +94,21 @@ ol {
   	border-bottom: 1px solid grey;
 }
 
-.green {
+.status{
+	padding: 7px;
+}
+
+
+.ok {
 	background-color: #88FF88;
+}
+
+.att {
+	background-color: #FFFF77;
+}
+
+.failed {
+	background-color: #FF8888;
 }
 
 .noleftborder{

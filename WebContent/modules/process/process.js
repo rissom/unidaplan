@@ -1,7 +1,7 @@
 (function(){
   'use strict';
 
-function process(avSampleTypeService,types,$modal,processData,restfactory,processService){
+function process($state,$stateParams,avSampleTypeService,types,$modal,processData,restfactory,processService){
   
   var thisController=this;
   
@@ -9,6 +9,9 @@ function process(avSampleTypeService,types,$modal,processData,restfactory,proces
   	
   this.process=processData;
 
+  this.newStatus=1;
+  
+  this.statusStrings=processService.statusStrings;
   
   this.openDialog = function () {
 	  
@@ -50,6 +53,36 @@ function process(avSampleTypeService,types,$modal,processData,restfactory,proces
 	  return avSampleTypeService.getType(sample,types);
   }
   
+  
+  
+  this.status=function(){
+	  switch (this.process.status){
+		  case 3 : return this.statusStrings[2]; break;
+		  case 2 : return this.statusStrings[1]; break;
+		  default: return this.statusStrings[0]; 
+	  }
+  }
+  
+  
+  
+  this.setStatus=function(){
+	  console.log("pd",processData);
+	  console.log("newStatus",this.newStatus);
+	  var promise=processService.setStatus(processData,this.newStatus);
+	  promise.then(function(){
+		  reload();});
+  }
+  
+  
+  
+  var reload=function() {
+	    var current = $state.current;
+	    var params = angular.copy($stateParams);
+	    return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
+  }
+	
+  
+  
 //  this.getProcesstype=function(process,ptypes){
 //	  return avProcessTypeService.getProcessType(process,ptypes);
 //  }
@@ -67,6 +100,7 @@ function process(avSampleTypeService,types,$modal,processData,restfactory,proces
   
 };
 
-angular.module('unidaplan').controller('process', ['avSampleTypeService','types', '$modal', 'processData','restfactory','processService',process]);
+angular.module('unidaplan').controller('process', ['$state','$stateParams','avSampleTypeService','types', '$modal',
+                                                   'processData','restfactory','processService',process]);
 
 })();

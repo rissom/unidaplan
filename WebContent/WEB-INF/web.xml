@@ -397,7 +397,7 @@
     <servlet-name>UpdateExperimentSampleComment</servlet-name>
     <url-pattern>/update-experiment-sample-comment</url-pattern>
   </servlet-mapping>
-       <servlet>
+  <servlet>
     <description>UpdateExperimentStepComment</description>
     <display-name>UpdateExperimentStepComment</display-name>
     <servlet-name>UpdateExperimentStepComment</servlet-name>
@@ -407,5 +407,14 @@
     <servlet-name>UpdateExperimentStepComment</servlet-name>
     <url-pattern>/update-experiment-step-comment</url-pattern>
   </servlet-mapping>
-  
+  <servlet>
+    <description>UpdateProcessParameter</description>
+    <display-name>UpdateProcessParameter</display-name>
+    <servlet-name>UpdateProcessParameter</servlet-name>
+    <servlet-class>unidaplan.UpdateProcessParameter</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateProcessParameter</servlet-name>
+    <url-pattern>/update-process-parameter</url-pattern>
+  </servlet-mapping>  
 </web-app>

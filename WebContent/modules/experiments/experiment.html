@@ -174,20 +174,16 @@
 			            		   newValue=experimentCtrl.getPlannedProcess(process,sample.pprocesses).trnote"
 			            		   style="display: inline-block;"
 			            		   ng-show="{{experimentCtrl.getPlannedProcess(process,sample.pprocesses)}}">
-				            	(
-			            		<input 						   
+				            	(<input 						   
 								ng-keyup="experimentCtrl.commentKeyUp2($event.keyCode,newValue,sample.pprocesses,process)"
 								ng-show="experimentCtrl.getPlannedProcess(process,sample.pprocesses).edit" type="text"
 							    ng-model="newValue"
-							    ng-blur="experimentCtrl.getPlannedProcess(process,sample.pprocesses).edit=false"> 	    
-							    <span ng-hide="experimentCtrl.getPlannedProcess(process,sample.pprocesses).edit||
+							    ng-blur="experimentCtrl.getPlannedProcess(process,sample.pprocesses).edit=false"><span
+							     ng-hide="experimentCtrl.getPlannedProcess(process,sample.pprocesses).edit||
 							    experimentCtrl.getPlannedProcess(process,sample.pprocesses).trnote">
-							     -
-							    </span>
-							    <span ng-hide="experimentCtrl.getPlannedProcess(process,sample.pprocesses).edit">
-							    {{experimentCtrl.getPlannedProcess(process,sample.pprocesses).trnote}}
-							    </span>
-								)
+							     - 
+							    </span><span ng-hide="experimentCtrl.getPlannedProcess(process,sample.pprocesses).edit">{{
+							    experimentCtrl.getPlannedProcess(process,sample.pprocesses).trnote}}</span>)
 							</span>
 							</span>
 				  		</td>

@@ -5,6 +5,19 @@ var processService = function (restfactory,$q,$translate,key2string) {
 	// restfactory is a wrapper for $html.
 
 	
+	this.statusStrings = [$translate.instant("OK"),
+			              $translate.instant("attension"),
+			              $translate.instant("failed")];
+	
+	this.setStatus = function(process,status){
+		var statusObj={	"pid":process.statuspid,
+						"processid":process.id,
+						"value":status };
+		console.log("statusObj",statusObj)
+		var promise = restfactory.POST('update-process-parameter',statusObj);
+		return promise;
+	}
+	
 	this.getProcess = function(id) {
         var defered=$q.defer();
     	    	var thisController=this;

@@ -61,19 +61,21 @@ public class Process extends HttpServlet {
 
 	  try {
 		  
-		// get number and type 
+		// get number, type and status 
 		pstmt= DBconn.conn.prepareStatement(
-					"SELECT processes.id, processes.processtypesid as processtype, ptd.value AS date, n.value AS pnumber, processtypes.name AS pt_string_key "
-					+"FROM processes "
-					+"JOIN processtypes ON (processes.processtypesid=processtypes.id) "
-					+"JOIN p_parameters pp ON (pp.definition=10) " // date
-					+"JOIN p_parameters pp2 ON (pp2.definition=8) " // number
-					+"JOIN p_timestamp_data ptd ON (ptd.processID=processes.id AND ptd.P_Parameter_ID=pp.id) "
-					+"JOIN p_integer_data n ON (n.ProcessID=processes.id AND n.P_Parameter_ID=pp2.id) "
-					+"WHERE processes.id=?");
+				"SELECT processes.id, processes.processtypesid as processtype, ptd.value AS date, n1.value AS pnumber, "
+				+"processtypes.name AS pt_string_key, n2.value AS status, pp3.id AS statuspid "
+				+"FROM processes "
+				+"JOIN processtypes ON (processes.processtypesid=processtypes.id) "
+				+"JOIN p_parameters pp1 ON (pp1.definition=10 AND pp1.ProcesstypeID=processes.processtypesid) " // date
+				+"JOIN p_parameters pp2 ON (pp2.definition=8 AND pp2.ProcesstypeID=processes.processtypesid) " // number
+				+"JOIN p_parameters pp3 ON (pp3.definition=1 AND pp3.ProcesstypeID=processes.processtypesid) " // status
+				+"LEFT JOIN p_timestamp_data ptd ON (ptd.processID=processes.id AND ptd.P_Parameter_ID=pp1.id) "
+				+"LEFT JOIN p_integer_data n1 ON (n1.ProcessID=processes.id AND n1.P_Parameter_ID=pp2.id) "
+				+"LEFT JOIN p_integer_data n2 ON (n2.ProcessID=processes.id AND n2.P_Parameter_ID=pp3.id) "
+				+"WHERE processes.id=?");
 		pstmt.setInt(1, processID);
 		jsProcess= DBconn.jsonObjectFromPreparedStmt(pstmt);
-		jsProcess.put("id",processID);
 		if (jsProcess.length()>0) {
 			processTypeID=jsProcess.getInt("processtype");
 			pnumber=jsProcess.getInt("pnumber");
@@ -150,9 +152,9 @@ public class Process extends HttpServlet {
 			+"JOIN p_parametergrps ON (p_parameters.Parametergroup=p_parametergrps.ID) " 
 			+"JOIN paramdef ON (paramdef.id=p_parameters.definition)"
 			+"LEFT JOIN acc_process_parameters a ON "
-			+"(a.processid=? AND a.id=p_parameters.id AND hidden=FALSE) "
+			+"(a.processid=? AND a.ppid=p_parameters.id AND hidden=FALSE) "
 			+"JOIN String_key_table st ON st.id=p_parameters.stringkeyname "
-			+"WHERE (p_parameters.processtypeID=? AND p_parameters.id_field=False) " 
+			+"WHERE (p_parameters.processtypeID=? AND p_parameters.id_field=False) "
 			+"ORDER BY pos");
 	    	pstmt.setInt(1,processID);
 	    	pstmt.setInt(2,processTypeID);

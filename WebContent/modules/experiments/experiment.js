@@ -183,7 +183,6 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 	
 	
 	this.markColumn=function(processID){
-		console.log("Marking all")
 		var promise=experimentService.markAllProcesses(this.experiment.id,processID);
 		promise.then(function(){reload();});
 	}
