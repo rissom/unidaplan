@@ -27,10 +27,11 @@ ng-class="{'1':'ok','2':'att','3':'failed'}[processCtrl.process.status]" >&nbsp;
  <select class="input-sm"
          ng-show="processCtrl.editStatus"
          ng-change="processCtrl.setStatus()"
-         ng-model="processCtrl.newStatus" >
-    <option ng-repeat="item in processCtrl.statusStrings track by $index" value="{{$index+1}}" ng-selected="processCtrl.process.status==($index+1)">
-          {{item}}
-    </option>
+         ng-model="processCtrl.newStatus"
+         ng-blur="processCtrl.editStatus=false" >
+	<option ng-repeat="state in processCtrl.statusStrings" value="{{$index+1}}" ng-selected="processCtrl.process.status==($index+1)">
+    	{{state}}  
+    </option> 
 </select>
 <br />
 <br />

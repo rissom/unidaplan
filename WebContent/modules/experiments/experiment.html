@@ -68,7 +68,7 @@
 							({{process.pprocess.trnote}})
 						</span>
 					</li>
-					<li class="exp_li2 button_li green"> 
+					<li class="exp_li2 button_li" ng-class="{'1':'ok','2':'att','3':'failed'}[process.fprocess.status]"> 
 						<button class="btn btn-default" 
 								ui-sref="process({processID:process.fprocess.processid})" 
 								ng-show=process.fprocess.number>

@@ -8,9 +8,7 @@ function process($state,$stateParams,avSampleTypeService,types,$modal,processDat
   this.deletable=true;
   	
   this.process=processData;
-
-  this.newStatus=1;
-  
+ 
   this.statusStrings=processService.statusStrings;
   
   this.openDialog = function () {

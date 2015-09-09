@@ -145,14 +145,17 @@ import org.json.JSONObject;
 	 			 			
 		 					// get finished Processes for a sample
 	 			 			pstmt= dBconn.conn.prepareStatement( 
-	 			 				   "SELECT samplesinprocess.processid, processes.processtypesid as processtype, ptd.value AS date, n.value AS number "
+	 			 				   "SELECT samplesinprocess.processid, processes.processtypesid as processtype, ptd.value AS date, n.value AS number, "
+	 			 				  +"n2.value AS status "
 	 			 				  +"FROM samplesinprocess "
 	 			 				  +"JOIN processes ON (processes.id=samplesinprocess.processid) " 
 	 			 				  +"JOIN processtypes ON (processes.processtypesid=processtypes.id) "  
 	 			 				  +"JOIN p_parameters pp ON (pp.definition=10) " // date
 	 			 				  +"JOIN p_parameters pp2 ON (pp2.definition=8) "  // number
+	 			 				  +"JOIN p_parameters pp3 ON (pp3.definition=1) "  // status
 	 			 				  +"JOIN p_timestamp_data ptd ON (ptd.processID=samplesinprocess.processid AND ptd.P_Parameter_ID=pp.id) "
 	 			 				  +"JOIN p_integer_data n ON (n.ProcessID=samplesinprocess.processid AND n.P_Parameter_ID=pp2.id) "
+	 			 				  +"JOIN p_integer_data n2 ON (n2.ProcessID=samplesinprocess.processid AND n2.P_Parameter_ID=pp3.id) "
 	 			 				  +"WHERE sampleid=?");
 	 			 			pstmt.setInt(1,samples.getJSONObject(i).getInt("sampleid"));
 	 			 			JSONArray fprocesses=dBconn.jsonArrayFromPreparedStmt(pstmt);

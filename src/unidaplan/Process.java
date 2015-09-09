@@ -154,7 +154,7 @@ public class Process extends HttpServlet {
 			+"LEFT JOIN acc_process_parameters a ON "
 			+"(a.processid=? AND a.ppid=p_parameters.id AND hidden=FALSE) "
 			+"JOIN String_key_table st ON st.id=p_parameters.stringkeyname "
-			+"WHERE (p_parameters.processtypeID=? AND p_parameters.id_field=False) "
+			+"WHERE (p_parameters.processtypeID=? AND p_parameters.id_field=FALSE AND p_parameters.hidden=FALSE) "
 			+"ORDER BY pos");
 	    	pstmt.setInt(1,processID);
 	    	pstmt.setInt(2,processTypeID);

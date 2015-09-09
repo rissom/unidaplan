@@ -28,7 +28,6 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 		    	samples 	  : function(){return []; },
 		        types         : function(){return stypes; },
 		    	except		  : function(){
-		    		console.log("thisSamples",thisController.experiment.samples);
 		    		return thisController.experiment.samples?thisController.experiment.samples:[];
 		    		
 //		    		{sampleid:thisController.experiment.samples[0].sampleid,
@@ -42,7 +41,6 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 		  modalInstance.result.then(function (result) {  // get the new Samplelist + Info if it is changed from Modal. 
 		      if (result.changed) {
 		    	  if (result.chosen.length>0){
-		    		   console.log("result",result.chosen);
 		    		    if (thisController.experiment.samples==undefined) {
 		    		    	thisController.experiment.samples=[];
 		    		    }
