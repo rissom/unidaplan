@@ -163,20 +163,23 @@ public class Showsample extends HttpServlet {
 	// find all corresponding processes + timestamp
 	try {
 		pstmt= dBconn.conn.prepareStatement( 
-		   "SELECT samplesinprocess.processid, processes.processtypesid as processtype, ptd.value AS date, n.value AS number "
+		   "SELECT samplesinprocess.processid, processes.processtypesid as processtype, ptd.value AS date, "
+		  +"n.value AS number, n2.value AS status "
 		  +"FROM samplesinprocess "
 		  +"JOIN processes ON (processes.id=samplesinprocess.processid) " 
 		  +"JOIN processtypes ON (processes.processtypesid=processtypes.id) "  
-		  +"JOIN p_parameters pp ON (pp.definition=10) " // date
+		  +"JOIN p_parameters pp ON (pp.definition=10) "   // date
 		  +"JOIN p_parameters pp2 ON (pp2.definition=8) "  // number
+		  +"JOIN p_parameters pp3 ON (pp3.definition=1) "  // status
 		  +"JOIN p_timestamp_data ptd ON (ptd.processID=samplesinprocess.processid AND ptd.P_Parameter_ID=pp.id) "
 		  +"JOIN p_integer_data n ON (n.ProcessID=samplesinprocess.processid AND n.P_Parameter_ID=pp2.id) "
+		  +"JOIN p_integer_data n2 ON (n2.ProcessID=samplesinprocess.processid AND n2.P_Parameter_ID=pp3.id) " 
 		  +"WHERE sampleid=?");
 		pstmt.setInt(1,objID);
 		JSONArray processes=dBconn.jsonArrayFromPreparedStmt(pstmt);
 //	   	String validToString = jsToken.optString("token_valid_to");
 //	   	Timestamp validToDate = Timestamp.valueOf(validToString); 
-		if (processes.length()>0) {
+		if (processes.length()>0) { // TODO: Why not directly? Timestamp???
 			JSONArray processes2 = new JSONArray();
 	      	for (int i=0; i<processes.length();i++) {	      		
 	      		JSONObject tempObj=(JSONObject) processes.get(i);
@@ -187,6 +190,8 @@ public class Showsample extends HttpServlet {
 	      		tempObj2.put("processtype",ptype);
 	      		int processid= ((JSONObject) processes.get(i)).getInt("processid");
 	      		tempObj2.put("processid",processid);
+	      		int status= ((JSONObject) processes.get(i)).getInt("status");
+	      		tempObj2.put("status",status);
 	    	   	String dateString = tempObj.optString("date");
 	    	   	Timestamp date = Timestamp.valueOf(dateString); 	    	   	
 	      		tempObj2.put("date", date.getTime());	      		

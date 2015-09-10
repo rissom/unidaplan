@@ -12,6 +12,12 @@
 						   | orderBy : experimentCtrl.experiment.parameters.pos" 
 			ng-dblclick="parameter.editing=true; newValue=parameter.value">
 				<td>
+					<button type="button" class="btn btn-default btn-xs" 
+						ng-click="experimentCtrl.deleteParameter(parameter)"
+						ng-show="experimentCtrl.editmode"
+						>
+						<span class="glyphicon glyphicon-remove"></span>
+								</button>
 				    {{parameter.trname}} :
 				</td>
 				<td >
@@ -25,19 +31,26 @@
 					{{parameter.unit.length>0?parameter.unit:''}}
 				</td>
 			</tr>
-			<tr>
+			<tr ng-hide="experimentCtrl.editmode">
 				<td></td>
 				<td></td>
 			</tr>
 			<!-- um letzten Strich in Tabelle zu erzeugen -->
 		</table>
+  		<button type="button" 
+				class="btn btn-default" 
+				ng-show="experimentCtrl.editmode"
+				ng-click="experimentCtrl.addParameter()" >
+			<b>+</b> {{'Add Parameter'|translate}}
+		</button>
 		
+		<br /><br />
 		
 		
 		<!-- processes -->
 		<h4>{{'Processes'|translate}}</h4>
 		
-			<ol ng-show="experimentCtrl.editmode!='true'" 
+			<ol ng-hide="experimentCtrl.editmode" 
 				ng-repeat="sample in experimentCtrl.experiment.samples | orderBy : 'position'" 
 				class="exp_ol">
 			<li class="exp_li"> 
@@ -82,7 +95,7 @@
 		
 		
 		<!-- editmode -->
-		<div  ng-show="experimentCtrl.editmode=='true'" style="overflow: auto; width:'100%';" >
+		<div  ng-show="experimentCtrl.editmode" style="overflow: auto; width:'100%';" >
 			<div ng-style="experimentCtrl.getWidth()">
 				<table class="exptable"> 
 					<tr>
@@ -210,12 +223,12 @@
 			</div>
 		</div>
 		<br />
-		<button ng-show="experimentCtrl.editmode=='true'" class="btn btn-default btn-sm" 
+		<button ng-show="experimentCtrl.editmode" class="btn btn-default" 
 							ui-sref="experiment({experimentID:experimentCtrl.experiment.id,editmode:'false'})">
 						{{'Finished'|translate}}
-					</button>
+		</button>
 
-		<button ng-show="experimentCtrl.editmode!='true'" 
+		<button ng-hide="experimentCtrl.editmode" 
 				class="btn btn-default" 
 				ui-sref="experiment({experimentID:experimentCtrl.experiment.id,editmode:'true'})">
 			{{'Edit Experiment'|translate}}

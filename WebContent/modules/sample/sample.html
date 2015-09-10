@@ -94,7 +94,8 @@
 	<h4>{{'Finished Processes'|translate}}</h4>
 	<div ng-repeat="process in sampleCtrl.processes">
 		{{process.date|date:'EEE'|translate}}, {{process.date|date:'dd-MM-yyyy, HH:mm:ss'}}&nbsp;
-		<button  class="btn btn-default" ui-sref="process({processID:process.processid})">
+		<button  class="btn btn-default"  ng-class="{'1':'ok','2':'att','3':'failed'}[process.status]"
+				 ui-sref="process({processID:process.processid})">
 			{{sampleCtrl.getProcessType(process)}} {{process.number}}
 		</button>
 		<br />
@@ -120,7 +121,7 @@
 			</ul>
 		</div>
 	<br />
-
+	
 
 	<!-- Buttonbar: previous/delete/next -->
 	<div class=row>

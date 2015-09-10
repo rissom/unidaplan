@@ -179,7 +179,7 @@ import org.json.JSONObject;
 		    	
 	     		// Output the Parameters
 				pstmt= dBconn.conn.prepareStatement( 	
-	     		"SELECT expp_param.id, compulsory, expp_param.pos, "
+	     		"SELECT expp_param.id, expp_param.pos, "
 				+"expp_param.stringkeyname,  pid, value, "
 				+"st.description, paramdef.datatype "
 				+"FROM expp_param "
@@ -187,7 +187,7 @@ import org.json.JSONObject;
 				+"LEFT JOIN acc_expp_parameters a ON  "
 				+"(a.expp_id=expp_param.exp_plan_id AND a.id=expp_param.id ) " 
 				+"JOIN String_key_table st ON st.id=expp_param.stringkeyname "
-				+"WHERE expp_param.exp_plan_id=? "
+				+"WHERE expp_param.exp_plan_id=? AND hidden=false "
 				+"ORDER BY pos ");
 				pstmt.setInt(1, id);
 				JSONArray parameters=dBconn.jsonArrayFromPreparedStmt(pstmt);

@@ -417,4 +417,24 @@
     <servlet-name>UpdateProcessParameter</servlet-name>
     <url-pattern>/update-process-parameter</url-pattern>
   </servlet-mapping>  
+  <servlet>
+    <description>DeleteExperimentParameter</description>
+    <display-name>DeleteExperimentParameter</display-name>
+    <servlet-name>DeleteExperimentParameter</servlet-name>
+    <servlet-class>unidaplan.DeleteExperimentParameter</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeleteExperimentParameter</servlet-name>
+    <url-pattern>/delete-experiment-parameter</url-pattern>
+  </servlet-mapping> 
+  <servlet>
+    <description>Parameter</description>
+    <display-name>Parameter</display-name>
+    <servlet-name>Parameter</servlet-name>
+    <servlet-class>unidaplan.GetParameters</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Parameter</servlet-name>
+    <url-pattern>/parameter</url-pattern>
+  </servlet-mapping> 
 </web-app>

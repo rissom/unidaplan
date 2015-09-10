@@ -6,7 +6,7 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 	
 	this.experiment = experimentData;
 	
-	this.editmode=$stateParams.editmode;
+	this.editmode=$stateParams.editmode==='true';
 	
 	this.sampleActions = [$translate.instant("Go to sample"),
 	                      $translate.instant("Delete Sample from Experiment"),
@@ -15,6 +15,20 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 	var thisController =this;	
 	
 	this.avProcesses = ptypes
+	
+	
+	
+	this.addParameter = function(){
+		console.log("add-a-parameter");
+	}
+	
+	
+
+	this.deleteParameter = function(parameter){
+		var promise = experimentService.deleteParameter(parameter.id);
+		promise.then(function(){reload();});
+	}
+	
 	
 	
 	this.addSample = function () {

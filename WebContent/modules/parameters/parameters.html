@@ -1,0 +1,22 @@
+
+<h4>{{'Parameters'|translate}}</h4>
+
+{{parameterCtrl.test}}
+<table>
+	<tr>
+		<td>
+ 			Name ({{'german'|translate}})
+		</td>
+		<td>
+ 			Name ({{'english'|translate}})
+		</td>
+	</tr>
+	<tr ng-repeat="parameter in parameterCtrl.parameters">
+		<td>
+ 			{{parameter.name}}
+		</td>
+		<td>
+ 			 			{{parameter.unit}}
+		</td>
+	</tr>
+</table>

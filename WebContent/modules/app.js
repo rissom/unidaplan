@@ -5,10 +5,18 @@
 // Declare app level module which depends on filters, and services
 angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router'])
 
+.constant("languages", {
+        "lang1": "en",
+        "lang2": "de"
+    })
+
 .config(function($stateProvider, $urlRouterProvider) {
     
+	
+	
 	$urlRouterProvider.otherwise('/login');
-    
+	
+	
     $stateProvider
         
         // UI-Router STATES AND NESTED VIEWS
@@ -125,6 +133,18 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	        }
         })
         
+        .state('parameter', {
+	        url: '/parameter',
+	        templateUrl: 'modules/parameters/parameters.html',
+	        controller:'parameterController as parameterCtrl',
+	        resolve:{
+                parameters: 
+                	function(avParameterService){
+        	   	    	return avParameterService.getParameters()
+        	   	    }
+	        }
+        })
+        
         .state('recentProcesses', {
 			url: '/recent-processes',
 			templateUrl: 'modules/process/recent-processes.html',
@@ -224,7 +244,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
       prefix: 'languages/lang-',
       suffix: '.json'
    });
-  $translateProvider.preferredLanguage('en');
+  $translateProvider.preferredLanguage('de');
 }])
 
 .config(function() {

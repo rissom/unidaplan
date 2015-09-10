@@ -141,7 +141,14 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 		return restfactory.POST("delete-sample-from-experiment?id="+id);
 	}
 	
-
+	
+	
+	this.deleteParameter=function(id){
+		//removes a proces from an experiment
+		return restfactory.POST("delete-experiment-parameter?id="+id);
+	}
+	
+	
 	
 	this.deleteProcess=function(id){
 		//removes a proces from an experiment
