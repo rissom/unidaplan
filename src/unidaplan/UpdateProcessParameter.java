@@ -114,7 +114,6 @@ import org.json.JSONObject;
 			        }
 	        case 2: {   pstmt= DBconn.conn.prepareStatement( 			// Double values
 				         "INSERT INTO p_float_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
-	        			System.out.println("schonmal ok");
 				        pstmt.setInt(1, processID);
 			   			pstmt.setInt(2, parameterID);				        
 				        pstmt.setDouble(3, jsonIn.getDouble("value"));
@@ -140,7 +139,6 @@ import org.json.JSONObject;
 			        }
 	        case 5: {  pstmt= DBconn.conn.prepareStatement(
         		 		"INSERT INTO p_string_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
-			System.out.println("nich ok (string2)");
 				       pstmt.setInt(1, processID);
 				       pstmt.setInt(2, parameterID);
 				       pstmt.setString(3, jsonIn.getString("value"));
