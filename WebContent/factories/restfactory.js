@@ -1,6 +1,7 @@
 (function(){
 
 
+
 angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', '$state', function($q, $rootScope,$http,$state) {
 
 	$http.defaults.headers.post["Content-Type"] = "application/json";
@@ -160,13 +161,13 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 		
 		var defer = $q.defer();
 		try {
-			var ret = $http.put(uri,config);
+			var ret = $http['delete'](uri,config);  // $http.delete is frowned upon by eclipse
 			ret.then(
-				function(data, status, headers, config) {
+				function(data) {
 					defer.resolve(data);
 				},
-				function(data, status, headers, config) {
-					console.log("restfactory.DELETE: error: ",[ data,status,headers,config ]);
+				function(data) {
+					console.log("restfactory.DELETE: error: ", data);
 					defer.reject('some http error occured');
 					setFailedState($state.current);
 			    }
