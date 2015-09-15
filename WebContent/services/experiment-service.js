@@ -79,7 +79,7 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 					}
 				}
 			}
-		return restfactory.POST("delete-experiment?id="+id);
+		return restfactory.DELETE("delete-experiment?id="+id);
 	}
 	
 	
@@ -138,14 +138,14 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 	
 	this.deleteSampleFromExperiment = function(id){
 		// Removes a sample from an experiment. 
-		return restfactory.POST("delete-sample-from-experiment?id="+id);
+		return restfactory.DELETE("delete-sample-from-experiment?id="+id);
 	}
 	
 	
 	
 	this.deleteParameter=function(id){
 		//removes a proces from an experiment
-		return restfactory.POST("delete-experiment-parameter?id="+id);
+		return restfactory.DELETE("delete-experiment-parameter?id="+id);
 	}
 	
 	

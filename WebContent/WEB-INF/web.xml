@@ -4,9 +4,9 @@
     <welcome-file>index.jsp</welcome-file>
     <welcome-file>index.html</welcome-file>
   </welcome-file-list>
-    <session-config>
-        <session-timeout>10</session-timeout>
-    </session-config>
+  <session-config>
+    <session-timeout>10</session-timeout>
+  </session-config>
   <servlet>
     <description>shows data for a sample</description>
     <display-name>Showsample</display-name>
@@ -27,7 +27,7 @@
     <servlet-name>SamplesByName</servlet-name>
     <url-pattern>/samples_by_name.json</url-pattern>
   </servlet-mapping>
-   <servlet>
+  <servlet>
     <description>shows available sample types</description>
     <display-name>Available sampletypes</display-name>
     <servlet-name>AvailableSampletypes</servlet-name>
@@ -35,7 +35,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>AvailableSampletypes</servlet-name>
-    <url-pattern>/sampletypes.json</url-pattern>
+    <url-pattern>/sampletypes</url-pattern>
   </servlet-mapping>
   <servlet>
     <description>shows available Experiments</description>
@@ -167,7 +167,7 @@
     <servlet-name>SignUp</servlet-name>
     <url-pattern>/sign-up</url-pattern>
   </servlet-mapping>
-    <servlet>
+  <servlet>
     <description>Login</description>
     <display-name>Login</display-name>
     <servlet-name>Login</servlet-name>
@@ -217,7 +217,7 @@
     <servlet-name>AddAncestors</servlet-name>
     <url-pattern>/add-ancestors</url-pattern>
   </servlet-mapping>
-   <servlet>
+  <servlet>
     <description>AddChildren</description>
     <display-name>AddChildren</display-name>
     <servlet-name>AddChildren</servlet-name>
@@ -237,7 +237,7 @@
     <servlet-name>AvailableProcesstypes</servlet-name>
     <url-pattern>/available-processtypes</url-pattern>
   </servlet-mapping>
-    <servlet>
+  <servlet>
     <description>AddProcess</description>
     <display-name>AddProcess</display-name>
     <servlet-name>AddProcess</servlet-name>
@@ -327,7 +327,7 @@
     <servlet-name>DeleteProcessFromExperiment</servlet-name>
     <url-pattern>/delete-process-from-experiment</url-pattern>
   </servlet-mapping>
-    <servlet>
+  <servlet>
     <description>AddProcessToExperiment</description>
     <display-name>AddProcessToExperiment</display-name>
     <servlet-name>AddProcessToExperiment</servlet-name>
@@ -347,7 +347,7 @@
     <servlet-name>UpdatePositionsForProcessesInExperiment</servlet-name>
     <url-pattern>/update-positions-for-processes-in-experiment</url-pattern>
   </servlet-mapping>
-        <servlet>
+  <servlet>
     <description>MarkAllProcessesInExperiment</description>
     <display-name>MarkAllProcessesInExperiment</display-name>
     <servlet-name>MarkAllProcessesInExperiment</servlet-name>
@@ -377,7 +377,7 @@
     <servlet-name>AddProcessStep</servlet-name>
     <url-pattern>/add-process-step</url-pattern>
   </servlet-mapping>
-    <servlet>
+  <servlet>
     <description>ExpStepChangeRecipe</description>
     <display-name>ExpStepChangeRecipe</display-name>
     <servlet-name>ExpStepChangeRecipe</servlet-name>
@@ -387,7 +387,7 @@
     <servlet-name>ExpStepChangeRecipe</servlet-name>
     <url-pattern>/exp-step-change-recipe</url-pattern>
   </servlet-mapping>
-     <servlet>
+  <servlet>
     <description>UpdateExperimentSampleComment</description>
     <display-name>UpdateExperimentSampleComment</display-name>
     <servlet-name>UpdateExperimentSampleComment</servlet-name>
@@ -416,7 +416,7 @@
   <servlet-mapping>
     <servlet-name>UpdateProcessParameter</servlet-name>
     <url-pattern>/update-process-parameter</url-pattern>
-  </servlet-mapping>  
+  </servlet-mapping>
   <servlet>
     <description>DeleteExperimentParameter</description>
     <display-name>DeleteExperimentParameter</display-name>
@@ -426,7 +426,7 @@
   <servlet-mapping>
     <servlet-name>DeleteExperimentParameter</servlet-name>
     <url-pattern>/delete-experiment-parameter</url-pattern>
-  </servlet-mapping> 
+  </servlet-mapping>
   <servlet>
     <description>Parameter</description>
     <display-name>Parameter</display-name>
@@ -436,5 +436,25 @@
   <servlet-mapping>
     <servlet-name>Parameter</servlet-name>
     <url-pattern>/parameter</url-pattern>
-  </servlet-mapping> 
+  </servlet-mapping>
+  <servlet>
+    <description>AddParameter</description>
+    <display-name>AddParameter</display-name>
+    <servlet-name>AddParameter</servlet-name>
+    <servlet-class>unidaplan.AddParameter</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddParameter</servlet-name>
+    <url-pattern>/add-parameter</url-pattern>
+  </servlet-mapping>  
+    <servlet>
+    <description>DeleteParameter</description>
+    <display-name>DeleteParameter</display-name>
+    <servlet-name>DeleteParameter</servlet-name>
+    <servlet-class>unidaplan.DeleteParameter</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeleteParameter</servlet-name>
+    <url-pattern>/delete-parameter</url-pattern>
+  </servlet-mapping>  
 </web-app>

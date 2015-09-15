@@ -44,7 +44,7 @@
 		
 		<h3 ng-show="oexpCtrl.otherexperiments().length>0">
 			{{ 'Other Experiments' | translate }}</h3>
-		<table class="table">
+		<table class="table" ng-show="oexpCtrl.otherexperiments().length>0">
 			<tr><td><b>{{'No.'|translate}}</b></td>
 				<td><b>{{'created by'|translate}}</b></td>
 				<td><b>Name</b></td><td><b>Status</b></td>

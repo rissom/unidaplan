@@ -5,10 +5,7 @@
 // Declare app level module which depends on filters, and services
 angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router'])
 
-.constant("languages", {
-        "lang1": "en",
-        "lang2": "de"
-    })
+.constant("languages",[{"key": "de","name":"german"},{"key": "en","name":"english"}])
 
 .config(function($stateProvider, $urlRouterProvider) {
     
@@ -139,8 +136,8 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	        controller:'parameterController as parameterCtrl',
 	        resolve:{
                 parameters: 
-                	function(avParameterService){
-        	   	    	return avParameterService.getParameters()
+                	function(parameterService){
+        	   	    	return parameterService.getParameters()
         	   	    }
 	        }
         })

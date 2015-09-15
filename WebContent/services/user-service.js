@@ -80,7 +80,7 @@ var userService = function(restfactory,$q){
 	
 	// delete user
 	this.deleteUser = function(user) {
-		return restfactory.POST("delete-user?id="+user.id);
+		return restfactory.DELETE("delete-user?id="+user.id);
 	}	
 	
 }

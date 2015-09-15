@@ -122,3 +122,16 @@ ol {
 	-webkit-transform: rotate(90deg);
 	transform: rotate(90deg);
 }
+
+.parametertablehead{
+    font-weight: bold;
+    background-color: #F7F7F7;
+	    
+}
+
+.parametertd{
+	padding-left: 10px;
+    padding-right: 10px;
+}
+
+

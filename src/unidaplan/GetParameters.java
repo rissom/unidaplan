@@ -36,7 +36,7 @@ import org.json.JSONObject;
 	    JSONObject result = new JSONObject();
 	    try {  
 			pstmt= DBconn.conn.prepareStatement( 	
-			"SELECT * FROM paramdef");
+			"SELECT * FROM paramdef WHERE id>2");
 			parameters=DBconn.jsonArrayFromPreparedStmt(pstmt);
 			pstmt.close();
 			  for (int i=0; i<parameters.length();i++) {
@@ -71,7 +71,7 @@ import org.json.JSONObject;
 	        }
 	        query+= buff.toString() + "}'::int[])";
 	        JSONArray theStrings=DBconn.jsonfromquery(query);
-	        result.put("Parameters", parameters);
+	        result.put("parameters", parameters);
 	        result.put("strings", theStrings);
 			out.println(result.toString());
 			DBconn.closeDB();

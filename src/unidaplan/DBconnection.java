@@ -110,7 +110,28 @@ public class DBconnection  {
 	  }
 	  return result;
   }
-     
+  
+  
+  
+  public int createNewStringKey(String input) throws Exception{
+	  PreparedStatement pStmt=conn.prepareStatement("INSERT INTO string_key_table values(default,?) RETURNING id");
+	  pStmt.setString(1, input);
+	  int id=getSingleIntValue(pStmt);
+	  return id;
+  }
+  
+  
+  
+  public int addString(int key, String lang,String input) throws Exception {
+	  PreparedStatement pStmt=conn.prepareStatement("INSERT INTO stringtable values(default,?,?,?) RETURNING id");
+	  pStmt.setInt(1, key);
+	  pStmt.setString(2, lang);
+	  pStmt.setString(3, input);
+	  int id=getSingleIntValue(pStmt);
+	  return id;
+  }
+  
+  
   
   public JSONObject jsonObjectFromPreparedStmt(PreparedStatement pStmt) throws Exception{
 	  JSONObject result = null;
@@ -149,6 +170,7 @@ public class DBconnection  {
 }
   
   
+  
   public int getSingleIntValue(PreparedStatement pStmt) throws Exception{
 	  int result = -1;
 	  ResultSet queryResult=null;
@@ -179,6 +201,7 @@ public class DBconnection  {
 		  }
       return result;
       }
+  
   
   
   public JSONArray table2json(ResultSet rs) throws Exception {

@@ -3,8 +3,6 @@
 
 var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	// restfactory is a wrapper for $html.
-
-
 	
 	
 	 // return the translated name string of a type for a sample
@@ -28,7 +26,7 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
     	  	    defered.resolve(this.sampleTypes)
     	    }else{
     	    	var thisController=this;
-    	    	var promise = restfactory.GET("sampletypes.json");
+    	    	var promise = restfactory.GET("sampletypes");
     	    	promise.then(function(rest) {
 	    	    	thisController.sampleTypes = rest.data.sampletypes;
 	    	    	thisController.strings = rest.data.strings;
@@ -48,6 +46,7 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	
 	this.translate = function() {
 		var thisController=this;
+		console.log("strings",thisController.strings)
 		angular.forEach(thisController.sampleTypes, function(sampletype) {
 			sampletype.trname=key2string.key2string(sampletype.string_key,thisController.strings);
 		})

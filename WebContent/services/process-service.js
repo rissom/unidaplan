@@ -65,7 +65,7 @@ var processService = function (restfactory,$q,$translate,key2string) {
 					this.recentProcesses.splice(i,1);
 				}
 			}
-		return restfactory.POST("delete-process?id="+id);
+		return restfactory.DELETE("delete-process?id="+id);
 	}
 	
 	

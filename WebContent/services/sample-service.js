@@ -51,7 +51,7 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 				this.recentSamples.splice(i,1);
 			}
 		}
-		return restfactory.POST("delete-sample?id="+id);
+		return restfactory.DELETE("delete-sample?id="+id);
 	}
 	
 	

@@ -16,7 +16,7 @@ public class DeleteExperimentParameter extends HttpServlet {
 	
 
     @Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
