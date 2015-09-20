@@ -45,13 +45,14 @@ public class AvailableProcesstypes extends HttpServlet {
 		 	
 	 		try{
 	 			pstmt = DBconn.conn.prepareStatement(	
-				  "SELECT pt.id, pt.name FROM processtypes pt");
+				  "SELECT id, name, description  FROM processtypes");
 	 			processList=DBconn.jsonArrayFromPreparedStmt(pstmt); // get ResultSet from the database using the query
 	 			pstmt.close();
 	           	if (processList.length()>0) {
 	           		for (int i=0; i<processList.length();i++) {
 	           			JSONObject tempObj=processList.getJSONObject(i);
 	           			stringkeys.add(Integer.toString(tempObj.getInt("name")));
+	           			stringkeys.add(Integer.toString(tempObj.getInt("description")));
 	           			pstmt = DBconn.conn.prepareStatement(
 	           					"SELECT id, name FROM p_recipes WHERE ot_id=?");
 	           			pstmt.setInt(1, tempObj.getInt("id"));

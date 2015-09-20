@@ -46,7 +46,6 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	
 	this.translate = function() {
 		var thisController=this;
-		console.log("strings",thisController.strings)
 		angular.forEach(thisController.sampleTypes, function(sampletype) {
 			sampletype.trname=key2string.key2string(sampletype.string_key,thisController.strings);
 		})

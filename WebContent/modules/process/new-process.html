@@ -2,29 +2,35 @@
 <p />
 {{'Select processtype'|translate}}
 <p />
-
+<div class="col-md-6">
 	<select class="form-control" 
 		style="width:300px;"	
 		ng-model="newProcessCtrl.processType"
 		ng-options="ptype.trname group by ptype.group for ptype in newProcessCtrl.processTypes" 	
 		ng-selected="$first">
 	</select>
+</div>
+<br>
 
-
-<div ng-show="newProcessCtrl.processType.recipes" class="col-xs-6">
-	<select class="form-control" 
+<div ng-show="newProcessCtrl.processType.recipes.length>0" class="col-md-6">
+<select class="form-control" 
 		style="width:300px;"	
 		ng-model="newProcessCtrl.recipe"
-		ng-options="recipe.trname for recipe in newProcessCtrl.recipes" 	
+		ng-options="recipe.id as recipe.trname for recipe in newProcessCtrl.processType.recipes" 	
 		ng-selected="$first">
+		<option value="">-- {{'without recipe'|translate}} --</option>
 	</select>
 </div>
 
 	<p />
 	<p />
+	
+	<br>
+	
+<div class="col-md-6">	
 	<button class="btn btn-default"
 			ng-click="newProcessCtrl.addProcess()"
 			ng-class= "{disabled: !newProcessCtrl.processType}">
 		{{'Create Process'|translate}}
 	</button>	
-
+</div>

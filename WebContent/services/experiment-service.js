@@ -152,7 +152,7 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 	
 	this.deleteProcess=function(id){
 		//removes a proces from an experiment
-		return restfactory.POST("delete-process-from-experiment?id="+id);
+		return restfactory.DELETE("delete-process-from-experiment?id="+id);
 	}
 	
 	

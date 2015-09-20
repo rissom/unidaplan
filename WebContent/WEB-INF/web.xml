@@ -447,7 +447,7 @@
     <servlet-name>AddParameter</servlet-name>
     <url-pattern>/add-parameter</url-pattern>
   </servlet-mapping>  
-    <servlet>
+  <servlet>
     <description>DeleteParameter</description>
     <display-name>DeleteParameter</display-name>
     <servlet-name>DeleteParameter</servlet-name>
@@ -456,5 +456,35 @@
   <servlet-mapping>
     <servlet-name>DeleteParameter</servlet-name>
     <url-pattern>/delete-parameter</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description>ResendToken</description>
+    <display-name>ResendToken</display-name>
+    <servlet-name>ResendToken</servlet-name>
+    <servlet-class>unidaplan.ResendToken</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ResendToken</servlet-name>
+    <url-pattern>/resend-token</url-pattern>
   </servlet-mapping>  
+  <servlet>
+    <description>AddProcessType</description>
+    <display-name>AddProcessType</display-name>
+    <servlet-name>AddProcessType</servlet-name>
+    <servlet-class>unidaplan.AddProcessType</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddProcessType</servlet-name>
+    <url-pattern>/add-process-type</url-pattern>
+  </servlet-mapping>
+    <servlet>
+    <description>DeleteProcessType</description>
+    <display-name>DeleteProcessType</display-name>
+    <servlet-name>DeleteProcessType</servlet-name>
+    <servlet-class>unidaplan.DeleteProcessType</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeleteProcessType</servlet-name>
+    <url-pattern>/delete-process-type</url-pattern>
+  </servlet-mapping>
 </web-app>

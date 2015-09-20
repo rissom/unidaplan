@@ -26,9 +26,8 @@ function oExpController(restfactory,$translate,$scope,$state,experimentService,e
 	}
 	
 	
-	var thisOExpCtrl = this;
 	$scope.$on('language changed', function(event, args) {
-		thisOExpCtrl.translate(args.language);
+		thisController.translate(args.language);
 	});
 	
 	

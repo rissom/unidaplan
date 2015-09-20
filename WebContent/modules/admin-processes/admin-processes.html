@@ -1,0 +1,104 @@
+<h3>
+	{{'Processes'|translate}}
+</h3>
+<table class="table">
+	<thead class=parametertablehead>
+		<tr>
+			<td class="parametertd">
+	 			Name ({{aProcessesCtrl.lang1}})
+			</td>
+			<td class="parametertd">
+	 			Name ({{aProcessesCtrl.lang2}})
+			</td>
+			<td class="parametertd">
+				{{'Description'|translate}} ({{aProcessesCtrl.lang1}})
+			</td>
+			<td class="parametertd">
+				{{'Description'|translate}} ({{aProcessesCtrl.lang2}})
+			</td>
+			<td class="parametertd"
+				ng-hide="aProcessesCtrl.editmode">
+			</td>
+		</tr>
+	</thead>
+	
+	
+	<tbody>
+		<tr ng-repeat="process in aProcessesCtrl.ptypes | orderBy : 'nameLang1'">
+			<td class="parametertd">
+	 			{{process.nameLang('de')}}
+			</td>
+			<td class="parametertd">		
+				{{process.nameLang('en')}}
+			</td>
+			<td class="parametertd">
+				{{process.descLang('de')}}
+			</td>
+			<td class="parametertd">
+				{{process.descLang('en')}}
+			</td>
+			<td class="parametertd" ng-hide="aProcessesCtrl.editmode">			
+				<div class="dropdown" dropdown on-toggle="toggled(open)">
+					<a class="dropdown-toggle" dropdown-toggle>
+			  			{{'action'|translate}} &#x25BC;
+				    </a>
+				    <ul class="dropdown-menu">
+				    	<li ng-repeat="action in aProcessesCtrl.getActions(process)">
+				        	<a ng-click="aProcessesCtrl.performAction(action,process)">{{action}}</a>
+				        </li>
+				    </ul>
+	  			</div>
+			</td>
+		</tr>
+		<tr ng-show="aProcessesCtrl.editmode">
+			<td class="parametertd">
+				<input 						   
+				type="text"
+			    ng-model="aProcessesCtrl.newNameL1"> 
+			</td>
+			<td class="parametertd">
+				<input 						   
+				type="text"
+			    ng-model="aProcessesCtrl.newNameL2"> 
+			</td>
+			<td class="parametertd">
+				<input 						   
+				type="text"
+			    ng-model="aProcessesCtrl.newDescL1"> 
+			</td>
+			<td class="parametertd">
+				<input 						   
+				type="text"
+			    ng-model="aProcessesCtrl.newDescL2"> 
+			</td>
+					
+		</tr>
+	</tbody>
+</table>
+<br />
+<button type="button" 
+		ng-hide="aProcessesCtrl.editmode"
+		class="btn btn-default" 
+		ng-click="aProcessesCtrl.newProcessType()" >
+	<b>+</b> {{'Add Process'|translate}}
+</button>
+
+<button type="button" 
+		ng-show="aProcessesCtrl.editmode"
+		class="btn btn-default" 
+		ng-click="aProcessesCtrl.editmode=false" >
+	{{'Cancel'|translate}}
+</button>
+
+<button type="button" 
+		ng-show="aProcessesCtrl.editmode"
+		class="btn btn-default" 
+		ng-click="aProcessesCtrl.addProcessType()" >
+	{{'Add Process'|translate}}
+</button>
+
+
+
+
+
+

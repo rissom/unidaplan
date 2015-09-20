@@ -1,9 +1,11 @@
 {
+"action" : "bearbeiten",
 "About Unidaplan": "Über Unidaplan",	
 "abouttext" : "Software für die Verwaltung wissenschaftlicher Proben",
 "Add File": "Datei hinzufügen",
 "Add Parameter" : "Parameter hinzufügen",
 "Add process" : "Prozess hinzufügen",
+"Add Process" : "Prozess hinzufügen",
 "Add Sample": "Probe hinzufügen",
 "Add User" : "Benutzer hinzufügen",
 "Add/Remove samples" : "Proben hinzufügen/entfernen",
@@ -86,7 +88,7 @@
 "planning phase" : "Planungsphase",
 "previous" : "vorherige",
 "Process" : "Prozess",
-"Processes" : "Prozesse",
+"processes" : "Prozesse",
 "Processes" : "Prozesse",
 "Re-enter Password" : "Passwort wiederholen",
 "Re-enter your password here" : "Bitte Passwort hier wiederholen",
@@ -123,5 +125,6 @@
 "User" : "Benutzer",
 "Username" : "Benutzername",
 "Users" : "Benutzer",
-"Wed" : "Mi"
+"Wed" : "Mi",
+"without recipe" : "ohne Rezept"
 }

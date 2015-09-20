@@ -22,7 +22,6 @@ import org.json.JSONObject;
 	      throws ServletException, IOException {
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
-		userID=userID+1;
 		PreparedStatement pstmt;
 		ArrayList<String> stringkeys = new ArrayList<String>(); 
 		JSONObject experiment = null;
@@ -31,7 +30,6 @@ import org.json.JSONObject;
 	    response.setContentType("application/json");
 	    request.setCharacterEncoding("utf-8");
 	    response.setCharacterEncoding("utf-8");
-//	    HttpSession session = request.getSession();
 	    PrintWriter out = response.getWriter();
 	 	DBconnection dBconn=new DBconnection();
 	    dBconn.startDB();

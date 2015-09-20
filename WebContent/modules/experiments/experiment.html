@@ -177,7 +177,7 @@
 		            		<select class="input-sm"
 			            		ng-show="{{experimentCtrl.getPlannedProcess(process,sample.pprocesses)}}"
 			            		ng-model="experimentCtrl.getPlannedProcess(process,sample.pprocesses).recipe" 
-			            		ng-options="r.id as r.trname for r in experimentCtrl.getProcessRecipes(process)"
+			            		ng-options="r.id as r.namef() for r in experimentCtrl.getProcessRecipes(process)"
 			            		ng-change="experimentCtrl.changeRecipe(experimentCtrl.getPlannedProcess(process,sample.pprocesses))">
 			            		<option value="">-</option>
 			            	</select>

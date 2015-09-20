@@ -26,7 +26,7 @@ function parameterController($state,$stateParams,$translate,parameterService,res
   
   
   
-  this.addParameter=function(){
+  this.addProcess=function(){
 	  var name={};
 	  name[languages[0].key]=this.newNameL1;
 	  name[languages[1].key]=this.newNameL2;
@@ -37,8 +37,7 @@ function parameterController($state,$stateParams,$translate,parameterService,res
 	  description[languages[0].key]=this.newDescL1;
 	  description[languages[1].key]=this.newDescL2; 	  
 
-	  var newParameter={"name":name,"unit":unit,"description":description,
-			  		 "maxdigits":this.newMaxDigits,"datatype":this.newDataType};	  
+	  var newProcess={"name":name,"description":description};	  
 	  
 	  var promise = parameterService.addParameter(newParameter);
 	  promise.then(function(){reload();},function(){console.log("error");})
@@ -58,13 +57,6 @@ function parameterController($state,$stateParams,$translate,parameterService,res
 	  promise.then(function(){reload();},function(){console.log("error");});
   };
   
-  
-  
-  this.assign=function(){
-	  var samples2assign={samples:this.process.samples, id:processData.id};
-	  var promise = restfactory.POST("add-sample-to-process",samples2assign);
-  }
- 
 };
 
 angular.module('unidaplan').controller('parameterController', ['$state','$stateParams','$translate',

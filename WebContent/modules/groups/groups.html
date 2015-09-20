@@ -1,41 +1,42 @@
-		<h3 >
-			{{ 'Groups' | translate }}
-		</h3>
-		<table class="table">
-			<tr><td><b>ID</b></td><td><b>Name</b></td><td><b>{{'Members'|translate}}</b></td>
-				<td><b>{{'Delete Group'|translate}}</b></td></tr>
-			<tr ng-repeat="group in groupCtrl.groups">
-				<td>
-					{{group.id}}
-				</td>
-				<td>
-					{{group.name}}
-				</td>
-				<td>
-	  				<div class="dropdown" dropdown on-toggle="toggled(open)">
-					      <a class="dropdown-toggle" dropdown-toggle>
-				  			{{groupCtrl.getRole(group)}}
-					      </a>
-					      <ul class="dropdown-menu">
-					        <li ng-repeat="role in groupCtrl.roles">
-					          <a ng-click="groupCtrl.setRole($index,group)">{{role}}</a>
-					        </li>
-					      </ul>
-	  				 </div>
-				</td>
-				<td>
-					<button type="button"
-							class="btn btn-danger"
-							ng-click="groupCtrl.deleteGroup(group)"
-							ng-show="group.deletable" >
-						{{'Delete Group'|translate}}
-					</button>
-				</td>
-			</tr>  <!-- ends ng-repeat -->
-			<tr><td></td><td></td><td></td><td></td></tr>
-		</table>
+<h3>
+	{{'Groups'|translate }}
+</h3>
+<table class="table">
+	<thead class=parametertablehead>
+		<tr><td><b>ID</b></td><td><b>Name</b></td><td><b>{{'Members'|translate}}</b></td>
+			<td><b>{{'Delete Group'|translate}}</b></td></tr>
+	</thead>	
+	<tbody>
+		<tr ng-repeat="group in groupCtrl.groups">
+			<td>
+				{{group.id}}
+			</td>
+			<td>
+				{{group.name}}
+			</td>
+			<td>
+  				<button type="button"
+						class="btn btn-default btn-xs" 
+						ng-click="groupCtrl.addMembers(group)">
+						<b>+/-</b>
+				</button>
+			</td>
+			<td>
 				<button type="button"
-							class="btn btn-default"
-							ng-click="" >
-						+  {{'Add Group'|translate}}
-					</button>
+						class="btn btn-default btn-xs" 
+						ng-click="groupCtrl.deleteGroup(group)"
+						ng-show="group.deletable" >
+					<span class="glyphicon glyphicon-remove"></span>
+				</button>
+			</td>
+		</tr>  <!-- ends ng-repeat -->
+		<tr><td></td><td></td><td></td><td></td></tr>
+	</tbody>
+</table>
+	<button type="button"
+			class="btn btn-default"
+			ng-click="" >
+		+  {{'Add Group'|translate}}
+	</button>
+
+	

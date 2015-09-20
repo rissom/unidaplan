@@ -6,10 +6,13 @@
 		</h3>
 	
 		<table class="table">
+			<thead class=parametertablehead>
 			<tr><td><b>{{'No.'|translate}}</b></td>
 				<td><b>Name</b></td><td><b>Status</b></td>
 				<td><b>{{'Delete Experiment'|translate}}</b></td>
 			</tr>
+			</thead>
+			<tbody>
 			<tr ng-repeat="experiment in oexpCtrl.myexperiments()">
 				<td>
 				<a ui-sref="experiment({experimentID:experiment.id,editmode:'false'})">{{experiment.number}}</a>
@@ -30,12 +33,13 @@
 	  				 </div>
 				</td>
 				<td>
-					<button type="button" class="btn btn-danger"  ng-click="oexpCtrl.deleteExperiment(experiment)">
-						{{'Delete Experiment'|translate}}
+					<button type="button" class="btn btn-default btn-xs"  ng-click="oexpCtrl.deleteExperiment(experiment)">
+						<span class="glyphicon glyphicon-remove"></span>
+					</button>
 					</button>
 				</td>
 			</tr>  <!-- ends ng-repeat -->
-			<tr><td></td><td></td><td></td><td></td></tr>
+			<tr><td></td><td></td><td></td><td></td></tr></tbody>
 		</table>
 
 
@@ -45,12 +49,16 @@
 		<h3 ng-show="oexpCtrl.otherexperiments().length>0">
 			{{ 'Other Experiments' | translate }}</h3>
 		<table class="table" ng-show="oexpCtrl.otherexperiments().length>0">
-			<tr><td><b>{{'No.'|translate}}</b></td>
+		<thead class=parametertablehead>
+			<tr>
+				<td><b>{{'No.'|translate}}</b></td>
 				<td><b>{{'created by'|translate}}</b></td>
 				<td><b>Name</b></td><td><b>Status</b></td>
 				<td><b>{{'Delete Experiment'|translate}}</b>
 			</td>
 			</tr>
+			</thead>
+			<tbody>
 			<tr ng-repeat="experiment in oexpCtrl.otherexperiments()">
 				<td>
 					<a ui-sref="experiment({experimentID:experiment.id,editmode:'false'})">
@@ -78,10 +86,10 @@
   				  	</div>
 				</td>
 				<td>
-					<button type="button" class="btn btn-danger"  ng-click="oexpCtrl.deleteExperiment(experiment)">
-						{{'Delete Experiment'|translate}}
+					<button type="button" class="btn btn-default btn-xs"  ng-click="oexpCtrl.deleteExperiment(experiment)">
+						<span class="glyphicon glyphicon-remove"></span>
 					</button>
 				</td>
 			</tr>
-			<tr><td></td><td></td><td></td><td></td><td></td></tr>
+			<tr><td></td><td></td><td></td><td></td><td></td></tr></tbody>
 		</table>

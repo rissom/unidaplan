@@ -21,6 +21,7 @@ import org.json.JSONObject;
 	      throws ServletException, IOException {
 		
 		Authentificator authentificator = new Authentificator();
+		String status="ok";
 		int userID=authentificator.GetUserID(request,response);
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
@@ -41,6 +42,7 @@ import org.json.JSONObject;
      		pid=jsonIn.getInt("pid");
 		} catch (JSONException e) {
 			System.err.println("UpdateExperimentParameter: Error parsing ID-Field");
+			status = "Error parsing ID-Field";
 			response.setStatus(404);
 		}
 
@@ -60,10 +62,13 @@ import org.json.JSONObject;
 			type= answer.getInt("datatype");
 		} catch (SQLException e) {
 			System.err.println("UpdateExperimentParameter: Problems with SQL query");
+			status = "SQL Error";
 		} catch (JSONException e){
 			System.err.println("UpdateExperimentParameter: Problems creating JSON");
+			status = "JSON Error";
 		} catch (Exception e) {
 			System.err.println("UpdateExperimentParameter: Strange Problems");
+			status = "Misc Error (line70)";
 		}
 		
 		// differentiate according to type
@@ -71,34 +76,39 @@ import org.json.JSONObject;
 
 			switch (type) {
 	        case 1: {   pstmt= DBconn.conn.prepareStatement( 			// Integer values
-			   					 "UPDATE expp_integer_data SET value=? WHERE id=? \n");
+			   					 "UPDATE expp_integer_data SET (value,lastUser)=(?,?)  WHERE id=?");
 			   			pstmt.setInt(1, jsonIn.getInt("value"));
-			   			pstmt.setInt(2, pid);
+	   					pstmt.setInt(2, userID);
+			   			pstmt.setInt(3, pid);
 			   			break;
 			        }
 	        case 2: {   pstmt= DBconn.conn.prepareStatement( 			// Double values
-	   					 		"UPDATE expp_float_data SET value=? WHERE id=? \n");
+	   					 		"UPDATE expp_float_data SET (value,lastUser)=(?,?) WHERE id=?");
 	   					pstmt.setDouble(1, jsonIn.getDouble("value"));
-	   					pstmt.setInt(2, pid);
+	   					pstmt.setInt(2, userID);
+	   					pstmt.setInt(3, pid);
 	   					break;
         			}
 	        case 3: {   pstmt= DBconn.conn.prepareStatement( 			// Measurement data
-						 		"UPDATE expp_measurement_data SET (value,error)=(?,?) WHERE id=? \n");
+						 		"UPDATE expp_measurement_data SET (value,error,lastuser)=(?,?,?) WHERE id=?");
 						pstmt.setDouble(1, Double.parseDouble(jsonIn.getString("value").split("±")[0]));
 						pstmt.setDouble(2, Double.parseDouble(jsonIn.getString("value").split("±")[1]));
-						pstmt.setInt(3, pid);
+	   					pstmt.setInt(3, userID);
+						pstmt.setInt(4, pid);
 						break;
 			        }
 	        case 4:  { pstmt= DBconn.conn.prepareStatement( 			// String data	
-				 		"UPDATE expp_string_data SET value=? WHERE id=? \n");
+				 		"UPDATE expp_string_data SET (value,lastuser)=(?,?) WHERE id=?");
 					   pstmt.setString(1, jsonIn.getString("value"));
-					   pstmt.setInt(2, pid);
+	   				   pstmt.setInt(2, userID);
+					   pstmt.setInt(3, pid);
 					   break;
 			        }
 	        case 5: {  pstmt= DBconn.conn.prepareStatement( 			
-				 	   			"UPDATE expp_string_data SET value=? WHERE id=? \n");
+				 	   			"UPDATE expp_string_data SET (value,lastuser)=(?,?) WHERE id=?");
 					   pstmt.setString(1, jsonIn.getString("value"));
-					   pstmt.setInt(2, pid);
+	   				   pstmt.setInt(2, userID);
+					   pstmt.setInt(3, pid);
 				   }
 			}
 		
@@ -107,15 +117,17 @@ import org.json.JSONObject;
 		DBconn.closeDB();
 	} catch (SQLException e) {
 		System.err.println("UpdateExperimentParameter: More Problems with SQL query");
-		e.printStackTrace();
+		status = "SQL Error";
 	} catch (JSONException e){
 		System.err.println("UpdateExperimentParameter: More Problems creating JSON");
+		status = "JSON Error";
 	} catch (Exception e) {
 		System.err.println("UpdateExperimentParameter: More Strange Problems");
+		status = "Misc. Error";
 	}
 		
     // tell client that everything is fine
     PrintWriter out = response.getWriter();
-	out.println("{\"status\":\"ok\"}");
+	out.println("{\"status\":\""+status+"\"}");
 	}
 }	

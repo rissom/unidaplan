@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-	public class AddParameter extends HttpServlet {
+	public class AddProcessType extends HttpServlet {
 		private static final long serialVersionUID = 1L;
 
 	@Override
@@ -21,18 +21,15 @@ import org.json.JSONObject;
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
 		String status="ok";
-		int dataType=0;
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
 	    JSONObject  jsonIn = null;
-	    int maxdigits=0;
 	    
 	    try {
 			jsonIn = new JSONObject(in);
-	  	  	maxdigits=jsonIn.getInt("maxdigits");
-			dataType= jsonIn.getInt("datatype");
 		} catch (JSONException e) {
-			System.err.println("AddParameter: Input is not valid JSON");
+			System.err.println("AddProcessType: Input is not valid JSON");
+			status="input error";
 		}
 		response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
@@ -41,8 +38,9 @@ import org.json.JSONObject;
 	    dBconn.startDB();	   
 	    
 	    int stringKeyName=0;
-	    int stringKeyUnit=0;
-	    int stringKeyDesc=0;
+	    int stringKeyDesc=0; 
+	    int position=0;
+	    int ptgroup=1;
 
 
 	    
@@ -53,58 +51,50 @@ import org.json.JSONObject;
 				 String [] names = JSONObject.getNames(name);
 				 stringKeyName=dBconn.createNewStringKey(name.getString(names[0]));
 				 for (int i=0; i<names.length; i++){
-					 dBconn.addString(stringKeyName,names[i],name.getString(names[0]));
+					 dBconn.addString(stringKeyName,names[i],name.getString(names[i]));
 				 }
 			 }else
 			 {
 				 System.out.println("no name exists");
-			 }
-			 if (jsonIn.has("unit")){
-				 JSONObject unit=jsonIn.getJSONObject("unit");
-				 String [] units = JSONObject.getNames(unit);
-				 stringKeyUnit=dBconn.createNewStringKey(unit.getString(units[0]));
-				 for (int i=0; i<units.length; i++){
-					 dBconn.addString(stringKeyUnit,units[i],unit.getString(units[0]));
-				 }
 			 }
 			 if (jsonIn.has("description")){
 				 JSONObject description=jsonIn.getJSONObject("description");
 				 String [] descriptions = JSONObject.getNames(description);
 				 stringKeyDesc=dBconn.createNewStringKey(description.getString(descriptions[0]));
 				 for (int i=0; i<descriptions.length; i++){
-					 dBconn.addString(stringKeyDesc,descriptions[i],description.getString(descriptions[0]));
+					 dBconn.addString(stringKeyDesc,descriptions[i],description.getString(descriptions[i]));
 				 }	 
 			 }
+			 if (jsonIn.has("position")){
+				 position=jsonIn.getInt("position");
+			 }
+			 if (jsonIn.has("ptgroup")){
+				 ptgroup=jsonIn.getInt("ptgroup");
+			 }
 		} catch (JSONException e) {
-			System.err.println("AddParameter: Error creating Strings");
+			System.err.println("AddProcessType: Error creating Strings");
 			response.setStatus(404);
+			status="JSON String error";
 		} catch (Exception e) {
-			System.err.println("AddParameter: Error creating Strings");
+			System.err.println("AddProcessType: Error creating Strings");
+			status="String error";
 		}	
   
 	    PreparedStatement pstmt = null;
 		try {	
 			pstmt= dBconn.conn.prepareStatement( 			
-					"INSERT INTO paramdef values(default,?,?,?,?,?, NOW(),?)");
-	
-		   	pstmt.setInt(1, stringKeyName);
-		   	pstmt.setInt(2, stringKeyUnit);
-		   	pstmt.setInt(3, dataType);
-		   	pstmt.setInt(4, maxdigits);
-		   	pstmt.setInt(5, stringKeyDesc);
-		   	pstmt.setInt(6, userID);
-		   	System.out.println("status");
-		   	System.out.println(status);
-			if (dataType>0 && dataType<9){
-			   	pstmt.executeUpdate();
-			}else{
-				status="illegal datatype";
-			}
-
+					"INSERT INTO processtypes values(default,?,?,?,?,NOW(),?)");
+			pstmt.setInt(1, position);
+			pstmt.setInt(2, ptgroup);
+		   	pstmt.setInt(3, stringKeyName);
+		   	pstmt.setInt(4, stringKeyDesc);
+		   	pstmt.setInt(5, userID);
+		   	pstmt.executeUpdate();
 		} catch (SQLException e) {
-			System.err.println("AddParameter: Problems with SQL query");
+			status="SQL error";
+			System.err.println("AddProcessType: Problems with SQL query");
 		} catch (Exception e) {
-			System.err.println("AddParameter: Strange Problems");
+			System.err.println("AddProcessType: Strange Problems");
 		}	
 		
 	
@@ -116,7 +106,8 @@ import org.json.JSONObject;
 			answer.put("status", status);
 			out.println(answer.toString());
 		} catch (JSONException e) {
-			System.err.println("AddParameter: Problems creating JSON answer");
+			status="JSON error";
+			System.err.println("AddProcessType: Problems creating JSON answer");
 		}    
 	}
 }	

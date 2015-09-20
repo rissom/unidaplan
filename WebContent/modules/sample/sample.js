@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-function sampleController(sample,$state,$modal,$filter,types,sampleService,avSampleTypeService,$scope,key2string,ptypes,avProcessTypeService){
+function sampleController(sample,$state,$stateParams,$modal,$filter,types,sampleService,avSampleTypeService,key2string,ptypes,avProcessTypeService){
 	
 	var thisController = this;
 		
@@ -21,6 +21,21 @@ function sampleController(sample,$state,$modal,$filter,types,sampleService,avSam
 	this.typestringkey = sample.typestringkey;
 	this.typeid = sample.typeid;
 
+	
+	var reload=function() {
+	    var current = $state.current;
+	    var params = angular.copy($stateParams);
+	    params.editmode=thisController.editmode;
+	    return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
+	}
+	
+	// language change
+//	$rootScope.$on('$translateChangeStart', function(event, args) {
+//		avSampleTypeService.translate();
+//		avProcessTypeService.translate();
+//		sampleService.translate();
+//		reload();
+//	});
 	
 	
 	// returns the translated name of a process
@@ -185,7 +200,7 @@ function sampleController(sample,$state,$modal,$filter,types,sampleService,avSam
 
 
 
-angular.module('unidaplan').controller('sampleController',['sample','$state','$modal','$filter','types',
-     'sampleService','avSampleTypeService','$scope','key2string','ptypes','avProcessTypeService',sampleController]);
+angular.module('unidaplan').controller('sampleController',['sample','$state','$stateParams','$modal','$filter','types',
+     'sampleService','avSampleTypeService','key2string','ptypes','avProcessTypeService',sampleController]);
 
 })();

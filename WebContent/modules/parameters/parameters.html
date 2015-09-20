@@ -1,13 +1,9 @@
-
-<h3>{{'Parameters'|translate}}</h3>
-
-<br /><br />
-<table>
+<h3>
+	{{'Parameters'|translate}}
+</h3>
+<table class="table">
 	<thead class=parametertablehead>
 		<tr>
-			<td class="parametertd"
-				ng-hide="parameterCtrl.editmode">
-			</td>
 			<td class="parametertd">
 	 			Name ({{parameterCtrl.lang1}})
 			</td>
@@ -32,20 +28,15 @@
 			<td class="parametertd">
 				{{'Description'|translate}} ({{parameterCtrl.lang2}})
 			</td>
+			<td class="parametertd"
+				ng-hide="parameterCtrl.editmode">
+			</td>
 		</tr>
 	</thead>
 	
 	
 	<tbody>
-		<tr ng-repeat="parameter in parameterCtrl.parameters">
-			<td class="parametertd" ng-hide="parameterCtrl.editmode">
-				<button type="button" class="btn btn-default btn-xs" 
-						ng-click="parameterCtrl.deleteParameter(parameter)"
-						ng-hide="parameterCtrl.editmode"
-						>
-						<span class="glyphicon glyphicon-remove"></span>
-				</button>
-			</td>
+		<tr ng-repeat="parameter in parameterCtrl.parameters | orderBy : 'nameLang1'">
 			<td class="parametertd">
 	 			{{parameter.nameLang1}}
 			</td>
@@ -69,6 +60,14 @@
 			</td>
 			<td class="parametertd">
 				{{parameter.descLang2}}
+			</td>
+			<td class="parametertd" ng-hide="parameterCtrl.editmode">
+				<button type="button" class="btn btn-default btn-xs" 
+						ng-click="parameterCtrl.deleteParameter(parameter)"
+						ng-hide="parameterCtrl.editmode"
+						>
+						<span class="glyphicon glyphicon-remove"></span>
+				</button>
 			</td>
 		</tr>
 		<tr ng-show="parameterCtrl.editmode">

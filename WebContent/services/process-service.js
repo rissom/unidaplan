@@ -17,6 +17,14 @@ var processService = function (restfactory,$q,$translate,key2string) {
 		return promise;
 	}
 	
+	
+	
+	this.addProcessType = function(process){
+		return restfactory.POST("add-process-type",process);
+	}
+	
+	
+	
 	this.getProcess = function(id) {
         var defered=$q.defer();
     	    	var thisController=this;
@@ -68,6 +76,12 @@ var processService = function (restfactory,$q,$translate,key2string) {
 		return restfactory.DELETE("delete-process?id="+id);
 	}
 	
+	
+	
+	// delete a process (also from recent processes)
+	this.deleteProcessType = function(id){
+		return restfactory.DELETE("delete-process-type?id="+id);
+	}
 	
 	
 	

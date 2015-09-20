@@ -118,6 +118,17 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 			}
         })
         
+        .state('adminProcesses', {
+	        url: '/adminprocesses',
+	        templateUrl: 'modules/admin-processes/admin-processes.html',
+	        controller:"aProcessesController as aProcessesCtrl",
+	        resolve:{
+               	ptypes: function(avProcessTypeService){
+        	   	    	return avProcessTypeService.getProcessTypes()
+        	   	    }
+			}
+        })
+        
         .state('choseProcess', {
 	        url: '/chose-process',
 	        templateUrl: 'modules/process/chose-process.html',

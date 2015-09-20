@@ -6,7 +6,7 @@
 	<select class="form-control" 
 		style="width:300px;"	
 		ng-model="choseProcessCtrl.processType"
-		ng-options="ptype.trname group by ptype.group for ptype in choseProcessCtrl.processTypes" 	
+		ng-options="ptype.namef() group by ptype.group for ptype in choseProcessCtrl.processTypes" 	
 		ng-selected="$first">
 	</select>
 	
