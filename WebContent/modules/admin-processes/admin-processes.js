@@ -53,7 +53,7 @@ function aProcessesController($state,$stateParams,$translate,restfactory,process
 	  description[languages[1].key]=this.newDescL2; 	  
 	  var newProcessType={"name":name,"description":description};	  
 	  var promise = processService.addProcessType(newProcessType);
-	  promise.then(function(){ console.log ("reload");reload();},function(){console.log("error");})
+	  promise.then(function(){ reload();},function(){console.log("error");})
   }
   
  

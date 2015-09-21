@@ -41,6 +41,7 @@ import org.json.JSONObject;
 	    int stringKeyDesc=0; 
 	    int position=0;
 	    int ptgroup=1;
+	    int id=0;
 
 
 	    
@@ -80,16 +81,40 @@ import org.json.JSONObject;
 			status="String error";
 		}	
   
-	    PreparedStatement pstmt = null;
+	    PreparedStatement pStmt = null;
 		try {	
-			pstmt= dBconn.conn.prepareStatement( 			
-					"INSERT INTO processtypes values(default,?,?,?,?,NOW(),?)");
-			pstmt.setInt(1, position);
-			pstmt.setInt(2, ptgroup);
-		   	pstmt.setInt(3, stringKeyName);
-		   	pstmt.setInt(4, stringKeyDesc);
-		   	pstmt.setInt(5, userID);
-		   	pstmt.executeUpdate();
+			pStmt= dBconn.conn.prepareStatement( 			
+					"INSERT INTO processtypes values(default,?,?,?,?,NOW(),?) RETURNING id");
+			pStmt.setInt(1, position);
+			pStmt.setInt(2, ptgroup);
+		   	pStmt.setInt(3, stringKeyName);
+		   	pStmt.setInt(4, stringKeyDesc);
+		   	pStmt.setInt(5, userID);
+		   	id=dBconn.getSingleIntValue(pStmt);
+		} catch (SQLException e) {
+			status="SQL error";
+			System.err.println("AddProcessType: Problems with SQL query");
+		} catch (Exception e) {
+			System.err.println("AddProcessType: Strange Problems");
+		}	
+		
+		try {	
+			pStmt= dBconn.conn.prepareStatement( 			
+			//define status parameter (hidden)
+				"INSERT INTO p_parameters values(default,?,1,True,False,'',True,1,1,1)");
+			pStmt.setInt(1, id);
+		   	pStmt.executeUpdate();
+		   	// define parameter for processnumber
+			pStmt= dBconn.conn.prepareStatement( 			
+					"INSERT INTO p_parameters values(default,?,1,True,True,'',False,1,8,36)");
+			pStmt.setInt(1, id);
+		   	pStmt.executeUpdate();
+		   	// define parameter for processtime
+			pStmt= dBconn.conn.prepareStatement( 			
+					"INSERT INTO p_parameters values(default,?,1,True,False,'',False,1,10,40)");
+			pStmt.setInt(1, id);
+		   	pStmt.executeUpdate();		   	
+			   	
 		} catch (SQLException e) {
 			status="SQL error";
 			System.err.println("AddProcessType: Problems with SQL query");

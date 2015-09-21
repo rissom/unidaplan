@@ -236,10 +236,10 @@ public class Showsample extends HttpServlet {
       		pstmt.setInt(2,experimentID);
       		JSONArray pprocesses = dBconn.jsonArrayFromPreparedStmt(pstmt);
       		for (int j=0; j<pprocesses.length();j++){
-      			if (!pprocesses.getJSONObject(j).isNull("recipename")){
+      			if (pprocesses.getJSONObject(j).has("recipename")){
       				stringkeys.add(Integer.toString(pprocesses.getJSONObject(j).getInt("recipename")));
       			}
-      			if (!pprocesses.getJSONObject(j).isNull("note")){
+      			if (pprocesses.getJSONObject(j).has("note")){
       				stringkeys.add(Integer.toString(pprocesses.getJSONObject(j).getInt("note")));
       			}
       		}

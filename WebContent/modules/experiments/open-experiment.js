@@ -27,7 +27,8 @@ function oExpController(restfactory,$translate,$scope,$state,experimentService,e
 	
 	
 	$scope.$on('language changed', function(event, args) {
-		thisController.translate(args.language);
+		thisController.statusItems=[$translate.instant("planning phase"),$translate.instant("planned"),
+	                  $translate.instant("running"),$translate.instant("completed")]
 	});
 	
 	

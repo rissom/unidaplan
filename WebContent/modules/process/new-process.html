@@ -1,22 +1,20 @@
 <p />
 <p />
-{{'Select processtype'|translate}}
+{{'Select processtype'|translate}}<br />
 <p />
 <div class="col-md-6">
 	<select class="form-control" 
 		style="width:300px;"	
 		ng-model="newProcessCtrl.processType"
-		ng-options="ptype.trname group by ptype.group for ptype in newProcessCtrl.processTypes" 	
+		ng-options="ptype.namef() group by ptype.group for ptype in newProcessCtrl.processTypes" 	
 		ng-selected="$first">
 	</select>
 </div>
-<br>
-
 <div ng-show="newProcessCtrl.processType.recipes.length>0" class="col-md-6">
-<select class="form-control" 
+	<select class="form-control" 
 		style="width:300px;"	
 		ng-model="newProcessCtrl.recipe"
-		ng-options="recipe.id as recipe.trname for recipe in newProcessCtrl.processType.recipes" 	
+		ng-options="recipe.id as recipe.namef() for recipe in newProcessCtrl.processType.recipes" 	
 		ng-selected="$first">
 		<option value="">-- {{'without recipe'|translate}} --</option>
 	</select>
@@ -25,7 +23,8 @@
 	<p />
 	<p />
 	
-	<br>
+	<br />
+	<br />
 	
 <div class="col-md-6">	
 	<button class="btn btn-default"

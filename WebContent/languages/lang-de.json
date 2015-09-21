@@ -1,5 +1,6 @@
 {
 "action" : "bearbeiten",
+"Processtypes" : "Prozesstypen",
 "About Unidaplan": "Über Unidaplan",	
 "abouttext" : "Software für die Verwaltung wissenschaftlicher Proben",
 "Add File": "Datei hinzufügen",
@@ -106,6 +107,7 @@
 "Sample" : "Probe",
 "Samples in process" : "Proben im Prozess",
 "Samples" : "Proben",
+"Sampletypes" : "Probentypen",
 "Sat" : "Sa",
 "Search for Sample" : "Suche nach Probe",
 "see license" : "Lizenz",

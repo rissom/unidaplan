@@ -8,7 +8,8 @@ function newProcessController(restfactory,$state,ptypes,avProcessTypeService){
 	this.processTypes = ptypes;
 	
 	this.strings = [];
-			
+	
+	this.hallo = 'Hallo!';			
 	
 	this.keyUp = function(keyCode,newValue,parameter) {
 		if (keyCode===13) {				// Return key pressed
@@ -18,7 +19,7 @@ function newProcessController(restfactory,$state,ptypes,avProcessTypeService){
 
 		
 	this.addProcess = function() {
-		var promise = restfactory.GET("add-process?processtypeid="+this.processType.id)
+		var promise = restfactory.POST("add-process?processtypeid="+this.processType.id)
 		promise.then(function(rest){
 			if (rest.data.status=="ok") {
 				$state.go('process',{processID:rest.data.id})

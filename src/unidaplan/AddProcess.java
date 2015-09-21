@@ -1,5 +1,4 @@
 package unidaplan;
-import java.io.Console;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.PreparedStatement;
@@ -10,7 +9,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -18,7 +16,7 @@ import org.json.JSONObject;
 		private static final long serialVersionUID = 1L;
 
 	@Override
-	  public void doGet(HttpServletRequest request, HttpServletResponse response)
+	  public void doPost(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {		
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
@@ -54,7 +52,7 @@ import org.json.JSONObject;
 			System.err.println("AddProcess: Problems with SQL query1");
 			status="SQL error";
 		} catch (JSONException e){
-			System.err.println("AddProcess: Problems creating JSON");
+			System.err.println("AddProcess: Problems with JSON");
 			status="JSON error";
 		} catch (Exception e) {
 			System.err.println("AddProcess: Strange Problems");
@@ -72,16 +70,20 @@ import org.json.JSONObject;
 		+"LIMIT 1");
 	   	pstmt.setInt(1, processTypeID);
 	   	JSONObject answer=dBconn.jsonObjectFromPreparedStmt(pstmt);
-		int lastProcessID= answer.getInt("maximum");
-		int parameterID= answer.getInt("parameterid");
+	   	int lastProcessID=0;
+	   	if (answer.has("maximum")){
+	   		lastProcessID= answer.getInt("maximum");
+	   	}
+//		int parameterID= answer.getInt("parameterid");
 		pstmt.close();
 		
 	
 	   	
 		// write processnumber 
-    	pstmt= dBconn.conn.prepareStatement("INSERT INTO p_integer_data VALUES(default, ?, ?, ?, NOW(),?)");
+    	pstmt= dBconn.conn.prepareStatement("INSERT INTO p_integer_data VALUES(default, ?,"
+    			+ " (SELECT id FROM P_Parameters WHERE definition=8 AND processtypeid=?), ?, NOW(),?)");
     	pstmt.setInt(1, id);
-    	pstmt.setInt(2, parameterID);
+    	pstmt.setInt(2, id);
     	pstmt.setInt(3, lastProcessID+1);
     	pstmt.setInt(4, userID);
     	pstmt.executeUpdate();
@@ -109,13 +111,13 @@ import org.json.JSONObject;
 		dBconn.closeDB();
 
 	} catch (SQLException e) {
-		System.err.println("AddSample: Problems with SQL query");
+		System.err.println("AddProcess: Problems with SQL query");
 		status="SQL error";
 	} catch (JSONException e){
-		System.err.println("AddSample: Problems creating JSON");
+		System.err.println("AddProcess: Problems creating JSON later");
 		status="JSON error";
 	} catch (Exception e) {
-		System.err.println("AddSample: Strange Problems");
+		System.err.println("AddProcess: Strange Problems");
 		status="error";
 	}
 		// Preset sample name parameters

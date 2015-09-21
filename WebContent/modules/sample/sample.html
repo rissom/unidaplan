@@ -1,5 +1,6 @@
-	<!-- Heading with sample name -->
-	<h3>{{sampleCtrl.getType({typeid:sampleCtrl.typeid})}} 
+<!-- Heading with sample name -->
+<div class="row">
+<h3>{{sampleCtrl.getType({typeid:sampleCtrl.typeid})}} 
 		<span ng-repeat="tparameter in sampleCtrl.titleparameters"
 			  ng-dblclick="tparameter.editing=true; newValue=tparameter.value">
 			<span ng-hide="tparameter.editing">{{tparameter.value|trailingzeros:tparameter.maxdigits}}
@@ -16,7 +17,6 @@
 	
 	
 	<!-- Parameters -->
-	<div class="row">
 		<h4>{{'Base Parameters'|translate}}</h4>
 		<div class=col-md-6>
 			<table class="table">
@@ -61,11 +61,10 @@
 	<div class=row>
 		<div class="col-md-6">{{'Originates from'|translate}}:<br />
 			<span ng-repeat="bsample in sampleCtrl.ancestors"> 
-				<button class="btn btn-default" ui-sref="sample({sampleID:bsample.sampleid})">
+				<a ui-sref="sample({sampleID:bsample.sampleid})">
 					{{sampleCtrl.getType(bsample)}} {{bsample.name}}
-				</button>
+				</a><br />
 			</span> 
-			<br />
 			<button class="btn btn-default"
 					ng-click="sampleCtrl.openDialog('ancestors')">
 				{{'Add/Remove samples'|translate}}
@@ -73,15 +72,15 @@
 		</div>
 		<div class="col-md-6">{{'Is ancestor of'|translate}}:<br />
 			<span ng-repeat="bsample in sampleCtrl.children">
-				<button class="btn btn-default" ui-sref="sample({sampleID:bsample.sampleid})">
+				<a ui-sref="sample({sampleID:bsample.sampleid})">
 					{{sampleCtrl.getType(bsample)}} {{bsample.name}}
-				</button>
+				</a>
 			</span>
 			<br />
 			<button class="btn btn-default" ng-click="sampleCtrl.openDialog('children')">
 				{{'Add/Remove samples'|translate}}
 			</button>
-			<button type="button" class="btn btn-default disabled" >
+			<button type="button" class="btn btn-default" >
 				{{'Divide sample in several new samples' | translate}}
 			</button>
 		</div>
@@ -144,6 +143,7 @@
 						<button type="button" class="btn btn-danger"
 								ng-class="{'disabled':!sampleCtrl.deletable}"
 								ng-click="sampleCtrl.deleteSample()">
+								<span class="glyphicon glyphicon-remove"></span>
 								{{'Delete Sample'|translate}}
 						</button> 	
 					</td>

@@ -17,6 +17,9 @@ function userController(users,userService) {
 		if (index==1){
 			user.edit=true
 		}
+		if (index==2){
+			this.resendToken(user);
+		}
 		if (index==3){
 			this.deleteUser(user);
 		}
@@ -39,7 +42,15 @@ function userController(users,userService) {
 		return actions
 	}
 	
-	
+	this.resendToken = function(user) {
+		var promise = userService.resendToken(user);
+	    promise.then(function(rest) {
+	    	var promise2 = userService.getUsers();
+	    	promise2.then(function(users){thisController.users=users}, console.log("fehler"));
+	    }, function(rest) {
+	    	console.log("ERROR");
+	    });
+	}	
 
 	this.deleteUser = function(user) {
 		var promise = userService.deleteUser(user);

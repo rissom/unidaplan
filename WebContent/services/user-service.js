@@ -83,6 +83,13 @@ var userService = function(restfactory,$q){
 		return restfactory.DELETE("delete-user?id="+user.id);
 	}	
 	
+	
+	
+	// resend token
+	this.resendToken = function(user) {
+		return restfactory.PUT("resend-token?id="+user.id);
+	}	
+	
 }
 
 
