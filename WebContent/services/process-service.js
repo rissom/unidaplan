@@ -6,7 +6,7 @@ var processService = function (restfactory,$q,$translate,key2string) {
 
 	
 	this.statusStrings = [$translate.instant("OK"),
-			              $translate.instant("attension"),
+			              $translate.instant("attention"),
 			              $translate.instant("failed")];
 	
 	this.setStatus = function(process,status){
@@ -28,7 +28,7 @@ var processService = function (restfactory,$q,$translate,key2string) {
 	this.getProcess = function(id) {
         var defered=$q.defer();
     	    	var thisController=this;
-    			var promise = restfactory.GET("process.json?id="+id);
+    			var promise = restfactory.GET("process?id="+id);
     	    	promise.then(function(rest) {
 	    	    	thisController.process = rest.data;
 	    	    	thisController.strings = rest.data.strings;

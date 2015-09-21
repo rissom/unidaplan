@@ -231,27 +231,29 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 //	var thisController=this;
 	angular.forEach (experimentData.samples, function(sample){
 		var mprocesses=[];
-		var fplength=0;
 		var pplength=0;
+		var finishedProcesses=[];
+		var plannedProcesses=[];
 		if (sample.fprocesses!=undefined) {
-			fplength=sample.fprocesses.length
+			finishedProcesses=sample.fprocesses.sort(function(a,b){console.log("difference",b.date-a.date);return b.date-a.date})
 		}
 		if (sample.pprocesses!=undefined){
-			pplength=sample.pprocesses.length;
+			plannedProcesses=sample.pprocesses;
 		}
-		var j = Math.max (fplength,pplength)
+		var j = Math.max (finishedProcesses.length,plannedProcesses.length)
 			for (var i=0;i<j;i++){
 				var fp={}
-				if (sample.fprocesses!=undefined && i<sample.fprocesses.length) {
-					fp=sample.fprocesses[i]
+				if (i<finishedProcesses.length) {
+					fp=finishedProcesses[i]
 				}
 				var pp={};
-				if (sample.pprocesses!=undefined && i<sample.pprocesses.length) {
-					pp=sample.pprocesses[i]
+				if (i<plannedProcesses.length) {
+					pp=plannedProcesses[i]
 				}
 				mprocesses.push({"fprocess":fp,"pprocess":pp})
 			}
 		sample.mprocesses=mprocesses;
+		console.log("mprocesses",mprocesses)
 	})
 		
 			
@@ -262,17 +264,17 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 			var oldValue=parameter.value;
 			parameter.value=newValue;
 			 if (parameter.pid) {
-				var res = restfactory.POST('update-experiment-parameter.json',parameter);
+				var res = restfactory.POST('update-experiment-parameter',parameter);
 				res.then(function(data, status, headers, config) {
 						 },
 						 function(data, status, headers, config) {
 							parameter.value=oldValue;
-							console.log('verkackt');
+							console.log('error');
 							console.log(data);
 						 }
 						);
 			 } else {
-				var res = restfactory.POST('add-experiment-parameter.json?experimentid='+this.experiment.id,parameter);
+				var res = restfactory.POST('add-experiment-parameter?experimentid='+this.experiment.id,parameter);
 					res.then(function(data) {
 							 },
 							 function(data) {

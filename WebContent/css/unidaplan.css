@@ -49,6 +49,8 @@
 
 ol li {
     list-style: outside none none;
+    padding-left: 10px;
+	padding-right: 10px;
 }
 
 ol {
@@ -76,7 +78,7 @@ ol {
 .exp_li2 {
 	font-size: 14px;
 	padding-left: 3px;
-	padding-right: 3px;
+	padding-right: 11px;
 	padding-top: 3px;
   	padding-bottom: 3px;
   	text-align: center;

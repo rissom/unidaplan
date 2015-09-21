@@ -13,7 +13,7 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 	
 	this.loadSample = function(id) {			// Load data and filter Titleparameters
     	var defered=$q.defer()
-		var promise = restfactory.GET("showsample.json?id="+id);
+		var promise = restfactory.GET("showsample?id="+id);
 	    promise.then(function(rest) {			// save the sample for recent samples
 	        var sample = {"id"		  	   : rest.data.id,
 		    			   "typeid"		   : rest.data.typeid,
@@ -57,19 +57,19 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 	
 	
 	this.saveParameter = function(parameter) {
-		return restfactory.POST('savesampleparameter.json',parameter);
+		return restfactory.POST('savesampleparameter',parameter);
 	}
 	
 	
 	
 	this.addSampleParameter = function(id,parameter){
-		return restfactory.POST('add-sample-parameter.json?sampleid='+id,parameter);
+		return restfactory.POST('add-sample-parameter?sampleid='+id,parameter);
 	}
 	
 	
 	
 	this.updateSampleParameter = function(parameter){
-		return restfactory.POST('update-sample-parameter.json',parameter);
+		return restfactory.POST('update-sample-parameter',parameter);
 	}
 
 	

@@ -7,7 +7,7 @@
 <table class="table">
 	<tr ng-repeat="parameter in processCtrl.process.parameters">
 		<td ng-click="processCtrl.articleClicked(parameter)">{{parameter.trname}} :</td>
-		<td>{{parameter.value}}
+		<td>{{processCtrl.showParam(parameter)}}
 			{{parameter.unit.length>0?parameter.unit:''}}</td>
 	</tr>
 	<tr>
@@ -39,11 +39,8 @@ ng-class="{'1':'ok','2':'att','3':'failed'}[processCtrl.process.status]" >&nbsp;
 <h4>{{'Samples in process'|translate}}</h4>
 
 <span ng-repeat="sample in processCtrl.process.samples | orderBy:['trtype','name']">
-	<button class="btn btn-default" ui-sref="sample({sampleID:sample.sampleid})">
-		{{processCtrl.getType(sample)}} {{sample.name}}
-	</button>
-	&nbsp;
-</span>
+	<a ui-sref="sample({sampleID:sample.sampleid})">
+		{{processCtrl.getType(sample)}} {{sample.name}}</a><br/></span>
 <br />
 <br />
 <button class="btn btn-default" ng-click="processCtrl.openDialog()">

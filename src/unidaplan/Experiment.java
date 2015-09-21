@@ -22,6 +22,8 @@ import org.json.JSONObject;
 	      throws ServletException, IOException {
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
+		userID=userID+1;
+		userID=userID-1;
 		PreparedStatement pstmt;
 		ArrayList<String> stringkeys = new ArrayList<String>(); 
 		JSONObject experiment = null;

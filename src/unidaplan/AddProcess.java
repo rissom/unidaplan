@@ -103,6 +103,17 @@ public class AddProcess extends HttpServlet {
 	    	pstmt.executeUpdate();
 	    	pstmt.close();
 			
+	    	
+			// set status to "ok" 
+	    	pstmt= dBconn.conn.prepareStatement("INSERT INTO p_integer_data VALUES(default, ?,"
+	    			+ " (SELECT id FROM P_Parameters WHERE definition=1 AND processtypeid=?), ?, NOW(),?)");
+	    	pstmt.setInt(1, id);
+	    	pstmt.setInt(2, processTypeID);
+	    	pstmt.setInt(3, 1);
+	    	pstmt.setInt(4, userID);
+	    	pstmt.executeUpdate();
+	    	pstmt.close();
+			
 			
 			// find date parameter
 	    	pstmt= dBconn.conn.prepareStatement("SELECT id FROM p_parameters pp "

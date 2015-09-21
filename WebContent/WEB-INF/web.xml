@@ -15,7 +15,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>Showsample</servlet-name>
-    <url-pattern>/showsample.json</url-pattern>
+    <url-pattern>/showsample</url-pattern>
   </servlet-mapping>
   <servlet>
     <description>shows samples with a name close to parameter name</description>
@@ -25,7 +25,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>SamplesByName</servlet-name>
-    <url-pattern>/samples_by_name.json</url-pattern>
+    <url-pattern>/samples_by_name</url-pattern>
   </servlet-mapping>
   <servlet>
     <description>shows available sample types</description>
@@ -45,7 +45,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>Experiments</servlet-name>
-    <url-pattern>/experiments.json</url-pattern>
+    <url-pattern>/experiments</url-pattern>
   </servlet-mapping>
   <servlet>
     <description>show a process</description>
@@ -55,7 +55,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>Process</servlet-name>
-    <url-pattern>/process.json</url-pattern>
+    <url-pattern>/process</url-pattern>
   </servlet-mapping>
   <servlet>
     <description>Update sample parameter</description>
@@ -65,7 +65,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>UpdateSampleParameter</servlet-name>
-    <url-pattern>/update-sample-parameter.json</url-pattern>
+    <url-pattern>/update-sample-parameter</url-pattern>
   </servlet-mapping>
   <servlet>
     <description>Add sample parameter</description>
@@ -75,7 +75,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>AddSampleParameter</servlet-name>
-    <url-pattern>/add-sample-parameter.json</url-pattern>
+    <url-pattern>/add-sample-parameter</url-pattern>
   </servlet-mapping>
   <servlet>
     <description>Change the status of an experiment</description>
@@ -105,7 +105,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>UpdateExperimentParameter</servlet-name>
-    <url-pattern>/update-experiment-parameter.json</url-pattern>
+    <url-pattern>/update-experiment-parameter</url-pattern>
   </servlet-mapping>
   <servlet>
     <description>Add a Parameter of an experiment</description>
@@ -115,7 +115,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>AddExperimentParameter</servlet-name>
-    <url-pattern>/add-experiment-parameter.json</url-pattern>
+    <url-pattern>/add-experiment-parameter</url-pattern>
   </servlet-mapping>
   <servlet>
     <description>Add a user</description>
@@ -125,7 +125,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>AddUser</servlet-name>
-    <url-pattern>/add-user.json</url-pattern>
+    <url-pattern>/add-user</url-pattern>
   </servlet-mapping>
   <servlet>
     <description>Get a list of users</description>
@@ -135,7 +135,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>GetUsers</servlet-name>
-    <url-pattern>/get-users.json</url-pattern>
+    <url-pattern>/get-users</url-pattern>
   </servlet-mapping>
   <servlet>
     <description>Get a single user</description>
@@ -145,7 +145,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>GetUser</servlet-name>
-    <url-pattern>/get-user.json</url-pattern>
+    <url-pattern>/get-user</url-pattern>
   </servlet-mapping>
   <servlet>
     <description>Delete user</description>
