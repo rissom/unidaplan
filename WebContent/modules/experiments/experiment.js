@@ -230,30 +230,38 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 	
 //	var thisController=this;
 	angular.forEach (experimentData.samples, function(sample){
+		// Arranging of planned and finished experiments. Finished Experiments are sorted by time. Planned Experiments are matched to finished Experiments.
 		var mprocesses=[];
 		var pplength=0;
 		var finishedProcesses=[];
 		var plannedProcesses=[];
 		if (sample.fprocesses!=undefined) {
-			finishedProcesses=sample.fprocesses.sort(function(a,b){console.log("difference",b.date-a.date);return b.date-a.date})
+			for (var i=0;i++;i<sample.fprocesses.length){
+				fprocess[i].date=Date(fprocesses[i].date);
+			}
+			finishedProcesses=sample.fprocesses.sort(function(a,b){return b.date<a.date}) // Sort finished processes by date
 		}
 		if (sample.pprocesses!=undefined){
 			plannedProcesses=sample.pprocesses;
 		}
-		var j = Math.max (finishedProcesses.length,plannedProcesses.length)
-			for (var i=0;i<j;i++){
-				var fp={}
-				if (i<finishedProcesses.length) {
-					fp=finishedProcesses[i]
-				}
-				var pp={};
-				if (i<plannedProcesses.length) {
-					pp=plannedProcesses[i]
-				}
-				mprocesses.push({"fprocess":fp,"pprocess":pp})
-			}
+		var fpi=0;
+		var ppi=0;
+		while (fpi<finishedProcesses.length || ppi<plannedProcesses.length) {
+			var fp={};
+			var pp={};
+			if (fpi<finishedProcesses.length) {
+				fp=finishedProcesses[fpi];
+				if (ppi<plannedProcesses.length)
+					if (finishedProcesses[fpi].processtype == plannedProcesses[ppi].processtype){
+						pp=plannedProcesses[ppi++]; 
+					}
+				fpi=fpi+1;
+			}else{
+				pp=plannedProcesses[ppi++]; 
+			}	
+			mprocesses.push({"fprocess":fp,"pprocess":pp});
+		}
 		sample.mprocesses=mprocesses;
-		console.log("mprocesses",mprocesses)
 	})
 		
 			
