@@ -68,9 +68,6 @@ public class AddProcess extends HttpServlet {
 			System.err.println("AddProcess: Strange Problems");
 			status="error";
 		}	    
-		
-		System.out.println("lastProcessID");
-		System.out.println(lastProcessID);
 
 		try {
 			pstmt= dBconn.conn.prepareStatement( 			

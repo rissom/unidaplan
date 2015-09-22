@@ -239,10 +239,10 @@ public class DBconnection  {
   
   public JSONArray table2json(ResultSet rs) throws Exception {
         JSONArray jsArray = new JSONArray();        
-        int rows = rs.getMetaData().getColumnCount();
+        int columns = rs.getMetaData().getColumnCount();
         while (rs.next()) {
             JSONObject obj = new JSONObject();
-            for (int i = 1; i <= rows; i++) {
+            for (int i = 1; i <= columns; i++) {
             	Object tempObject=rs.getObject(i);
 //            	if (tempObject==null){tempObject="Null";}
                 obj.put(rs.getMetaData().getColumnLabel(i), tempObject);

@@ -2,7 +2,7 @@
 'use strict';
 
 
-function modalSampleChoser(avSampleTypeService,$translate,$scope,$modalInstance,restfactory,types,samples,except,buttonLabel,mode) {
+function modalSampleChoser(avSampleTypeService,$translate,$scope,$modalInstance,restfactory,types,samples,except,buttonLabel,mode,sampleService) {
 
 	if (samples) {
 		this.chosenSamples=samples.slice(0);
@@ -218,6 +218,7 @@ function modalSampleChoser(avSampleTypeService,$translate,$scope,$modalInstance,
 };
 
         
-angular.module('unidaplan').controller('modalSampleChoser',['avSampleTypeService','$translate','$scope','$modalInstance','restfactory','types','samples','except','buttonLabel','mode',modalSampleChoser]);
+angular.module('unidaplan').controller('modalSampleChoser',['avSampleTypeService','$translate','$scope','$modalInstance',
+                            'restfactory','types','samples','except','buttonLabel','mode','sampleService',modalSampleChoser]);
 
 })();
