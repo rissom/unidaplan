@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -47,17 +48,55 @@ import org.json.JSONObject;
 		}
 
 	    
-	    // look up the datatype in Database	    
+	    
+	    
+	    // delete any previous entries
 	 	DBconnection DBconn=new DBconnection();
 	    DBconn.startDB();	   
 	    PreparedStatement pstmt = null;
+	    try {	
+			pstmt= DBconn.conn.prepareStatement( 			
+					 "DELETE FROM Expp_integer_data WHERE expp_id=? AND expp_param_id=?");
+		   	pstmt.setInt(1, id);
+		   	pstmt.setInt(2, pid);
+		   	pstmt.executeUpdate();
+			pstmt= DBconn.conn.prepareStatement( 			
+					 "DELETE FROM Expp_float_data WHERE expp_id=? AND expp_param_id=?");
+		   	pstmt.setInt(1, id);
+		   	pstmt.setInt(2, pid);
+		   	pstmt.executeUpdate();
+			pstmt= DBconn.conn.prepareStatement( 			
+					 "DELETE FROM Expp_string_data WHERE expp_id=? AND expp_param_id=?");
+		   	pstmt.setInt(1, id);
+		   	pstmt.setInt(2, pid);
+		   	pstmt.executeUpdate();
+			pstmt= DBconn.conn.prepareStatement( 			
+					 "DELETE FROM Expp_measurement_data WHERE expp_id=? AND expp_param_id=?");
+		   	pstmt.setInt(1, id);
+		   	pstmt.setInt(2, pid);
+		   	pstmt.executeUpdate();
+			pstmt= DBconn.conn.prepareStatement( 			
+					 "DELETE FROM Expp_timestamp_data WHERE expp_id=? AND expp_param_id=?");
+		   	pstmt.setInt(1, id);
+		   	pstmt.setInt(2, pid);
+		   	pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.err.println("UpdateExperimentParameter: Problems with SQL query");
+			status = "SQL Error";
+		} catch (Exception e) {
+			System.err.println("UpdateExperimentParameter: Strange Problems");
+			status = "Misc Error (line67)";
+		}
+	    
+	    
+	    // look up the datatype in Database	    
 	    int type=-1;
 		try {	
 			pstmt= DBconn.conn.prepareStatement( 			
 					 "SELECT paramdef.datatype FROM Expp_param ep \n"
 					+"JOIN paramdef ON ep.definition=paramdef.id \n"
-					+"WHERE ep.id=? \n");
-		   	pstmt.setInt(1, id);
+					+"WHERE ep.id=?");
+		   	pstmt.setInt(1, pid);
 		   	JSONObject answer=DBconn.jsonObjectFromPreparedStmt(pstmt);
 			type= answer.getInt("datatype");
 		} catch (SQLException e) {
@@ -71,44 +110,59 @@ import org.json.JSONObject;
 			status = "Misc Error (line70)";
 		}
 		
-		// differentiate according to type
+		// differentiate according to type, insert new value in a table
 		try {	
 
 			switch (type) {
 	        case 1: {   pstmt= DBconn.conn.prepareStatement( 			// Integer values
-			   					 "UPDATE expp_integer_data SET (value,lastUser)=(?,?)  WHERE id=?");
-			   			pstmt.setInt(1, jsonIn.getInt("value"));
-	   					pstmt.setInt(2, userID);
-			   			pstmt.setInt(3, pid);
+			   					 "INSERT INTO expp_integer_data VALUES (default,?,?,?,NOW(),?)");
+						pstmt.setInt(1, id); //experiment ID
+   						pstmt.setInt(2, pid); // Parameter ID
+			   			pstmt.setInt(3, jsonIn.getInt("value")); // Value
+	   					pstmt.setInt(4, userID); // UserID
 			   			break;
 			        }
 	        case 2: {   pstmt= DBconn.conn.prepareStatement( 			// Double values
-	   					 		"UPDATE expp_float_data SET (value,lastUser)=(?,?) WHERE id=?");
-	   					pstmt.setDouble(1, jsonIn.getDouble("value"));
-	   					pstmt.setInt(2, userID);
-	   					pstmt.setInt(3, pid);
+	   					 		"INSERT INTO expp_float_data VALUES (default,?,?,?,NOW(),?)");
+						pstmt.setInt(1, id); //experiment ID
+   						pstmt.setInt(2, pid); // Parameter ID
+	   					pstmt.setDouble(3, jsonIn.getDouble("value"));
+	   					pstmt.setInt(4, userID); // UserID
 	   					break;
         			}
 	        case 3: {   pstmt= DBconn.conn.prepareStatement( 			// Measurement data
-						 		"UPDATE expp_measurement_data SET (value,error,lastuser)=(?,?,?) WHERE id=?");
-						pstmt.setDouble(1, Double.parseDouble(jsonIn.getString("value").split("±")[0]));
-						pstmt.setDouble(2, Double.parseDouble(jsonIn.getString("value").split("±")[1]));
-	   					pstmt.setInt(3, userID);
-						pstmt.setInt(4, pid);
+						 		"INSERT INTO expp_measurement_data VALUES (default,?,?,?,?,NOW(),?)");
+						pstmt.setInt(1, id); //experiment ID
+						pstmt.setInt(2, pid); // Parameter ID
+						pstmt.setDouble(3, Double.parseDouble(jsonIn.getString("value").split("±")[0]));
+						pstmt.setDouble(4, Double.parseDouble(jsonIn.getString("value").split("±")[1]));
+	   					pstmt.setInt(5, userID);
 						break;
 			        }
 	        case 4:  { pstmt= DBconn.conn.prepareStatement( 			// String data	
-				 		"UPDATE expp_string_data SET (value,lastuser)=(?,?) WHERE id=?");
-					   pstmt.setString(1, jsonIn.getString("value"));
-	   				   pstmt.setInt(2, userID);
-					   pstmt.setInt(3, pid);
+				 		"INSERT INTO expp_string_data VALUES (default,?,?,?,NOW(),?)");
+					   pstmt.setInt(1, id); //experiment ID
+				       pstmt.setInt(2, pid); // Parameter ID
+					   pstmt.setString(3, jsonIn.getString("value"));
+	   				   pstmt.setInt(4, userID);
 					   break;
 			        }
-	        case 5: {  pstmt= DBconn.conn.prepareStatement( 			
-				 	   			"UPDATE expp_string_data SET (value,lastuser)=(?,?) WHERE id=?");
-					   pstmt.setString(1, jsonIn.getString("value"));
-	   				   pstmt.setInt(2, userID);
-					   pstmt.setInt(3, pid);
+	        case 5: {  pstmt= DBconn.conn.prepareStatement( 			// String data	
+			 			"INSERT INTO expp_string_data VALUES (default,?,?,?,NOW(),?)");
+					   pstmt.setInt(1, id); //experiment ID
+				       pstmt.setInt(2, pid); // Parameter ID
+					   pstmt.setString(3, jsonIn.getString("value"));
+					   pstmt.setInt(4, userID);
+					   break;
+				   }
+	        case 7: {  pstmt= DBconn.conn.prepareStatement( 			// String data	
+			 			"INSERT INTO expp_timestamp_data VALUES (default,?,?,?,NOW(),?)");
+					   pstmt.setInt(1, id); //experiment ID
+				       pstmt.setInt(2, pid); // Parameter ID
+				       java.sql.Timestamp ts= Timestamp.valueOf(jsonIn.getString("value"));
+					   pstmt.setTimestamp(3, ts);
+					   pstmt.setInt(4, userID);
+					   break;
 				   }
 			}
 		

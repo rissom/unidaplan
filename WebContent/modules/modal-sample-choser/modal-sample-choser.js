@@ -89,7 +89,7 @@ function modalSampleChoser(avSampleTypeService,$translate,$scope,$modalInstance,
 		details.sampletypes=this.selectedTypesVar;	
 		var name="";
 		if (thisController.userinput!=undefined){name=thisController.userinput}
-			var promise=restfactory.POST('/samples_by_name.json?name='+name,details);
+			var promise=sampleService.getSamplesByName(name,details);
 			promise.then(function(data){
 				var tempSamples=[];
 				for(var i=0; i<data.data.length; i++){

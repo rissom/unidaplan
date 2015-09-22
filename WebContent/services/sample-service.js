@@ -55,6 +55,10 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 	}
 	
 	
+	this.getSamplesByName = function (name,details){
+		return restfactory.POST('/samples_by_name?name='+name,details);
+	}
+	
 	
 	this.saveParameter = function(parameter) {
 		return restfactory.POST('savesampleparameter',parameter);

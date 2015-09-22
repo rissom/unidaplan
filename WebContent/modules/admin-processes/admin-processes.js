@@ -20,17 +20,18 @@ function aProcessesController($state,$stateParams,$translate,restfactory,process
   
 	
   this.getActions = function(user){
-	return ["edit","delete"];
+	return [$translate.instant("edit"),$translate.instant("delete")];
   }
 	
   
-  this.performAction = function(action,process){
-	  	if (action=="delete"){
+  this.performAction = function(index,process){
+	  	if (index==1){
+	  		console.log ("deleting process");
 	  		var promise=processService.deleteProcessType(process.id);
 	  		promise.then(function(){reload();},function(){console.log("error");})
 	  	}
-		console.log("process",process);
-		console.log("action",action);
+		console.log("process: ",process);
+		console.log("index: ",index);
 
   }
   

@@ -2,7 +2,7 @@
 'use strict';
 
 
-function sampleChoser($translate,$scope,restfactory,types) {
+function sampleChoser($translate,$scope,restfactory,types,sampleService) {
 
 	this.samples=[];
 	this.selectedTypesVar=[]
@@ -81,7 +81,7 @@ function sampleChoser($translate,$scope,restfactory,types) {
 		details.sampletypes=this.selectedTypesVar;	
 		var name="";
 		if (thisController.userinput!=undefined){name=thisController.userinput}
-			var promise=restfactory.POST('/samples_by_name.json?name='+name,details);
+			var promise=sampleService.getSamplesByName(name,details);
 			promise.then(function(data){
 				thisController.samples=data.data;
 				if (thisController.firsttime) {
@@ -148,6 +148,6 @@ function sampleChoser($translate,$scope,restfactory,types) {
 };
 
         
-angular.module('unidaplan').controller('sampleChoser',['$translate','$scope','restfactory','types',sampleChoser]);
+angular.module('unidaplan').controller('sampleChoser',['$translate','$scope','restfactory','types','sampleService',sampleChoser]);
 
 })();

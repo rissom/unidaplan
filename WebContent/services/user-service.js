@@ -9,7 +9,7 @@ var userService = function(restfactory,$q){
 	this.getUsers = function() {
 	    var defered=$q.defer();
 	    var users;
-		var promise = restfactory.GET("get-users.json");
+		var promise = restfactory.GET("get-users");
 		promise.then(
 			function(rest) {
 				users = rest.data;
@@ -28,7 +28,7 @@ var userService = function(restfactory,$q){
 	this.submitUser = function(newUser) {
         var defered=$q.defer();
         var users;
-		var promise = restfactory.POST("add-user.json",newUser);
+		var promise = restfactory.POST("add-user",newUser);
 		promise.then(
 			function(data){
 				var promise2 = thisController.getUsers();
@@ -58,7 +58,7 @@ var userService = function(restfactory,$q){
 	this.getUser = function(userID,token){
         var defered=$q.defer();
         var user;
-		var promise = restfactory.GET("get-user.json?id="+userID+"&token="+token);
+		var promise = restfactory.GET("get-user?id="+userID+"&token="+token);
 	    promise.then(
 	    	function(rest) {
 	    		if (rest.data.token==(token)){

@@ -44,7 +44,7 @@
 				    </a>
 				    <ul class="dropdown-menu">
 				    	<li ng-repeat="action in aProcessesCtrl.getActions(process)">
-				        	<a ng-click="aProcessesCtrl.performAction(action,process)">{{action}}</a>
+				        	<a ng-click="aProcessesCtrl.performAction($index,process)">{{action}}</a>
 				        </li>
 				    </ul>
 	  			</div>

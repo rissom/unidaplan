@@ -9,7 +9,7 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 	
 	this.getExperiments = function() {
         var defered=$q.defer();
-		var promise = restfactory.GET("experiments.json");
+		var promise = restfactory.GET("experiments");
 		 		
 	    promise.then(function(rest) {
 	    	thisController.experiments = rest.data.experiments;
