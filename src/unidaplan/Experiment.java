@@ -180,7 +180,7 @@ import org.json.JSONObject;
 	     		// Output the Parameters
 				pstmt= dBconn.conn.prepareStatement( 	
 	     		"SELECT expp_param.id, expp_param.pos, "
-				+"expp_param.stringkeyname,  pid, value, "
+				+"expp_param.stringkeyname, value, "
 				+"st.description, paramdef.datatype "
 				+"FROM expp_param "
 				+"JOIN paramdef ON (paramdef.id=expp_param.definition) " 

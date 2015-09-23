@@ -118,7 +118,7 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 	
 	
 	this.getProcessRecipes = function(process){
-		return avProcessTypeService.getProcessRecipes(process,ptypes)
+		return avProcessTypeService.getProcessRecipes(process,ptypes);
 	}
 	
 	
@@ -230,7 +230,8 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 	
 //	var thisController=this;
 	angular.forEach (experimentData.samples, function(sample){
-		// Arranging of planned and finished experiments. Finished Experiments are sorted by time. Planned Experiments are matched to finished Experiments.
+		// Arranging of planned and finished experiments. Finished Experiments are sorted by time. 
+		// Planned Experiments are matched to finished Experiments.
 		var mprocesses=[];
 		var pplength=0;
 		var finishedProcesses=[];
@@ -271,27 +272,16 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 			parameter.editing=false; 
 			var oldValue=parameter.value;
 			parameter.value=newValue;
-			 if (parameter.pid) {
-				var res = restfactory.POST('update-experiment-parameter',parameter);
-				res.then(function(data, status, headers, config) {
-						 },
-						 function(data, status, headers, config) {
-							parameter.value=oldValue;
-							console.log('error');
-							console.log(data);
-						 }
-						);
-			 } else {
-				var res = restfactory.POST('add-experiment-parameter?experimentid='+this.experiment.id,parameter);
-					res.then(function(data) {
-							 },
-							 function(data) {
-								parameter.value=oldValue;
-								console.log('verkackt');
-								console.log(data);
-							 }
-							);
-			 }
+			parameter.experimentid=this.experiment.id;
+			var res = restfactory.POST('update-experiment-parameter',parameter);
+			res.then(function(data, status, headers, config) {
+				 },
+				 function(data, status, headers, config) {
+					parameter.value=oldValue;
+					console.log('error');
+					console.log(data);
+				 }
+				);
 		}
 		if (keyCode===27) {		// Escape key pressed
 			parameter.editing=false;		
@@ -363,7 +353,7 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 
 	
 
-};
+}
     
         
 angular.module('unidaplan').controller('experimentController',['$modal','$scope','$stateParams','experimentService','restfactory','$translate','$state','key2string','avSampleTypeService',

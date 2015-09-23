@@ -108,16 +108,6 @@
     <url-pattern>/update-experiment-parameter</url-pattern>
   </servlet-mapping>
   <servlet>
-    <description>Add a Parameter of an experiment</description>
-    <display-name>AddExperimentParameter</display-name>
-    <servlet-name>AddExperimentParameter</servlet-name>
-    <servlet-class>unidaplan.AddExperimentParameter</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>AddExperimentParameter</servlet-name>
-    <url-pattern>/add-experiment-parameter</url-pattern>
-  </servlet-mapping>
-  <servlet>
     <description>Add a user</description>
     <display-name>AddUser</display-name>
     <servlet-name>AddUser</servlet-name>
