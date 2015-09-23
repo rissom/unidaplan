@@ -5,10 +5,18 @@
 <br />
 <h4>{{'Params'|translate}}</h4>
 <table class="table">
-	<tr ng-repeat="parameter in processCtrl.process.parameters">
+	<tr ng-repeat="parameter in processCtrl.process.parameters"
+		ng-dblclick="parameter.editing=true; newValue=parameter.value">
 		<td ng-click="processCtrl.articleClicked(parameter)">{{parameter.trname}} :</td>
-		<td>{{processCtrl.showParam(parameter)}}
-			{{parameter.unit.length>0?parameter.unit:''}}</td>
+		<td>
+			<span ng-hide="parameter.editing">{{processCtrl.showParam(parameter)}}
+			</span>
+			<input 						   
+				ng-keyup="processCtrl.paramKeyUp($event.keyCode,newValue,parameter)"
+				ng-show="parameter.editing" type="text"
+			    ng-model="newValue" 
+			    ng-blur="parameter.editing=false">
+			{{parameter.unit.length>0?parameter.unit:''}}
 	</tr>
 	<tr>
 		<td></td>

@@ -29,9 +29,11 @@ public class AddProcess extends HttpServlet {
 	    // get the processTypeID
 	    int processTypeID=-1;
 	   	int lastProcessID=0;
+	   	int timeZone=120;
 	   	
 	    try {
 			 processTypeID=Integer.parseInt(request.getParameter("processtypeid")); 
+			 timeZone=Integer.parseInt(request.getParameter("timezone")); 
 		} catch (Exception e) {
 			System.err.println("AddProcess: Error parsing type ID");
 			response.setStatus(404);
@@ -122,10 +124,11 @@ public class AddProcess extends HttpServlet {
 		   	
 		   	
 			// set date parameter to now
-	    	pstmt= dBconn.conn.prepareStatement("INSERT INTO p_timestamp_data VALUES(default,?,?,NOW(),NOW(),?)");
+	    	pstmt= dBconn.conn.prepareStatement("INSERT INTO p_timestamp_data VALUES(default,?,?,NOW(),?,NOW(),?)");
 	    	pstmt.setInt(1, id);
 	    	pstmt.setInt(2, dateID);
-	    	pstmt.setInt(3, userID);
+	    	pstmt.setInt(3, timeZone);
+	    	pstmt.setInt(4, userID);
 	    	pstmt.executeUpdate();
 	    	pstmt.close();
 	

@@ -19,7 +19,8 @@ function newProcessController(restfactory,$state,ptypes,avProcessTypeService){
 
 		
 	this.addProcess = function() {
-		var promise = restfactory.POST("add-process?processtypeid="+this.processType.id)
+		var d=new Date();
+		var promise = restfactory.POST("add-process?processtypeid="+this.processType.id+"&timezone="+d.getTimezoneOffset());
 		promise.then(function(rest){
 			if (rest.data.status=="ok") {
 				$state.go('process',{processID:rest.data.id})

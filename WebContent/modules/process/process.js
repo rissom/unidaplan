@@ -89,6 +89,27 @@ function process($state,$stateParams,avSampleTypeService,types,$modal,processDat
 	
   
   
+  this.paramKeyUp = function(keyCode,newValue,parameter) {
+		if (keyCode===13) {				// Return key pressed
+			parameter.editing=false; 
+			var oldValue=parameter.value;
+			parameter.value=newValue;
+			var res = processService.updateParameter(this.process.id,parameter.id,newValue);
+			res.then(function(data, status, headers, config) {
+				 },
+				 function(data, status, headers, config) {
+					parameter.value=oldValue;
+					console.log('error');
+					console.log(data);
+				 }
+				);
+		}
+		if (keyCode===27) {		// Escape key pressed
+			parameter.editing=false;		
+		}
+	}
+  
+  
 //  this.getProcesstype=function(process,ptypes){
 //	  return avProcessTypeService.getProcessType(process,ptypes);
 //  }

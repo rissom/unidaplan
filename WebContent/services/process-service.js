@@ -9,12 +9,10 @@ var processService = function (restfactory,$q,$translate,key2string) {
 			              $translate.instant("attention"),
 			              $translate.instant("failed")];
 	
+	
+	
 	this.setStatus = function(process,status){
-		var statusObj={	"pid":process.statuspid,
-						"processid":process.id,
-						"value":status };
-		var promise = restfactory.POST('update-process-parameter',statusObj);
-		return promise;
+		return this.updateParameter(process.id,process.statuspid,status);
 	}
 	
 	
@@ -66,6 +64,7 @@ var processService = function (restfactory,$q,$translate,key2string) {
 	}
 	
 	
+	
 	// delete a process (also from recent processes)
 	this.deleteProcess = function(id){
 			for (var i=0;i<this.recentProcesses.length;i++){
@@ -74,6 +73,13 @@ var processService = function (restfactory,$q,$translate,key2string) {
 				}
 			}
 		return restfactory.DELETE("delete-process?id="+id);
+	}
+	
+	
+	
+	this.updateParameter=function(processID,paramID,newValue){
+		var parameter={"processid":processID,"parameterid":paramID, "value":newValue};	
+		return restfactory.POST('update-process-parameter',parameter);
 	}
 	
 	

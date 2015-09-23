@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -33,14 +34,14 @@ import org.json.JSONObject;
 		}
 		response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
-	    PreparedStatement pstmt;
+	    PreparedStatement pStmt;
 
 	    // get the id
 	    int processID=0;
 	    int parameterID=-1;
 	    try {
 			processID=jsonIn.getInt("processid");	
-     		parameterID=jsonIn.getInt("pid");
+     		parameterID=jsonIn.getInt("parameterid");
 		} catch (JSONException e) {
 			System.err.println("UpdateProcessParameter: Error parsing ID-Field");
 			status="error parsing ID-Field";
@@ -52,23 +53,23 @@ import org.json.JSONObject;
 	    
 	    // Delete the old parameter.
 	    try{
-		    pstmt= DBconn.conn.prepareStatement( "DELETE FROM p_string_data WHERE ProcessID=? AND P_Parameter_ID=?");
-		    pstmt.setInt(1, processID);
-		    pstmt.setInt(2, parameterID);
-		    pstmt.executeUpdate();
-		    pstmt= DBconn.conn.prepareStatement( "DELETE FROM p_float_data WHERE ProcessID=? AND P_Parameter_ID=?");
-		    pstmt.setInt(1, processID);
-		    pstmt.setInt(2, parameterID);
-		    pstmt.executeUpdate();
-		    pstmt= DBconn.conn.prepareStatement( "DELETE FROM p_integer_data WHERE ProcessID=? AND P_Parameter_ID=?");
-		    pstmt.setInt(1, processID);
-		    pstmt.setInt(2, parameterID);
-		    pstmt.executeUpdate();
-		    pstmt= DBconn.conn.prepareStatement( "DELETE FROM p_measurement_data WHERE ProcessID=? AND P_Parameter_ID=?");
-		    pstmt.setInt(1, processID);
-		    pstmt.setInt(2, parameterID);
-		    pstmt.executeUpdate();
-		    pstmt.close();
+		    pStmt= DBconn.conn.prepareStatement( "DELETE FROM p_string_data WHERE ProcessID=? AND P_Parameter_ID=?");
+		    pStmt.setInt(1, processID);
+		    pStmt.setInt(2, parameterID);
+		    pStmt.executeUpdate();
+		    pStmt= DBconn.conn.prepareStatement( "DELETE FROM p_float_data WHERE ProcessID=? AND P_Parameter_ID=?");
+		    pStmt.setInt(1, processID);
+		    pStmt.setInt(2, parameterID);
+		    pStmt.executeUpdate();
+		    pStmt= DBconn.conn.prepareStatement( "DELETE FROM p_integer_data WHERE ProcessID=? AND P_Parameter_ID=?");
+		    pStmt.setInt(1, processID);
+		    pStmt.setInt(2, parameterID);
+		    pStmt.executeUpdate();
+		    pStmt= DBconn.conn.prepareStatement( "DELETE FROM p_measurement_data WHERE ProcessID=? AND P_Parameter_ID=?");
+		    pStmt.setInt(1, processID);
+		    pStmt.setInt(2, parameterID);
+		    pStmt.executeUpdate();
+		    pStmt.close();
 	    } catch (SQLException e) {
 			System.err.println("UpdateProcessParameter: Problems with SQL query for deletion");
 			status="error";
@@ -81,12 +82,12 @@ import org.json.JSONObject;
 	    // look up the datatype in Database	    
 	    int type=-1;
 		try {	
-			pstmt= DBconn.conn.prepareStatement( 			
+			pStmt= DBconn.conn.prepareStatement( 			
 					 "SELECT paramdef.datatype FROM p_parameters p "
 					+"JOIN paramdef ON p.definition=paramdef.id "
 					+"WHERE p.id=?");
-		   	pstmt.setInt(1, parameterID);
-		   	JSONObject answer=DBconn.jsonObjectFromPreparedStmt(pstmt);
+		   	pStmt.setInt(1, parameterID);
+		   	JSONObject answer=DBconn.jsonObjectFromPreparedStmt(pStmt);
 			type= answer.getInt("datatype");
 		} catch (SQLException e) {
 			System.err.println("UpdateProcessParameter: Problems with SQL query");
@@ -99,55 +100,63 @@ import org.json.JSONObject;
 			status="error";
 		}
 		
-		pstmt=null; // fooling eclipse to not show warnings
+		pStmt=null; // fooling eclipse to not show warnings
 		
 		// differentiate according to type
 		try {	
 			switch (type) {
-	        case 1: {   pstmt= DBconn.conn.prepareStatement( 			// Integer values
+	        case 1: {   pStmt= DBconn.conn.prepareStatement( 			// Integer values
 				         "INSERT INTO p_integer_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
-			   			pstmt.setInt(1, processID);
-				        pstmt.setInt(2, parameterID);
-			   			pstmt.setInt(3, jsonIn.getInt("value"));
-			   			pstmt.setInt(4, userID);
+			   			pStmt.setInt(1, processID);
+				        pStmt.setInt(2, parameterID);
+			   			pStmt.setInt(3, jsonIn.getInt("value"));
+			   			pStmt.setInt(4, userID);
 			   			break;
 			        }
-	        case 2: {   pstmt= DBconn.conn.prepareStatement( 			// Double values
+	        case 2: {   pStmt= DBconn.conn.prepareStatement( 			// Double values
 				         "INSERT INTO p_float_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
-				        pstmt.setInt(1, processID);
-			   			pstmt.setInt(2, parameterID);				        
-				        pstmt.setDouble(3, jsonIn.getDouble("value"));
-				        pstmt.setInt(4, userID);
+				        pStmt.setInt(1, processID);
+			   			pStmt.setInt(2, parameterID);				        
+				        pStmt.setDouble(3, jsonIn.getDouble("value"));
+				        pStmt.setInt(4, userID);
 	   					break;
         			}
-	        case 3: {   pstmt= DBconn.conn.prepareStatement( 			// Measurement data
+	        case 3: {   pStmt= DBconn.conn.prepareStatement( 			// Measurement data
 				         "INSERT INTO p_measurement_data VALUES(DEFAULT,?,?,?,?,NOW(),?) RETURNING ID");
-						pstmt.setInt(1, processID);
-						pstmt.setInt(2, parameterID);
-						pstmt.setDouble(3, Double.parseDouble(jsonIn.getString("value").split("±")[0]));
-						pstmt.setDouble(4, Double.parseDouble(jsonIn.getString("value").split("±")[1]));
-						pstmt.setInt(5, userID);
+						pStmt.setInt(1, processID);
+						pStmt.setInt(2, parameterID);
+						pStmt.setDouble(3, Double.parseDouble(jsonIn.getString("value").split("±")[0]));
+						pStmt.setDouble(4, Double.parseDouble(jsonIn.getString("value").split("±")[1]));
+						pStmt.setInt(5, userID);
 						break;
 			        }
-	        case 4:  { pstmt= DBconn.conn.prepareStatement( 			// String data	
+	        case 4:  { pStmt= DBconn.conn.prepareStatement( 			// String data	
 			        	"INSERT INTO p_string_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
-				       pstmt.setInt(1, processID);
-				       pstmt.setInt(2, parameterID);
-				       pstmt.setString(3, jsonIn.getString("value"));
-				       pstmt.setInt(4, userID);
+				       pStmt.setInt(1, processID);
+				       pStmt.setInt(2, parameterID);
+				       pStmt.setString(3, jsonIn.getString("value"));
+				       pStmt.setInt(4, userID);
 					   break;
 			        }
-	        case 5: {  pstmt= DBconn.conn.prepareStatement(
+	        case 5: {  pStmt= DBconn.conn.prepareStatement(
         		 		"INSERT INTO p_string_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
-				       pstmt.setInt(1, processID);
-				       pstmt.setInt(2, parameterID);
-				       pstmt.setString(3, jsonIn.getString("value"));
-				       pstmt.setInt(4, userID);
+				       pStmt.setInt(1, processID);
+				       pStmt.setInt(2, parameterID);
+				       pStmt.setString(3, jsonIn.getString("value"));
+				       pStmt.setInt(4, userID);
 				   }
+	        case 7: {  pStmt= DBconn.conn.prepareStatement(
+    		 		"INSERT INTO p_string_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
+			       pStmt.setInt(1, processID);
+			       pStmt.setInt(2, parameterID);
+			       java.sql.Timestamp ts= Timestamp.valueOf(jsonIn.getString("value"));
+				   pStmt.setTimestamp(3, ts);
+				   pStmt.setInt(4, userID);
+			   }
 			}
 		
-	    int id=DBconn.getSingleIntValue(pstmt);
-   		pstmt.close();
+	    int id=DBconn.getSingleIntValue(pStmt);
+   		pStmt.close();
 		DBconn.closeDB();
 	    // tell client that everything is fine
 	    PrintWriter out = response.getWriter();
