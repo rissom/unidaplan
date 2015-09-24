@@ -1,75 +1,75 @@
 <h3>
-	{{'Processtypes'|translate}}
+	{{'Sampletypes'|translate}}
 </h3>
 <table class="table">
 	<thead class=parametertablehead>
 		<tr>
 			<td class="parametertd">
-	 			Name ({{aProcessesCtrl.lang1}})
+	 			Name ({{aSamplesCtrl.lang1}})
 			</td>
 			<td class="parametertd">
-	 			Name ({{aProcessesCtrl.lang2}})
+	 			Name ({{aSamplesCtrl.lang2}})
 			</td>
 			<td class="parametertd">
-				{{'Description'|translate}} ({{aProcessesCtrl.lang1}})
+				{{'Description'|translate}} ({{aSamplesCtrl.lang1}})
 			</td>
 			<td class="parametertd">
-				{{'Description'|translate}} ({{aProcessesCtrl.lang2}})
+				{{'Description'|translate}} ({{aSamplesCtrl.lang2}})
 			</td>
 			<td class="parametertd"
-				ng-hide="aProcessesCtrl.editmode">
+				ng-hide="aSamplesCtrl.editmode">
 			</td>
 		</tr>
 	</thead>
 	
 	
 	<tbody>
-		<tr ng-repeat="process in aProcessesCtrl.ptypes | orderBy : 'nameLang1'">
+		<tr ng-repeat="sampleType in aSamplesCtrl.types | orderBy : 'nameLang1'">
 			<td class="parametertd">
-	 			{{process.nameLang('de')}}
+	 			{{sampleType.nameLang('de')}}
 			</td>
 			<td class="parametertd">		
-				{{process.nameLang('en')}}
+				{{sampleType.nameLang('en')}}
 			</td>
 			<td class="parametertd">
-				{{process.descLang('de')}}
+				{{sampleType.descLang('de')}}
 			</td>
 			<td class="parametertd">
-				{{process.descLang('en')}}
+				{{sampleType.descLang('en')}}
 			</td>
-			<td class="parametertd" ng-hide="aProcessesCtrl.editmode">			
+			<td class="parametertd" ng-hide="aSamplesCtrl.editmode">			
 				<div class="dropdown" dropdown on-toggle="toggled(open)">
 					<a class="dropdown-toggle" dropdown-toggle>
 			  			{{'action'|translate}} &#x25BC;
 				    </a>
 				    <ul class="dropdown-menu">
-				    	<li ng-repeat="action in aProcessesCtrl.getActions(process)">
-				        	<a ng-click="aProcessesCtrl.performAction($index,process)">{{action}}</a>
+				    	<li ng-repeat="action in aSamplesCtrl.getActions(sampleType)">
+				        	<a ng-click="aSamplesCtrl.performAction($index,sampleType)">{{action}}</a>
 				        </li>
 				    </ul>
 	  			</div>
 			</td>
 		</tr>
-		<tr ng-show="aProcessesCtrl.editmode">
+		<tr ng-show="aSamplesCtrl.editmode">
 			<td class="parametertd">
 				<input 						   
 				type="text"
-			    ng-model="aProcessesCtrl.newNameL1"> 
+			    ng-model="aSamplesCtrl.newNameL1"> 
 			</td>
 			<td class="parametertd">
 				<input 						   
 				type="text"
-			    ng-model="aProcessesCtrl.newNameL2"> 
+			    ng-model="aSamplesCtrl.newNameL2"> 
 			</td>
 			<td class="parametertd">
 				<input 						   
 				type="text"
-			    ng-model="aProcessesCtrl.newDescL1"> 
+			    ng-model="aSamplesCtrl.newDescL1"> 
 			</td>
 			<td class="parametertd">
 				<input 						   
 				type="text"
-			    ng-model="aProcessesCtrl.newDescL2"> 
+			    ng-model="aSamplesCtrl.newDescL2"> 
 			</td>
 					
 		</tr>
@@ -77,24 +77,24 @@
 </table>
 <br />
 <button type="button" 
-		ng-hide="aProcessesCtrl.editmode"
+		ng-hide="aSamplesCtrl.editmode"
 		class="btn btn-default" 
-		ng-click="aProcessesCtrl.newProcessType()" >
-	<b>+</b> {{'Add Process'|translate}}
+		ng-click="aSamplesCtrl.newSampleType()" >
+	<b>+</b> {{'Add Sampletype'|translate}}
 </button>
 
 <button type="button" 
-		ng-show="aProcessesCtrl.editmode"
+		ng-show="aSamplesCtrl.editmode"
 		class="btn btn-default" 
-		ng-click="aProcessesCtrl.editmode=false" >
+		ng-click="aSamplesCtrl.editmode=false" >
 	{{'Cancel'|translate}}
 </button>
 
 <button type="button" 
-		ng-show="aProcessesCtrl.editmode"
+		ng-show="aSamplesCtrl.editmode"
 		class="btn btn-default" 
-		ng-click="aProcessesCtrl.addProcessType()" >
-	{{'Add Process'|translate}}
+		ng-click="aSamplesCtrl.addSampleType()" >
+	{{'Add Sampletype'|translate}}
 </button>
 
 

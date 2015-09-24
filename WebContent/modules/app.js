@@ -27,7 +27,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	        				return sampleService.loadSample($stateParams.sampleID)
 	        			},
 			    types:  function(avSampleTypeService){
-        	   	    		return avSampleTypeService.getTypes()
+        	   	    		return avSampleTypeService.getSampleTypes()
         	   	    	},
         	   	ptypes: function(avProcessTypeService){
             	   	    	return avProcessTypeService.getProcessTypes()
@@ -58,7 +58,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	        resolve:{
                 types: 
             	    function(avSampleTypeService){
-        	   	    	return avSampleTypeService.getTypes()
+        	   	    	return avSampleTypeService.getSampleTypes()
                 	}
 	        }
         })
@@ -70,7 +70,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	        resolve: {
 	            types: 
                     function(avSampleTypeService){
-                		return avSampleTypeService.getTypes()
+                		return avSampleTypeService.getSampleTypes()
                 	}
 	        }
         })
@@ -82,7 +82,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 		    resolve:{
 	                types: 
 	            	    function(avSampleTypeService){
-	        	   	    	return avSampleTypeService.getTypes()
+	        	   	    	return avSampleTypeService.getSampleTypes()
 	                	}
 		    }
     	})
@@ -106,7 +106,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	        resolve:{
 	            types: 
 	        	    function(avSampleTypeService){
-	        	   	    return avSampleTypeService.getTypes()
+	        	   	    return avSampleTypeService.getSampleTypes()
 	                },
 	            processData: 
 	            	function(processService,$stateParams){
@@ -125,6 +125,17 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	        resolve:{
                	ptypes: function(avProcessTypeService){
         	   	    	return avProcessTypeService.getProcessTypes()
+        	   	    }
+			}
+        })
+        
+        .state('adminSamples', {
+	        url: '/adminsamples',
+	        templateUrl: 'modules/admin-samples/admin-samples.html',
+	        controller:"aSamplesController as aSamplesCtrl",
+	        resolve:{
+               	types: function(avSampleTypeService){
+        	   	    	return avSampleTypeService.getSampleTypes()
         	   	    }
 			}
         })
@@ -184,7 +195,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	        resolve:{
 	            stypes: 
 	        	    function(avSampleTypeService){
-	        	   	    return avSampleTypeService.getTypes()
+	        	   	    return avSampleTypeService.getSampleTypes()
 	                },
                 ptypes: 
                 	function(avProcessTypeService){

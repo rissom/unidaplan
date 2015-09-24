@@ -25,6 +25,8 @@ import org.json.JSONObject;
 		  
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
+		userID=userID+1;
+		userID=userID-1;
 
 		request.setCharacterEncoding("utf-8");
 	    response.setContentType("application/json");
@@ -40,13 +42,14 @@ import org.json.JSONObject;
 	 	ArrayList<String> stringkeys = new ArrayList<String>(); 
 
 	 	try {	
-	 		pstmt= DBconn.conn.prepareStatement("SELECT id, string_key FROM objecttypes");
+	 		pstmt= DBconn.conn.prepareStatement("SELECT id,string_key,description FROM objecttypes");
 		    objectList=DBconn.jsonArrayFromPreparedStmt(pstmt); // get ResultSet from the database using the query
 
 	 		  if (objectList.length()>0) {
 	           	  for (int i=0; i<objectList.length();i++) {
 	           		  JSONObject dings=(JSONObject) objectList.get(i);
 	           		  stringkeys.add(Integer.toString(dings.getInt("string_key")));
+	           		  stringkeys.add(Integer.toString(dings.getInt("description")));
 	           	  }
 		          String query="SELECT id,string_key,language,value FROM Stringtable WHERE string_key=ANY('{";
 		           	

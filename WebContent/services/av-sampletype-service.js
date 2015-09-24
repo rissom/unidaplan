@@ -10,7 +10,7 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 		var typeName
 		  angular.forEach(types,function(type) {
 			if (sample.typeid==type.id){
-			    typeName=type.trname;
+			    typeName=type.namef();
 			}
 	      })
 		return typeName;
@@ -18,27 +18,37 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	
 	
 	
-	this.getTypes = function() {
+	this.getSampleTypes = function() {
         var defered=$q.defer();
-        var now = new Date();
-    	    if  ((this.loaded)&&((now-this.lastTimeLoaded)<5*60*1000)){
-    	    	this.translate();
-    	  	    defered.resolve(this.sampleTypes)
-    	    }else{
-    	    	var thisController=this;
-    	    	var promise = restfactory.GET("sampletypes");
-    	    	promise.then(function(rest) {
-	    	    	thisController.sampleTypes = rest.data.sampletypes;
-	    	    	thisController.strings = rest.data.strings;
-	    	    	thisController.lastTimeLoaded=new Date();
-	    	    	thisController.translate();
-	    	    	thisController.loaded=true;
-//	    	    	thisController.sampleTypes.getType=thisController.getType;
-	    	    	defered.resolve(thisController.sampleTypes)
-    	    	}, function(rest) {
-    	    		console.log("Error loading sampletypes");
-    	    	});
-    	    }	
+    	var thisController=this;
+    	var promise = restfactory.GET("sampletypes");
+    	promise.then(function(rest) {
+	    	thisController.sampleTypes = rest.data.sampletypes;
+		    thisController.strings = rest.data.strings;
+	    	angular.forEach(thisController.sampleTypes,function(sampleType) {
+	    		sampleType.namef=function(){
+					return (key2string.key2string(sampleType.string_key,thisController.strings))
+				}
+	    		sampleType.nameLang=function(lang){
+					return (key2string.key2stringWithLangStrict(sampleType.string_key,thisController.strings,lang))
+				}
+	    		sampleType.descf=function(){
+					return (key2string.key2string(sampleType.description,thisController.strings))
+				}
+	    		sampleType.descLang=function(lang){
+					return (key2string.key2stringWithLangStrict(sampleType.description,thisController.strings,lang))
+				}
+				angular.forEach(sampleType.recipes, function(recipe) {
+					recipe.namef=function(){
+						return (key2string.key2string(recipe.name,thisController.strings));
+					}
+				})
+	      })
+    	  defered.resolve(thisController.sampleTypes)		
+	    	
+    	}, function(rest) {
+    		console.log("Error loading sampletypes");
+    	});
 		return defered.promise;
 	}
       

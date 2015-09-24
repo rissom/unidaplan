@@ -95,6 +95,16 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 	}
 	
 	
+	
+	this.addSampleType = function(newSampleType){
+		return restfactory.POST("add-sample-type",newSampleType); 
+	}
+	
+	this.deleteSampleType=function(id){
+		return restfactory.DELETE("delete-sample-type?id="+id);
+	};
+
+	
 	this.translate = function() {
 		angular.forEach(this.sample.parameters, function(parameter) {
 			parameter.trname=key2string.key2string(parameter.stringkeyname,thisController.sample.strings) 

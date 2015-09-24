@@ -4,19 +4,18 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class DeleteProcessType extends HttpServlet {
+public class DeleteSampleType extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public DeleteProcessType() {
+    public DeleteSampleType() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -30,6 +29,7 @@ public class DeleteProcessType extends HttpServlet {
 		int userID=authentificator.GetUserID(request,response);
 		userID=userID+1;
 		userID=userID-1;
+		int name = 0;
 		request.setCharacterEncoding("utf-8");
 	    response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
@@ -37,32 +37,31 @@ public class DeleteProcessType extends HttpServlet {
 	    String status="ok";
 	    
 		PreparedStatement pStmt = null; 	// Declare variables
-		int processTypeID=0;
-		int name = 0;
+		int sampleTypeID=0;
 		int description=0;
 	 	DBconnection dBconn=new DBconnection(); // New connection to the database
 	 	dBconn.startDB();
 	 	
 		// get Parameter for id
 		try{
-			 processTypeID=Integer.parseInt(request.getParameter("id")); }
+			 sampleTypeID=Integer.parseInt(request.getParameter("id")); }
 		catch (Exception e1) {
-			processTypeID=-1;
-			System.err.print("Delete Processtype: no process ID given!");
+			sampleTypeID=-1;
+			System.err.print("Delete Sample Type: no sampleType ID given!");
 			status="error: no process ID";
 		}
 	 	
 		 try {
-			 	if (processTypeID>0){			
+			 	if (sampleTypeID>0){			
 					// get string_key_table references for later deletion
 			        pStmt = dBconn.conn.prepareStatement(	
-			        	"SELECT name FROM processtypes WHERE id=?");
-					pStmt.setInt(1,processTypeID);
+			        	"SELECT string_key FROM objecttypes WHERE id=?");
+					pStmt.setInt(1,sampleTypeID);
 					name = dBconn.getSingleIntValue(pStmt);
 					pStmt.close();
 			        pStmt = dBconn.conn.prepareStatement(	
-				        	"SELECT description FROM processtypes WHERE id=?");
-					pStmt.setInt(1,processTypeID);
+				        	"SELECT description FROM objecttypes WHERE id=?");
+					pStmt.setInt(1,sampleTypeID);
 					description = dBconn.getSingleIntValue(pStmt);
 					pStmt.close();
 				}
@@ -75,27 +74,28 @@ public class DeleteProcessType extends HttpServlet {
 				status="error: JSON error";
 				e.printStackTrace();
 			}
-		
-	    try {
-		 	if (processTypeID>0){			
-				// delete the process
-		        pStmt = dBconn.conn.prepareStatement(	
-		        	"DELETE FROM processtypes WHERE id=?");
-				pStmt.setInt(1,processTypeID);
-				pStmt.executeUpdate();
-				pStmt.close();
+		 
+		  try {
+			 	if (sampleTypeID>0){			
+					// delete the process
+			        pStmt = dBconn.conn.prepareStatement(	
+			        	"DELETE FROM objecttypes WHERE id=?");
+					pStmt.setInt(1,sampleTypeID);
+					pStmt.executeUpdate();
+					pStmt.close();
+				}
+		    } catch (SQLException eS) {
+				System.err.println("Delete Process: SQL Error");
+				status="error: SQL error";
+				eS.printStackTrace();
+			} catch (Exception e) {
+				System.err.println("Delete Sample Type: Some Error, probably JSON");
+				status="error: JSON error";
+				e.printStackTrace();
 			}
-	    } catch (SQLException eS) {
-			System.err.println("Delete Process: SQL Error");
-			status="error: SQL error";
-			eS.printStackTrace();
-		} catch (Exception e) {
-			System.err.println("Delete Processtype: Some Error, probably JSON");
-			status="error: JSON error";
-			e.printStackTrace();
-		}
+		 
 	    try {
-		 	if (processTypeID>0){			
+		 	if (sampleTypeID>0){			
 				// delete the stringkeys
 		        pStmt = dBconn.conn.prepareStatement(	
 		        	"DELETE FROM string_key_table WHERE id IN (?,?)");
@@ -114,7 +114,7 @@ public class DeleteProcessType extends HttpServlet {
 			e.printStackTrace();
 		} 
 	    
-	    finally {
+finally {
 		try{	
 	         
 	    	   if (dBconn.conn != null) { 
@@ -122,7 +122,7 @@ public class DeleteProcessType extends HttpServlet {
 	    	   }
 	        } catch (Exception e) {
 				status="error: error closing the database";
-				System.err.println("Delete Processtype: Some Error closing the database");
+				System.err.println("Delete Sample Type: Some Error closing the database");
 				e.printStackTrace();
 		   	}
         }

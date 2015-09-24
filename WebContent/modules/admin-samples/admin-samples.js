@@ -1,7 +1,7 @@
 (function(){
   'use strict';
 
-function aProcessesController($state,$stateParams,$translate,restfactory,processService,ptypes,languages){
+function aSamplesController($state,$stateParams,$translate,restfactory,sampleService,types,languages){
   
   var thisController=this;
   
@@ -11,10 +11,10 @@ function aProcessesController($state,$stateParams,$translate,restfactory,process
   
   this.lang2=$translate.instant(languages[1].name);
   
-  this.ptypes=ptypes;
+  this.types=types;
     
   
-  this.newProcessType=function(){
+  this.newSampleType=function(){
 	  this.editmode=true;
   }
   
@@ -24,11 +24,15 @@ function aProcessesController($state,$stateParams,$translate,restfactory,process
   }
 	
   
-  this.performAction = function(index,process){
+  this.performAction = function(index,sampleType){
 	  	if (index==1){
-	  		var promise=processService.deleteProcessType(process.id);
+	  		console.log ("deleting process");
+	  		var promise=sampleService.deleteSampleType(sampleType.id);
 	  		promise.then(function(){reload();},function(){console.log("error");})
 	  	}
+		console.log("process: ",sampleType);
+		console.log("index: ",index);
+
   }
   
   
@@ -41,20 +45,22 @@ function aProcessesController($state,$stateParams,$translate,restfactory,process
   
   
   
-  this.addProcessType=function(){
+  this.addSampleType=function(){
 	  var name={};
 	  name[languages[0].key]=this.newNameL1;
 	  name[languages[1].key]=this.newNameL2;
 	  var description={};
 	  description[languages[0].key]=this.newDescL1;
 	  description[languages[1].key]=this.newDescL2; 	  
-	  var newProcessType={"name":name,"description":description};	  
-	  var promise = processService.addProcessType(newProcessType);
+	  var newSampleType={"name":name,"description":description};	  
+	  var promise = sampleService.addSampleType(newSampleType);
 	  promise.then(function(){ reload();},function(){console.log("error");})
-  } 
+  }
+  
+ 
 
 };
 
-angular.module('unidaplan').controller('aProcessesController', ['$state','$stateParams','$translate','restfactory','processService','ptypes','languages',aProcessesController]);
+angular.module('unidaplan').controller('aSamplesController', ['$state','$stateParams','$translate','restfactory','sampleService','types','languages',aSamplesController]);
 
 })();

@@ -29,60 +29,41 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate) {
 	}
 	
 	
+	
 	this.getProcessTypes = function() {
         var defered=$q.defer();
         var thisController=this;
-//        var now = new Date();
-//	    if  ((this.loaded)&&((now-this.lastTimeLoaded)<5*60*1000)){
-//	    	this.translate();
-//	  	    defered.resolve(this.processTypes)
-//	    }else{
-	    	var promise = restfactory.GET("available-processtypes");
-	    	promise.then(function(rest) {
-	    		thisController.processTypes = rest.data.processes;
-	    		angular.forEach(thisController.processTypes,function(ptype) {
-	    				ptype.namef=function(){
-	    					return (key2string.key2string(ptype.name,thisController.strings))
-	    				}
-	    				ptype.nameLang=function(lang){
-	    					return (key2string.key2stringWithLangStrict(ptype.name,thisController.strings,lang))
-	    				}
-	    				ptype.descf=function(){
-	    					return (key2string.key2string(ptype.name,thisController.strings))
-	    				}
-	    				ptype.descLang=function(lang){
-	    					return (key2string.key2stringWithLangStrict(ptype.description,thisController.strings,lang))
-	    				}
-	    				angular.forEach(ptype.recipes, function(recipe) {
-	    					recipe.namef=function(){
-	    						return (key2string.key2string(recipe.name,thisController.strings));
-	    					}
-	    				})
-	    	      })
-	    		thisController.strings = rest.data.strings;
-//	    		thisController.lastTimeLoaded=new Date();
-//	    		thisController.translate();
-	    		thisController.loaded=true;
-	    		defered.resolve(thisController.processTypes)	    	
-		   }, function(rest) {
+	    var promise = restfactory.GET("available-processtypes");
+	    promise.then(function(rest) {
+	    	thisController.processTypes = rest.data.processes;
+	    	angular.forEach(thisController.processTypes,function(ptype) {
+	    		ptype.namef=function(){
+	    			return (key2string.key2string(ptype.name,thisController.strings))
+	    		}
+	    		ptype.nameLang=function(lang){
+	    			return (key2string.key2stringWithLangStrict(ptype.name,thisController.strings,lang))
+	    		}
+	    		ptype.descf=function(){
+	    			return (key2string.key2string(ptype.description,thisController.strings))
+	    		}
+	    		ptype.descLang=function(lang){
+	    			return (key2string.key2stringWithLangStrict(ptype.description,thisController.strings,lang))
+	    		}
+	    		angular.forEach(ptype.recipes, function(recipe) {
+	    			recipe.namef=function(){
+	    				return (key2string.key2string(recipe.name,thisController.strings));
+	    			}
+	    		})
+	         })
+	         thisController.strings = rest.data.strings;
+	    	thisController.loaded=true;
+	    	defered.resolve(thisController.processTypes)	    	
+		    }, function(rest) {
 			console.log("Error loading processtypes");
-		   });
-//	    }
+		 });
 	    return defered.promise;
 	}
 
-	
-	
-	this.translate = function() {
-        var thisController=this;
-		var strings=thisController.strings
-		angular.forEach(thisController.processTypes, function(proc) {
-			proc.trname=key2string.key2string(proc.name,thisController.strings);
-			angular.forEach(proc.recipes, function(recipe) {
-				recipe.trname=key2string.key2string(recipe.name,thisController.strings);
-			})
-		})
-	}
 
 
 

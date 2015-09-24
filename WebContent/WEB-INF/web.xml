@@ -467,7 +467,7 @@
     <servlet-name>AddProcessType</servlet-name>
     <url-pattern>/add-process-type</url-pattern>
   </servlet-mapping>
-    <servlet>
+  <servlet>
     <description>DeleteProcessType</description>
     <display-name>DeleteProcessType</display-name>
     <servlet-name>DeleteProcessType</servlet-name>
@@ -476,5 +476,26 @@
   <servlet-mapping>
     <servlet-name>DeleteProcessType</servlet-name>
     <url-pattern>/delete-process-type</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description>AddSampleType</description>
+    <display-name>AddSampleType</display-name>
+    <servlet-name>AddSampleType</servlet-name>
+    <servlet-class>unidaplan.AddSampleType</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddSampleType</servlet-name>
+    <url-pattern>/add-sample-type</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>DeleteSampleType</description>
+    <display-name>DeleteSampleType</display-name>
+    <servlet-name>DeleteSampleType</servlet-name>
+    <servlet-class>unidaplan.DeleteSampleType</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeleteSampleType</servlet-name>
+    <url-pattern>/delete-sample-type</url-pattern>
   </servlet-mapping>
 </web-app>
