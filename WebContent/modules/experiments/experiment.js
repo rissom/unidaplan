@@ -65,8 +65,19 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 		      console.log('Strange Error: Modal dismissed at: ' + new Date());
 		    });
 	  };
+	 
 	  
-	
+	  
+    this.showParam=function(parameter){
+	  	if (parameter.datatype===7){
+	  		var date=new Date(parameter.value);
+	  		return date.toLocaleDateString()+", "+date.toLocaleTimeString();  		
+	  	} else {
+	  		return parameter.value;
+	  	} 
+	}
+    
+    
 	
 	this.replaceSample = function (sample) {
 		 console.log ("replacing")

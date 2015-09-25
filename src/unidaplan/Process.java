@@ -53,7 +53,7 @@ public class Process extends HttpServlet {
       }
   	  catch (Exception e1) {
   	  	processID=1;
-  		System.out.print("no object ID given!");
+  		System.err.print("Process: no object ID given!");
 //  		e1.printStackTrace();
   	  }
 

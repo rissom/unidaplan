@@ -343,6 +343,7 @@
     <servlet-name>MarkAllProcessesInExperiment</servlet-name>
     <servlet-class>unidaplan.MarkAllProcessesInExperiment</servlet-class>
   </servlet>
+  
   <servlet-mapping>
     <servlet-name>MarkAllProcessesInExperiment</servlet-name>
     <url-pattern>/mark-all-processes-in-experiment</url-pattern>
@@ -353,6 +354,7 @@
     <servlet-name>DeactivateProcessStep</servlet-name>
     <servlet-class>unidaplan.DeactivateProcessStep</servlet-class>
   </servlet>
+  
   <servlet-mapping>
     <servlet-name>DeactivateProcessStep</servlet-name>
     <url-pattern>/deactivate-process-step</url-pattern>
@@ -363,6 +365,7 @@
     <servlet-name>AddProcessStep</servlet-name>
     <servlet-class>unidaplan.AddProcessStep</servlet-class>
   </servlet>
+  
   <servlet-mapping>
     <servlet-name>AddProcessStep</servlet-name>
     <url-pattern>/add-process-step</url-pattern>
@@ -373,6 +376,7 @@
     <servlet-name>ExpStepChangeRecipe</servlet-name>
     <servlet-class>unidaplan.ExpStepChangeRecipe</servlet-class>
   </servlet>
+  
   <servlet-mapping>
     <servlet-name>ExpStepChangeRecipe</servlet-name>
     <url-pattern>/exp-step-change-recipe</url-pattern>
@@ -383,6 +387,7 @@
     <servlet-name>UpdateExperimentSampleComment</servlet-name>
     <servlet-class>unidaplan.UpdateExperimentSampleComment</servlet-class>
   </servlet>
+  
   <servlet-mapping>
     <servlet-name>UpdateExperimentSampleComment</servlet-name>
     <url-pattern>/update-experiment-sample-comment</url-pattern>
@@ -393,6 +398,7 @@
     <servlet-name>UpdateExperimentStepComment</servlet-name>
     <servlet-class>unidaplan.UpdateExperimentStepComment</servlet-class>
   </servlet>
+  
   <servlet-mapping>
     <servlet-name>UpdateExperimentStepComment</servlet-name>
     <url-pattern>/update-experiment-step-comment</url-pattern>
@@ -403,6 +409,7 @@
     <servlet-name>UpdateProcessParameter</servlet-name>
     <servlet-class>unidaplan.UpdateProcessParameter</servlet-class>
   </servlet>
+  
   <servlet-mapping>
     <servlet-name>UpdateProcessParameter</servlet-name>
     <url-pattern>/update-process-parameter</url-pattern>
@@ -413,6 +420,7 @@
     <servlet-name>DeleteExperimentParameter</servlet-name>
     <servlet-class>unidaplan.DeleteExperimentParameter</servlet-class>
   </servlet>
+  
   <servlet-mapping>
     <servlet-name>DeleteExperimentParameter</servlet-name>
     <url-pattern>/delete-experiment-parameter</url-pattern>
@@ -423,6 +431,7 @@
     <servlet-name>Parameter</servlet-name>
     <servlet-class>unidaplan.GetParameters</servlet-class>
   </servlet>
+  
   <servlet-mapping>
     <servlet-name>Parameter</servlet-name>
     <url-pattern>/parameter</url-pattern>
@@ -433,6 +442,7 @@
     <servlet-name>AddParameter</servlet-name>
     <servlet-class>unidaplan.AddParameter</servlet-class>
   </servlet>
+  
   <servlet-mapping>
     <servlet-name>AddParameter</servlet-name>
     <url-pattern>/add-parameter</url-pattern>
@@ -443,6 +453,7 @@
     <servlet-name>DeleteParameter</servlet-name>
     <servlet-class>unidaplan.DeleteParameter</servlet-class>
   </servlet>
+  
   <servlet-mapping>
     <servlet-name>DeleteParameter</servlet-name>
     <url-pattern>/delete-parameter</url-pattern>
@@ -453,6 +464,7 @@
     <servlet-name>ResendToken</servlet-name>
     <servlet-class>unidaplan.ResendToken</servlet-class>
   </servlet>
+  
   <servlet-mapping>
     <servlet-name>ResendToken</servlet-name>
     <url-pattern>/resend-token</url-pattern>
@@ -467,6 +479,7 @@
     <servlet-name>AddProcessType</servlet-name>
     <url-pattern>/add-process-type</url-pattern>
   </servlet-mapping>
+  
   <servlet>
     <description>DeleteProcessType</description>
     <display-name>DeleteProcessType</display-name>
@@ -477,6 +490,7 @@
     <servlet-name>DeleteProcessType</servlet-name>
     <url-pattern>/delete-process-type</url-pattern>
   </servlet-mapping>
+  
   <servlet>
     <description>AddSampleType</description>
     <display-name>AddSampleType</display-name>
@@ -498,4 +512,27 @@
     <servlet-name>DeleteSampleType</servlet-name>
     <url-pattern>/delete-sample-type</url-pattern>
   </servlet-mapping>
+  
+    <servlet>
+    <description>ProcessTypeParameters</description>
+    <display-name>ProcessTypeParameters</display-name>
+    <servlet-name>ProcessTypeParameters</servlet-name>
+    <servlet-class>unidaplan.ProcessTypeParameters</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ProcessTypeParameters</servlet-name>
+    <url-pattern>/processtype-parameters</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>DuplicateProcessType</description>
+    <display-name>DuplicateProcessType</display-name>
+    <servlet-name>DuplicateProcessType</servlet-name>
+    <servlet-class>unidaplan.DuplicateProcessType</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DuplicateProcessType</servlet-name>
+    <url-pattern>/duplicate-process-type</url-pattern>
+  </servlet-mapping>
+  
 </web-app>

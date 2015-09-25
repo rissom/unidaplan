@@ -20,15 +20,22 @@ function aProcessesController($state,$stateParams,$translate,restfactory,process
   
 	
   this.getActions = function(user){
-	return [$translate.instant("edit"),$translate.instant("delete")];
+	return [$translate.instant("edit"),$translate.instant("duplicate"),$translate.instant("delete")];
   }
 	
   
   this.performAction = function(index,process){
-	  	if (index==1){
-	  		var promise=processService.deleteProcessType(process.id);
-	  		promise.then(function(){reload();},function(){console.log("error");})
-	  	}
+	  if (index==0){
+		  $state.go("editParamType",{processTypeID:1});
+	  }
+	  if (index==1){
+	  	  var promise=processService.duplicateProcessType(process.id);
+	  	  promise.then(function(){reload();},function(){console.log("error");})
+	  }
+	  if (index==2){
+	  	  var promise=processService.deleteProcessType(process.id);
+	  	  promise.then(function(){reload();},function(){console.log("error");})
+	  }
   }
   
   

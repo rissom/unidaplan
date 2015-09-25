@@ -21,7 +21,7 @@
 				    {{parameter.trname}} :
 				</td>
 				<td >
-					<span ng-hide="parameter.editing">{{parameter.value}}
+					<span ng-hide="parameter.editing">{{experimentCtrl.showParam(parameter)}}
 					</span>
 					<input 						   
 						ng-keyup="experimentCtrl.keyUp($event.keyCode,newValue,parameter)"

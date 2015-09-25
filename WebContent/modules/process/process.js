@@ -59,7 +59,6 @@ function process($state,$stateParams,avSampleTypeService,types,$modal,processDat
   	} else {
   		return parameter.value;
   	} 
-  	
   }
   
   

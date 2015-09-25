@@ -84,11 +84,16 @@ var processService = function (restfactory,$q,$translate,key2string) {
 	
 	
 	
-	// delete a process (also from recent processes)
+	// delete a processtype
 	this.deleteProcessType = function(id){
 		return restfactory.DELETE("delete-process-type?id="+id);
 	}
 	
+	
+	// duplicate a process
+	this.duplicateProcessType = function(id){
+		return restfactory.POST("duplicate-process-type?id="+id);
+	}
 	
 	
 	this.translate = function() {
