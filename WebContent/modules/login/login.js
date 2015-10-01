@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-var loginController=function($state,restfactory,$scope){
+var loginController=function($state,restfactory,$scope,$translate){
 	
 	var thisController=this;
 	
@@ -21,7 +21,7 @@ var loginController=function($state,restfactory,$scope){
 					$state.go('openExperiment');	  
 				}
 			}, function(data){
-				thisController.error="unknown user or wrong password";
+				thisController.error=$translate.instant("unknown user or wrong password");
 			}
 		)
 	}

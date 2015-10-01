@@ -71,7 +71,8 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
     this.showParam=function(parameter){
 	  	if (parameter.datatype===7){
 	  		var date=new Date(parameter.value);
-	  		return date.toLocaleDateString()+", "+date.toLocaleTimeString();  		
+	  //		return date.toLocaleDateString()+", "+date.toLocaleTimeString();  		
+			return date.toLocaleDateString();
 	  	} else {
 	  		return parameter.value;
 	  	} 

@@ -167,6 +167,10 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 	this.translate = function() {
 		this.experiment.trname=key2string.key2string(this.experiment.name,this.strings);
 		angular.forEach(this.experiment.parameters, function(parameter) {
+			parameter.namef=function(){
+				return key2string.key2string(parameter.stringkeyname,thisController.strings)}
+			parameter.nameLang=function(){				
+				return key2string.key2stringWithLangStrict(parameter.stringkeyname,thisController.strings,lang)}
 			parameter.trname=key2string.key2string(parameter.stringkeyname,thisController.strings);
 		})
 //		if (this.recentExperiments!=undefined){
@@ -190,6 +194,7 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 	
 	this.translateExps = function() {
 		angular.forEach(this.experiments, function(anExp) {
+			anExp.namef=function(){return key2string.key2string(anExp.name,thisController.expsStrings)}
 			anExp.trname=key2string.key2string(anExp.name,thisController.expsStrings)
 		})
 	};

@@ -26,7 +26,7 @@ function aProcessesController($state,$stateParams,$translate,restfactory,process
   
   this.performAction = function(index,process){
 	  if (index==0){
-		  $state.go("editParamType",{processTypeID:1});
+		  $state.go("editPtParamGrps",{processTypeID:1});
 	  }
 	  if (index==1){
 	  	  var promise=processService.duplicateProcessType(process.id);

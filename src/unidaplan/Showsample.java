@@ -130,7 +130,7 @@ public class Showsample extends HttpServlet {
 		   "SELECT ot_parameters.id, parametergroup, compulsory, ot_parameters.pos, "
 		   +"ot_parameters.stringkeyname,  pid, value, ot_parametergrps.id AS pgrpid, "
 		   +" ot_parametergrps.stringkey as parametergrp_key, st.description, paramdef.datatype, " 
-		   +" ot_parameters.id_field, paramdef.maxdigits "
+		   +" ot_parameters.id_field, paramdef.maxdigits, paramdef.stringkeyunit AS unit "
 		   +"FROM ot_parameters "
 		   +"JOIN ot_parametergrps ON (ot_parameters.Parametergroup=ot_parametergrps.ID) " 
 		   +"JOIN paramdef ON (paramdef.id=ot_parameters.definition) "
@@ -147,6 +147,9 @@ public class Showsample extends HttpServlet {
 	      	for (int i=0; i<parameters.length();i++) {
 	      		JSONObject tempObj=(JSONObject) parameters.get(i);
 	      		stringkeys.add(Integer.toString(tempObj.getInt("stringkeyname")));
+	      		if (tempObj.has("unit")){ 
+	      			stringkeys.add(Integer.toString(tempObj.getInt("unit")));
+	      		}
 	      	}
 		}
 	} catch (SQLException e) {

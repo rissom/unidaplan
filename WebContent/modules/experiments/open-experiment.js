@@ -37,6 +37,21 @@ function oExpController(restfactory,$translate,$scope,$state,experimentService,e
 	};
 	
 	
+	this.addExperiment=function(){
+		this.editmode=true;
+	}
+	
+	this.cancelAdd=function(){
+		this.editmode=false;
+	}
+	
+	
+	this.newExperiment=function(){
+		var promise= experimentService.addExperiment();
+		promise.then(function(){reload();},function(){console.log("error");})
+		this.editmode=false;
+	}
+	
 	this.myexperiments = function() {  // returns all my experiments
 		var myExps=[];
 		var me=this.myName;
@@ -62,11 +77,7 @@ function oExpController(restfactory,$translate,$scope,$state,experimentService,e
 	this.deleteExperiment = function(experiment) {
 		var promise=experimentService.deleteExperiment(experiment.id);
 		promise.then(function(){
-				$scope.$state = $state;
-				$scope.$watch('$state.$current.locals.globals.experiments', function (experiments) {
-			          thisController.experiments = experiments;
-			        });
-				$state.reload();
+				reload();
 			},
 			function(){
 				console.log("error deleting experiment");
@@ -74,6 +85,14 @@ function oExpController(restfactory,$translate,$scope,$state,experimentService,e
 //		$scope.$watch('thisController.experiments');
 	};
 	
+	
+	  
+	  var reload=function() {
+		    var current = $state.current;
+		    var params = angular.copy($stateParams);
+		    return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
+	  }
+	  
 	
 };
     

@@ -46,20 +46,23 @@ function process($state,$stateParams,avSampleTypeService,types,$modal,processDat
   };
 
   
+  
   // return the translated name string of a type for a sample
   this.getType=function(sample){
 	  return avSampleTypeService.getType(sample,types);
   }
   
   
+  
   this.showParam=function(parameter){
   	if (parameter.datatype===7){
   		var date=new Date(parameter.value);
-  		return date.toLocaleDateString()+", "+date.toLocaleTimeString();  		
+  		return date.toLocaleDateString()+", "+date.toLocaleTimeString().substring(0,5);  		
   	} else {
   		return parameter.value;
   	} 
   }
+  
   
   
   this.status=function(){
@@ -109,14 +112,12 @@ function process($state,$stateParams,avSampleTypeService,types,$modal,processDat
 	}
   
   
-//  this.getProcesstype=function(process,ptypes){
-//	  return avProcessTypeService.getProcessType(process,ptypes);
-//  }
   
   this.deleteProcess = function(){
-//	  console.log(this.process)
 	  return processService.deleteProcess(this.process.id);
   }
+  
+  
   
   this.assign=function(){
 	  var samples2assign={samples:this.process.samples, id:processData.id};

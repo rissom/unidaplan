@@ -101,7 +101,14 @@ var processService = function (restfactory,$q,$translate,key2string) {
 		this.process.trprocesstype = key2string.key2string(this.process.pt_string_key,this.strings)		
 		var thisController=this;
 		angular.forEach(thisController.process.parameters, function(parameter) {
-			parameter.trname= key2string.key2string(parameter.stringkeyname,thisController.strings);
+			parameter.namef = function(){
+				return key2string.key2string(parameter.stringkeyname,thisController.strings);
+			}
+			if (parameter.unit){
+				parameter.unitf= function(){
+					return key2string.key2string(parameter.unit,thisController.strings);
+				}
+			}
 		})
 	}
 	

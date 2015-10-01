@@ -1,6 +1,6 @@
 <h3>
-{{'Experiment'|translate}} {{'no.'|translate}} {{experimentCtrl.experiment.number}} : 
-{{experimentCtrl.experiment.trname}}
+{{'Experiment'|translate}} {{'no.'|translate}} {{experimentCtrl.experiment.number}}: 
+{{experimentCtrl.experiment.namef()}}
 </h3>
 {{'created by'|translate}} {{experimentCtrl.experiment.creator}}
 <br />
@@ -18,7 +18,7 @@
 						>
 						<span class="glyphicon glyphicon-remove"></span>
 								</button>
-				    {{parameter.trname}} :
+				    {{parameter.namef()}} :
 				</td>
 				<td >
 					<span ng-hide="parameter.editing">{{experimentCtrl.showParam(parameter)}}
@@ -220,6 +220,11 @@
 						</td>
 			  		</tr>
 				</table>
+				<br/>
+				<br/>
+				<br/>
+				<br/>
+				<br/>
 			</div>
 		</div>
 		<br />

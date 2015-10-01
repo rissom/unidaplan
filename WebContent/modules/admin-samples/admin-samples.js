@@ -26,12 +26,9 @@ function aSamplesController($state,$stateParams,$translate,restfactory,sampleSer
   
   this.performAction = function(index,sampleType){
 	  	if (index==1){
-	  		console.log ("deleting process");
 	  		var promise=sampleService.deleteSampleType(sampleType.id);
 	  		promise.then(function(){reload();},function(){console.log("error");})
 	  	}
-		console.log("process: ",sampleType);
-		console.log("index: ",index);
 
   }
   

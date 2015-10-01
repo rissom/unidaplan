@@ -107,11 +107,22 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 	
 	this.translate = function() {
 		angular.forEach(this.sample.parameters, function(parameter) {
-			parameter.trname=key2string.key2string(parameter.stringkeyname,thisController.sample.strings) 
+			parameter.namef=function(){
+				return key2string.key2string(parameter.stringkeyname,thisController.sample.strings) 
+			}
+			if (parameter.unit){
+				parameter.unitf=function(){
+					return key2string.key2string(parameter.unit,thisController.sample.strings) 
+				}
+			}
 		});
 		angular.forEach(this.sample.plans, function(plan) {
-			plan.trname=key2string.key2string(plan.name,thisController.sample.strings) 
-			plan.trnote=key2string.key2string(plan.note,thisController.sample.strings) 
+			plan.namef=function(){
+				return key2string.key2string(plan.name,thisController.sample.strings)
+			} 
+			plan.notef=function(){
+				return key2string.key2string(plan.note,thisController.sample.strings)
+			}
 			angular.forEach(plan.plannedprocesses, function(process) {
 				if (process.note!=undefined) {
 					process.trnote=key2string.key2string(process.note,thisController.sample.strings);

@@ -155,11 +155,9 @@ function modalSampleChoser(avSampleTypeService,$translate,$scope,$modalInstance,
 	
 	this.init=function(){
         var selectorTypesTemp=[];
-        var allTypesString="all types";
-        if ($translate.use()=="de"){
-            allTypesString='alle Typen';
-        }
-        selectorTypesTemp.push({trname:allTypesString,'id':0});
+        
+        var allTypesString=$translate.instant("all types");
+		selectorTypesTemp.push({namef:function(){return allTypesString},'id':0});
 
 		angular.forEach(types,function(type) {
 			selectorTypesTemp.push(type);
@@ -177,7 +175,7 @@ function modalSampleChoser(avSampleTypeService,$translate,$scope,$modalInstance,
 	
 	
 	this.getButtonLabel = function(){
-		return buttonLabel;
+		return $translate.instant(buttonLabel);
 	}
 	
 	

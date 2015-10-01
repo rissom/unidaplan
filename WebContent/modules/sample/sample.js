@@ -1,7 +1,8 @@
 (function(){
 'use strict';
 
-function sampleController(sample,$state,$stateParams,$modal,$filter,types,sampleService,avSampleTypeService,key2string,ptypes,avProcessTypeService){
+function sampleController(sample,$state,$stateParams,$modal,$filter,types,sampleService,avSampleTypeService,
+						  $translate,key2string,ptypes,avProcessTypeService){
 	
 	var thisController = this;
 		
@@ -80,7 +81,7 @@ function sampleController(sample,$state,$stateParams,$modal,$filter,types,sample
 		        				return eSamples2;
 		        				},
 		        mode		: function() { return "multiple"},
-		        buttonLabel	: function() { return 'assign to sample'; }
+		        buttonLabel	: function() { return $translate.instant('assign to sample'); }
 		    }		        
 		});
 	    
@@ -201,6 +202,6 @@ function sampleController(sample,$state,$stateParams,$modal,$filter,types,sample
 
 
 angular.module('unidaplan').controller('sampleController',['sample','$state','$stateParams','$modal','$filter','types',
-     'sampleService','avSampleTypeService','key2string','ptypes','avProcessTypeService',sampleController]);
+     'sampleService','avSampleTypeService','$translate','key2string','ptypes','avProcessTypeService',sampleController]);
 
 })();

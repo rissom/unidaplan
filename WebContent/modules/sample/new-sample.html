@@ -6,7 +6,7 @@
 	<select class="form-control" 
 		style="width:300px;"	
 		ng-model="newSampleCtrl.sampletype"
-		ng-options="stype.trname group by stype.group for stype in newSampleCtrl.sampletypes" 	
+		ng-options="stype.namef() group by stype.group for stype in newSampleCtrl.sampletypes" 	
 		ng-selected="$first">
 	</select>
 

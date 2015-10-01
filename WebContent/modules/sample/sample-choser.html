@@ -9,7 +9,7 @@
 		id="typeSelector"
 		style="width: 300px;"
   		ng-model="sampleChoserCtrl.selectedtypes" 
-  		ng-options="type.trname for type in sampleChoserCtrl.selectorTypes"
+  		ng-options="type.namef() for type in sampleChoserCtrl.selectorTypes"
   		size="10">
 </select>
 <br /><br />

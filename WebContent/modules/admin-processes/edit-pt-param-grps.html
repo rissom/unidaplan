@@ -1,48 +1,70 @@
 <h3>
-	{{'Processtypes'|translate}}
+	{{'Edit Processtype'|translate}}{{editProcessType.processTypeID}}{{editParamType.paramTypeID}}
 </h3>
+
+<br/>
+<h4>{{'General information'|translate}}</h4>
+<table class="table">
+<tr>
+	<td>Name ({{editPtParamGrpsCtrl.lang1}}):</td>
+	<td><input type="text"
+			   ng-model="editPtParamGrpsCtrl.newNameL1">
+	</td>
+</tr>
+<tr>
+	<td>Name ({{editPtParamGrpsCtrl.lang2}}):</td>
+	<td><input type="text"
+			   ng-model="editPtParamGrpsCtrl.newNameL2">
+	</td>
+</tr>
+<tr>
+	<td>{{'Description'|translate}} ({{editPtParamGrpsCtrl.lang1}}):</td>
+	<td><input type="text"
+			   ng-model="editPtParamGrpsCtrl.newDescL1">
+	</td>
+</tr>
+<tr>
+	<td>{{'Description'|translate}} ({{editPtParamGrpsCtrl.lang2}}):</td>
+	<td><input type="text"
+			   ng-model="editPtParamGrpsCtrl.newDescL2">
+	</td>
+</tr>
+</table>
+<h4>{{'Parametergroups'|translate}}</h4>
+
+
 <table class="table">
 	<thead class=parametertablehead>
 		<tr>
 			<td class="parametertd">
-	 			Name ({{aProcessesCtrl.lang1}})
+	 			Name ({{editPtParamGrpsCtrl.lang1}})
 			</td>
 			<td class="parametertd">
-	 			Name ({{aProcessesCtrl.lang2}})
+	 			Name ({{editPtParamGrpsCtrl.lang2}})
 			</td>
-			<td class="parametertd">
-				{{'Description'|translate}} ({{aProcessesCtrl.lang1}})
-			</td>
-			<td class="parametertd">
-				{{'Description'|translate}} ({{aProcessesCtrl.lang2}})
-			</td>
-			<td class="parametertd"
-				ng-hide="aProcessesCtrl.editmode">
+			<td>
+				{{'action'|translate}}
 			</td>
 		</tr>
 	</thead>
 	
+	
 	<tbody>
-		<tr ng-repeat="process in aProcessesCtrl.ptypes | orderBy : 'nameLang1'">
+		<tr ng-repeat="grp in editPtParamGrpsCtrl.parametergrps | orderBy : 'pos'">
 			<td class="parametertd">
-	 			{{process.nameLang(aProcessesCtrl.languages[0].key)}}
+	 			{{grp.nameLang(editPtParamGrpsCtrl.languages[0].key)}}
 			</td>
 			<td class="parametertd">		
-				{{process.nameLang(aProcessesCtrl.languages[1].key)}}
+	 			{{grp.nameLang(editPtParamGrpsCtrl.languages[1].key)}}
 			</td>
-			<td class="parametertd">
-				{{process.descLang(aProcessesCtrl.languages[0].key)}}
-			</td>
-			<td class="parametertd">
-				{{process.descLang(aProcessesCtrl.languages[1].key)}}
-			</td>
-			<td class="parametertd" ng-hide="aProcessesCtrl.editmode">			
+		
+			<td class="parametertd">			
 				<div class="dropdown" dropdown on-toggle="toggled(open)">
 					<a class="dropdown-toggle" dropdown-toggle>
 			  			{{'action'|translate}} &#x25BC;
 				    </a>
 				    <ul class="dropdown-menu">
-				    	<li ng-repeat="action in aProcessesCtrl.getActions(process)">
+				    	<li ng-repeat="action in editPtParamGrpsCtrl.getActions(process)">
 				        	<a ng-click="aProcessesCtrl.performAction($index,process)">{{action}}</a>
 				        </li>
 				    </ul>
@@ -70,7 +92,6 @@
 				type="text"
 			    ng-model="aProcessesCtrl.newDescL2"> 
 			</td>
-					
 		</tr>
 	</tbody>
 </table>
@@ -79,7 +100,7 @@
 		ng-hide="aProcessesCtrl.editmode"
 		class="btn btn-default" 
 		ng-click="aProcessesCtrl.newProcessType()" >
-	<b>+</b> {{'Add Process'|translate}}
+	<b>+</b> {{'Save Changes'|translate}}
 </button>
 
 <button type="button" 
@@ -93,7 +114,7 @@
 		ng-show="aProcessesCtrl.editmode"
 		class="btn btn-default" 
 		ng-click="aProcessesCtrl.addProcessType()" >
-	{{'Add Process'|translate}}
+	{{'Add Parameter'|translate}}
 </button>
 
 

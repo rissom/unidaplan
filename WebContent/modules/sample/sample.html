@@ -23,7 +23,7 @@
 				<tr ng-repeat="parameter in sampleCtrl.parameters| orderBy : sampleCtrl.parameters.pos" 
 				ng-dblclick="parameter.editing=true; newValue=parameter.value">
 					<td>
-					    {{parameter.trname}} :
+					    {{parameter.namef()}} :
 					</td>
 					<td >
 						<span ng-hide="parameter.editing">{{parameter.value}}
@@ -33,7 +33,9 @@
 							ng-show="parameter.editing" type="text"
 						    ng-model="newValue" 
 						    ng-blur="parameter.editing=false">
-						{{parameter.unit.length>0?parameter.unit:''}}
+						<span ng-show="parameter.unit">
+							{{parameter.unitf()}}
+						</span>
 					</td>
 				</tr>
 				<tr>
@@ -109,12 +111,12 @@
 	<h4>{{'Experiments'|translate}}</h4>
 		<div ng-repeat="experiment in sampleCtrl.plans">
 			<a ui-sref="experiment({experimentID:experiment.exp_id})">
-				 Experiment no. {{experiment.exp_id}}, "{{experiment.trname}}"
+				 Experiment no. {{experiment.exp_id}}, "{{experiment.namef()}}"
 			</a>
 			<ul>
 				<li ng-repeat="process in experiment.plannedprocesses">
 					{{sampleCtrl.getProcessType(process)}}<span 
-					ng-show="process.trnote"><em>({{process.trnote}})</em></span><span 
+					ng-show="process.notef()"><em>({{process.notef()}})</em></span><span 
 					ng-show="process.trrecipe">,&nbsp;<em>{{'recipe'|translate}}: {{process.trrecipe}}</em></span>
 				</li>
 			</ul>

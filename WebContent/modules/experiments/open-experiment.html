@@ -18,7 +18,7 @@
 				<a ui-sref="experiment({experimentID:experiment.id,editmode:'false'})">{{experiment.number}}</a>
 				</td>
 				<td>
-				<a ui-sref="experiment({experimentID:experiment.id,editmode:'false'})">{{experiment.trname}}</a>
+				<a ui-sref="experiment({experimentID:experiment.id,editmode:'false'})">{{experiment.namef()}}</a>
 				</td>
 				<td>
 	  				<div class="dropdown" dropdown on-toggle="toggled(open)">
@@ -36,12 +36,42 @@
 					<button type="button" class="btn btn-default btn-xs"  ng-click="oexpCtrl.deleteExperiment(experiment)">
 						<span class="glyphicon glyphicon-remove"></span>
 					</button>
-					</button>
 				</td>
 			</tr>  <!-- ends ng-repeat -->
+			<tr ng-show="oexpCtrl.editmode"><td><input 						   
+				type="text"
+			    ng-model="oexpCtrl.newNameL1"> </td><td><input 						   
+				type="text"
+			    ng-model="oexpCtrl.newNameL2"> </td><td><input 						   
+				type="text"
+			    ng-model="oexpCtrl.newNameL3"> </td><td></td></tr></tbody>
 			<tr><td></td><td></td><td></td><td></td></tr></tbody>
 		</table>
 
+		<button type="button" 
+				class="btn btn-default"
+				ng-hide="oexpCtrl.editmode"
+				ng-click="oexpCtrl.addExperiment()" >
+			{{'Add Experiment'|translate}}
+		</button>
+		
+		<button type="button" 
+				class="btn btn-default"
+				ng-show="oexpCtrl.editmode"
+				ng-click="oexpCtrl.cancelAdd()" >
+			{{'Cancel'|translate}}
+		</button>
+		
+		<button type="button" 
+				class="btn btn-default"
+				ng-show="oexpCtrl.editmode"
+				ng-click="oexpCtrl.newExperiment()" >
+			{{'Add this Experiment'|translate}}
+		</button>
+				
+		<br/>
+		<br/>
+		
 
 
 		<!--  Other Experiments -->
@@ -70,7 +100,7 @@
 				</td>	
 				<td>
 					<a ui-sref="experiment({experimentID:experiment.id,editmode:'false'})">
-						{{experiment.trname}}
+						{{experiment.namef()}}
 					</a>
 				</td>
 				<td>

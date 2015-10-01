@@ -147,7 +147,8 @@ public class Process extends HttpServlet {
 	    	pstmt = DBconn.conn.prepareStatement(
 	    	"SELECT p_parameters.id, parametergroup, compulsory, p_parameters.pos, "
 			+" p_parameters.stringkeyname,  pid, value, p_parametergrps.id AS pgrpid, " 
-			+" p_parametergrps.stringkey as parametergrp_key, st.description, paramdef.datatype " 
+			+" p_parametergrps.stringkey as parametergrp_key, st.description, paramdef.datatype, "
+			+" paramdef.stringkeyunit as unit "
 			+"FROM p_parameters "
 			+"JOIN p_parametergrps ON (p_parameters.Parametergroup=p_parametergrps.ID) " 
 			+"JOIN paramdef ON (paramdef.id=p_parameters.definition)"
@@ -167,6 +168,9 @@ public class Process extends HttpServlet {
 		      	for (int i=0; i<parameters.length();i++) {  
 		      		JSONObject tempObj=parameters.getJSONObject(i);
 		      		stringkeys.add(Integer.toString(tempObj.getInt("stringkeyname")));
+		      		if (tempObj.has("unit")){
+			      		stringkeys.add(Integer.toString(tempObj.getInt("unit")));
+		      		}
 		      	}
 			}	
 		} catch (SQLException e) {

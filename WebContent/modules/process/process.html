@@ -7,7 +7,7 @@
 <table class="table">
 	<tr ng-repeat="parameter in processCtrl.process.parameters"
 		ng-dblclick="parameter.editing=true; newValue=parameter.value">
-		<td ng-click="processCtrl.articleClicked(parameter)">{{parameter.trname}} :</td>
+		<td>{{parameter.namef()}} :</td>
 		<td>
 			<span ng-hide="parameter.editing">{{processCtrl.showParam(parameter)}}
 			</span>
@@ -16,7 +16,9 @@
 				ng-show="parameter.editing" type="text"
 			    ng-model="newValue" 
 			    ng-blur="parameter.editing=false">
-			{{parameter.unit.length>0?parameter.unit:''}}
+			<span ng-show="parameter.unit">
+				{{parameter.unitf()}}
+			</span>
 	</tr>
 	<tr>
 		<td></td>

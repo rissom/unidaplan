@@ -535,4 +535,14 @@
     <url-pattern>/duplicate-process-type</url-pattern>
   </servlet-mapping>
   
+    <servlet>
+    <description>ProcessTypeParamGrps</description>
+    <display-name>ProcessTypeParamGrps</display-name>
+    <servlet-name>ProcessTypeParamGrps</servlet-name>
+    <servlet-class>unidaplan.ProcessTypeParamGrps</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ProcessTypeParamGrps</servlet-name>
+    <url-pattern>/process-type-param-grps</url-pattern>
+  </servlet-mapping>
 </web-app>
