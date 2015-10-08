@@ -1,3 +1,10 @@
+<button type="button" 
+		ng-hide="editPtParamGrpsCtrl.editmode"
+		class="btn btn-default" 
+		ui-sref="adminProcesses" >
+	<b>&larr;</b> {{'all processtypes'|translate}}
+</button>
+
 <h3>
 	{{'Edit Processtype'|translate}}{{editProcessType.processTypeID}}{{editParamType.paramTypeID}}
 </h3>
@@ -5,44 +12,66 @@
 <br/>
 <h4>{{'General information'|translate}}</h4>
 <table class="table">
-<tr>
+<tr ng-dblclick="editPtParamGrpsCtrl.edit('NL1')">
 	<td>Name ({{editPtParamGrpsCtrl.lang1}}):</td>
-	<td><input type="text"
+	<td>
+		<span ng-hide="editPtParamGrpsCtrl.editNL1">{{editPtParamGrpsCtrl.NameL1}}</span>
+		<input ng-show="editPtParamGrpsCtrl.editNL1" 
+			   ng-keyup="editPtParamGrpsCtrl.keyUp($event.keyCode,'NL1')"
+			   ng-blur="editPtParamGrpsCtrl.editNL1=false"
+			   type="text"
 			   ng-model="editPtParamGrpsCtrl.newNameL1">
 	</td>
 </tr>
-<tr>
+<tr ng-dblclick="editPtParamGrpsCtrl.edit('NL2')">
 	<td>Name ({{editPtParamGrpsCtrl.lang2}}):</td>
-	<td><input type="text"
+	<td>
+		<span ng-hide="editPtParamGrpsCtrl.editNL2">{{editPtParamGrpsCtrl.NameL2}}</span>
+		<input ng-show="editPtParamGrpsCtrl.editNL2" 
+			   ng-keyup="editPtParamGrpsCtrl.keyUp($event.keyCode,'NL2')"
+			   ng-blur="editPtParamGrpsCtrl.editNL2=false"		
+			   type="text"
 			   ng-model="editPtParamGrpsCtrl.newNameL2">
 	</td>
 </tr>
-<tr>
+<tr ng-dblclick="editPtParamGrpsCtrl.edit('DL1')">
 	<td>{{'Description'|translate}} ({{editPtParamGrpsCtrl.lang1}}):</td>
-	<td><input type="text"
+	<td>
+		<span ng-hide="editPtParamGrpsCtrl.editDL1">{{editPtParamGrpsCtrl.DescL1}}</span>
+		<input ng-show="editPtParamGrpsCtrl.editDL1" 
+			   ng-keyup="editPtParamGrpsCtrl.keyUp($event.keyCode,'DL1')"
+			   ng-blur="editPtParamGrpsCtrl.editDL1=false"
+			   type="text"
 			   ng-model="editPtParamGrpsCtrl.newDescL1">
 	</td>
 </tr>
-<tr>
+<tr ng-dblclick="editPtParamGrpsCtrl.edit('DL2')">
 	<td>{{'Description'|translate}} ({{editPtParamGrpsCtrl.lang2}}):</td>
-	<td><input type="text"
+	<td>
+		<span ng-hide="editPtParamGrpsCtrl.editDL2">{{editPtParamGrpsCtrl.DescL2}}</span>
+		<input ng-show="editPtParamGrpsCtrl.editDL2" 
+			   ng-keyup="editPtParamGrpsCtrl.keyUp($event.keyCode,'DL2')"
+			   ng-blur="editPtParamGrpsCtrl.editDL2=false"
+			   type="text"
 			   ng-model="editPtParamGrpsCtrl.newDescL2">
 	</td>
 </tr>
 </table>
+<br/>
 <h4>{{'Parametergroups'|translate}}</h4>
 
 
 <table class="table">
 	<thead class=parametertablehead>
 		<tr>
+			<td></td>
 			<td class="parametertd">
 	 			Name ({{editPtParamGrpsCtrl.lang1}})
 			</td>
 			<td class="parametertd">
 	 			Name ({{editPtParamGrpsCtrl.lang2}})
 			</td>
-			<td>
+			<td ng-hide=editPtParamGrpsCtrl.editmode>
 				{{'action'|translate}}
 			</td>
 		</tr>
@@ -52,69 +81,74 @@
 	<tbody>
 		<tr ng-repeat="grp in editPtParamGrpsCtrl.parametergrps | orderBy : 'pos'">
 			<td class="parametertd">
+				<button type="button" class="btn btn-default btn-xs" 
+					ng-click="editPtParamGrpsCtrl.up($index)"   ng-hide="$first || editPtParamGrpsCtrl.editmode">&#9650;
+				</button>
+				<button type="button" class="btn btn-default btn-xs" 
+					ng-click="editPtParamGrpsCtrl.down($index)" ng-hide="$last  || editPtParamGrpsCtrl.editmode" >&#9660;
+				</button>
+			</td> 
+			<td> 
 	 			{{grp.nameLang(editPtParamGrpsCtrl.languages[0].key)}}
 			</td>
 			<td class="parametertd">		
 	 			{{grp.nameLang(editPtParamGrpsCtrl.languages[1].key)}}
 			</td>
 		
-			<td class="parametertd">			
+			<td class="parametertd" ng-hide=editPtParamGrpsCtrl.editmode>			
 				<div class="dropdown" dropdown on-toggle="toggled(open)">
 					<a class="dropdown-toggle" dropdown-toggle>
 			  			{{'action'|translate}} &#x25BC;
 				    </a>
 				    <ul class="dropdown-menu">
-				    	<li ng-repeat="action in editPtParamGrpsCtrl.getActions(process)">
-				        	<a ng-click="aProcessesCtrl.performAction($index,process)">{{action}}</a>
+				    	<li ng-repeat="action in editPtParamGrpsCtrl.getActions(grp)">
+				        	<a ng-click="editPtParamGrpsCtrl.performAction($index,grp)">{{action}}</a>
 				        </li>
 				    </ul>
 	  			</div>
 			</td>
 		</tr>
-		<tr ng-show="aProcessesCtrl.editmode">
+		<tr ng-show="editPtParamGrpsCtrl.editmode">
+			<td></td>
 			<td class="parametertd">
 				<input 						   
 				type="text"
-			    ng-model="aProcessesCtrl.newNameL1"> 
+			    ng-model="editPtParamGrpsCtrl.newGrpNameL1"> 
 			</td>
 			<td class="parametertd">
 				<input 						   
 				type="text"
-			    ng-model="aProcessesCtrl.newNameL2"> 
-			</td>
-			<td class="parametertd">
-				<input 						   
-				type="text"
-			    ng-model="aProcessesCtrl.newDescL1"> 
-			</td>
-			<td class="parametertd">
-				<input 						   
-				type="text"
-			    ng-model="aProcessesCtrl.newDescL2"> 
+				ng-keyup="editPtParamGrpsCtrl.keyUpPG($event.keyCode)"
+			    ng-model="editPtParamGrpsCtrl.newGrpNameL2"> 
 			</td>
 		</tr>
 	</tbody>
 </table>
 <br />
+
+
+
 <button type="button" 
-		ng-hide="aProcessesCtrl.editmode"
+		ng-hide="editPtParamGrpsCtrl.editmode"
 		class="btn btn-default" 
-		ng-click="aProcessesCtrl.newProcessType()" >
-	<b>+</b> {{'Save Changes'|translate}}
+		ng-click="editPtParamGrpsCtrl.newParameterGroup()" >
+	<b>+</b> {{'Add parametergroup'|translate}}
 </button>
 
 <button type="button" 
-		ng-show="aProcessesCtrl.editmode"
+		ng-show="editPtParamGrpsCtrl.editmode"
 		class="btn btn-default" 
-		ng-click="aProcessesCtrl.editmode=false" >
+		ng-click="editPtParamGrpsCtrl.editmode=false" >
 	{{'Cancel'|translate}}
 </button>
 
+
+
 <button type="button" 
-		ng-show="aProcessesCtrl.editmode"
+		ng-show="editPtParamGrpsCtrl.editmode"
 		class="btn btn-default" 
-		ng-click="aProcessesCtrl.addProcessType()" >
-	{{'Add Parameter'|translate}}
+		ng-click="editPtParamGrpsCtrl.addParameterGroup()" >
+	{{'Save Parametergroup'|translate}}
 </button>
 
 

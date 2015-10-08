@@ -26,7 +26,7 @@ function parameterController($state,$stateParams,$translate,parameterService,res
   
   
   
-  this.addProcess=function(){
+  this.addParameter=function(){
 	  var name={};
 	  name[languages[0].key]=this.newNameL1;
 	  name[languages[1].key]=this.newNameL2;
@@ -37,7 +37,9 @@ function parameterController($state,$stateParams,$translate,parameterService,res
 	  description[languages[0].key]=this.newDescL1;
 	  description[languages[1].key]=this.newDescL2; 	  
 
-	  var newProcess={"name":name,"description":description};	  
+	  var newParameter={"name":name,"description":description,"unit":unit};
+	  newParameter.datatype=thisController.newDataType;
+	  newParameter.maxdigits=thisController.newMaxDigits;
 	  
 	  var promise = parameterService.addParameter(newParameter);
 	  promise.then(function(){reload();},function(){console.log("error");})

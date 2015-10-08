@@ -53,7 +53,7 @@ import org.json.JSONObject;
 				 String [] names = JSONObject.getNames(name);
 				 stringKeyName=dBconn.createNewStringKey(name.getString(names[0]));
 				 for (int i=0; i<names.length; i++){
-					 dBconn.addString(stringKeyName,names[i],name.getString(names[0]));
+					 dBconn.addString(stringKeyName,names[i],name.getString(names[i]));
 				 }
 			 }else
 			 {
@@ -64,7 +64,7 @@ import org.json.JSONObject;
 				 String [] units = JSONObject.getNames(unit);
 				 stringKeyUnit=dBconn.createNewStringKey(unit.getString(units[0]));
 				 for (int i=0; i<units.length; i++){
-					 dBconn.addString(stringKeyUnit,units[i],unit.getString(units[0]));
+					 dBconn.addString(stringKeyUnit,units[i],unit.getString(units[i]));
 				 }
 			 }
 			 if (jsonIn.has("description")){
@@ -72,7 +72,7 @@ import org.json.JSONObject;
 				 String [] descriptions = JSONObject.getNames(description);
 				 stringKeyDesc=dBconn.createNewStringKey(description.getString(descriptions[0]));
 				 for (int i=0; i<descriptions.length; i++){
-					 dBconn.addString(stringKeyDesc,descriptions[i],description.getString(descriptions[0]));
+					 dBconn.addString(stringKeyDesc,descriptions[i],description.getString(descriptions[i]));
 				 }	 
 			 }
 		} catch (JSONException e) {

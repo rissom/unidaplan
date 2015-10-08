@@ -285,7 +285,7 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 			var oldValue=parameter.value;
 			parameter.value=newValue;
 			parameter.experimentid=this.experiment.id;
-			var res = restfactory.POST('update-experiment-parameter',parameter);
+			var res = experimentService.updateExperimentParameter(parameter);
 			res.then(function(data, status, headers, config) {
 				 },
 				 function(data, status, headers, config) {

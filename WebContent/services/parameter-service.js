@@ -2,22 +2,7 @@
 'use strict';
 
 var parameterService = function (restfactory,$q,$translate,key2string,languages) {
-	// restfactory is a wrapper for $html.
-
-
-	
-	
-//	 // return the translated name string of a type for a sample
-//	  this.getType=function(sample,types){
-//		var typeName
-//		  angular.forEach(types,function(type) {
-//			if (sample.typeid==type.id){
-//			    typeName=type.trname;
-//			}
-//	      })
-//		return typeName;
-//	  }
-	
+	// restfactory is a wrapper for $html.	
 	
 	
 	this.getParameters = function() {
@@ -38,7 +23,6 @@ var parameterService = function (restfactory,$q,$translate,key2string,languages)
 	
 	this.addParameter = function (parameter){
 		var promise=restfactory.POST("add-parameter",parameter);
-		console.log("parameter:",parameter)
 		return promise;
 	}
 

@@ -26,7 +26,7 @@ function aProcessesController($state,$stateParams,$translate,restfactory,process
   
   this.performAction = function(index,process){
 	  if (index==0){
-		  $state.go("editPtParamGrps",{processTypeID:1});
+		  $state.go("editPtParamGrps",{processTypeID:process.id});
 	  }
 	  if (index==1){
 	  	  var promise=processService.duplicateProcessType(process.id);
@@ -39,6 +39,16 @@ function aProcessesController($state,$stateParams,$translate,restfactory,process
   }
   
   
+  
+  this.keyUp = function(keyCode) {
+		if (keyCode===13) {				// Return key pressed
+			this.addProcessType();
+		}
+		if (keyCode===27) {		// Escape key pressed
+			this.editmode=false;
+		}
+	  }
+	  
   
   var reload=function() {
 	    var current = $state.current;

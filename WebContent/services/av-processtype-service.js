@@ -21,7 +21,6 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate) {
 	
 	
 	this.getPTypeParamGrps = function(processTypeID) {
-		console.log("processTypeID",processTypeID)
 		var defered=$q.defer();
         var thisController=this;
 	    var promise = restfactory.GET("process-type-param-grps?processtypeid="+processTypeID);
@@ -53,6 +52,14 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate) {
 	
 	
 	
+	this.updateProcessTypeData=function(processtypeID,field,value){
+		var tempObj={"processtypeid":processtypeID,"field":field,"newvalue":value,"lang":$translate.use()};
+		console.log ("tempObj",tempObj);
+		return restfactory.POST('update-process-type-data',tempObj);
+	}
+	
+	
+	
 	this.getProcessRecipes = function(process,pTypes){
 		var recipes=[];
 		angular.forEach(pTypes,function(ptype) {
@@ -64,6 +71,26 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate) {
 	}
 	
 	
+	
+	this.addPTParameterGrp=function(processTypeid,position,name){
+		var temp={"processtypeid":processTypeid,"position":position,"name":name};
+		console.log(temp);
+		return restfactory.POST("add-pt-parameter-grp",temp);
+	}
+	
+	
+	
+	this.deletePTParameterGrp=function(id){
+		return restfactory.DELETE("delete-pt-parameter-grp?id="+id);
+	}
+	
+	
+	this.exPosPTParamGrp=function(id1,pos1,id2,pos2){
+		var jsonObj={"id1":id1, "id2":id2, "pos1":pos1, "pos2":pos2};
+		console.log("Jsonobj: ",jsonObj)
+		return restfactory.POST ("exchange-pos-pt-parameter-grp",jsonObj);
+	};
+
 	
 	this.getProcessTypes = function() {
         var defered=$q.defer();

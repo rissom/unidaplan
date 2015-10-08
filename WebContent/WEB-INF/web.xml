@@ -535,7 +535,7 @@
     <url-pattern>/duplicate-process-type</url-pattern>
   </servlet-mapping>
   
-    <servlet>
+  <servlet>
     <description>ProcessTypeParamGrps</description>
     <display-name>ProcessTypeParamGrps</display-name>
     <servlet-name>ProcessTypeParamGrps</servlet-name>
@@ -544,5 +544,49 @@
   <servlet-mapping>
     <servlet-name>ProcessTypeParamGrps</servlet-name>
     <url-pattern>/process-type-param-grps</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>UpdateProcessTypeData</description>
+    <display-name>UpdateProcessTypeData</display-name>
+    <servlet-name>UpdateProcessTypeData</servlet-name>
+    <servlet-class>unidaplan.UpdateProcessTypeData</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateProcessTypeData</servlet-name>
+    <url-pattern>/update-process-type-data</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>AddPTParameterGrp</description>
+    <display-name>AddPTParameterGrp</display-name>
+    <servlet-name>AddPTParameterGrp</servlet-name>
+    <servlet-class>unidaplan.AddPTParameterGrp</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddPTParameterGrp</servlet-name>
+    <url-pattern>/add-pt-parameter-grp</url-pattern>
+  </servlet-mapping>
+    
+  <servlet>
+    <description>DeletePTParameterGrp</description>
+    <display-name>DeletePTParameterGrp</display-name>
+    <servlet-name>DeletePTParameterGrp</servlet-name>
+    <servlet-class>unidaplan.DeletePTParameterGrp</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeletePTParameterGrp</servlet-name>
+    <url-pattern>/delete-pt-parameter-grp</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>ExchangePosPTParameterGrp</description>
+    <display-name>ExchangePosPTParameterGrp</display-name>
+    <servlet-name>ExchangePosPTParameterGrp</servlet-name>
+    <servlet-class>unidaplan.ExchangePosPTParameterGrp</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ExchangePosPTParameterGrp</servlet-name>
+    <url-pattern>/exchange-pos-pt-parameter-grp</url-pattern>
   </servlet-mapping>
 </web-app>

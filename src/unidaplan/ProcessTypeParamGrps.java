@@ -71,7 +71,7 @@ public class ProcessTypeParamGrps extends HttpServlet {
            	}		
            	
    			pStmt = dBconn.conn.prepareStatement(
-		  	   "SELECT pos,stringkey FROM p_parametergrps "
+		  	   "SELECT id,pos,stringkey FROM p_parametergrps "
 			  +"WHERE (p_parametergrps.pt_id=?) ");
    			pStmt.setInt(1, processTypeID);
    			parameterGrps=dBconn.jsonArrayFromPreparedStmt(pStmt); // get ResultSet from the database using the query

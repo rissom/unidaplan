@@ -120,6 +120,12 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 	
 	
 	
+	this.updateExperimentParameter=function(parameter){
+		return restfactory.POST('update-experiment-parameter',parameter);		
+	}
+	
+	
+	
 	this.updateExperimentSampleComment = function(id,comment){
 		var promise = restfactory.POST('update-experiment-sample-comment',
 				{"id":id,"comment":comment});
@@ -173,11 +179,6 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 				return key2string.key2stringWithLangStrict(parameter.stringkeyname,thisController.strings,lang)}
 			parameter.trname=key2string.key2string(parameter.stringkeyname,thisController.strings);
 		})
-//		if (this.recentExperiments!=undefined){
-//			angular.forEach(this.recentExperiments, function(experiment) {
-//				experiment.trname=key2string.key2string(experiment.name,thisController.strings);
-//			})
-//		}
 		angular.forEach(this.experiment.samples, function(sample){
 			if (sample.note!=undefined) {
 				sample.trnote=key2string.key2string(sample.note,thisController.strings);

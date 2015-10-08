@@ -68,6 +68,7 @@
 			<td class="parametertd">
 				<input 						   
 				type="text"
+				ng-keyup="aProcessesCtrl.keyUp($event.keyCode)"
 			    ng-model="aProcessesCtrl.newDescL2"> 
 			</td>
 					
@@ -79,7 +80,7 @@
 		ng-hide="aProcessesCtrl.editmode"
 		class="btn btn-default" 
 		ng-click="aProcessesCtrl.newProcessType()" >
-	<b>+</b> {{'Add Process'|translate}}
+	<b>+</b> {{'Add Processtype'|translate}}
 </button>
 
 <button type="button" 
@@ -93,7 +94,7 @@
 		ng-show="aProcessesCtrl.editmode"
 		class="btn btn-default" 
 		ng-click="aProcessesCtrl.addProcessType()" >
-	{{'Add Process'|translate}}
+	{{'Save Processtype'|translate}}
 </button>
 
 

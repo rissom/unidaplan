@@ -188,7 +188,7 @@ public class DBconnection  {
 		              }
 	        	  else {
 //	        		  it is perfectly normal to not have a result...
-//	        		  System.err.println("DBconnection: No result!");
+//	        		  System.out.println("DBconnection: No result!");
 	        	  }
 	          }
 	          queryResult.close();
@@ -252,26 +252,6 @@ public class DBconnection  {
         return jsArray;
   }
      
-	
-	
-//        /**
-//         * Convert a result set into a XML List
-//         * @param resultSet
-//         * @return a XML String with list elements
-//         * @throws Exception if something happens
-//         */
-//        public String convertToXML(ResultSet resultSet)
-//                throws Exception {
-//            StringBuffer xmlArray = new StringBuffer("<results>");
-//            while (resultSet.next()) {
-//                int total_rows = resultSet.getMetaData().getColumnCount();
-//                xmlArray.append("<result ");
-//                ="" for="" (int="" i="0;" <="" total_rows;="" i++)="" {="" xmlarray.append("="" "="" +="" resultset.getmetadata().getcolumnlabel(i="" 1).tolowercase()="" }="">");            }
-//            xmlArray.append("</result></results>");
-//            return xmlArray.toString();
-//        }
-//    }
-    
 	
     
   public void testqueryDB(String query) {
