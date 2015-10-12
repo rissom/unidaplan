@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-var parameterService = function (restfactory,$q,$translate,key2string,languages) {
+var parameterService = function (restfactory,$q,key2string) {
 	// restfactory is a wrapper for $html.	
 	
 	
@@ -12,7 +12,37 @@ var parameterService = function (restfactory,$q,$translate,key2string,languages)
     	promise.then(function(rest) {
 	    	thisController.parameters = rest.data.parameters;
 	    	thisController.strings = rest.data.strings;
-	    	thisController.translate();
+	    	angular.forEach(thisController.parameters, function(parameter) {
+				parameter.nameLang=function(lang){
+					return key2string.key2stringWithLangStrict(parameter.stringkeyname,thisController.strings,lang);
+				};
+				parameter.namef=function(){
+					return key2string.key2string(parameter.stringkeyname,thisController.strings);
+				};
+				parameter.nameUnitf=function(){
+					if (parameter.stringkeyunit){
+						var unit=key2string.key2string(parameter.stringkeyunit,thisController.strings);
+						if (unit.length>0){
+							unit=" ("+unit+")"
+						}
+					} else {
+						var unit="";
+					} 
+					return key2string.key2string(parameter.stringkeyname,thisController.strings)+unit
+				};
+				parameter.unitLang=function(lang){
+					return key2string.replace(key2string.key2stringWithLangStrict(parameter.stringkeyunit,thisController.strings,lang));
+				};	
+				parameter.unitf=function(){
+					return key2string.replace(key2string.key2string(parameter.stringkeyunit,thisController.strings));
+				};	
+				parameter.descLang=function(lang){
+					return key2string.replace(key2string.key2stringWithLangStrict(parameter.id_description,thisController.strings,lang));
+				};
+				parameter.descf=function(){
+					return key2string.replace(key2string.key2string(parameter.id_description,thisController.strings));
+				};	
+	    	})
 	    	defered.resolve(thisController.parameters)
     	}, function(rest) {
     		console.log("Error loading parameters");
@@ -21,38 +51,22 @@ var parameterService = function (restfactory,$q,$translate,key2string,languages)
 	} 
 
 	
+	
 	this.addParameter = function (parameter){
 		var promise=restfactory.POST("add-parameter",parameter);
 		return promise;
 	}
+	
 
 	
 	this.deleteParameter = function (id){
 		return restfactory.DELETE("delete-parameter?id="+id);
 	}
 	
-	this.translate = function() {
-		var thisController=this;
-		angular.forEach(thisController.parameters, function(parameter) {
-			parameter.nameLang1=key2string.replace(key2string.key2stringWithLangStrict(
-				parameter.stringkeyname,thisController.strings,languages[0].key));
-			parameter.nameLang2=key2string.replace(key2string.key2stringWithLangStrict(
-				parameter.stringkeyname,thisController.strings,languages[1].key));
-			parameter.unitLang1=key2string.replace(key2string.key2stringWithLangStrict(
-				parameter.stringkeyunit,thisController.strings,languages[0].key));
-			parameter.unitLang2=key2string.replace(key2string.key2stringWithLangStrict(
-				parameter.stringkeyunit,thisController.strings,languages[1].key));
-			parameter.descLang1=key2string.replace(key2string.key2stringWithLangStrict(
-				parameter.id_description,thisController.strings,languages[0].key));
-			parameter.descLang2=key2string.replace(key2string.key2stringWithLangStrict(
-				parameter.id_description,thisController.strings,languages[1].key));
-		})
-	}
 	
 }
 
 
-angular.module('unidaplan').service('parameterService', ['restfactory','$q','$translate',
-                                                           'key2string','languages',parameterService]);
+angular.module('unidaplan').service('parameterService', ['restfactory','$q','key2string',parameterService]);
 
 })();

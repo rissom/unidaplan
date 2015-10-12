@@ -7,9 +7,8 @@ function sampleChoser($translate,$scope,restfactory,types,sampleService) {
 	this.samples=[];
 	this.selectedTypesVar=[]
 	this.selectorTypes=[];
-	thisController=this;
+	var thisController=this;
 		
-	
 	
 	$scope.$watch('sampleChoserCtrl.selectedtypes', function (seltypes){
 		var typeList=[];
@@ -130,13 +129,6 @@ function sampleChoser($translate,$scope,restfactory,types,sampleService) {
 //		this.selectedtypes={trname:allTypesString,'id':0}
 	}
 
-	
-	
-	var thisController = this;
-	$scope.$on('language changed', function(event, args) {
-		thisController.init();
-	});
-	
 	
 	
 	//activate function

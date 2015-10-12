@@ -4,7 +4,8 @@
 var avProcessTypeService = function (restfactory,$q,key2string,$translate) {
 	// get the available processtypes and their names and recipes.
 
-	
+    var thisController=this;
+
 	
 	
 	
@@ -22,7 +23,6 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate) {
 	
 	this.getPTypeParamGrps = function(processTypeID) {
 		var defered=$q.defer();
-        var thisController=this;
 	    var promise = restfactory.GET("process-type-param-grps?processtypeid="+processTypeID);
 	    promise.then(function(rest) {
 	    	thisController.processType = rest.data;
@@ -31,7 +31,6 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate) {
     			return (key2string.key2stringWithLangStrict(thisController.processType.name,thisController.strings,lang))
 	    	}
 	    	thisController.processType.descLang=function(lang){
-//	    		return thisController.processType.description
     			return (key2string.key2stringWithLangStrict(thisController.processType.description,thisController.strings,lang))
 	    	}
 	    	angular.forEach(thisController.processType.parametergrps,function(ptgrp) {
@@ -85,12 +84,14 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate) {
 	}
 	
 	
+	
 	this.exPosPTParamGrp=function(id1,pos1,id2,pos2){
 		var jsonObj={"id1":id1, "id2":id2, "pos1":pos1, "pos2":pos2};
 		console.log("Jsonobj: ",jsonObj)
 		return restfactory.POST ("exchange-pos-pt-parameter-grp",jsonObj);
 	};
 
+	
 	
 	this.getProcessTypes = function() {
         var defered=$q.defer();
@@ -126,9 +127,46 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate) {
 	    return defered.promise;
 	}
 
+	
+	
+	this.getPTypeParams=function(paramGrpID){
+		var defered=$q.defer();
+        var thisController=this;
+	    var promise = restfactory.GET("process-type-params?paramgrpid="+paramGrpID);
+	    promise.then(function(rest) {
+	    	thisController.paramGrp = rest.data;
+	    	thisController.paramGrp.nameLang=function(lang){
+    			return (key2string.key2stringWithLangStrict(thisController.paramGrp.name,thisController.paramGrp.strings,lang));
+	    	}
+	    	angular.forEach(thisController.paramGrp.parameters,function(parameter) {
+	    		parameter.namef=function(){
+	    			return (key2string.key2string(parameter.name,thisController.paramGrp.strings))
+	    		}
+	         })
+	         
+	    	defered.resolve(thisController.paramGrp)	    	
+		    }, function(rest) {
+			console.log("Error loading parametergroup");
+		 });
+	    return defered.promise;
+	}
 
-
-
+	
+	
+	this.AddProcesstypePGParameters=function(processtype,paramgrp,parameters){
+		var tempObj={
+			processtypeid 	 : processtype,
+			parametergroupid : paramgrp,
+			parameterids     : parameters,
+		};
+		return restfactory.POST('add-pt-pg-parameters',tempObj);
+	}
+	
+	
+	
+	this.deletePTParameter=function(id){
+		return restfactory.DELETE("delete-PT-Parameter?id="+id);
+	}
 }
 
 

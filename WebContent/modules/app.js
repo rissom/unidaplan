@@ -163,8 +163,20 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 			}
         })
         
-        
-        
+        .state('editPtParams', {
+        	url: '/editprocesstypeparams/{paramGrpID:int}',
+	        templateUrl: 'modules/admin-processes/edit-pt-params.html',
+	        controller:"editPtParamsController as editPtParamsCtrl",
+	        resolve:{
+	        	parameterGrp: function(avProcessTypeService,$stateParams){
+        	   	    	return avProcessTypeService.getPTypeParams($stateParams.paramGrpID);
+        	   	    },
+		        avParameters: 
+		        	function(parameterService){
+			   	    	return parameterService.getParameters()
+			   	    }
+				}
+        })
         
         .state('parameter', {
 	        url: '/parameter',

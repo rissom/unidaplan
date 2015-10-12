@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -167,7 +168,30 @@ public class DBconnection  {
 //	  		  e.printStackTrace();
 		  }
       return result;
-}
+  }
+  
+
+  
+  	public JSONArray getStrings(ArrayList<String> stringkeys) {
+		// get Strings from the database for an array of Stringkeys.
+  		JSONArray strings = null;
+		String query="SELECT id,string_key,language,value FROM Stringtable WHERE string_key=ANY('{";   	
+		StringBuilder buff = new StringBuilder(); // join numbers with commas
+		String sep = "";
+		for (String str : stringkeys) {
+			buff.append(sep);
+			buff.append(str);
+			sep = ",";
+		}
+		query+= buff.toString() + "}'::int[])";
+		try {
+			 strings=jsonfromquery(query);
+		} catch (Exception e) {
+			System.err.println("error fetching strings");
+			e.printStackTrace();
+		}
+		return strings;
+  	}
   
   
   
@@ -244,7 +268,6 @@ public class DBconnection  {
             JSONObject obj = new JSONObject();
             for (int i = 1; i <= columns; i++) {
             	Object tempObject=rs.getObject(i);
-//            	if (tempObject==null){tempObject="Null";}
                 obj.put(rs.getMetaData().getColumnLabel(i), tempObject);
             }
             jsArray.put(obj);

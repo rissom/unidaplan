@@ -11,6 +11,10 @@ function parameterController($state,$stateParams,$translate,parameterService,res
   
   this.lang2=$translate.instant(languages[1].name);
   
+  this.lang1Key=languages[0].key;
+  
+  this.lang2Key=languages[1].key;
+  
   this.parameters=parameters;
   
   this.dataTypes=["integer","float","measurement","string","long string","chooser","timestamp","checkbox"];

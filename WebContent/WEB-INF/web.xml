@@ -589,4 +589,38 @@
     <servlet-name>ExchangePosPTParameterGrp</servlet-name>
     <url-pattern>/exchange-pos-pt-parameter-grp</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <description>ProcessTypeParams</description>
+    <display-name>ProcessTypeParams</display-name>
+    <servlet-name>ProcessTypeParams</servlet-name>
+    <servlet-class>unidaplan.ProcessTypeParams</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ProcessTypeParams</servlet-name>
+    <url-pattern>/process-type-params</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>DeletePTParameter</description>
+    <display-name>DeletePTParameter</display-name>
+    <servlet-name>DeletePTParameter</servlet-name>
+    <servlet-class>unidaplan.DeletePTParameter</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeletePTParameter</servlet-name>
+    <url-pattern>/delete-PT-Parameter</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>AddProcesstypePGParameters</description>
+    <display-name>AddProcesstypePGParameters</display-name>
+    <servlet-name>AddProcesstypePGParameters</servlet-name>
+    <servlet-class>unidaplan.AddProcesstypePGParameters</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddProcesstypePGParameters</servlet-name>
+    <url-pattern>/add-pt-pg-parameters</url-pattern>
+  </servlet-mapping>
+  
 </web-app>

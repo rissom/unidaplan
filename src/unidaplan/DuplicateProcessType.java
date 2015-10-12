@@ -102,8 +102,6 @@ public class DuplicateProcessType extends HttpServlet {
 							pStmt.setString(2,descStrings.getJSONObject(i).getString("language"));
 							pStmt.setString(3,descStrings.getJSONObject(i).getString("value"));
 							pStmt.setInt(4,userID);
-							System.out.println();
-							System.out.println(pStmt.toString());
 							pStmt.executeUpdate();
 							pStmt.close();
 						}
@@ -139,16 +137,40 @@ public class DuplicateProcessType extends HttpServlet {
 					id = dBconn.getSingleIntValue(pStmt);
 					pStmt.close();
 				}
-		    } catch (SQLException eS) {
-				System.err.println("Delete Process: SQL Error");
-				status="error: SQL error";
-				eS.printStackTrace();
-			} catch (Exception e) {
-				System.err.println("Delete Sample Type: Some Error, probably JSON");
-				status="error: JSON error";
-				e.printStackTrace();
-			}
+	    } catch (SQLException eS) {
+			System.err.println("Delete Process: SQL Error");
+			status="error: SQL error";
+			eS.printStackTrace();
+		} catch (Exception e) {
+			System.err.println("Delete Sample Type: Some Error, probably JSON");
+			status="error: JSON error";
+			e.printStackTrace();
+		}
 
+	 
+	 	
+		try {
+		 	//copy the parametergroups
+		 	if (processTypeID>0){			
+		        pStmt = dBconn.conn.prepareStatement(	
+		        	"INSERT INTO p_parametergrps(pt_id,stringkey,pos,lastUser) "
+		        	+"SELECT  ?,stringkey,pos,? "
+		        	+"FROM p_parametergrps WHERE pt_id=?");
+				pStmt.setInt(1,id);
+				pStmt.setInt(2,userID);
+				pStmt.setInt(3,processTypeID);
+				pStmt.executeUpdate();
+				pStmt.close();
+			}
+	    } catch (SQLException eS) {
+			System.err.println("Delete Process: SQL Error");
+			status="error: SQL error";
+			eS.printStackTrace();
+		} catch (Exception e) {
+			System.err.println("Delete Sample Type: Some Error, probably JSON");
+			status="error: JSON error";
+			e.printStackTrace();
+		}
 	  
 	    
 	    finally {

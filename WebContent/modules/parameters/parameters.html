@@ -36,18 +36,18 @@
 	
 	
 	<tbody>
-		<tr ng-repeat="parameter in parameterCtrl.parameters | orderBy : 'nameLang1'">
+		<tr ng-repeat="parameter in parameterCtrl.parameters | orderBy : 'nameLang(lang1)'">
 			<td class="parametertd">
-	 			{{parameter.nameLang1}}
+	 			{{parameter.nameLang(parameterCtrl.lang1Key)}}
 			</td>
 			<td class="parametertd">		
-				{{parameter.nameLang2}}
+				{{parameter.nameLang(parameterCtrl.lang2Key)}}
 			</td>
 			<td class="parametertd">
-	 			{{parameter.unitLang1}}
+	 			{{parameter.unitLang(parameterCtrl.lang1Key)}}
 			</td>
 			<td class="parametertd">
-	 			{{parameter.unitLang2}}
+	 			{{parameter.unitLang(parameterCtrl.lang2Key)}}
 			</td>
 			<td class="parametertd">
 	 			{{parameterCtrl.datatype[parameter.datatype]}}
@@ -56,10 +56,10 @@
 				{{parameter.maxdigits}}
 			</td>
 			<td class="parametertd">
-				{{parameter.descLang1}}
+				{{parameter.descLang(parameterCtrl.lang1Key)}}
 			</td>
 			<td class="parametertd">
-				{{parameter.descLang2}}
+				{{parameter.descLang(parameterCtrl.lang2Key)}}
 			</td>
 			<td class="parametertd" ng-hide="parameterCtrl.editmode">
 				<button type="button" class="btn btn-default btn-xs" 
