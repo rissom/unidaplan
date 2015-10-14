@@ -26,7 +26,6 @@ import org.json.JSONObject;
 	    JSONObject  jsonIn = null;	    
 	    try {
 			  jsonIn = new JSONObject(in);
-			  System.out.println(jsonIn.toString());
 		} catch (JSONException e) {
 			System.err.println("AddProcesstypePGParameters: Input is not valid JSON");
 		}

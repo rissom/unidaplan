@@ -82,23 +82,23 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,restfac
   
   
   
-  this.keyUp = function(keyCode,field) {
-	if (keyCode===13) {				// Return key pressed
-		thisController.editNL1 = false;
+  this.changeField = function(field){
+	  thisController.editNL1 = false;
 		thisController.editNL2 = false;
 		thisController.editDL1 = false;
 		thisController.editDL2 = false;
 		var value="";
 		var fieldType="name";
 		console.log("field:",field);
+		var lang="";
 		switch (field){
-			case "NL1": fieldType="name"; value=thisController.newNameL1; break;
-			case "NL2": fieldType="name"; value=thisController.newNameL2; break;
-			case "DL1": fieldType="description"; value=thisController.newDescL1; break;
-			case "DL2": fieldType="description"; value=thisController.newDescL2; break;
+			case "NL1": fieldType="name"; value=thisController.newNameL1; lang=languages[0].key; break;
+			case "NL2": fieldType="name"; value=thisController.newNameL2; lang=languages[1].key;break;
+			case "DL1": fieldType="description"; value=thisController.newDescL1; lang=languages[0].key; break;
+			case "DL2": fieldType="description"; value=thisController.newDescL2; lang=languages[1].key; break;
 			default: console.log("no field given!");
 		}
-		var promise = avProcessTypeService.updateProcessTypeData(processType.id,fieldType,value);
+		var promise = avProcessTypeService.updateProcessTypeData(processType.id,fieldType,value,lang);
 		promise.then(function(data) {
 				reload();
 			 },
@@ -107,6 +107,14 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,restfac
 				console.log(data);
 			 }
 			);
+  }
+  
+
+  
+  
+  this.keyUp = function(keyCode,field) {
+	if (keyCode===13) {				// Return key pressed
+		this.changeField(field);
 	}
 	if (keyCode===27) {		// Escape key pressed
 		thisController.editNL1 = false;

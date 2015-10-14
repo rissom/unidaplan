@@ -623,4 +623,14 @@
     <url-pattern>/add-pt-pg-parameters</url-pattern>
   </servlet-mapping>
   
+  <servlet>
+    <description>ChangeOrderPTParameters</description>
+    <display-name>ChangeOrderPTParameters</display-name>
+    <servlet-name>ChangeOrderPTParameters</servlet-name>
+    <servlet-class>unidaplan.ChangeOrderPTParameters</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ChangeOrderPTParameters</servlet-name>
+    <url-pattern>/change-order-pt-parameters</url-pattern>
+  </servlet-mapping>
 </web-app>

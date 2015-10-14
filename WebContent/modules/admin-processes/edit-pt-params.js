@@ -117,23 +117,22 @@ function editPtParamsController($state,$modal,$stateParams,$translate,avParamete
 
   
   
-  this.down=function(index){
-	  var id1=thisController.parameters[index].id;
-	  var id2=thisController.parameters[index+1].id;
-	  var pos1=thisController.parameters[index+1].pos;
-	  var pos2=thisController.parameters[index].pos;
-	  var promise = avProcessTypeService.exPosPTParam(id1,pos1,id2,pos2);
+  this.down=function(index){  // exchange two parameter positions
+	  var newPositions=[];
+	  newPositions.push({"id":thisController.parameters[index].id,"position":thisController.parameters[index+1].pos});
+	  newPositions.push({"id":thisController.parameters[index+1].id,"position":thisController.parameters[index].pos});
+	  var promise = avProcessTypeService.changeOrderPTParameters(newPositions);
+	  console.log("newPositions: ",newPositions);
 	  promise.then(function(){reload()},function(){console.log("error")})
   }
 
   
   
-  this.up=function(index){
-	  var id1=thisController.parameters[index-1].id;
-	  var id2=thisController.parameters[index].id;
-	  var pos1=thisController.parameters[index].pos;
-	  var pos2=thisController.parameters[index-1].pos;
-	  var promise = avProcessTypeService.exPosPTParam(id1,pos1,id2,pos2);
+  this.up=function(index){  // exchange two parameter positions
+	  var newPositions=[];
+	  newPositions.push({"id":thisController.parameters[index-1].id,"position":thisController.parameters[index].pos});
+	  newPositions.push({"id":thisController.parameters[index].id,"position":thisController.parameters[index-1].pos});
+	  var promise = avProcessTypeService.changeOrderPTParameters(newPositions);
 	  promise.then(function(){reload()},function(){console.log("error")})
   }
   

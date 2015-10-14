@@ -50,9 +50,13 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate) {
 	}
 	
 	
+	this.changeOrderPTParameters=function(newPositions){
+		return restfactory.PUT("change-order-pt-parameters",newPositions)
+	}
 	
-	this.updateProcessTypeData=function(processtypeID,field,value){
-		var tempObj={"processtypeid":processtypeID,"field":field,"newvalue":value,"lang":$translate.use()};
+	
+	this.updateProcessTypeData=function(processtypeID,field,value,lang){
+		var tempObj={"processtypeid":processtypeID,"field":field,"newvalue":value,"lang":lang};
 		console.log ("tempObj",tempObj);
 		return restfactory.POST('update-process-type-data',tempObj);
 	}
