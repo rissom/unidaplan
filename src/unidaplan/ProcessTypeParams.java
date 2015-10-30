@@ -58,15 +58,18 @@ public class ProcessTypeParams extends HttpServlet {
  			paramGrp=dBconn.jsonObjectFromPreparedStmt(pStmt); // get ResultSet from the database using the query
  			pStmt.close();
  			if (paramGrp.length()>0){
-	           	stringkeys.add(Integer.toString(paramGrp.getInt("name")));           	
+	           	stringkeys.add(Integer.toString(paramGrp.getInt("name")));  // check if the parameter can be deleted. (No, if corresponding data exists).
 	           	pStmt = dBconn.conn.prepareStatement(
-	     		  	   "SELECT p_parameters.id, compulsory, formula, hidden, pos, definition, stringkeyname as name, (blabla.count) IS NULL as deletable " 
+	     		  	   "SELECT p_parameters.id, compulsory, formula, hidden, pos, definition, p_parameters.stringkeyname as name, "
+	     		  	  + "(blabla.count) IS NULL as deletable, stringkeyunit " 
 	     		  	  +"FROM p_parameters " 
+	     		  	  +"JOIN paramdef ON (definition=paramdef.id)"
 	     		  	  +"LEFT JOIN "
 				  	  +"( "
 					  +"  SELECT count(a.id),p_parameter_id FROM p_integer_data a GROUP BY p_parameter_id "
 					  +"  UNION ALL "
-					  +"  SELECT count(b.id),p_parameter_id FROM p_float_data b GROUP BY p_parameter_id	UNION ALL "
+					  +"  SELECT count(b.id),p_parameter_id FROM p_float_data b GROUP BY p_parameter_id	"
+					  +"  UNION ALL "
 				      +"  SELECT count(c.id),p_parameter_id FROM p_string_data c GROUP BY p_parameter_id "
 					  +"  UNION ALL "
 				      +"  SELECT count(d.id),p_parameter_id FROM p_measurement_data d GROUP BY p_parameter_id "
@@ -79,6 +82,9 @@ public class ProcessTypeParams extends HttpServlet {
 				if (processTypeGrps.length()>0) {
 	           		for (int j=0; j<processTypeGrps.length();j++) {
 	           			stringkeys.add(Integer.toString(processTypeGrps.getJSONObject(j).getInt("name")));
+	           			if (processTypeGrps.getJSONObject(j).has("stringkeyunit")){
+	           				stringkeys.add(Integer.toString(processTypeGrps.getJSONObject(j).getInt("stringkeyunit")));
+	           			}
 	           		}
 	           	}		
  			} else {

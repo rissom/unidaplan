@@ -29,7 +29,6 @@ import org.json.JSONObject;
 	    JSONObject  jsonIn = null;	    
 	    try {
 			  jsonIn = new JSONObject(in);
-			  System.out.println(jsonIn.toString());
 		} catch (JSONException e) {
 			System.err.println("UpdateExperimentParameter: Input is not valid JSON");
 		}
@@ -75,7 +74,6 @@ import org.json.JSONObject;
 					 "DELETE FROM Expp_measurement_data WHERE expp_id=? AND expp_param_id=?");
 		   	pStmt.setInt(1, expID);
 		   	pStmt.setInt(2, expParamID);
-		   	System.out.println(pStmt.toString());
 		   	pStmt.executeUpdate();
 			pStmt= dBconn.conn.prepareStatement( 			
 					 "DELETE FROM Expp_timestamp_data WHERE expp_id=? AND expp_param_id=?");
@@ -100,8 +98,6 @@ import org.json.JSONObject;
 					+"WHERE ep.id=?");
 		   	pStmt.setInt(1, expParamID);
 			dataType= dBconn.getSingleIntValue(pStmt);
-			System.out.println("Datatype:");
-			System.out.println(dataType);
 		} catch (SQLException e) {
 			System.err.println("UpdateExperimentParameter: Problems with SQL query");
 			status = "SQL Error";

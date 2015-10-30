@@ -162,6 +162,12 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 	    		parameter.nameLang=function(lang){
 	    			return (key2string.key2stringWithLangStrict(parameter.name,thisController.paramGrp.strings,lang));
 	    		}
+	    		parameter.unitf=function(){
+	    			return (key2string.key2string(parameter.stringkeyunit,thisController.paramGrp.strings));
+	    		}
+	    		parameter.unitLang=function(lang){
+	    			return (key2string.key2stringWithLangStrict(parameter.stringkeyunit,thisController.paramGrp.strings,lang));
+	    		}
 	         })
 	         
 	    	defered.resolve(thisController.paramGrp)	    	

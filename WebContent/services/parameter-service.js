@@ -31,16 +31,16 @@ var parameterService = function (restfactory,$q,key2string) {
 					return key2string.key2string(parameter.stringkeyname,thisController.strings)+unit
 				};
 				parameter.unitLang=function(lang){
-					return key2string.replace(key2string.key2stringWithLangStrict(parameter.stringkeyunit,thisController.strings,lang));
+					return key2string.key2stringWithLangStrict(parameter.stringkeyunit,thisController.strings,lang);
 				};	
 				parameter.unitf=function(){
-					return key2string.replace(key2string.key2string(parameter.stringkeyunit,thisController.strings));
+					return key2string.key2string(parameter.stringkeyunit,thisController.strings);
 				};	
 				parameter.descLang=function(lang){
-					return key2string.replace(key2string.key2stringWithLangStrict(parameter.id_description,thisController.strings,lang));
+					return key2string.key2stringWithLangStrict(parameter.id_description,thisController.strings,lang);
 				};
 				parameter.descf=function(){
-					return key2string.replace(key2string.key2string(parameter.id_description,thisController.strings));
+					return key2string.key2string(parameter.id_description,thisController.strings);
 				};	
 	    	})
 	    	defered.resolve(thisController.parameters)

@@ -57,6 +57,12 @@
 			<td class="parametertd">
 	 			{{'Name'|translate}} ({{editPtParamsCtrl.lang2}})
 			</td>
+						<td class="parametertd">
+	 			{{'Unit'|translate}} ({{editPtParamsCtrl.lang1}})
+			</td>
+			<td class="parametertd">
+	 			{{'Unit'|translate}} ({{editPtParamsCtrl.lang2}})
+			</td>
 			<td class="parametertd">
 	 			{{'Compulsory'|translate}}
 			</td>
@@ -102,6 +108,12 @@
 				ng-show="parameter.editNL2"
 			    ng-model="parameter.newParameterNameL2" 
 			    ng-keyup="editPtParamsCtrl.keyUpParameter($event.keyCode,parameter)"> 
+			</td>
+			<td class="parametertd" ng-dblclick="editPtParamsCtrl.editNL1(parameter)">
+					{{parameter.unitLang(editPtParamsCtrl.lang1key)}}
+			</td>
+			<td class="parametertd" ng-dblclick="editPtParamsCtrl.editNL2(parameter)">
+					{{parameter.unitLang(editPtParamsCtrl.lang2key)}}
 			</td>
 			<td class="parametertd" >	
 				<input type="checkbox" ng-model="parameter.compulsory" ng-change="editPtParamsCtrl.setCompulsory(parameter)">

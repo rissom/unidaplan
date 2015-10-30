@@ -12,7 +12,7 @@ var key2stringService = function($translate){
 	
 	this.key2stringWithLang = function(stringkey,strings,lang) {
 		var keyfound=false;
-		var returnString="@@@ no string! @@@";
+		var returnString="-";
 		angular.forEach(strings, function(translation) {
 			if (!keyfound && stringkey==translation.string_key) {
 				returnString = translation.value;
@@ -24,16 +24,11 @@ var key2stringService = function($translate){
 		return returnString;
 	};
 	
-	this.replace = function(string){
-		if (string=="@@@ no string! @@@"){
-			return "-"
-		}
-		return string
-	}
+
 	
 	this.key2stringWithLangStrict = function(stringkey,strings,lang) {
 		var keyfound=false;
-		var returnString="@@@ no string! @@@";
+		var returnString="-";
 		angular.forEach(strings, function(translation) {
 			if (!keyfound && stringkey==translation.string_key &&
 				translation.language==lang) {
