@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-var avProcessTypeService = function (restfactory,$q,key2string,$translate) {
+var avProcessTypeService = function (restfactory,$q,key2string,$translate,languages) {
 	// get the available processtypes and their names and recipes.
 
     var thisController=this;
@@ -19,6 +19,19 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate) {
 		return processTypeName; 
 	}
 
+	
+	
+	this.updateParamGrp = function (name, language, paramgrpid){
+		return restfactory.PUT("update-pt-paramgrp",{"newname":name, "paramgrpid":paramgrpid, "language":language})
+	}
+	
+	
+	
+	this.updateParameter = function (parameter){
+		return restfactory.PUT("update-pt-parameter",parameter);
+			
+	}
+	
 	
 	
 	this.getPTypeParamGrps = function(processTypeID) {
@@ -144,7 +157,10 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate) {
 	    	}
 	    	angular.forEach(thisController.paramGrp.parameters,function(parameter) {
 	    		parameter.namef=function(){
-	    			return (key2string.key2string(parameter.name,thisController.paramGrp.strings))
+	    			return (key2string.key2string(parameter.name,thisController.paramGrp.strings));
+	    		}
+	    		parameter.nameLang=function(lang){
+	    			return (key2string.key2stringWithLangStrict(parameter.name,thisController.paramGrp.strings,lang));
 	    		}
 	         })
 	         
@@ -174,6 +190,6 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate) {
 }
 
 
-angular.module('unidaplan').service('avProcessTypeService', ['restfactory','$q','key2string','$translate',avProcessTypeService]);
+angular.module('unidaplan').service('avProcessTypeService', ['restfactory','$q','key2string','$translate','languages',avProcessTypeService]);
 
 })();

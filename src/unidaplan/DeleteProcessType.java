@@ -86,7 +86,7 @@ public class DeleteProcessType extends HttpServlet {
 				pStmt.close();
 			}
 	    } catch (SQLException eS) {
-			System.err.println("Delete Process: SQL Error");
+			System.err.println("Delete Processtype: SQL Error");
 			status="error: SQL error";
 			eS.printStackTrace();
 		} catch (Exception e) {
@@ -105,11 +105,11 @@ public class DeleteProcessType extends HttpServlet {
 				pStmt.close();
 			}
 	    } catch (SQLException eS) {
-			System.err.println("Delete Process: SQL Error");
+			System.err.println("Delete Processtype: SQL Error");
 			status="error: SQL error";
 			eS.printStackTrace();
 		} catch (Exception e) {
-			System.err.println("Delete Sample Type: Some Error, probably JSON");
+			System.err.println("Delete Processtype: Some Error, probably JSON");
 			status="error: JSON error";
 			e.printStackTrace();
 		} 

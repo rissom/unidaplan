@@ -69,7 +69,7 @@ import org.json.JSONObject;
 	    PreparedStatement pStmt = null;
 	    try {	
 			pStmt= dBconn.conn.prepareStatement( 			
-					"SELECT max(pos) FROM p_parametergrps WHERE pt_id=?");
+					"SELECT max(pos) FROM p_parametergrps WHERE processtype=?");
 		   	pStmt.setInt(1, processTypeID);
 		   	position=dBconn.getSingleIntValue(pStmt)+1;
 		} catch (SQLException e) {

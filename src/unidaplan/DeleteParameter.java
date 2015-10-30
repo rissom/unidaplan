@@ -1,9 +1,9 @@
 package unidaplan;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -27,10 +27,11 @@ public class DeleteParameter extends HttpServlet {
 		
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
+		userID=userID+1;
+		userID=userID-1;
 		request.setCharacterEncoding("utf-8");
 	    response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
-	    PrintWriter out = response.getWriter(); 
 	    String status="ok";
 	    
 		PreparedStatement pstmt = null; 	// Declare variables
@@ -77,8 +78,9 @@ public class DeleteParameter extends HttpServlet {
 				e.printStackTrace();
 		   	}
         }
-	    out.println("{\"status:\":\""+status+"\"}");
-
+  
+	    // tell client that everything is fine
+	    Unidatoolkit.sendStandardAnswer(status,response);
 		
 	}
 

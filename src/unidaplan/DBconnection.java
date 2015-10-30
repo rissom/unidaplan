@@ -104,6 +104,8 @@ public class DBconnection  {
           pStmt.close();
   	  } catch (SQLException e) {   // Exception for SQL database
   		  System.err.println("DBconnection: No result, or problem with the database");
+  		  System.err.println(pStmt.toString());
+
   		  e.printStackTrace();
   	  } catch (Exception e) {
   		  System.err.print("DBconnection: Some problem with database query. Error! ");
@@ -219,6 +221,8 @@ public class DBconnection  {
 	          pStmt.close();
 	  	  } catch (SQLException e) {   // Exception for SQL database
 	  		  System.err.println("DBconnection: No result, or problem with the database");
+	  		  System.err.println(pStmt.toString());
+	  		  result=0;
 	  	  } catch (Exception e) {
 	  		  System.err.println("DBconnection: Some problem with database query. Error! ");
 //	  		  e.printStackTrace();

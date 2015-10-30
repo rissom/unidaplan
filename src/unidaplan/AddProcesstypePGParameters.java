@@ -1,6 +1,5 @@
 package unidaplan;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.servlet.ServletException;
@@ -54,13 +53,14 @@ import org.json.JSONObject;
 	    PreparedStatement pStmt = null;
 	    
 	    
+	    
 	    // add Parameters to the parametergroup
 		try {	
 			for (int i=0; i<ids.length();i++){
 				pStmt= dBconn.conn.prepareStatement( 			
 						 "INSERT INTO p_parameters (ProcesstypeID,Parametergroup,compulsory,ID_Field,Hidden,pos,definition,StringKeyName,lastUser)"
 						 + " VALUES(?,?,False,False,False,"
-						 + "(SELECT max(p2.pos)+1 FROM p_parameters p2 WHERE p2.parametergroup=?),"
+						 + "(SELECT COALESCE ((SELECT max(p2.pos)+1 FROM p_parameters p2 WHERE p2.parametergroup=?),1)),"
 						 + "?,(SELECT stringkeyname FROM paramdef WHERE paramdef.id=?),?)");
 			   	pStmt.setInt(1, processTypeID);
 			   	pStmt.setInt(2, parameterGrpID);
@@ -74,6 +74,8 @@ import org.json.JSONObject;
 //			pStmt.executeBatch();
 			pStmt.close();
 		
+			
+			
 		} catch (SQLException e) {
 			System.err.println("AddProcesstypePGParameters: Problems with SQL query");
 			status = "SQL Error";
@@ -85,7 +87,6 @@ import org.json.JSONObject;
 		dBconn.closeDB();
 		
     // tell client that everything is fine
-    PrintWriter out = response.getWriter();
-	out.println("{\"status\":\""+status+"\"}");
+	Unidatoolkit.sendStandardAnswer(status, response);
 	}
 }	

@@ -512,18 +512,7 @@
     <servlet-name>DeleteSampleType</servlet-name>
     <url-pattern>/delete-sample-type</url-pattern>
   </servlet-mapping>
-  
-    <servlet>
-    <description>ProcessTypeParameters</description>
-    <display-name>ProcessTypeParameters</display-name>
-    <servlet-name>ProcessTypeParameters</servlet-name>
-    <servlet-class>unidaplan.ProcessTypeParameters</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>ProcessTypeParameters</servlet-name>
-    <url-pattern>/processtype-parameters</url-pattern>
-  </servlet-mapping>
-  
+    
   <servlet>
     <description>DuplicateProcessType</description>
     <display-name>DuplicateProcessType</display-name>
@@ -632,5 +621,27 @@
   <servlet-mapping>
     <servlet-name>ChangeOrderPTParameters</servlet-name>
     <url-pattern>/change-order-pt-parameters</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>UpdatePTParamGrp</description>
+    <display-name>UpdatePTParamGrp</display-name>
+    <servlet-name>UpdatePTParamGrp</servlet-name>
+    <servlet-class>unidaplan.UpdatePTParamGrp</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdatePTParamGrp</servlet-name>
+    <url-pattern>/update-pt-paramgrp</url-pattern>
+  </servlet-mapping>
+      
+  <servlet>
+    <description>UpdatePTParameter</description>
+    <display-name>UpdatePTParameter</display-name>
+    <servlet-name>UpdatePTParameter</servlet-name>
+    <servlet-class>unidaplan.UpdatePTParameter</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdatePTParameter</servlet-name>
+    <url-pattern>/update-pt-parameter</url-pattern>
   </servlet-mapping>
 </web-app>

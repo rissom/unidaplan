@@ -1,6 +1,5 @@
 package unidaplan;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -31,9 +30,7 @@ import org.json.JSONObject;
 		} catch (JSONException e) {
 			System.err.println("ChangeOrderPTParameters: Input is not valid JSON");
 		}
-		response.setContentType("application/json");
-	    response.setCharacterEncoding("utf-8");
-	    
+
 	    
 	    // Initialize Database
 		DBconnection dBconn=new DBconnection();
@@ -70,7 +67,6 @@ import org.json.JSONObject;
 		dBconn.closeDB();
 		
     // tell client that everything is fine
-    PrintWriter out = response.getWriter();
-	out.println("{\"status\":\""+status+"\"}");
+    Unidatoolkit.sendStandardAnswer(status, response);
 	}
 }	

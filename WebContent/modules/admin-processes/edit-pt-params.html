@@ -18,13 +18,14 @@
 
 <br/>
 <h4>{{'General information'|translate}}</h4>
+
 <table class="table">
 <tr ng-dblclick="editPtParamsCtrl.edit('NL1')">
 	<td>Name ({{editPtParamsCtrl.lang1}}):</td>
 	<td>
-		<span ng-hide="editPtParamsCtrl.editNL1">{{editPtParamsCtrl.NameL1}}</span>
-		<input ng-show="editPtParamsCtrl.editNL1" 
-			   ng-keyup="editPtParamsCtrl.keyUp($event.keyCode,'NL1')"
+		<span ng-hide="editPtParamsCtrl.editFieldNL1">{{editPtParamsCtrl.nameL1}}</span>
+		<input ng-show="editPtParamsCtrl.editFieldNL1" 
+			   ng-keyup="editPtParamsCtrl.keyUp($event.keyCode,editPtParamsCtrl.newNameL1,editPtParamsCtrl.lang1key)"
 			   ng-blur="editPtParamsCtrl.editNL1=false"
 			   type="text"
 			   ng-model="editPtParamsCtrl.newNameL1">
@@ -33,9 +34,9 @@
 <tr ng-dblclick="editPtParamsCtrl.edit('NL2')">
 	<td>Name ({{editPtParamsCtrl.lang2}}):</td>
 	<td>
-		<span ng-hide="editPtParamsCtrl.editNL2">{{editPtParamsCtrl.NameL2}}</span>
-		<input ng-show="editPtParamsCtrl.editNL2" 
-			   ng-keyup="editPtParamsCtrl.keyUp($event.keyCode,'NL2')"
+		<span ng-hide="editPtParamsCtrl.editFieldNL2">{{editPtParamsCtrl.nameL2}}</span>
+		<input ng-show="editPtParamsCtrl.editFieldNL2" 
+			   ng-keyup="editPtParamsCtrl.keyUp($event.keyCode,editPtParamsCtrl.newNameL2,editPtParamsCtrl.lang2key)"
 			   ng-blur="editPtParamsCtrl.editNL2=false"		
 			   type="text"
 			   ng-model="editPtParamsCtrl.newNameL2">
@@ -51,18 +52,21 @@
 		<tr>
 			<td></td>
 			<td class="parametertd">
-	 			Name
+	 			{{'Name'|translate}} ({{editPtParamsCtrl.lang1}})
 			</td>
 			<td class="parametertd">
-	 			Compulsory
+	 			{{'Name'|translate}} ({{editPtParamsCtrl.lang2}})
 			</td>
 			<td class="parametertd">
-	 			Formula
+	 			{{'Compulsory'|translate}}
 			</td>
 			<td class="parametertd">
-	 			Hidden
+	 			{{'Formula'|translate}}
 			</td>
-			<td ng-hide=editPtParamsCtrl.editmode>
+			<td class="parametertd">
+	 			{{'Hidden'|translate}}
+			</td>
+			<td class="parametertd" ng-hide="editPtParamsCtrl.editmode">
 				{{'action'|translate}}
 			</td>
 		</tr>
@@ -73,23 +77,40 @@
 		<tr ng-repeat="parameter in editPtParamsCtrl.parameters | orderBy : 'pos'">
 			<td class="parametertd">
 				<button type="button" class="btn btn-default btn-xs" 
-					ng-click="editPtParamsCtrl.up($index)"   ng-hide="$first || editPtParamsCtrl.editmode">&#9650;
+					ng-click="editPtParamsCtrl.up($index)"   ng-hide="$first">&#9650;
 				</button>
 				<button type="button" class="btn btn-default btn-xs" 
-					ng-click="editPtParamsCtrl.down($index)" ng-hide="$last  || editPtParamsCtrl.editmode" >&#9660;
+					ng-click="editPtParamsCtrl.down($index)" ng-hide="$last" >&#9660;
 				</button>
 			</td> 
-			<td> 
-	 			{{parameter.namef()}}
+			<td class="parametertd" ng-dblclick="editPtParamsCtrl.editNL1(parameter)">
+				<span ng-hide="parameter.editNL1">
+					{{parameter.nameLang(editPtParamsCtrl.lang1key)}}
+				</span>
+				<input 						   
+				type="text"
+				ng-show="parameter.editNL1"
+			    ng-model="parameter.newParameterNameL1"
+			    ng-keyup="editPtParamsCtrl.keyUpParameter($event.keyCode,parameter)"> 
 			</td>
-			<td class="parametertd">	
-				<input type="checkbox" ng-model="parameter.compulsory">
+			<td class="parametertd" ng-dblclick="editPtParamsCtrl.editNL2(parameter)">
+				<span ng-hide="parameter.editNL2">
+					{{parameter.nameLang(editPtParamsCtrl.lang2key)}}
+				</span>
+				<input 						   
+				type="text"
+				ng-show="parameter.editNL2"
+			    ng-model="parameter.newParameterNameL2" 
+			    ng-keyup="editPtParamsCtrl.keyUpParameter($event.keyCode,parameter)"> 
+			</td>
+			<td class="parametertd" >	
+				<input type="checkbox" ng-model="parameter.compulsory" ng-change="editPtParamsCtrl.setCompulsory(parameter)">
 							</td>
 			<td class="parametertd">		
 	 			{{parameter.formula}}
 			</td>
 			<td class="parametertd">	
-			      <input type="checkbox" ng-model="parameter.hidden">
+			      <input type="checkbox" ng-model="parameter.hidden" ng-change="editPtParamsCtrl.setHidden(parameter)">
 			</td>
 			
 		
@@ -105,25 +126,21 @@
 				    </ul>
 	  			</div>
 			</td>
-		</tr>
-		<tr ng-show="editPtParamsCtrl.editmode">
-			<td></td>
-			<td class="parametertd">
-				<input 						   
-				type="text"
-			    ng-model="editPtParamsCtrl.newGrpNameL1"> 
-			</td>
-			<td class="parametertd">
+			
+				
+			
+			<td class="parametertd" ng-show="editPtParamsCtrl.editmode">
 				<input 						   
 				type="text"
 				ng-keyup="editPtParamsCtrl.keyUpPG($event.keyCode)"
-			    ng-model="editPtParamsCtrl.newGrpNameL2"> 
+			    ng-model="editPtParamsCtrl.newParameterNameL2"> 
 			</td>
 		</tr>
+		
+
 	</tbody>
 </table>
 <br />
-
 
 
 <button type="button" 
@@ -132,6 +149,17 @@
 		ng-click="editPtParamsCtrl.addParameter()" >
 	<b>+</b> {{'Add Parameter'|translate}}
 </button>
+
+
+<button type="button" 
+		ng-show="editPtParamsCtrl.editmode"
+		class="btn btn-default" 
+		ng-click="editPtParamsCtrl.submitParameter()" >
+	{{'Save Parameter'|translate}}
+</button>
+<br/>
+<br/>
+<br/>
 
 
 

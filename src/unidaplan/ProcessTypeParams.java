@@ -60,9 +60,20 @@ public class ProcessTypeParams extends HttpServlet {
  			if (paramGrp.length()>0){
 	           	stringkeys.add(Integer.toString(paramGrp.getInt("name")));           	
 	           	pStmt = dBconn.conn.prepareStatement(
-	     		  	   "SELECT id, compulsory, formula, hidden, pos, definition, stringkeyname as name "
-	     		  	  +"FROM p_parameters "
-	     		  	  +"WHERE parametergroup=? AND NOT definition IN (1,8,10)"); // Prozessstatus ist nicht bearbeitbar
+	     		  	   "SELECT p_parameters.id, compulsory, formula, hidden, pos, definition, stringkeyname as name, (blabla.count) IS NULL as deletable " 
+	     		  	  +"FROM p_parameters " 
+	     		  	  +"LEFT JOIN "
+				  	  +"( "
+					  +"  SELECT count(a.id),p_parameter_id FROM p_integer_data a GROUP BY p_parameter_id "
+					  +"  UNION ALL "
+					  +"  SELECT count(b.id),p_parameter_id FROM p_float_data b GROUP BY p_parameter_id	UNION ALL "
+				      +"  SELECT count(c.id),p_parameter_id FROM p_string_data c GROUP BY p_parameter_id "
+					  +"  UNION ALL "
+				      +"  SELECT count(d.id),p_parameter_id FROM p_measurement_data d GROUP BY p_parameter_id "
+					  +"  UNION ALL "
+					  +"  SELECT count(e.id),p_parameter_id FROM p_timestamp_data e GROUP BY p_parameter_id "
+					  +") AS blabla ON blabla.p_parameter_id=p_parameters.id "
+					  +"WHERE parametergroup=? AND NOT definition IN (1,8,10)"); // status, processnumber and date cannot be edited
 		 		pStmt.setInt(1, paramgroupid);
 				processTypeGrps=dBconn.jsonArrayFromPreparedStmt(pStmt); // get ResultSet from the database using the query
 				if (processTypeGrps.length()>0) {

@@ -94,7 +94,7 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 					}
 				},
 				function(data) {
-					console.log("restfactory.PUT: error: ",[ data,status,headers,config ]);
+					console.log("restfactory.PUT: error: ", data );
 					defer.reject('some http error occured');
 					setFailedState($state.current);
 					if (data.status==401) {

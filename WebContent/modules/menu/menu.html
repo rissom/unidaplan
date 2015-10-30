@@ -48,6 +48,17 @@
 			</li>
 			<li class="dropdown" dropdown="">
 				<a href="#" class="dropdown-toggle" dropdown-toggle="" ng-disabled="disabled">
+					{{'Search'|translate}} 
+				</a>
+				<ul class="dropdown-menu" role="menu">
+					<li><a ui-sref="mySearches"> {{'My Searches'|translate}} </a></li>
+					<li><a ui-sref="publicSearches"> {{'Public Searches'|translate}} </a></li>
+					<li><a ui-sref="newSearch"> {{'New Search'|translate}} </a></li>
+					<li><a ui-sref="editSearches"> {{'Edit Searches'|translate}} </a></li>
+				</ul>
+			</li>
+			<li class="dropdown" dropdown="">
+				<a href="#" class="dropdown-toggle" dropdown-toggle="" ng-disabled="disabled">
 					{{'Administration'|translate}} 
 				</a>
 				<ul class="dropdown-menu" role="menu">
