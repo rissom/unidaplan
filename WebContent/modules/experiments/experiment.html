@@ -6,29 +6,42 @@
 <br />
 <br />
 		<!-- Parameters -->
-		<h4>{{'Parameters'|translate}}</h4>
+		<h4 ng-show="experimentCtrl.experiment.parameters">{{'Parameters'|translate}}</h4>
 		<table class="table">
 			<tr ng-repeat="parameter in experimentCtrl.experiment.parameters 
 						   | orderBy : experimentCtrl.experiment.parameters.pos" 
-			ng-dblclick="parameter.editing=true; newValue=parameter.value">
+			ng-dblclick="parameter.editing=true; parameter.datatype==='date+time' ? parameter.newDate=parameter.date : parameter.newValue=parameter.value">
 				<td>
 					<button type="button" class="btn btn-default btn-xs" 
 						ng-click="experimentCtrl.deleteParameter(parameter)"
-						ng-show="experimentCtrl.editmode"
-						>
+						ng-show="experimentCtrl.editmode">
 						<span class="glyphicon glyphicon-remove"></span>
-								</button>
+					</button>
 				    {{parameter.namef()}} :
 				</td>
 				<td >
 					<span ng-hide="parameter.editing">{{experimentCtrl.showParam(parameter)}}
 					</span>
 					<input 						   
-						ng-keyup="experimentCtrl.keyUp($event.keyCode,newValue,parameter)"
-						ng-show="parameter.editing" type="text"
-					    ng-model="newValue" 
+						ng-keyup="experimentCtrl.keyUp($event.keyCode,parameter.newValue,parameter)"
+						ng-show="parameter.editing && parameter.datatype!='date+time'" 
+						type="text"
+					    ng-model="parameter.newValue"
 					    ng-blur="parameter.editing=false">
-					{{parameter.unit.length>0?parameter.unit:''}}
+					{{parameter.unitf()}}
+					<input 
+						ng-show="parameter.editing && parameter.datatype=='date+time'"
+						type="date" 
+						uib-datepicker-popup 
+						ng-model="parameter.newDate"
+			 			is-open="status.opened"
+			 		 	datepicker-options="dateOptions"
+			 		 	close-text="Close">
+			 		<button ng-show="parameter.editing && parameter.datatype==='date+time'"
+			 				class="btn btn-default"
+			 				ng-click="experimentCtrl.submitParameter(parameter)">
+			 			ok
+			 		</button>
 				</td>
 			</tr>
 			<tr ng-hide="experimentCtrl.editmode">
@@ -37,6 +50,9 @@
 			</tr>
 			<!-- um letzten Strich in Tabelle zu erzeugen -->
 		</table>
+		 
+
+		
   		<button type="button" 
 				class="btn btn-default" 
 				ng-show="experimentCtrl.editmode"

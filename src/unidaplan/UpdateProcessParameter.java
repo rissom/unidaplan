@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -48,24 +49,24 @@ import org.json.JSONObject;
 			response.setStatus(404);
 		}
 
-	 	DBconnection DBconn=new DBconnection();
-	    DBconn.startDB();
+	 	DBconnection dBconn=new DBconnection();
+	    dBconn.startDB();
 	    
 	    // Delete the old parameter.
 	    try{
-		    pStmt= DBconn.conn.prepareStatement( "DELETE FROM p_string_data WHERE ProcessID=? AND P_Parameter_ID=?");
+		    pStmt= dBconn.conn.prepareStatement( "DELETE FROM p_string_data WHERE ProcessID=? AND P_Parameter_ID=?");
 		    pStmt.setInt(1, processID);
 		    pStmt.setInt(2, parameterID);
 		    pStmt.executeUpdate();
-		    pStmt= DBconn.conn.prepareStatement( "DELETE FROM p_float_data WHERE ProcessID=? AND P_Parameter_ID=?");
+		    pStmt= dBconn.conn.prepareStatement( "DELETE FROM p_float_data WHERE ProcessID=? AND P_Parameter_ID=?");
 		    pStmt.setInt(1, processID);
 		    pStmt.setInt(2, parameterID);
 		    pStmt.executeUpdate();
-		    pStmt= DBconn.conn.prepareStatement( "DELETE FROM p_integer_data WHERE ProcessID=? AND P_Parameter_ID=?");
+		    pStmt= dBconn.conn.prepareStatement( "DELETE FROM p_integer_data WHERE ProcessID=? AND P_Parameter_ID=?");
 		    pStmt.setInt(1, processID);
 		    pStmt.setInt(2, parameterID);
 		    pStmt.executeUpdate();
-		    pStmt= DBconn.conn.prepareStatement( "DELETE FROM p_measurement_data WHERE ProcessID=? AND P_Parameter_ID=?");
+		    pStmt= dBconn.conn.prepareStatement( "DELETE FROM p_measurement_data WHERE ProcessID=? AND P_Parameter_ID=?");
 		    pStmt.setInt(1, processID);
 		    pStmt.setInt(2, parameterID);
 		    pStmt.executeUpdate();
@@ -82,12 +83,12 @@ import org.json.JSONObject;
 	    // look up the datatype in Database	    
 	    int type=-1;
 		try {	
-			pStmt= DBconn.conn.prepareStatement( 			
+			pStmt= dBconn.conn.prepareStatement( 			
 					 "SELECT paramdef.datatype FROM p_parameters p "
 					+"JOIN paramdef ON p.definition=paramdef.id "
 					+"WHERE p.id=?");
 		   	pStmt.setInt(1, parameterID);
-		   	JSONObject answer=DBconn.jsonObjectFromPreparedStmt(pStmt);
+		   	JSONObject answer=dBconn.jsonObjectFromPreparedStmt(pStmt);
 			type= answer.getInt("datatype");
 		} catch (SQLException e) {
 			System.err.println("UpdateProcessParameter: Problems with SQL query");
@@ -105,7 +106,7 @@ import org.json.JSONObject;
 		// differentiate according to type
 		try {	
 			switch (type) {
-	        case 1: {   pStmt= DBconn.conn.prepareStatement( 			// Integer values
+	        case 1: {   pStmt= dBconn.conn.prepareStatement( 			// Integer values
 				         "INSERT INTO p_integer_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
 			   			pStmt.setInt(1, processID);
 				        pStmt.setInt(2, parameterID);
@@ -113,7 +114,7 @@ import org.json.JSONObject;
 			   			pStmt.setInt(4, userID);
 			   			break;
 			        }
-	        case 2: {   pStmt= DBconn.conn.prepareStatement( 			// Double values
+	        case 2: {   pStmt= dBconn.conn.prepareStatement( 			// Double values
 				         "INSERT INTO p_float_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
 				        pStmt.setInt(1, processID);
 			   			pStmt.setInt(2, parameterID);				        
@@ -121,7 +122,7 @@ import org.json.JSONObject;
 				        pStmt.setInt(4, userID);
 	   					break;
         			}
-	        case 3: {   pStmt= DBconn.conn.prepareStatement( 			// Measurement data
+	        case 3: {   pStmt= dBconn.conn.prepareStatement( 			// Measurement data
 				         "INSERT INTO p_measurement_data VALUES(DEFAULT,?,?,?,?,NOW(),?) RETURNING ID");
 						pStmt.setInt(1, processID);
 						pStmt.setInt(2, parameterID);
@@ -130,7 +131,7 @@ import org.json.JSONObject;
 						pStmt.setInt(5, userID);
 						break;
 			        }
-	        case 4:  { pStmt= DBconn.conn.prepareStatement( 			// String data	
+	        case 4:  { pStmt= dBconn.conn.prepareStatement( 			// String data	
 			        	"INSERT INTO p_string_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
 				       pStmt.setInt(1, processID);
 				       pStmt.setInt(2, parameterID);
@@ -138,26 +139,30 @@ import org.json.JSONObject;
 				       pStmt.setInt(4, userID);
 					   break;
 			        }
-	        case 5: {  pStmt= DBconn.conn.prepareStatement(
+	        case 5: {  pStmt= dBconn.conn.prepareStatement(
         		 		"INSERT INTO p_string_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
 				       pStmt.setInt(1, processID);
 				       pStmt.setInt(2, parameterID);
 				       pStmt.setString(3, jsonIn.getString("value"));
 				       pStmt.setInt(4, userID);
 				   }
-	        case 7: {  pStmt= DBconn.conn.prepareStatement(
-    		 		"INSERT INTO p_string_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
+	        case 7: {  pStmt= dBconn.conn.prepareStatement( 			// Timestamp data	
+		 			"INSERT INTO p_timestamp_data VALUES (default,?,?,?,?,NOW(),?)");
 			       pStmt.setInt(1, processID);
 			       pStmt.setInt(2, parameterID);
-			       java.sql.Timestamp ts= Timestamp.valueOf(jsonIn.getString("value"));
-				   pStmt.setTimestamp(3, ts);
-				   pStmt.setInt(4, userID);
+				   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+				   SimpleDateFormat sqldf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+				   java.sql.Timestamp ts = java.sql.Timestamp.valueOf(sqldf.format(sdf.parse(jsonIn.getString("value"))));		   
+				   pStmt.setTimestamp(3, (Timestamp) ts);
+				   pStmt.setInt(4, jsonIn.getInt("tz")); //Timezone in Minutes
+				   pStmt.setInt(5, userID);
+				   break;
 			   }
 			}
 		
-	    int id=DBconn.getSingleIntValue(pStmt);
+	    int id=dBconn.getSingleIntValue(pStmt);
    		pStmt.close();
-		DBconn.closeDB();
+		dBconn.closeDB();
 	    // tell client that everything is fine
 	    PrintWriter out = response.getWriter();
 	    JSONObject myResponse= new JSONObject();

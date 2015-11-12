@@ -1,0 +1,181 @@
+<button type="button" 
+		ng-hide="editSTParamsCtrl.editmode"
+		class="btn btn-default" 
+		ui-sref="adminSamples" >
+	<b>&larr;</b><b>&larr;</b> {{'all sampletypes'|translate}}
+</button>
+
+<button type="button" 
+		ng-hide="editSTParamsCtrl.editmode"
+		class="btn btn-default" 
+		ui-sref="editSTParamGrps({sampleTypeID:editSTParamsCtrl.sampletype})" >
+	<b>&larr;</b> {{'sampletype'|translate}}
+</button>
+
+<h3>
+	{{'Edit Parametergroup'|translate}}
+</h3>
+
+<br/>
+<h4>{{'General information'|translate}}</h4>
+
+<table class="table">
+<tr ng-dblclick="editSTParamsCtrl.edit('NL1')">
+	<td>Name ({{editSTParamsCtrl.lang1}}):</td>
+	<td>
+		<span ng-hide="editSTParamsCtrl.editFieldNL1">{{editSTParamsCtrl.nameL1}}</span>
+		<input ng-show="editSTParamsCtrl.editFieldNL1" 
+			   ng-keyup="editSTParamsCtrl.keyUp($event.keyCode,editSTParamsCtrl.newNameL1,editSTParamsCtrl.lang1key)"
+			   ng-blur="editSTParamsCtrl.editNL1=false"
+			   type="text"
+			   ng-model="editSTParamsCtrl.newNameL1">
+	</td>
+</tr>
+<tr ng-dblclick="editSTParamsCtrl.edit('NL2')">
+	<td>Name ({{editSTParamsCtrl.lang2}}):</td>
+	<td>
+		<span ng-hide="editSTParamsCtrl.editFieldNL2">{{editSTParamsCtrl.nameL2}}</span>
+		<input ng-show="editSTParamsCtrl.editFieldNL2" 
+			   ng-keyup="editSTParamsCtrl.keyUp($event.keyCode,editSTParamsCtrl.newNameL2,editSTParamsCtrl.lang2key)"
+			   ng-blur="editSTParamsCtrl.editNL2=false"		
+			   type="text"
+			   ng-model="editSTParamsCtrl.newNameL2">
+	</td>
+</tr>
+</table>
+<br/>
+<h4>{{'Parameters'|translate}}</h4>
+
+
+<table class="table">
+	<thead class=parametertablehead>
+		<tr>
+			<td></td>
+			<td class="parametertd">
+	 			{{'Name'|translate}} ({{editSTParamsCtrl.lang1}})
+			</td>
+			<td class="parametertd">
+	 			{{'Name'|translate}} ({{editSTParamsCtrl.lang2}})
+			</td>
+						<td class="parametertd">
+	 			{{'Unit'|translate}} ({{editSTParamsCtrl.lang1}})
+			</td>
+			<td class="parametertd">
+	 			{{'Unit'|translate}} ({{editSTParamsCtrl.lang2}})
+			</td>
+			<td class="parametertd">
+	 			{{'Compulsory'|translate}}
+			</td>
+			<td class="parametertd">
+	 			{{'Formula'|translate}}
+			</td>
+			<td class="parametertd">
+	 			{{'Hidden'|translate}}
+			</td>
+			<td class="parametertd" ng-hide="editSTParamsCtrl.editmode">
+				{{'action'|translate}}
+			</td>
+		</tr>
+	</thead>
+	
+	
+	<tbody>
+		<tr ng-repeat="parameter in editSTParamsCtrl.parameters | orderBy : 'pos'">
+			<td class="parametertd">
+				<button type="button" class="btn btn-default btn-xs" 
+					ng-click="editSTParamsCtrl.up($index)"   ng-hide="$first">&#9650;
+				</button>
+				<button type="button" class="btn btn-default btn-xs" 
+					ng-click="editSTParamsCtrl.down($index)" ng-hide="$last" >&#9660;
+				</button>
+			</td> 
+			<td class="parametertd" ng-dblclick="editSTParamsCtrl.editNL1(parameter)">
+				<span ng-hide="parameter.editNL1">
+					{{parameter.nameLang(editSTParamsCtrl.lang1key)}}
+				</span>
+				<input 						   
+				type="text"
+				ng-show="parameter.editNL1"
+			    ng-model="parameter.newParameterNameL1"
+			    ng-keyup="editSTParamsCtrl.keyUpParameter($event.keyCode,parameter)"> 
+			</td>
+			<td class="parametertd" ng-dblclick="editSTParamsCtrl.editNL2(parameter)">
+				<span ng-hide="parameter.editNL2">
+					{{parameter.nameLang(editSTParamsCtrl.lang2key)}}
+				</span>
+				<input 						   
+				type="text"
+				ng-show="parameter.editNL2"
+			    ng-model="parameter.newParameterNameL2" 
+			    ng-keyup="editSTParamsCtrl.keyUpParameter($event.keyCode,parameter)"> 
+			</td>
+			<td class="parametertd" ng-dblclick="editSTParamsCtrl.editNL1(parameter)">
+					{{parameter.unitLang(editSTParamsCtrl.lang1key)}}
+			</td>
+			<td class="parametertd" ng-dblclick="editSTParamsCtrl.editNL2(parameter)">
+					{{parameter.unitLang(editSTParamsCtrl.lang2key)}}
+			</td>
+			<td class="parametertd" >	
+				<input type="checkbox" ng-model="parameter.compulsory" ng-change="editSTParamsCtrl.setCompulsory(parameter)">
+							</td>
+			<td class="parametertd">		
+	 			{{parameter.formula}}
+			</td>
+			<td class="parametertd">	
+			      <input type="checkbox" ng-model="parameter.hidden" ng-change="editSTParamsCtrl.setHidden(parameter)">
+			</td>
+			
+		
+			<td class="parametertd" ng-hide=editSTParamsCtrl.editmode>			
+				<div class="dropdown" dropdown on-toggle="toggled(open)">
+					<a class="dropdown-toggle" dropdown-toggle>
+			  			{{'action'|translate}} &#x25BC;
+				    </a>
+				    <ul class="dropdown-menu">
+				    	<li ng-repeat="action in editSTParamsCtrl.getActions(parameter)">
+				        	<a ng-click="editSTParamsCtrl.performAction($index,parameter)">{{action}}</a>
+				        </li>
+				    </ul>
+	  			</div>
+			</td>
+			
+				
+			
+			<td class="parametertd" ng-show="editSTParamsCtrl.editmode">
+				<input 						   
+				type="text"
+				ng-keyup="editSTParamsCtrl.keyUpPG($event.keyCode)"
+			    ng-model="editSTParamsCtrl.newParameterNameL2"> 
+			</td>
+		</tr>
+		
+
+	</tbody>
+</table>
+<br />
+
+
+<button type="button" 
+		ng-hide="editSTParamsCtrl.editmode"
+		class="btn btn-default" 
+		ng-click="editSTParamsCtrl.addParameter()" >
+	<b>+</b> {{'Add Parameter'|translate}}
+</button>
+
+
+<button type="button" 
+		ng-show="editSTParamsCtrl.editmode"
+		class="btn btn-default" 
+		ng-click="editSTParamsCtrl.submitParameter()" >
+	{{'Save Parameter'|translate}}
+</button>
+<br/>
+<br/>
+<br/>
+
+
+
+
+
+
+

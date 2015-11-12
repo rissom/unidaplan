@@ -644,4 +644,116 @@
     <servlet-name>UpdatePTParameter</servlet-name>
     <url-pattern>/update-pt-parameter</url-pattern>
   </servlet-mapping>
+
+   <servlet>
+    <description>AddExperimentParameter</description>
+    <display-name>AddExperimentParameter</display-name>
+    <servlet-name>AddExperimentParameter</servlet-name>
+    <servlet-class>unidaplan.AddExperimentParameter</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddExperimentParameter</servlet-name>
+    <url-pattern>/add-experiment-parameter</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>SampleTypeParamGrps</description>
+    <display-name>SampleTypeParamGrps</display-name>
+    <servlet-name>SampleTypeParamGrps</servlet-name>
+    <servlet-class>unidaplan.SampleTypeParamGrps</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SampleTypeParamGrps</servlet-name>
+    <url-pattern>/sample-type-param-grps</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>UpdateSampleTypeData</description>
+    <display-name>UpdateSampleTypeData</display-name>
+    <servlet-name>UpdateSampleTypeData</servlet-name>
+    <servlet-class>unidaplan.UpdateSampleTypeData</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateSampleTypeData</servlet-name>
+    <url-pattern>/update-sample-type-data</url-pattern>
+  </servlet-mapping>
+  
+    <servlet>
+    <description>AddSTParameterGrp</description>
+    <display-name>AddSTParameterGrp</display-name>
+    <servlet-name>AddSTParameterGrp</servlet-name>
+    <servlet-class>unidaplan.AddSTParameterGrp</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddSTParameterGrp</servlet-name>
+    <url-pattern>/add-st-parameter-grp</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>ExchangePosSTParameterGrp</description>
+    <display-name>ExchangePosSTParameterGrp</display-name>
+    <servlet-name>ExchangePosSTParameterGrp</servlet-name>
+    <servlet-class>unidaplan.ExchangePosSTParameterGrp</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ExchangePosSTParameterGrp</servlet-name>
+    <url-pattern>/exchange-pos-st-parameter-grp</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>SampleTypeParams</description>
+    <display-name>SampleTypeParams</display-name>
+    <servlet-name>SampleTypeParams</servlet-name>
+    <servlet-class>unidaplan.SampleTypeParams</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SampleTypeParams</servlet-name>
+    <url-pattern>/sample-type-params</url-pattern>
+  </servlet-mapping>
+  
+    <servlet>
+    <description>AddSampletypePGParameters</description>
+    <display-name>AddSampletypePGParameters</display-name>
+    <servlet-name>AddSampletypePGParameters</servlet-name>
+    <servlet-class>unidaplan.AddSampletypePGParameters</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddSampletypePGParameters</servlet-name>
+    <url-pattern>/add-st-pg-parameters</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>DeleteSTParameter</description>
+    <display-name>DeleteSTParameter</display-name>
+    <servlet-name>DeleteSTParameter</servlet-name>
+    <servlet-class>unidaplan.DeleteSTParameter</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeleteSTParameter</servlet-name>
+    <url-pattern>/delete-st-parameter</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>ChangeOrderSTParameters</description>
+    <display-name>ChangeOrderSTParameters</display-name>
+    <servlet-name>ChangeOrderSTParameters</servlet-name>
+    <servlet-class>unidaplan.ChangeOrderSTParameters</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ChangeOrderSTParameters</servlet-name>
+    <url-pattern>/change-order-st-parameters</url-pattern>
+  </servlet-mapping>
+  
+  
+    <servlet>
+    <description>UpdateSTParamGrp</description>
+    <display-name>UpdateSTParamGrp</display-name>
+    <servlet-name>UpdateSTParamGrp</servlet-name>
+    <servlet-class>unidaplan.UpdateSTParamGrp</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateSTParamGrp</servlet-name>
+    <url-pattern>/update-st-paramgrp</url-pattern>
+  </servlet-mapping>
+  
 </web-app>

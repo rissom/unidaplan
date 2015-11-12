@@ -25,6 +25,9 @@ function aSamplesController($state,$stateParams,$translate,restfactory,sampleSer
 	
   
   this.performAction = function(index,sampleType){
+	  	if (index==0){
+			$state.go("editSTParamGrps",{sampleTypeID:sampleType.id});
+	  	}
 	  	if (index==1){
 	  		var promise=sampleService.deleteSampleType(sampleType.id);
 	  		promise.then(function(){reload();},function(){console.log("error");})

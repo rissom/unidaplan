@@ -7,6 +7,16 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
     var thisController=this;
 
 	
+    
+	this.AddProcesstypePGParameters=function(processtype,paramgrp,parameters){
+		var tempObj={
+			processtypeid 	 : processtype,
+			parametergroupid : paramgrp,
+			parameterids     : parameters,
+		};
+		return restfactory.POST('add-pt-pg-parameters',tempObj);
+	}
+	
 	
 	
 	this.getProcessType = function(process,pTypes) {
@@ -63,15 +73,9 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 	}
 	
 	
+	
 	this.changeOrderPTParameters=function(newPositions){
 		return restfactory.PUT("change-order-pt-parameters",newPositions)
-	}
-	
-	
-	this.updateProcessTypeData=function(processtypeID,field,value,lang){
-		var tempObj={"processtypeid":processtypeID,"field":field,"newvalue":value,"lang":lang};
-		console.log ("tempObj",tempObj);
-		return restfactory.POST('update-process-type-data',tempObj);
 	}
 	
 	
@@ -88,9 +92,8 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 	
 	
 	
-	this.addPTParameterGrp=function(processTypeid,position,name){
-		var temp={"processtypeid":processTypeid,"position":position,"name":name};
-		console.log(temp);
+	this.addPTParameterGrp = function(processTypeID,position,name){
+		var temp={"processtypeid":processTypeID,"position":position,"name":name};
 		return restfactory.POST("add-pt-parameter-grp",temp);
 	}
 	
@@ -104,7 +107,6 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 	
 	this.exPosPTParamGrp=function(id1,pos1,id2,pos2){
 		var jsonObj={"id1":id1, "id2":id2, "pos1":pos1, "pos2":pos2};
-		console.log("Jsonobj: ",jsonObj)
 		return restfactory.POST ("exchange-pos-pt-parameter-grp",jsonObj);
 	};
 
@@ -179,19 +181,16 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 
 	
 	
-	this.AddProcesstypePGParameters=function(processtype,paramgrp,parameters){
-		var tempObj={
-			processtypeid 	 : processtype,
-			parametergroupid : paramgrp,
-			parameterids     : parameters,
-		};
-		return restfactory.POST('add-pt-pg-parameters',tempObj);
+	this.deletePTParameter=function(id){
+		return restfactory.DELETE("delete-PT-Parameter?id="+id);
 	}
 	
 	
 	
-	this.deletePTParameter=function(id){
-		return restfactory.DELETE("delete-PT-Parameter?id="+id);
+	this.updateProcessTypeData=function(processtypeID,field,value,lang){
+		var tempObj={"processtypeid":processtypeID,"field":field,"newvalue":value,"lang":lang};
+		console.log ("tempObj",tempObj);
+		return restfactory.POST('update-process-type-data',tempObj);
 	}
 }
 

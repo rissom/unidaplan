@@ -178,6 +178,36 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 				}
         })
         
+        
+        .state('editSTParamGrps', {
+        	url: '/editsampletype/{sampleTypeID:int}',
+	        templateUrl: 'modules/admin-samples/edit-sample-param-grps.html',
+	        controller:"editSampleParamGrpsController as editSampleParamGrpsCtrl",
+	        resolve:{
+	        	sampleType: function(avSampleTypeService,$stateParams){
+        	   	    	return avSampleTypeService.getSampleTypeParamGrps($stateParams.sampleTypeID);
+        	   	    }
+			}
+        })
+        
+        
+        .state('editSTParams', {
+        	url: '/editsampletypeparams/{paramGrpID:int}',
+	        templateUrl: 'modules/admin-samples/edit-st-params.html',
+	        controller:"editSTParamsController as editSTParamsCtrl",
+	        resolve:{
+	        	parameterGrp: function(avSampleTypeService,$stateParams){
+        	   	    	return avSampleTypeService.getSTypeParams($stateParams.paramGrpID);
+        	   	    },
+		        avParameters: 
+		        	function(parameterService){
+			   	    	return parameterService.getParameters()
+			   	    }
+				}
+        })
+        
+        
+        
         .state('parameter', {
 	        url: '/parameter',
 	        templateUrl: 'modules/parameters/parameters.html',
@@ -230,8 +260,11 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	            experimentData: 
 	            	function(experimentService,$stateParams){
 	        			return experimentService.getExperiment($stateParams.experimentID)
-	        	    }
-	        	
+	        	    },
+		        avParameters: 
+		        	function(parameterService){
+			   	    	return parameterService.getParameters()
+			   	    }
 	        }
         })
         

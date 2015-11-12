@@ -171,6 +171,20 @@ public class Process extends HttpServlet {
 		      		if (tempObj.has("unit")){
 			      		stringkeys.add(Integer.toString(tempObj.getInt("unit")));
 		      		}
+		      		String datatype="undefined";
+		      		switch (tempObj.getInt("datatype")) {
+			      		case 1: datatype="integer"; break;
+			      		case 2: datatype="float";  break;
+			      		case 3: datatype="measurement";  break;
+			      		case 4: datatype="string"; break;
+			      		case 5: datatype="long string";  break;
+			      		case 6: datatype="chooser"; break;
+			      		case 7: datatype="date+time";  break;
+			      		case 8: datatype="checkbox"; break;
+			      		default: datatype="undefined"; break;		    
+		      		}
+		      		parameters.getJSONObject(i).remove("datatype");
+		      		parameters.getJSONObject(i).put("datatype",datatype);
 		      	}
 			}	
 		} catch (SQLException e) {

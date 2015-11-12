@@ -7,9 +7,7 @@ function modalParameterChoser($translate,$modalInstance,languages,restfactory,av
 	
 	this.avParameters=avParameters;
 
-	var thisController=this;
-	console.log("av Parameters:",avParameters)	
-	
+	var thisController=this;	
 	
 	this.cancel=function(){ // Parameters where not changed
 	    $modalInstance.close({chosen:[]});

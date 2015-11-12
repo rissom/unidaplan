@@ -31,13 +31,13 @@ import org.json.JSONObject;
 	    request.setCharacterEncoding("utf-8");
 	    response.setCharacterEncoding("utf-8");
 	    PrintWriter out = response.getWriter();
-	 	DBconnection DBconn=new DBconnection();
-	    DBconn.startDB();
+	 	DBconnection dBconn=new DBconnection();
+	    dBconn.startDB();
 	    JSONObject result = new JSONObject();
 	    try {  
-			pstmt= DBconn.conn.prepareStatement( 	
+			pstmt= dBconn.conn.prepareStatement( 	
 			"SELECT * FROM paramdef WHERE id>2");
-			parameters=DBconn.jsonArrayFromPreparedStmt(pstmt);
+			parameters=dBconn.jsonArrayFromPreparedStmt(pstmt);
 			pstmt.close();
 			  for (int i=0; i<parameters.length();i++) {
 	      		  JSONObject tempObj=parameters.getJSONObject(i);
@@ -59,24 +59,10 @@ import org.json.JSONObject;
 			System.err.println("Parameters: Strange Problem while getting Stringkeys");
     	} try {
 			  
-			// get the strings
-	        String query="SELECT id,string_key,language,value FROM Stringtable WHERE string_key=ANY('{";
-	      	
-	        StringBuilder buff = new StringBuilder(); // join numbers with commas
-	        String sep = "";
-	        for (String str : stringkeys) {
-         	    buff.append(sep);
-         	    buff.append(str);
-         	    sep = ",";
-	        }
-	        query+= buff.toString() + "}'::int[])";
-	        JSONArray theStrings=DBconn.jsonfromquery(query);
+	        result.put("strings", dBconn.getStrings(stringkeys));
 	        result.put("parameters", parameters);
-	        result.put("strings", theStrings);
 			out.println(result.toString());
-			DBconn.closeDB();
-    	} catch (SQLException e) {
-    		System.err.println("Parameters: Problems with SQL query for Stringkeys");
+			dBconn.closeDB();
     	} catch (JSONException e) {
 			System.err.println("Parameters: JSON Problem ");
     	} catch (Exception e2) {

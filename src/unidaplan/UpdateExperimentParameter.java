@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -106,12 +107,11 @@ import org.json.JSONObject;
 			status = "JSON Error";
 		} catch (Exception e) {
 			System.err.println("UpdateExperimentParameter: Strange Problems");
-			status = "Misc Error (line70)";
+			status = "Misc Error";
 		}
 		
 		// differentiate according to type, insert new value in a table
 		try {	
-
 			switch (dataType) {
 	        case 1: {   pStmt= dBconn.conn.prepareStatement( 			// Integer values
 			   					 "INSERT INTO expp_integer_data VALUES (default,?,?,?,NOW(),?)");
@@ -138,7 +138,7 @@ import org.json.JSONObject;
 	   					pStmt.setInt(5, userID);
 						break;
 			        }
-	        case 4:  { pStmt= dBconn.conn.prepareStatement( 			// String data	
+	        case 4: { pStmt= dBconn.conn.prepareStatement( 			// String data	
 				 		"INSERT INTO expp_string_data VALUES (default,?,?,?,NOW(),?)");
 					   pStmt.setInt(1, expID); //experiment ID
 				       pStmt.setInt(2, expParamID); // Parameter ID
@@ -153,14 +153,17 @@ import org.json.JSONObject;
 					   pStmt.setString(3, jsonIn.getString("value"));
 					   pStmt.setInt(4, userID);
 					   break;
-				   }
-	        case 7: {  pStmt= dBconn.conn.prepareStatement( 			// String data	
-			 			"INSERT INTO expp_timestamp_data VALUES (default,?,?,?,NOW(),?)");
+				    }
+	        case 7: {  pStmt= dBconn.conn.prepareStatement( 			// Timestamp data	
+			 			"INSERT INTO expp_timestamp_data VALUES (default,?,?,?,?,NOW(),?)");
 					   pStmt.setInt(1, expID); //experiment ID
 				       pStmt.setInt(2, expParamID); // Parameter ID
-				       java.sql.Timestamp ts= Timestamp.valueOf(jsonIn.getString("value"));
-					   pStmt.setTimestamp(3, ts);
-					   pStmt.setInt(4, userID);
+					   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+					   SimpleDateFormat sqldf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+					   java.sql.Timestamp ts = java.sql.Timestamp.valueOf(sqldf.format(sdf.parse(jsonIn.getString("date"))));		   
+					   pStmt.setTimestamp(3, (Timestamp) ts);
+					   pStmt.setInt(4, jsonIn.getInt("tz")); //Timezone in Minutes
+					   pStmt.setInt(5, userID);
 					   break;
 				   }
 			}
@@ -176,6 +179,7 @@ import org.json.JSONObject;
 		status = "JSON Error";
 	} catch (Exception e) {
 		System.err.println("UpdateExperimentParameter: More Strange Problems");
+		e.printStackTrace();
 		status = "Misc. Error";
 	}
 		

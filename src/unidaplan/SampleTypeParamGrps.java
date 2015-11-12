@@ -13,11 +13,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class ProcessTypeParamGrps extends HttpServlet {
+public class SampleTypeParamGrps extends HttpServlet {
 	private static final long serialVersionUID = 1L;
    
 	
-    public ProcessTypeParamGrps() {
+    public SampleTypeParamGrps() {
         super();
     }
 
@@ -29,52 +29,55 @@ public class ProcessTypeParamGrps extends HttpServlet {
 		int userID=authentificator.GetUserID(request,response);
 		userID=userID+1;
 		userID=userID-1;
-		int processTypeID=0;
+		int sampleTypeID=0;
 		request.setCharacterEncoding("utf-8");
 	    response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
 	    PrintWriter out = response.getWriter(); 
 	  	  	try  {
-	  	  		processTypeID=Integer.parseInt(request.getParameter("processtypeid")); 
+	  	  		sampleTypeID=Integer.parseInt(request.getParameter("sampletypeid")); 
 	  	  	}
 	  	  	catch (Exception e1) {
-	  	  		System.err.print("ProcessTypeParameters: no processTypeID given!");
+	  	  		System.err.print("SampleTypeParameters: no sampleTypeID given!");
 	  	  		e1.printStackTrace();
 	  	  	}
 		PreparedStatement pStmt = null; 	// Declare variables
-	    JSONObject processType= null;
+	    JSONObject sampleType= null;
 	    JSONArray parameterGrps= null;		
-	    JSONArray processTypeGrps= null;
+	    JSONArray sampleTypeGrps= null;
 	 	DBconnection dBconn=new DBconnection(); // New connection to the database
 	 	dBconn.startDB();
 	 	ArrayList<String> stringkeys = new ArrayList<String>(); 
 		 	
 	    try{
  			pStmt = dBconn.conn.prepareStatement(	
-			   "SELECT processtypes.id, processtypes.position, ptgroup, processtypes.name, "
- 			  +"description, processtypes.lastuser "
-			  +"FROM processtypes "
-			  +"WHERE processtypes.id=?");
-	 		pStmt.setInt(1, processTypeID);
- 			processType=dBconn.jsonObjectFromPreparedStmt(pStmt); // get ResultSet from the database using the query
+			   "SELECT objecttypes.id, objecttypes.position, otgrp, objecttypes.string_key, "
+ 			  +"description, objecttypes.lastuser "
+			  +"FROM objecttypes "
+			  +"WHERE objecttypes.id=?");
+	 		pStmt.setInt(1, sampleTypeID);
+ 			sampleType=dBconn.jsonObjectFromPreparedStmt(pStmt); 
+ 			// get ResultSet from the database using the query
  			pStmt.close();
-           	stringkeys.add(Integer.toString(processType.getInt("name")));
-           	stringkeys.add(Integer.toString(processType.getInt("description")));
+           	stringkeys.add(Integer.toString(sampleType.getInt("string_key")));
+           	stringkeys.add(Integer.toString(sampleType.getInt("description")));
            	
            	pStmt = dBconn.conn.prepareStatement(
-     		  	   "SELECT id, position, name FROM processtypegroups");
-			processTypeGrps=dBconn.jsonArrayFromPreparedStmt(pStmt); // get ResultSet from the database using the query
-			if (processTypeGrps.length()>0) {
-           		for (int j=0; j<processTypeGrps.length();j++) {
-           			stringkeys.add(Integer.toString(processTypeGrps.getJSONObject(j).getInt("name")));
+     		  	   "SELECT id, position, name FROM objecttypesgrp");
+			sampleTypeGrps=dBconn.jsonArrayFromPreparedStmt(pStmt); 
+			// get ResultSet from the database using the query
+			if (sampleTypeGrps.length()>0) {
+           		for (int j=0; j<sampleTypeGrps.length();j++) {
+           			stringkeys.add(Integer.toString(sampleTypeGrps.getJSONObject(j).getInt("name")));
            		}
            	}		
            	
    			pStmt = dBconn.conn.prepareStatement(
-		  	   "SELECT id,pos,stringkey FROM p_parametergrps "
-			  +"WHERE (p_parametergrps.processtype=?) ");
-   			pStmt.setInt(1, processTypeID);
-   			parameterGrps=dBconn.jsonArrayFromPreparedStmt(pStmt); // get ResultSet from the database using the query
+		  	   "SELECT id,pos,stringkey FROM ot_parametergrps "
+			  +"WHERE (ot_parametergrps.ot_id=?) ");
+   			pStmt.setInt(1, sampleTypeID);
+   			parameterGrps=dBconn.jsonArrayFromPreparedStmt(pStmt); 
+   			// get ResultSet from the database using the query
 
            	if (parameterGrps.length()>0) {
            		for (int j=0; j<parameterGrps.length();j++) {
@@ -83,16 +86,16 @@ public class ProcessTypeParamGrps extends HttpServlet {
            	}
      
 	        JSONObject answer=new JSONObject();
-	        answer=processType;
-	        answer.put("processtypegrps", processTypeGrps);
+	        answer=sampleType;
+	        answer.put("sampletypegrps", sampleTypeGrps);
 	        answer.put("parametergrps",parameterGrps);
 	        answer.put("strings", dBconn.getStrings(stringkeys));
 	        out.println(answer.toString());
 	    } catch (SQLException eS) {
-			System.err.println("ProcessTypeParameters: SQL Error");
+			System.err.println("SampleTypeParameters: SQL Error");
 			eS.printStackTrace();
 		} catch (Exception e) {
-			System.err.println("ProcessTypeParameters: Some Error, probably JSON");
+			System.err.println("SampleTypeParameters: Some Error, probably JSON");
 			e.printStackTrace();
 		} finally {
 		try{
@@ -100,14 +103,14 @@ public class ProcessTypeParamGrps extends HttpServlet {
 				try {
 	        	  	pStmt.close();
 	        	} catch (SQLException e) {
-					System.err.println("ProcessTypeParameters: SQL Error ");
+					System.err.println("SampleTypeParameters: SQL Error ");
 	        	} 
 			}
 	    	if (dBconn.conn != null) { 
 	    		dBconn.closeDB();  // close the database 
 	    	}
 	        } catch (Exception e) {
-				System.err.println("ProcessTypeParameters: Some Error closing the database");
+				System.err.println("SampleTypeParameters: Some Error closing the database");
 				e.printStackTrace();
 		   	}
         }       

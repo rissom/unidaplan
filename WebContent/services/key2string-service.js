@@ -24,7 +24,26 @@ var key2stringService = function($translate){
 		return returnString;
 	};
 	
-
+	
+	
+	this.unitf = function(stringkey,strings) {
+		var returnString="";
+		if (stringkey){
+			var keyfound=false;
+			var lang=$translate.use();
+			angular.forEach(strings, function(translation) {
+				if (!keyfound && stringkey==translation.string_key) {
+					returnString = translation.value;
+					if (translation.language==lang) {
+						keyfound=true;
+					}
+				}
+			})
+		}
+		return returnString;
+	};
+	
+	
 	
 	this.key2stringWithLangStrict = function(stringkey,strings,lang) {
 		var keyfound=false;

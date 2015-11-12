@@ -31,17 +31,17 @@ import org.json.JSONObject;
 	    request.setCharacterEncoding("utf-8");
 	    response.setCharacterEncoding("utf-8");
 	    PrintWriter out = response.getWriter();
-	 	DBconnection DBconn=new DBconnection();
-	    DBconn.startDB();
+	 	DBconnection dBconn=new DBconnection();
+	    dBconn.startDB();
 	    JSONObject expPlans = new JSONObject();
 	    try {  
-			pstmt= DBconn.conn.prepareStatement( 	
+			pstmt= dBconn.conn.prepareStatement( 	
 			"SELECT exp_plan.ID AS ID, intd.value AS number, users.fullname as creator, exp_plan.name ,status " 
 			+"FROM exp_plan " 
 			+"JOIN users ON (users.id=exp_plan.Creator) " 
 			+"JOIN expp_integer_data intd ON (intd.expp_id=exp_plan.ID) "
 			+"JOIN expp_param ON (intd.expp_param_id=expp_param.id AND expp_param.definition=2)");
-			experiments=DBconn.jsonArrayFromPreparedStmt(pstmt);
+			experiments=dBconn.jsonArrayFromPreparedStmt(pstmt);
 			pstmt.close();
 			  for (int i=0; i<experiments.length();i++) {
 	      		  JSONObject tempObj=(JSONObject) experiments.get(i);
@@ -55,24 +55,10 @@ import org.json.JSONObject;
 			System.err.println("Experiments: Strange Problem while getting Stringkeys");
     	} try {
 			  
-			// get the strings
-	        String query="SELECT id,string_key,language,value FROM Stringtable WHERE string_key=ANY('{";
-	      	
-	        StringBuilder buff = new StringBuilder(); // join numbers with commas
-	        String sep = "";
-	        for (String str : stringkeys) {
-         	    buff.append(sep);
-         	    buff.append(str);
-         	    sep = ",";
-	        }
-	        query+= buff.toString() + "}'::int[])";
-	        JSONArray theStrings=DBconn.jsonfromquery(query);
+	        expPlans.put("strings", dBconn.getStrings(stringkeys));
 	        expPlans.put("experiments", experiments);
-	        expPlans.put("strings", theStrings);
 			out.println(expPlans.toString());
-			DBconn.closeDB();
-    	} catch (SQLException e) {
-    		System.err.println("Experiments: Problems with SQL query for Stringkeys");
+			dBconn.closeDB();
     	} catch (JSONException e) {
 			System.err.println("Experiments: JSON Problem while getting Stringkeys");
     	} catch (Exception e2) {

@@ -2,7 +2,7 @@
 'use strict';
 
 function experimentController($modal,$scope,$stateParams,experimentService,restfactory,$translate,$state,key2string,
-							  avSampleTypeService,avProcessTypeService,experimentData,ptypes,stypes) {
+							  avSampleTypeService,avProcessTypeService,experimentData,ptypes,stypes,avParameters) {
 	
 	this.experiment = experimentData;
 	
@@ -17,12 +17,32 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 	this.avProcesses = ptypes
 	
 	
+
+	  
+	this.addParameter = function () {
+		  var modalInstance = $modal.open({
+		    animation: false,
+		    templateUrl: 'modules/modal-parameter-choser/modal-parameter-choser.html',
+		    controller: 'modalParameterChoser as mParameterChoserCtrl',
+		    resolve: {
+		    	mode		  	 : function(){return 'immediate'; },
+		    	avParameters     : function(){return avParameters; },
+			}
+		  });
+		  
+		  modalInstance.result.then(function (result) {  // get the new Parameterlist + Info if it has changed from Modal.  
+	    	  if (result.chosen.length>0){
+//	    		  console.log("experiment ID: ",thisController.experiment.id);
+//	    		  console.log("parameter IDs: ",result.chosen);
+	    		  var promise=experimentService.addParameters(thisController.experiment.id,result.chosen);
+	    		  promise.then(function(){reload();});		    	  
+	    	  }
+		    }, function () {
+		      console.log('Strange Error: Modal dismissed at: ' + new Date());
+		    });
+	  };
 	
-	this.addParameter = function(){
-		console.log("add-a-parameter");
-	}
-	
-	
+	  
 
 	this.deleteParameter = function(parameter){
 		var promise = experimentService.deleteParameter(parameter.id);
@@ -58,7 +78,8 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 		    		    if (thisController.experiment.samples==undefined) {
 		    		    	thisController.experiment.samples=[];
 		    		    }
-		    			var promise=experimentService.addSampleToExperiment(thisController.experiment.id,result.chosen[0].sampleid,thisController.experiment.samples.length+1);
+		    			var promise=experimentService.addSampleToExperiment(thisController.experiment.id,
+		    				 result.chosen[0].sampleid,thisController.experiment.samples.length+1);
 		    			promise.then(function(){reload();});		    	  }
 		      }
 		    }, function () {
@@ -69,10 +90,9 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 	  
 	  
     this.showParam=function(parameter){
-	  	if (parameter.datatype===7){
-	  		var date=new Date(parameter.value);
-	  //		return date.toLocaleDateString()+", "+date.toLocaleTimeString();  		
-			return date.toLocaleDateString();
+	  	if (parameter.datatype==="date+time"){
+	  //		return date.toLocaleDateString()+", "+date.toLocaleTimeString();  
+			return parameter.date.toLocaleDateString();
 	  	} else {
 	  		return parameter.value;
 	  	} 
@@ -134,10 +154,12 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 	}
 	
 	
+	
 	this.setProcesstype = function(process, processtype){
 		var promise= experimentService.setProcesstype(process.id, processtype.id);
 		promise.then(function(){reload();});
 	}
+	
 	
 	
 	this.changeRecipe = function(pprocess){
@@ -281,27 +303,39 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 	
 	this.keyUp = function(keyCode,newValue,parameter) {
 		if (keyCode===13) {				// Return key pressed
-			parameter.editing=false; 
-			var oldValue=parameter.value;
-			parameter.value=newValue;
-			parameter.experimentid=this.experiment.id;
-			var res = experimentService.updateExperimentParameter(parameter);
-			res.then(function(data, status, headers, config) {
-				 },
-				 function(data, status, headers, config) {
-					parameter.value=oldValue;
-					console.log('error');
-					console.log(data);
-				 }
-				);
+			thisController.submitParameter(parameter);
 		}
 		if (keyCode===27) {		// Escape key pressed
 			parameter.editing=false;		
 		}
 	}
+
+
+
+	this.submitParameter=function(parameter){
+		parameter.editing=false; 
+		var oldValue=parameter.value;
+		if (parameter.datatype=="date+time") {
+			parameter.date=parameter.newDate
+		} else {
+			parameter.value=parameter.newValue;
+		}
+		parameter.experimentid=this.experiment.id;
+		var res = experimentService.updateExperimentParameter(parameter);
+		res.then(
+			function(data) {
+			},
+			function(data) {
+				console.log('error');
+				reload();
+				console.log(data);
+			}
+		);
+	}
 	
 	
-	
+
+
 	this.commentKeyUp = function(keyCode,newValue,sample) {
 		if (keyCode===13) {				// Return key pressed
 			sample.editing=false; 
@@ -368,7 +402,8 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 }
     
         
-angular.module('unidaplan').controller('experimentController',['$modal','$scope','$stateParams','experimentService','restfactory','$translate','$state','key2string','avSampleTypeService',
-               'avProcessTypeService','experimentData','ptypes','stypes',experimentController]);
+angular.module('unidaplan').controller('experimentController',['$modal','$scope','$stateParams','experimentService','restfactory',
+               '$translate','$state','key2string','avSampleTypeService','avProcessTypeService','experimentData','ptypes','stypes',
+               'avParameters',experimentController]);
 
 })();

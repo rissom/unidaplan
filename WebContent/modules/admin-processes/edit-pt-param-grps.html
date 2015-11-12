@@ -18,7 +18,6 @@
 		<span ng-hide="editPtParamGrpsCtrl.editNL1">{{editPtParamGrpsCtrl.NameL1}}</span>
 		<input ng-show="editPtParamGrpsCtrl.editNL1" 
 			   ng-keyup="editPtParamGrpsCtrl.keyUp($event.keyCode,'NL1')"
-			   ng-blur="editPtParamGrpsCtrl.changeField('NL1')"
 			   type="text"
 			   ng-model="editPtParamGrpsCtrl.newNameL1">
 	</td>
@@ -29,7 +28,6 @@
 		<span ng-hide="editPtParamGrpsCtrl.editNL2">{{editPtParamGrpsCtrl.NameL2}}</span>
 		<input ng-show="editPtParamGrpsCtrl.editNL2" 
 			   ng-keyup="editPtParamGrpsCtrl.keyUp($event.keyCode,'NL2')"
-			   ng-blur="editPtParamGrpsCtrl.changeField('NL2')"		
 			   type="text"
 			   ng-model="editPtParamGrpsCtrl.newNameL2">
 	</td>
@@ -40,7 +38,6 @@
 		<span ng-hide="editPtParamGrpsCtrl.editDL1">{{editPtParamGrpsCtrl.DescL1}}</span>
 		<input ng-show="editPtParamGrpsCtrl.editDL1" 
 			   ng-keyup="editPtParamGrpsCtrl.keyUp($event.keyCode,'DL1')"
-			   ng-blur="editPtParamGrpsCtrl.changeField('DL1')"
 			   type="text"
 			   ng-model="editPtParamGrpsCtrl.newDescL1">
 	</td>
@@ -51,7 +48,6 @@
 		<span ng-hide="editPtParamGrpsCtrl.editDL2">{{editPtParamGrpsCtrl.DescL2}}</span>
 		<input ng-show="editPtParamGrpsCtrl.editDL2" 
 			   ng-keyup="editPtParamGrpsCtrl.keyUp($event.keyCode,'DL2')"
-			   ng-blur="editPtParamGrpsCtrl.changeField('DL2')"
 			   type="text"
 			   ng-model="editPtParamGrpsCtrl.newDescL2">
 	</td>

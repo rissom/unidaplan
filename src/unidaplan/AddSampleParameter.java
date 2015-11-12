@@ -1,10 +1,8 @@
 package unidaplan;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +22,7 @@ import org.json.JSONObject;
 		int userID=authentificator.GetUserID(request,response);
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
-	    int pid=-1;
+	    String status = "ok";
 	    JSONObject  jsonIn = null;	    
 	    try {
 			  jsonIn = new JSONObject(in);
@@ -120,9 +118,7 @@ import org.json.JSONObject;
 		
 			ResultSet pidResult=pstmt.executeQuery();
 			pidResult.next();
-			pid=pidResult.getInt(1);
-			pstmt.close(); 
-		
+			pstmt.close(); 		
 	} catch (SQLException e) {
 		System.err.println("SaveSampleParameter: More Problems with SQL query");
 		e.printStackTrace();
@@ -135,8 +131,7 @@ import org.json.JSONObject;
 
 		
     // tell client that everything is fine
-    PrintWriter out = response.getWriter();
-    out.print("{\"pid\":"+pid+",");
-	out.println("\"status\":\"ok\"}");
+    Unidatoolkit.sendStandardAnswer(status,response);
+
 	}
 }	

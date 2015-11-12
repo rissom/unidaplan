@@ -32,7 +32,21 @@ public class Unidatoolkit {
     }
     
     
+    
+    public static void notFound(HttpServletResponse response) {
+	    PrintWriter out = null;
+		try {
+			out = response.getWriter();
+		} catch (IOException e) {
+			System.err.println("Error sending standard answer");
+			e.printStackTrace();
+		} 
+  	    response.setStatus(404);
+		out.println("{\"error\":\"not found\"}");
+    }
 
+    
+    
     public static int copyStringEntry(int stringKey, int userID, DBconnection dBconn){
     	// function for copying stringentries in the database
 		PreparedStatement pStmt = null; 
