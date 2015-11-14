@@ -132,8 +132,8 @@
 			  			{{'action'|translate}} &#x25BC;
 				    </a>
 				    <ul class="dropdown-menu">
-				    	<li ng-repeat="action in editPtParamsCtrl.getActions(parameter)">
-				        	<a ng-click="editPtParamsCtrl.performAction($index,parameter)">{{action}}</a>
+				    	<li ng-repeat="action in parameter.actions" ng-class="{disabled:action.disabled}">
+				        	<a ng-click="editPtParamsCtrl.performAction(parameter,action)">{{action.name}}</a>
 				        </li>
 				    </ul>
 	  			</div>

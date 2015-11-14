@@ -64,17 +64,11 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,restfac
   
   
   
-  this.getActions=function(parametergrp){
-	  return [$translate.instant("edit"),$translate.instant("delete")]
-  }
-  
-  
-  
-  this.performAction=function(index,parametergrp){
-	  if (index==0) {
+  this.performAction=function(parametergrp,action){
+	  if (action.action==="edit") {
 		  $state.go("editPtParams",{"paramGrpID":parametergrp.id})
 	  }
-	  if (index==1) {
+	  if (action.action=="delete") {
 		  var promise = avProcessTypeService.deletePTParameterGrp(parametergrp.id);
 		  promise.then(function(){reload()},function(){console.log("error")});
 	  }

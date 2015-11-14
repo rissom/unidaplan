@@ -56,7 +56,10 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	    		stgrp.nameLang=function(lang){
 	    			return (key2string.key2stringWithLangStrict(stgrp.stringkey,thisController.strings,lang))
 	    		}
-	    		
+
+	    		stgrp.actions=[{action:"edit",name:$translate.instant("edit")},
+	    		               {action:"delete",name:$translate.instant("delete"),disabled:!stgrp.deletable}
+	    					  ]
 	         })
 	    	defered.resolve(thisController.sampleType)	    	
 		    }, function(rest) {
@@ -76,16 +79,19 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	    	angular.forEach(thisController.sampleTypes,function(sampleType) {
 	    		sampleType.namef=function(){
 					return (key2string.key2string(sampleType.string_key,thisController.strings))
-				}
+				};
 	    		sampleType.nameLang=function(lang){
 					return (key2string.key2stringWithLangStrict(sampleType.string_key,thisController.strings,lang))
-				}
+				};
 	    		sampleType.descf=function(){
 					return (key2string.key2string(sampleType.description,thisController.strings))
-				}
+				};
 	    		sampleType.descLang=function(lang){
 					return (key2string.key2stringWithLangStrict(sampleType.description,thisController.strings,lang))
-				}
+				};
+	    		sampleType.actions= [ {name: $translate.instant("edit")},
+	    		                      {name: $translate.instant("delete") , disabled:!sampleType.deletable}
+	    						    ]
 				angular.forEach(sampleType.recipes, function(recipe) {
 					recipe.namef=function(){
 						return (key2string.key2string(recipe.name,thisController.strings));
@@ -124,6 +130,8 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	    		parameter.unitLang=function(lang){
 	    			return (key2string.key2stringWithLangStrict(parameter.stringkeyunit,thisController.paramGrp.strings,lang));
 	    		}
+	    		parameter.actions=[{action:"edit",name:$translate.instant("edit")},
+	    		                   {action:"delete",name:$translate.instant("delete"),disabled:!parameter.deletable}]
 	         })
 	         
 	    	defered.resolve(thisController.paramGrp)	    	

@@ -18,11 +18,7 @@ function aSamplesController($state,$stateParams,$translate,restfactory,sampleSer
 	  thisController.editmode=true;
   }
   
-	
-  this.getActions = function(user){
-	return [$translate.instant("edit"),$translate.instant("delete")];
-  }
-	
+ 
   
   this.performAction = function(index,sampleType){
 	  	if (index==0){
@@ -45,7 +41,6 @@ function aSamplesController($state,$stateParams,$translate,restfactory,sampleSer
 		thisController.editmode=false;
 	}
   }
-  
   
   
   

@@ -63,7 +63,8 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 	    		ptgrp.nameLang=function(lang){
 	    			return (key2string.key2stringWithLangStrict(ptgrp.stringkey,thisController.strings,lang))
 	    		}
-	    		
+	    		ptgrp.actions=[{action:"edit",name:$translate.instant("edit")},
+	    		               {action:"delete",name:$translate.instant("delete"),disabled:ptgrp.deletable}]	    		
 	         })
 	    	defered.resolve(thisController.processType)	    	
 		    }, function(rest) {
@@ -131,6 +132,9 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 	    		ptype.descLang=function(lang){
 	    			return (key2string.key2stringWithLangStrict(ptype.description,thisController.strings,lang))
 	    		}
+	    		ptype.actions= [{action:"edit",     name:$translate.instant("edit")},
+	    		                {action:"duplicate",name:$translate.instant("duplicate")},
+	    		                {action:"delete",   name:$translate.instant("delete"), disabled:!ptype.deletable}];
 	    		angular.forEach(ptype.recipes, function(recipe) {
 	    			recipe.namef=function(){
 	    				return (key2string.key2string(recipe.name,thisController.strings));
@@ -170,6 +174,8 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 	    		parameter.unitLang=function(lang){
 	    			return (key2string.key2stringWithLangStrict(parameter.stringkeyunit,thisController.paramGrp.strings,lang));
 	    		}
+	    		// actions for the context menu. Have to be implemented in editPtParamsCtrl.performAction
+	    		parameter.actions=[{action:"delete",name:$translate.instant("delete"), disabled:!parameter.deletable}]; 
 	         })
 	         
 	    	defered.resolve(thisController.paramGrp)	    	

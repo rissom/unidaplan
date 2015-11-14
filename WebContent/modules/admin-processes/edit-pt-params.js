@@ -116,19 +116,10 @@ function editPtParamsController($state,$modal,$stateParams,$translate,avParamete
   }
   
   
+ 
   
-  this.getActions=function(parameter){
-	  var actions=[];
-	  if (parameter.deletable) {
-		  actions.push ($translate.instant("delete"));
-	  }
-	  return actions;
-  }
-  
-  
-  
-  this.performAction=function(index,parameter){
-	  if (index==0) {
+  this.performAction=function(parameter,action){
+	  if (action.action==="delete") {
 		  var promise = avProcessTypeService.deletePTParameter(parameter.id);
 		  promise.then(function(){reload()},function(){console.log("error")});
 	  }

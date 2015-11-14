@@ -119,18 +119,13 @@ function editSTParamsController($state,$modal,$stateParams,$translate,
   
   
   
-  this.getActions=function(parameter){
-	  var actions=[];
-	  if (parameter.deletable) {
-		  actions.push ($translate.instant("delete"));
+  
+  this.performAction=function(parameter,action){
+	  // actions are defined in av-sampletype-service.getSTypeParams
+	  if (action.action==="edit"){
+		  console.log("not implemented yet")
 	  }
-	  return actions;
-  }
-  
-  
-  
-  this.performAction=function(index,parameter){
-	  if (index==0) {
+	  if (action.action==="delete") {
 		  var promise = avSampleTypeService.deleteSTParameter(parameter.id);
 		  promise.then(function(){reload()},function(){console.log("error")});
 	  }

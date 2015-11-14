@@ -64,17 +64,12 @@ function editSampleParamGrpsController($state,$stateParams,$translate,$scope,res
   
   
   
-  this.getActions=function(parametergrp){
-	  return [$translate.instant("edit"),$translate.instant("delete")]
-  }
   
-  
-  
-  this.performAction=function(index,parametergrp){
-	  if (index==0) {
+  this.performAction=function(parametergrp,action){
+	  if (action.action==="edit") {
 		  $state.go("editSTParams",{"paramGrpID":parametergrp.id})
 	  }
-	  if (index==1) {
+	  if (action.action==="delete") {
 		  var promise = avSampleTypeService.deleteSTParameterGrp(parametergrp.id);
 		  promise.then(function(){reload()},function(){console.log("error")});
 	  }

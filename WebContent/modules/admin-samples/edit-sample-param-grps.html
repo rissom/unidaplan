@@ -97,8 +97,8 @@
 			  			{{'action'|translate}} &#x25BC;
 				    </a>
 				    <ul class="dropdown-menu">
-				    	<li ng-repeat="action in editSampleParamGrpsCtrl.getActions(grp)">
-				        	<a ng-click="editSampleParamGrpsCtrl.performAction($index,grp)">{{action}}</a>
+				    	<li ng-repeat="action in grp.actions">
+				        	<a ng-click="editSampleParamGrpsCtrl.performAction(grp,action)">{{action.name}}</a>
 				        </li>
 				    </ul>
 	  			</div>

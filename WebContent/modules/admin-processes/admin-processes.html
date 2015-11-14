@@ -42,8 +42,8 @@
 			  			{{'action'|translate}} &#x25BC;
 				    </a>
 				    <ul class="dropdown-menu">
-				    	<li ng-repeat="action in aProcessesCtrl.getActions(process)">
-				        	<a ng-click="aProcessesCtrl.performAction($index,process)">{{action}}</a>
+				    	<li ng-repeat="action in process.actions" ng-class={disabled:action.disabled}>
+				        	<a ng-click="aProcessesCtrl.performAction(process,action)">{{action.name}}</a>
 				        </li>
 				    </ul>
 	  			</div>
