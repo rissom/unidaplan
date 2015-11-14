@@ -29,12 +29,12 @@
   </servlet-mapping>
   <servlet>
     <description>shows available sample types</description>
-    <display-name>Available sampletypes</display-name>
-    <servlet-name>AvailableSampletypes</servlet-name>
-    <servlet-class>unidaplan.AvailableSampletypes</servlet-class>
+    <display-name>Sampletypes</display-name>
+    <servlet-name>Sampletypes</servlet-name>
+    <servlet-class>unidaplan.Sampletypes</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>AvailableSampletypes</servlet-name>
+    <servlet-name>Sampletypes</servlet-name>
     <url-pattern>/sampletypes</url-pattern>
   </servlet-mapping>
   <servlet>
@@ -745,7 +745,7 @@
   </servlet-mapping>
   
   
-    <servlet>
+  <servlet>
     <description>UpdateSTParamGrp</description>
     <display-name>UpdateSTParamGrp</display-name>
     <servlet-name>UpdateSTParamGrp</servlet-name>
@@ -756,4 +756,15 @@
     <url-pattern>/update-st-paramgrp</url-pattern>
   </servlet-mapping>
   
+  
+  <servlet>
+    <description>DeleteSTParameterGrp</description>
+    <display-name>DeleteSTParameterGrp</display-name>
+    <servlet-name>DeleteSTParameterGrp</servlet-name>
+    <servlet-class>unidaplan.DeleteSTParameterGrp</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeleteSTParameterGrp</servlet-name>
+    <url-pattern>/delete-st-parameter-grp</url-pattern>
+  </servlet-mapping>
 </web-app>

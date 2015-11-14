@@ -93,10 +93,8 @@ public class SampleTypeParamGrps extends HttpServlet {
 	        out.println(answer.toString());
 	    } catch (SQLException eS) {
 			System.err.println("SampleTypeParameters: SQL Error");
-			eS.printStackTrace();
 		} catch (Exception e) {
 			System.err.println("SampleTypeParameters: Some Error, probably JSON");
-			e.printStackTrace();
 		} finally {
 		try{
 			if (pStmt != null) { 

@@ -15,7 +15,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-	public class AvailableSampletypes extends HttpServlet {
+	public class Sampletypes extends HttpServlet {
 		private static final long serialVersionUID = 1L;
 
 
@@ -34,7 +34,7 @@ import org.json.JSONObject;
 	    PrintWriter out = response.getWriter();
 	    
 	    PreparedStatement pstmt = null;		// Declare variables
-		JSONArray objectList = null;
+		JSONArray sampletypes = null;
 	    
 	    DBconnection DBconn=new DBconnection();   // New connection to the database
 	    DBconn.startDB();
@@ -42,45 +42,34 @@ import org.json.JSONObject;
 	 	ArrayList<String> stringkeys = new ArrayList<String>(); 
 
 	 	try {	
-	 		pstmt= DBconn.conn.prepareStatement("SELECT id,string_key,description FROM objecttypes");
-		    objectList=DBconn.jsonArrayFromPreparedStmt(pstmt); // get ResultSet from the database using the query
+	 		pstmt= DBconn.conn.prepareStatement("SELECT ot.id,ot.string_key,ot.description, count(otg.id) "
+			+"FROM objecttypes ot "
+			+"LEFT JOIN ot_parametergrps otg ON otg.ot_id=ot.id "
+			+"GROUP BY ot.id");
+		    sampletypes=DBconn.jsonArrayFromPreparedStmt(pstmt); // get ResultSet from the database using the query
 
-	 		  if (objectList.length()>0) {
-	           	  for (int i=0; i<objectList.length();i++) {
-	           		  JSONObject dings=(JSONObject) objectList.get(i);
+	 		  if (sampletypes.length()>0) {
+	           	  for (int i=0; i<sampletypes.length();i++) {
+	           		  JSONObject dings=sampletypes.getJSONObject(i);
+	           		  if (dings.getInt("count")==0) dings.put("deletable",true);
+	           		  dings.remove("count");
 	           		  stringkeys.add(Integer.toString(dings.getInt("string_key")));
 	           		  stringkeys.add(Integer.toString(dings.getInt("description")));
 	           	  }
-		          String query="SELECT id,string_key,language,value FROM Stringtable WHERE string_key=ANY('{";
-		           	
-		          StringBuilder buff = new StringBuilder(); // join numbers with commas
-		          String sep = "";
-		          for (String str : stringkeys) {
-		           	    buff.append(sep);
-		           	    buff.append(str);
-		           	    sep = ",";
-		          }
-		          query+= buff.toString() + "}'::int[])";
-		          JSONArray theStrings=DBconn.jsonfromquery(query);
-		          JSONObject jsAvailable=new JSONObject();
-		          jsAvailable.put("sampletypes", objectList);
-		          jsAvailable.put("strings", theStrings);
-		          out.println(jsAvailable.toString());
+		          JSONObject answer=new JSONObject();
+		          answer.put("sampletypes", sampletypes);
+		          answer.put("strings", DBconn.getStrings(stringkeys));
+		          out.println(answer.toString());
 	  	        }
 	  	        else {					
 	  	    	  out.println("[]");			// return empty array
 	  	        }       
-
-	 		
 		} catch (SQLException e) {
-			System.err.println("Available objecttypes: Problems with SQL query for sample name");
-			e.printStackTrace();	
+			System.err.println("Sampletypes: Problems with SQL query for sample name");
 		} catch (JSONException e) {
-			System.err.println("Available objecttypes: JSON Problem while getting sample name");
-			e.printStackTrace();
+			System.err.println("Sampletypes: JSON Problem while getting sample name");
 		} catch (Exception e2) {
-			System.err.println("Available objecttypes: Strange Problem while getting sample name");
-			e2.printStackTrace();
+			System.err.println("Sampletypes: Strange Problem while getting sample name");
 		}   
 		DBconn.closeDB();
 	}

@@ -152,7 +152,6 @@ function editSampleParamGrpsController($state,$stateParams,$translate,$scope,res
   
   this.keyUpPG = function(keyCode) {
 	if (keyCode===13) {				// Return key pressed
-		console.log("Hallo");
 		this.addParameterGroup();
 	}
 	if (keyCode===27) {		// Escape key pressed

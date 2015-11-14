@@ -147,7 +147,13 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	}
 	
 	
+	
+	this.deleteSTParameterGrp=function(id){
+		return restfactory.DELETE("delete-st-parameter-grp?id="+id);
+	}
 
+	
+	
 	this.exPosSTParamGrp=function(id1,pos1,id2,pos2){
 		var jsonObj={"id1":id1, "id2":id2, "pos1":pos1, "pos2":pos2};
 		return restfactory.POST ("exchange-pos-st-parameter-grp",jsonObj);

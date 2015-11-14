@@ -15,7 +15,7 @@ function aSamplesController($state,$stateParams,$translate,restfactory,sampleSer
     
   
   this.newSampleType=function(){
-	  this.editmode=true;
+	  thisController.editmode=true;
   }
   
 	
@@ -34,6 +34,18 @@ function aSamplesController($state,$stateParams,$translate,restfactory,sampleSer
 	  	}
 
   }
+  
+  
+  
+  this.keyUp = function(keyCode) {
+	if (keyCode===13) {				// Return key pressed
+		this.addSampleType();
+	}
+	if (keyCode===27) {		// Escape key pressed
+		thisController.editmode=false;
+	}
+  }
+  
   
   
   
