@@ -1,14 +1,11 @@
 package unidaplan;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -34,8 +31,6 @@ import org.json.JSONObject;
 		} catch (JSONException e) {
 			System.err.println("AddParameter: Input is not valid JSON");
 		}
-		response.setContentType("application/json");
-	    response.setCharacterEncoding("utf-8");
 	    
 	 	DBconnection dBconn=new DBconnection();
 	    dBconn.startDB();	   
@@ -43,7 +38,6 @@ import org.json.JSONObject;
 	    int stringKeyName=0;
 	    int stringKeyUnit=0;
 	    int stringKeyDesc=0;
-
 
 	    
 	    // generate strings for the name and the unit
@@ -57,7 +51,7 @@ import org.json.JSONObject;
 				 }
 			 }else
 			 {
-				 System.out.println("no name exists");
+				 System.err.println("no name exists");
 			 }
 			 if (jsonIn.has("unit")){
 				 JSONObject unit=jsonIn.getJSONObject("unit");
@@ -86,15 +80,12 @@ import org.json.JSONObject;
 		try {	
 			pstmt= dBconn.conn.prepareStatement( 			
 					"INSERT INTO paramdef values(default,?,?,?,?,?, NOW(),?)");
-	
 		   	pstmt.setInt(1, stringKeyName);
 		   	pstmt.setInt(2, stringKeyUnit);
 		   	pstmt.setInt(3, dataType);
 		   	pstmt.setInt(4, maxdigits);
 		   	pstmt.setInt(5, stringKeyDesc);
 		   	pstmt.setInt(6, userID);
-		   	System.out.println("status");
-		   	System.out.println(status);
 			if (dataType>0 && dataType<9){
 			   	pstmt.executeUpdate();
 			}else{
@@ -106,17 +97,8 @@ import org.json.JSONObject;
 		} catch (Exception e) {
 			System.err.println("AddParameter: Strange Problems");
 		}	
-		
-	
-		
+				
     // tell client that everything is fine
-    PrintWriter out = response.getWriter();
-	    try {
-	        JSONObject answer = new JSONObject();
-			answer.put("status", status);
-			out.println(answer.toString());
-		} catch (JSONException e) {
-			System.err.println("AddParameter: Problems creating JSON answer");
-		}    
+	Unidatoolkit.sendStandardAnswer(status, response);
 	}
 }	

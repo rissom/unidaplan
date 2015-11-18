@@ -14,7 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-	public class GetParameters extends HttpServlet {
+	public class Parameter extends HttpServlet {
 		private static final long serialVersionUID = 1L;
 
 	@Override
@@ -36,7 +36,17 @@ import org.json.JSONObject;
 	    JSONObject result = new JSONObject();
 	    try {  
 			pstmt= dBconn.conn.prepareStatement( 	
-			"SELECT * FROM paramdef WHERE id>2");
+			"SELECT paramdef.id,stringkeyname,stringkeyunit,datatype,maxdigits,id_description, "
+			+"(blabla.count) IS NULL as deletable "
+			+"FROM paramdef "
+			+"LEFT JOIN "
+			+" (SELECT count(a.id),definition FROM p_parameters a GROUP BY definition "
+			+"  UNION ALL "
+			+"  SELECT count(b.id),definition FROM ot_parameters b GROUP BY definition "
+			+"  UNION ALL "
+			+"  SELECT count(c.id),definition FROM expp_param c GROUP BY definition "
+			+" ) AS blabla ON definition=paramdef.id "
+			+"WHERE paramdef.id>2");
 			parameters=dBconn.jsonArrayFromPreparedStmt(pstmt);
 			pstmt.close();
 			  for (int i=0; i<parameters.length();i++) {

@@ -60,6 +60,11 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 	}
 	
 	
+	this.getSampleTypeParameters = function (sampleTypeID){
+		return restfactory.GET('/all-sample-type-parameters',{id:sampleTypeID});
+	}
+	
+	
 	this.saveParameter = function(parameter) {
 		return restfactory.POST('savesampleparameter',parameter);
 	}

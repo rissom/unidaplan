@@ -30,12 +30,15 @@ var processService = function (restfactory,$q,$translate,key2string) {
     	    	promise.then(function(rest) {
 	    	    	thisController.process = rest.data;
 	    	    	thisController.strings = rest.data.strings;
+	    	    	thisController.process.fprocesstype = function(){
+	    	    		return key2string.key2string(thisController.process.pt_string_key,thisController.strings);
+	    	    	}
 	    	    	thisController.translate();
 	    	    	thisController.pushProcess(thisController.process);
 	    	    	defered.resolve(thisController.process)
     	    	}, function(rest) {    	    		
-    	    		console.log("Error loading sampletypes");
-    	    		defered.reject({"error":"Error loading sampletypes"});
+    	    		console.log("Error loading process");
+    	    		defered.reject({"error":"Error loading process"});
     	    	});
 		return defered.promise;
 	}

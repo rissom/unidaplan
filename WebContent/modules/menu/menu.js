@@ -13,6 +13,14 @@ function menuf(restfactory,$translate,$rootScope,$state) {
 
 	this.oldlanguage='en';  
 	
+	this.checkLocalStorageSupport =function() {
+		  try {
+		    return 'localStorage' in window && window['localStorage'] !== null;
+		  } catch (e) {
+		    return false;
+		  }
+		}
+	
 	this.language = function(){
 		return $translate.use();
 	}
@@ -20,7 +28,9 @@ function menuf(restfactory,$translate,$rootScope,$state) {
 	this.setLanguage = function(lang){  // change language and send a broadcast
 		if (this.old_language!=$translate.use()) {
 			$translate.use(lang);
-			$rootScope.$broadcast('language changed',{'language':lang});
+			if (thisController.checkLocalStorageSupport()) {
+				window.localStorage.setItem("language",lang);
+			};
 		}
 	}
 	

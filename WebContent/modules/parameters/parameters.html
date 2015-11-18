@@ -36,7 +36,7 @@
 	
 	
 	<tbody>
-		<tr ng-repeat="parameter in parameterCtrl.parameters | orderBy : 'nameLang(lang1)'">
+		<tr ng-repeat="parameter in parameterCtrl.parameters | orderBy : 'nameLang(parameterCtrl.lang1Key)'">
 			<td class="parametertd">
 	 			{{parameter.nameLang(parameterCtrl.lang1Key)}}
 			</td>
@@ -61,7 +61,7 @@
 			<td class="parametertd">
 				{{parameter.descLang(parameterCtrl.lang2Key)}}
 			</td>
-			<td class="parametertd" ng-hide="parameterCtrl.editmode">
+			<td class="parametertd" ng-hide="parameterCtrl.editmode||!parameter.deletable">
 				<button type="button" class="btn btn-default btn-xs" 
 						ng-click="parameterCtrl.deleteParameter(parameter)"
 						ng-hide="parameterCtrl.editmode"

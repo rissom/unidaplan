@@ -6,7 +6,17 @@ var loginController=function($state,restfactory,$scope,$translate){
 	var thisController=this;
 	
 	this.error="";
+	
+	this.checkLocalStorageSupport =function() {
+		  try {
+		    return 'localStorage' in window && window['localStorage'] !== null;
+		  } catch (e) {
+		    return false;
+		  }
+		}
 
+	
+	
 	this.userLogin = function(){
 		var promise=restfactory.GET('login?user='+this.userinput+'&pw='+this.pwinput);
 		promise.then(function(data){
@@ -15,6 +25,14 @@ var loginController=function($state,restfactory,$scope,$translate){
 				  if (restfactory.failedState.name!="login") {
 					  $state.go(restfactory.failedState);
 				  } else {
+					  if(thisController.checkLocalStorageSupport){
+					        var lang = window.localStorage.getItem("language");
+					        if(lang != null){
+					        	  if (this.old_language!=$translate.use()) {
+					      			$translate.use(lang);
+					        	  }
+					        } 
+					  }
 					  $state.go('openExperiment');
 				  }
 				} else {

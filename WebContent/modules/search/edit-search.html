@@ -1,0 +1,196 @@
+<p />
+<p />
+<h3>{{'New Search'|translate}}</h3>
+<p />
+<br/>
+<h4>{{'General information'|translate}}</h4>
+{{'Can be used by'|translate}}:
+
+<select 
+	class="form-control"
+	style="width:300px;"	
+    ng-change="editSearchCtrl.setStatus()"
+    ng-model="editSearchCtrl.newStatus"
+    ng-blur="editSearchCtrl.editStatus=false" >
+	<option ng-repeat="group in editSearchCtrl.groups" value="{{$index+1}}" ng-selected="$index==0">
+    	{{group}}  
+    </option> 
+</select>
+<br/>
+<table class="table">
+<tr ng-dblclick="editSearchCtrl.edit('NL1')">
+	<td>Name ({{editSearchCtrl.lang1}}):</td>
+	<td>
+		<span ng-hide="editSearchCtrl.editFieldNL1">{{editSearchCtrl.nameL1}}</span>
+		<input ng-show="editSearchCtrl.editFieldNL1" 
+			   ng-keyup="editSearchCtrl.keyUp($event.keyCode,editSTParamsCtrl.newNameL1,editSTParamsCtrl.lang1key)"
+			   ng-blur="editSearchCtrl.editNL1=false"
+			   type="text"
+			   ng-model="editSearchCtrl.newNameL1">
+	</td>
+</tr>
+<tr ng-dblclick="editSearchCtrl.edit('NL2')">
+	<td>Name ({{editSearchCtrl.lang2}}):</td>
+	<td>
+		<span ng-hide="editSearchCtrl.editFieldNL2">{{editSearchCtrl.nameL2}}</span>
+		<input ng-show="editSearchCtrl.editFieldNL2" 
+			   ng-keyup="editSearchCtrl.keyUp($event.keyCode,editSearchCtrl.newNameL2,editSearchCtrl.lang2key)"
+			   ng-blur="editSearchCtrl.editNL2=false"		
+			   type="text"
+			   ng-model="editSearchCtrl.newNameL2">
+	</td>
+</tr>
+</table>
+
+<br/>
+<h4>{{'Search Criteria'|translate}}</h4>
+<div class="col-xs-6">
+	<select class="form-control" 
+	style="width:300px;"
+	ng-model="editSearchCtrl.searchType">
+		<option ng-repeat="type in editSearchCtrl.searchTypes" value="{{$index+1}}" ng-selected="$index==0">
+			{{type}}			
+		</option>
+	</select>
+	
+</div>
+
+<div class="col-xs-6">
+	<select
+    class="form-control" 
+	style="width:300px;"
+	ng-show="editSearchCtrl.searchType==1"
+	ng-model="editSearchCtrl.sampleType"
+	ng-change="editSearchCtrl.changeSampleType()"
+	ng-selected="$first">
+		<option ng-repeat="type in editSearchCtrl.sampleTypes" value="{{$index+1}}" ng-selected="$index==0">
+			{{type.namef()}}			
+		</option>
+	</select>
+	
+	<select
+    class="form-control" 
+	style="width:300px;"
+	ng-show="editSearchCtrl.searchType>1"
+	ng-model="editSearchCtrl.processType"
+	ng-change="editSearchCtrl.changeProcessType()"
+	ng-selected="$first">
+		<option ng-repeat="type in editSearchCtrl.processTypes" value="{{$index+1}}" ng-selected="$index==0">
+			{{type.namef()}}			
+		</option>
+	</select>
+	
+</div>
+<br/><br/><br/>
+<table class="table">
+	<thead class=parametertablehead>
+	<tr>
+		<td>
+			Verknüpfung
+		</td>
+		<td>
+			Parameter
+		</td>
+		<td>
+			{{'Comparison operation'|translate}}
+		</td>
+		<td>
+			{{'Default Values'|translate}}
+		</td>
+	</tr>
+	
+	</thead>
+	<tr  ng-repeat="parameter in editSearchCtrl.sampleParameters">
+		<td>
+			<div ng-hide="$first">
+			<select class="form-control input-sm" 
+				style="width:45px;"	
+				ng-model="parameter.operator">
+			<option ng-repeat="operator in editSearchCtrl.operators" value="{{$index+1}}" ng-selected="$index==0">
+		    	{{operator}}  
+		    </option> 
+			</select></div>
+		</td>
+		<td>
+			<div>Parameter {{$index}}</div>
+		</td>
+		<td>
+			<select class="form-control input-sm" 
+				style="width:45px;"	
+				ng-model="parameter.comparator">
+			<option ng-repeat="comparator in editSearchCtrl.comparators" value="{{$index+1}}" ng-selected="$index==0">
+		    	{{comparator}}  
+		    </option> 
+			</select>
+		</td>
+		<td>
+			Default
+		</td>
+	</tr>
+</table>
+<br/>
+<button class="btn btn-default"
+		ng-click="newSampleCtrl.addSearch()"
+		ng-class= "{disabled: !editSearchCtrl.validSearch}">
+	+ {{'Add Parameter'|translate}}
+</button>
+<br/>
+<br/>
+	
+<h4>{{'Output'|translate}}</h4>
+
+<table class="table">
+	<thead class=parametertablehead>
+	<tr>
+		<td>
+			{{'Show'|translate}}
+		</td>
+		<td>
+			{{'Parameters'|translate}}
+		</td>
+		<td>
+			{{'Comparison operation'|translate}}
+		</td>
+		<td>
+			{{'Default Values'|translate}}
+		</td>
+	</tr>
+	
+	</thead>
+	<tr  ng-repeat="parameter in editSearchCtrl.sampleParameters">
+		<td>
+			<div ng-hide="$first">
+			<select class="form-control input-sm" 
+				style="width:45px;"	
+				ng-model="parameter.operator">
+			<option ng-repeat="operator in editSearchCtrl.operators" value="{{$index+1}}" ng-selected="$index==0">
+		    	{{operator}}  
+		    </option> 
+			</select></div>
+		</td>
+		<td>
+			<div>Parameter {{$index}}</div>
+		</td>
+		<td>
+			<select class="form-control input-sm" 
+				style="width:45px;"	
+				ng-model="parameter.comparator">
+			<option ng-repeat="comparator in editSearchCtrl.comparators" value="{{$index+1}}" ng-selected="$index==0">
+		    	{{comparator}}  
+		    </option> 
+			</select>
+		</td>
+		<td>
+			Default
+		</td>
+	</tr>
+</table>
+
+<p />
+<p />
+<button class="btn btn-default"
+		ng-click="newSampleCtrl.addSearch()"
+		ng-class= "{disabled: !editSearchCtrl.validSearch}">
+	{{'Create Search'|translate}}
+</button>	
+
