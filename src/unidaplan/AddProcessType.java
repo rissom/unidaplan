@@ -1,6 +1,5 @@
 package unidaplan;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -34,8 +33,7 @@ import org.json.JSONObject;
 		response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
 	    
-	 	DBconnection dBconn=new DBconnection();
-	    dBconn.startDB();	   
+ 
 	    
 	    int stringKeyName=0;
 	    int stringKeyDesc=0; 
@@ -47,6 +45,9 @@ import org.json.JSONObject;
 	    
 	    // generate strings for the name 
 	    try {	
+		 	DBconnection dBconn=new DBconnection();
+		    dBconn.startDB();	  
+		    
 			 if (jsonIn.has("name")){
 				 JSONObject name=jsonIn.getJSONObject("name");
 				 String [] names = JSONObject.getNames(name);
@@ -72,17 +73,10 @@ import org.json.JSONObject;
 			 if (jsonIn.has("ptgroup")){
 				 ptgroup=jsonIn.getInt("ptgroup");
 			 }
-		} catch (JSONException e) {
-			System.err.println("AddProcessType: Error creating Strings");
-			response.setStatus(404);
-			status="JSON String error";
-		} catch (Exception e) {
-			System.err.println("AddProcessType: Error creating Strings");
-			status="String error";
-		}	
+
   
 	    PreparedStatement pStmt = null;
-		try {	
+
 			pStmt= dBconn.conn.prepareStatement( 			
 					"INSERT INTO processtypes values(default,?,?,?,?,NOW(),?) RETURNING id");
 			pStmt.setInt(1, position);
@@ -91,15 +85,7 @@ import org.json.JSONObject;
 		   	pStmt.setInt(4, stringKeyDesc);
 		   	pStmt.setInt(5, userID);
 		   	id=dBconn.getSingleIntValue(pStmt);
-		} catch (SQLException e) {
-			status="SQL error";
-			System.err.println("AddProcessType: Problems with SQL query");
-			e.printStackTrace();
-		} catch (Exception e) {
-			System.err.println("AddProcessType: Strange Problems");
-		}	
 		
-		try {	
 			int parameterGrp=0;
 			pStmt= dBconn.conn.prepareStatement( 			
 			//define a new parametergroup for basic parameters of the process
@@ -137,22 +123,14 @@ import org.json.JSONObject;
 		} catch (SQLException e) {
 			status="SQL error";
 			System.err.println("AddProcessType: Problems with SQL query2");
-			e.printStackTrace();
+			response.setStatus(404);
 		} catch (Exception e) {
 			System.err.println("AddProcessType: Strange Problems");
+			response.setStatus(404);
 		}	
-		
 	
 		
     // tell client that everything is fine
-    PrintWriter out = response.getWriter();
-	    try {
-	        JSONObject answer = new JSONObject();
-			answer.put("status", status);
-			out.println(answer.toString());
-		} catch (JSONException e) {
-			status="JSON error";
-			System.err.println("AddProcessType: Problems creating JSON answer");
-		}    
+	    Unidatoolkit.sendStandardAnswer(status, response);
 	}
 }	

@@ -35,8 +35,8 @@ import org.json.JSONObject;
 		}
 	    PrintWriter out = response.getWriter();
 	 	DBconnection DBconn=new DBconnection();
-	    DBconn.startDB();
 	    try {  
+		    DBconn.startDB();
 			pstmt= DBconn.conn.prepareStatement( 	
 			"SELECT id, fullname, username, email, lastchange, token, token_valid_to " 
 		   +"FROM users WHERE id=?");

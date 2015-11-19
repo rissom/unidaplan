@@ -43,7 +43,6 @@ public class Process extends HttpServlet {
       response.setCharacterEncoding("utf-8");
       PrintWriter out = response.getWriter();
       DBconnection DBconn=new DBconnection();
-      DBconn.startDB();
       boolean found=false;
       int processID=1;
   	  int processTypeID=1;
@@ -60,9 +59,12 @@ public class Process extends HttpServlet {
 	  PreparedStatement pstmt = null;
 
 	  try {
+
+		  DBconn.startDB();
+
 		  
-		// get number, type and status 
-		pstmt= DBconn.conn.prepareStatement(
+		  // get number, type and status 
+		  pstmt= DBconn.conn.prepareStatement(
 				"SELECT processes.id, processes.processtypesid as processtype, ptd.value AS date, n1.value AS pnumber, "
 				+"processtypes.name AS pt_string_key, n2.value AS status, pp3.id AS statuspid "
 				+"FROM processes "
@@ -74,18 +76,18 @@ public class Process extends HttpServlet {
 				+"LEFT JOIN p_integer_data n1 ON (n1.ProcessID=processes.id AND n1.P_Parameter_ID=pp2.id) "
 				+"LEFT JOIN p_integer_data n2 ON (n2.ProcessID=processes.id AND n2.P_Parameter_ID=pp3.id) "
 				+"WHERE processes.id=?");
-		pstmt.setInt(1, processID);
-		jsProcess= DBconn.jsonObjectFromPreparedStmt(pstmt);
-		if (jsProcess.length()>0) {
-			processTypeID=jsProcess.getInt("processtype");
-			pnumber=jsProcess.getInt("pnumber");
-			found=true;
-			stringkeys.add(Integer.toString(jsProcess.getInt("pt_string_key")));
-		}else{
-			System.err.println("no such process");
-			response.setStatus(404);
-			found=false;
-		}
+		  pstmt.setInt(1, processID);
+		  jsProcess= DBconn.jsonObjectFromPreparedStmt(pstmt);
+		  if (jsProcess.length()>0) {
+			  processTypeID=jsProcess.getInt("processtype");
+			  pnumber=jsProcess.getInt("pnumber");
+			  found=true;
+			  stringkeys.add(Integer.toString(jsProcess.getInt("pt_string_key")));
+		  }else{
+			  System.err.println("no such process");
+			  response.setStatus(404);
+			  found=false;
+		  }
 		
 	  } catch (SQLException e) { 
 		System.err.println("Problems with SQL query");

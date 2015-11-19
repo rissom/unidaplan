@@ -1,6 +1,5 @@
 package unidaplan;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -38,10 +37,11 @@ import org.json.JSONObject;
 
 	    
 	    // create entry in the database	    
-	 	DBconnection dBconn=new DBconnection();
-	    dBconn.startDB();	   
-	    PreparedStatement pstmt = null;
+
 		try {
+		 	DBconnection dBconn=new DBconnection();
+		    dBconn.startDB();	   
+		    PreparedStatement pstmt = null;
 			pstmt= dBconn.conn.prepareStatement( 			
 					 "INSERT INTO samples values(default, ?, ?, NOW(), NOW(),?) RETURNING id");
 		   	pstmt.setInt(1, sampletypeID);
@@ -50,48 +50,36 @@ import org.json.JSONObject;
 		   	JSONObject answer=dBconn.jsonObjectFromPreparedStmt(pstmt);
 		   	pstmt.close();
 			id= answer.getInt("id");
-		} catch (SQLException e) {
-			System.err.println("AddSample: Problems with SQL query");
-			status="SQL error";
-		} catch (JSONException e){
-			System.err.println("AddSample: Problems creating JSON");
-			status="JSON error";
-		} catch (Exception e) {
-			System.err.println("AddSample: Strange Problems");
-			status="error";
-		}
-		try{
-		// find the current maximum of sample name parameters
-		pstmt= dBconn.conn.prepareStatement( 	
-		"SELECT id FROM samplenames WHERE typeid=? ORDER BY name DESC LIMIT 1");
-	   	pstmt.setInt(1, sampletypeID);
-	   	JSONObject answer=dBconn.jsonObjectFromPreparedStmt(pstmt);
-		int lastSampleID= answer.getInt("id");
-		pstmt.close();
 		
-		// Liste mit Titelparametern
-		pstmt= dBconn.conn.prepareStatement( 	
-		"SELECT ot_parameters.id,idata.value FROM ot_parameters " 
-		+"JOIN o_integer_data idata ON idata.ot_parameter_id=ot_parameters.id "
-		+"WHERE ID_Field=true AND idata.objectid=? ORDER BY pos DESC");
-	   	pstmt.setInt(1, lastSampleID);
-	   	JSONArray lastTitleParameters=dBconn.jsonArrayFromPreparedStmt(pstmt);
-		pstmt.close();
+			// find the current maximum of sample name parameters
+			pstmt= dBconn.conn.prepareStatement( 	
+			"SELECT id FROM samplenames WHERE typeid=? ORDER BY name DESC LIMIT 1");
+		   	pstmt.setInt(1, sampletypeID);
+			int lastSampleID= dBconn.getSingleIntValue(pstmt);
+			pstmt.close();
+			
+			// Liste mit Titelparametern
+			pstmt= dBconn.conn.prepareStatement( 	
+			"SELECT ot_parameters.id,idata.value FROM ot_parameters " 
+			+"JOIN o_integer_data idata ON idata.ot_parameter_id=ot_parameters.id "
+			+"WHERE ID_Field=true AND idata.objectid=? ORDER BY pos DESC");
+		   	pstmt.setInt(1, lastSampleID);
+		   	JSONArray lastTitleParameters=dBconn.jsonArrayFromPreparedStmt(pstmt);
+			pstmt.close();
 				
 	   	
-		// Titelparameter schreiben
-		int increment=1;
-        for (int i=0; i<lastTitleParameters.length();i++){   
-        	JSONObject parameter=(JSONObject) lastTitleParameters.get(i);
-//        	System.out.println(((JSONObject)lastTitleParameters.get(i)).toString());
-        	pstmt= dBconn.conn.prepareStatement("INSERT INTO o_integer_data values(default, ?, ?, ?, NOW());");
-        	pstmt.setInt(1, id);
-        	pstmt.setInt(2, parameter.getInt("id"));
-        	pstmt.setInt(3, parameter.getInt("value")+increment);
-        	pstmt.executeUpdate();
-        	pstmt.close();
-        	increment=0;
-        }
+			// Titelparameter schreiben
+			int increment=1;
+	        for (int i=0; i<lastTitleParameters.length();i++){   
+	        	JSONObject parameter=(JSONObject) lastTitleParameters.get(i);
+	        	pstmt= dBconn.conn.prepareStatement("INSERT INTO o_integer_data values(default, ?, ?, ?, NOW());");
+	        	pstmt.setInt(1, id);
+	        	pstmt.setInt(2, parameter.getInt("id"));
+	        	pstmt.setInt(3, parameter.getInt("value")+increment);
+	        	pstmt.executeUpdate();
+	        	pstmt.close();
+	        	increment=0;
+	        }
 		dBconn.closeDB();
 		
 		
@@ -109,8 +97,6 @@ import org.json.JSONObject;
 		
 		
     // tell client that everything is fine
-    PrintWriter out = response.getWriter();
-    out.print("{\"id\":"+id+",");
-	out.println("\"status\":\""+status+"\"}");
+    Unidatoolkit.sendStandardAnswer(status, response);
 	}
 }	

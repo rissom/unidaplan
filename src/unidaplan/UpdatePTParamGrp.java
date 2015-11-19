@@ -45,11 +45,12 @@ import org.json.JSONObject;
 		}
 	    
 	 	DBconnection dBconn=new DBconnection(); // initialize database
-	    dBconn.startDB();	   
 	    PreparedStatement pStmt = null;
 	    
 		
 		try {
+		    dBconn.startDB();	   
+
 			// find the stringkey
 			pStmt=dBconn.conn.prepareStatement(
 					"SELECT stringkey FROM p_parametergrps WHERE id=?");
@@ -80,9 +81,11 @@ import org.json.JSONObject;
 		} catch (SQLException e) {
 			System.err.println("UpdatePTParamGrp: Problems with SQL query");
 			status="SQL error";
+			response.setStatus(404);
 		} catch (Exception e) {
 			System.err.println("UpdatePTParamGrp: some error occured");
 			status="misc error";
+			response.setStatus(404);
 		}
 		
 		dBconn.closeDB();

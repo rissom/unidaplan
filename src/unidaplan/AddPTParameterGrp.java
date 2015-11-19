@@ -1,6 +1,5 @@
 package unidaplan;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -39,13 +38,14 @@ import org.json.JSONObject;
 		response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
 	    
-	 	DBconnection dBconn=new DBconnection();
-	    dBconn.startDB();	   
 	    
+
 	    int stringKeyName=0;
 	    
 	    // generate strings for the name
-	    try {	
+	    try {			 	
+	    	DBconnection dBconn=new DBconnection();
+	    	dBconn.startDB();	   
 			 if (jsonIn.has("name")){
 				 JSONObject name=jsonIn.getJSONObject("name");
 				 String [] names = JSONObject.getNames(name);
@@ -56,32 +56,20 @@ import org.json.JSONObject;
 			 }else
 			 {
 				 status="error: no name given";
+				 response.setStatus(404);
 			 }
 
-		} catch (JSONException e) {
-			System.err.println("AddPTParameterGrp: Error creating Strings");
-			response.setStatus(404);
-		} catch (Exception e) {
-			System.err.println("AddPTParameterGrp: Error creating Strings");
-		}	
+		
   
-	    // get current max position and add 1
-	    PreparedStatement pStmt = null;
-	    try {	
+			 // get current max position and add 1
+		    PreparedStatement pStmt = null;
+		    
 			pStmt= dBconn.conn.prepareStatement( 			
 					"SELECT max(pos) FROM p_parametergrps WHERE processtype=?");
 		   	pStmt.setInt(1, processTypeID);
 		   	position=dBconn.getSingleIntValue(pStmt)+1;
-		} catch (SQLException e) {
-			System.err.println("AddPTParameterGrp: Problems with SQL query");
-		} catch (Exception e) {
-			System.err.println("AddPTParameterGrp: Strange Problems");
-		}	
-		
-	    
-	    
-	    // add entry to database
-		try {	
+	
+		   	// add entry to database
 			pStmt= dBconn.conn.prepareStatement( 			
 					"INSERT INTO p_parametergrps values(default,?,?,?, NOW(),?)");
 		   	pStmt.setInt(1, processTypeID);
@@ -98,13 +86,6 @@ import org.json.JSONObject;
 	
 		
     // tell client that everything is fine
-    PrintWriter out = response.getWriter();
-	    try {
-	        JSONObject answer = new JSONObject();
-			answer.put("status", status);
-			out.println(answer.toString());
-		} catch (JSONException e) {
-			System.err.println("AddPTParameterGrp: Problems creating JSON answer");
-		}    
+	   Unidatoolkit.sendStandardAnswer(status, response);
 	}
 }	

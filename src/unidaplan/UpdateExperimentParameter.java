@@ -1,6 +1,5 @@
 package unidaplan;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -14,13 +13,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-	public class UpdateExperimentParameter extends HttpServlet {
-		private static final long serialVersionUID = 1L;
+public class UpdateExperimentParameter extends HttpServlet {
+	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("resource")
 	@Override
-	  public void doPost(HttpServletRequest request, HttpServletResponse response)
-	      throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response)
+	 throws ServletException, IOException {
 		
 		Authentificator authentificator = new Authentificator();
 		String status="ok";
@@ -53,9 +52,10 @@ import org.json.JSONObject;
 	    
 	    // delete any previous entries
 	 	DBconnection dBconn=new DBconnection();
-	    dBconn.startDB();	   
 	    PreparedStatement pStmt = null;
 	    try {	
+		    dBconn.startDB();	   
+
 			pStmt= dBconn.conn.prepareStatement( 			
 					 "DELETE FROM Expp_integer_data WHERE expp_id=? AND expp_param_id=?");
 		   	pStmt.setInt(1, expID);
@@ -93,6 +93,7 @@ import org.json.JSONObject;
 	    // look up the datatype in Database	    
 	    int dataType=-1;
 		try {	
+
 			pStmt= dBconn.conn.prepareStatement( 			
 					 "SELECT paramdef.datatype FROM Expp_param ep \n"
 					+"JOIN paramdef ON ep.definition=paramdef.id \n"
@@ -168,23 +169,22 @@ import org.json.JSONObject;
 				   }
 			}
 		
-		pStmt.executeUpdate();
-		pStmt.close();
-		dBconn.closeDB();
-	} catch (SQLException e) {
-		System.err.println("UpdateExperimentParameter: More Problems with SQL query");
-		status = "SQL Error";
-	} catch (JSONException e){
-		System.err.println("UpdateExperimentParameter: More Problems creating JSON");
-		status = "JSON Error";
-	} catch (Exception e) {
-		System.err.println("UpdateExperimentParameter: More Strange Problems");
-		e.printStackTrace();
-		status = "Misc. Error";
-	}
-		
-    // tell client that everything is fine
-    PrintWriter out = response.getWriter();
-	out.println("{\"status\":\""+status+"\"}");
+			pStmt.executeUpdate();
+			pStmt.close();
+			dBconn.closeDB();
+		} catch (SQLException e) {
+			System.err.println("UpdateExperimentParameter: More Problems with SQL query");
+			status = "SQL Error";
+		} catch (JSONException e){
+			System.err.println("UpdateExperimentParameter: More Problems creating JSON");
+			status = "JSON Error";
+		} catch (Exception e) {
+			System.err.println("UpdateExperimentParameter: More Strange Problems");
+			e.printStackTrace();
+			status = "Misc. Error";
+		}
+			
+	    // tell client that everything is fine
+	    Unidatoolkit.sendStandardAnswer(status, response);
 	}
 }	

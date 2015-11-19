@@ -39,10 +39,10 @@ import org.json.JSONObject;
 	    String newValue = null;
 	    String lang = null;
 		DBconnection dBconn=new DBconnection();
-	    dBconn.startDB();	   
 	    PreparedStatement pStmt = null;
 
 	    try {
+		    dBconn.startDB();	   
 			objectTypeID=jsonIn.getInt("sampletypeid");
 			String field=jsonIn.getString("field");
 			lang=jsonIn.getString("lang");

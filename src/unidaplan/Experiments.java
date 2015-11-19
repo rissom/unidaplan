@@ -32,9 +32,9 @@ import org.json.JSONObject;
 	    response.setCharacterEncoding("utf-8");
 	    PrintWriter out = response.getWriter();
 	 	DBconnection dBconn=new DBconnection();
-	    dBconn.startDB();
 	    JSONObject expPlans = new JSONObject();
 	    try {  
+		    dBconn.startDB();
 			pstmt= dBconn.conn.prepareStatement( 	
 			"SELECT exp_plan.ID AS ID, intd.value AS number, users.fullname as creator, exp_plan.name ,status " 
 			+"FROM exp_plan " 
@@ -49,10 +49,13 @@ import org.json.JSONObject;
 	      	  }
     	} catch (SQLException e) {
     		System.err.println("Experiments: Problems with SQL query for Stringkeys");
+    		response.setStatus(404);
     	} catch (JSONException e) {
 			System.err.println("Experiments: JSON Problem while getting Stringkeys");
+			response.setStatus(404);
     	} catch (Exception e2) {
 			System.err.println("Experiments: Strange Problem while getting Stringkeys");
+			response.setStatus(404);
     	} try {
 			  
 	        expPlans.put("strings", dBconn.getStrings(stringkeys));
@@ -61,7 +64,9 @@ import org.json.JSONObject;
 			dBconn.closeDB();
     	} catch (JSONException e) {
 			System.err.println("Experiments: JSON Problem while getting Stringkeys");
+			response.setStatus(404);
     	} catch (Exception e2) {
 			System.err.println("Experiments: Strange Problem while getting Stringkeys");
+			response.setStatus(404);
     	}
 	}}	

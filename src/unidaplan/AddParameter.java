@@ -32,8 +32,7 @@ import org.json.JSONObject;
 			System.err.println("AddParameter: Input is not valid JSON");
 		}
 	    
-	 	DBconnection dBconn=new DBconnection();
-	    dBconn.startDB();	   
+
 	    
 	    int stringKeyName=0;
 	    int stringKeyUnit=0;
@@ -42,6 +41,9 @@ import org.json.JSONObject;
 	    
 	    // generate strings for the name and the unit
 	    try {	
+		 	DBconnection dBconn=new DBconnection();
+		    dBconn.startDB();	   
+		    
 			 if (jsonIn.has("name")){
 				 JSONObject name=jsonIn.getJSONObject("name");
 				 String [] names = JSONObject.getNames(name);
@@ -69,15 +71,9 @@ import org.json.JSONObject;
 					 dBconn.addString(stringKeyDesc,descriptions[i],description.getString(descriptions[i]));
 				 }	 
 			 }
-		} catch (JSONException e) {
-			System.err.println("AddParameter: Error creating Strings");
-			response.setStatus(404);
-		} catch (Exception e) {
-			System.err.println("AddParameter: Error creating Strings");
-		}	
   
 	    PreparedStatement pstmt = null;
-		try {	
+
 			pstmt= dBconn.conn.prepareStatement( 			
 					"INSERT INTO paramdef values(default,?,?,?,?,?, NOW(),?)");
 		   	pstmt.setInt(1, stringKeyName);
@@ -94,10 +90,12 @@ import org.json.JSONObject;
 
 		} catch (SQLException e) {
 			System.err.println("AddParameter: Problems with SQL query");
+			response.setStatus(404);
+		} catch (JSONException e) {
+			System.err.println("AddParameter: Error JSON-Error");
 		} catch (Exception e) {
-			System.err.println("AddParameter: Strange Problems");
-		}	
-				
+			System.err.println("AddParameter: Error");
+		}					
     // tell client that everything is fine
 	Unidatoolkit.sendStandardAnswer(status, response);
 	}

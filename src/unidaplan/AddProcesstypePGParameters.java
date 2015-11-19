@@ -47,15 +47,16 @@ import org.json.JSONObject;
 		}
 
 	    
-	    // Initialize Database
-		DBconnection dBconn=new DBconnection();
-	    dBconn.startDB();	
-	    PreparedStatement pStmt = null;
-	    
-	    
+
 	    
 	    // add Parameters to the parametergroup
 		try {	
+		    // Initialize Database
+			DBconnection dBconn=new DBconnection();
+		    dBconn.startDB();	
+		    PreparedStatement pStmt = null;
+		    
+		    
 			for (int i=0; i<ids.length();i++){
 				pStmt= dBconn.conn.prepareStatement( 			
 						 "INSERT INTO p_parameters (ProcesstypeID,Parametergroup,compulsory,ID_Field,Hidden,pos,definition,StringKeyName,lastUser)"
@@ -73,19 +74,21 @@ import org.json.JSONObject;
 			}
 //			pStmt.executeBatch();
 			pStmt.close();
-		
+			dBconn.closeDB();	
+			
 			
 			
 		} catch (SQLException e) {
 			System.err.println("AddProcesstypePGParameters: Problems with SQL query");
 			status = "SQL Error";
+			response.setStatus(404);
 		} catch (Exception e) {
 			System.err.println("AddProcesstypePGParameters: Strange Problems");
 			status = "Misc Error (line70)";
+			response.setStatus(404);
 		}
 
-		dBconn.closeDB();
-		
+	
     // tell client that everything is fine
 	Unidatoolkit.sendStandardAnswer(status, response);
 	}

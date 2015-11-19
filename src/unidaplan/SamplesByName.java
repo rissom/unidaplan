@@ -45,7 +45,6 @@ public class SamplesByName extends HttpServlet {
 		response.setContentType("application/json");
         response.setCharacterEncoding("utf-8");
 	 	DBconnection DBconn=new DBconnection();
-	 	DBconn.startDB();
 	 	String name="";
 		try{
 			name=request.getParameter("name");
@@ -56,22 +55,23 @@ public class SamplesByName extends HttpServlet {
 	    PreparedStatement pstmt = null;
 		
 	    try {
-	       JSONArray typeArray=jsonIn.getJSONArray("sampletypes");
-	       if (typeArray.length()>0){
-		       String query="SELECT  samplenames.id AS sampleid, samplenames.name, samplenames.typeid \n"
+		 	DBconn.startDB();
+		 	JSONArray typeArray=jsonIn.getJSONArray("sampletypes");
+		 	if (typeArray.length()>0){
+		 		String query="SELECT  samplenames.id AS sampleid, samplenames.name, samplenames.typeid \n"
 		    		   		+"FROM samplenames \n" 
 		    		   		+"WHERE samplenames.name LIKE '%"+name+"%' AND "
 		    		   		+"samplenames.typeID = ANY ('{";
-		       String sep="";
-		       for (int i=0; i<typeArray.length(); i++){
+		 		String sep="";
+		 		for (int i=0; i<typeArray.length(); i++){
 		    	   query += sep+typeArray.getInt(i);
 		    	   sep=",";
-		       }
-		       query+= "}'::int[]) \n"
+		 		}
+		 		query+= "}'::int[]) \n"
 		    		   	+"ORDER BY samplenames.name \n" 
 		    		   	+"LIMIT 20 \n";
-		       samplelist=DBconn.jsonfromquery(query); 
-	       }
+		 		samplelist=DBconn.jsonfromquery(query); 
+		 	}
 		} catch (SQLException  eS) {
 			System.err.println("SQL Error in Sample by name");
 		} catch (JSONException js){

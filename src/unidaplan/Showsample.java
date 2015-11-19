@@ -37,7 +37,6 @@ public class Showsample extends HttpServlet {
     response.setCharacterEncoding("utf-8");
     PrintWriter out = response.getWriter();
  	DBconnection dBconn=new DBconnection();
-    dBconn.startDB();
 	int objID=1;      // variable initialisation
 	int typeid=1;
 	JSONObject jsSample=new JSONObject(); // variable initialisation
@@ -52,6 +51,7 @@ public class Showsample extends HttpServlet {
 	   
     // fetch name and type of the object from the database (samplenames is a view)
     try{
+        dBconn.startDB();
 		pstmt= dBconn.conn.prepareStatement( 	
 				"SELECT name, typeid, id FROM samplenames WHERE id=?");
 		pstmt.setInt(1,objID);

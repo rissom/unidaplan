@@ -46,10 +46,10 @@ public class SampleTypeParamGrps extends HttpServlet {
 	    JSONArray parameterGrps= null;		
 	    JSONArray sampleTypeGrps= null;
 	 	DBconnection dBconn=new DBconnection(); // New connection to the database
-	 	dBconn.startDB();
 	 	ArrayList<String> stringkeys = new ArrayList<String>(); 
 		 	
 	    try{
+		 	dBconn.startDB();
  			pStmt = dBconn.conn.prepareStatement(	
 			   "SELECT objecttypes.id, objecttypes.position, otgrp, objecttypes.string_key, "
  			  +"description, objecttypes.lastuser "

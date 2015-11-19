@@ -1,6 +1,5 @@
 package unidaplan;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -39,11 +38,11 @@ import org.json.JSONException;
 	    response.setCharacterEncoding("utf-8");
 
 	 	DBconnection DBconn=new DBconnection();
-	    DBconn.startDB();	   
 	    PreparedStatement pstmt = null;
 	    
 		
 		try {	
+		    DBconn.startDB();	   
 			pstmt= DBconn.conn.prepareStatement(  
 					"UPDATE exp_plan_processes SET position=? WHERE id=?");
 				for (int i=0; i<jsonIn.length();i++){
@@ -69,7 +68,6 @@ import org.json.JSONException;
 
 		
     // tell client that everything is fine
-    PrintWriter out = response.getWriter();
-	out.println("{\"status\":\""+status+"\"}");
+    Unidatoolkit.sendStandardAnswer(status, response);
 	}
 }	

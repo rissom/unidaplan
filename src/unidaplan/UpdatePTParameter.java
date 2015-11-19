@@ -44,7 +44,6 @@ import org.json.JSONObject;
 		}
 	    
 	 	DBconnection dBconn=new DBconnection(); // initialize database
-	    dBconn.startDB();	   
 	    PreparedStatement pStmt = null;
 	    
 		if (jsonIn.has("name")){
@@ -61,6 +60,7 @@ import org.json.JSONObject;
 		    
 			
 			try {
+			    dBconn.startDB();	   
 				// find the stringkey
 				pStmt=dBconn.conn.prepareStatement(
 						"SELECT stringkeyname FROM p_parameters WHERE id=?");

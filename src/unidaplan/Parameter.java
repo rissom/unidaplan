@@ -32,9 +32,9 @@ import org.json.JSONObject;
 	    response.setCharacterEncoding("utf-8");
 	    PrintWriter out = response.getWriter();
 	 	DBconnection dBconn=new DBconnection();
-	    dBconn.startDB();
 	    JSONObject result = new JSONObject();
 	    try {  
+		    dBconn.startDB();
 			pstmt= dBconn.conn.prepareStatement( 	
 			"SELECT paramdef.id,stringkeyname,stringkeyunit,datatype,maxdigits,id_description, "
 			+"(blabla.count) IS NULL as deletable "

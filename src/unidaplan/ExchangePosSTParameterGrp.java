@@ -1,7 +1,6 @@
 package unidaplan;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -34,7 +33,6 @@ public class ExchangePosSTParameterGrp extends HttpServlet {
 		request.setCharacterEncoding("utf-8");
 	    response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
-	    PrintWriter out = response.getWriter(); 
 		String in = request.getReader().readLine();
 	    String status="ok";
 	    
@@ -44,7 +42,6 @@ public class ExchangePosSTParameterGrp extends HttpServlet {
 		int pos1=0;
 		int pos2=0;
 	 	DBconnection DBconn=new DBconnection(); // New connection to the database
-	 	DBconn.startDB();
 
 		
 
@@ -63,23 +60,25 @@ public class ExchangePosSTParameterGrp extends HttpServlet {
 	 	
 		
 	    try {
-				// set new position id for PG 1.
-		        pstmt = DBconn.conn.prepareStatement(	
-		        	"UPDATE ot_parametergrps pg SET (pos,lastuser)=(?,?) WHERE ID=?");
-				pstmt.setInt(1,pos1);
-				pstmt.setInt(2,userID);
-				pstmt.setInt(3,paramGrpID1);
-				pstmt.executeUpdate();
-				pstmt.close();
-				
-				// set new position id for PG 2.
-		        pstmt = DBconn.conn.prepareStatement(	
-			        "UPDATE ot_parametergrps pg SET (pos,lastuser)=(?,?) WHERE ID=?");
-				pstmt.setInt(1,pos2);
-				pstmt.setInt(2,userID);
-				pstmt.setInt(3,paramGrpID2);
-				pstmt.executeUpdate();
-				pstmt.close();				
+		 	DBconn.startDB();
+
+			// set new position id for PG 1.
+	        pstmt = DBconn.conn.prepareStatement(	
+	        	"UPDATE ot_parametergrps pg SET (pos,lastuser)=(?,?) WHERE ID=?");
+			pstmt.setInt(1,pos1);
+			pstmt.setInt(2,userID);
+			pstmt.setInt(3,paramGrpID1);
+			pstmt.executeUpdate();
+			pstmt.close();
+			
+			// set new position id for PG 2.
+	        pstmt = DBconn.conn.prepareStatement(	
+		        "UPDATE ot_parametergrps pg SET (pos,lastuser)=(?,?) WHERE ID=?");
+			pstmt.setInt(1,pos2);
+			pstmt.setInt(2,userID);
+			pstmt.setInt(3,paramGrpID2);
+			pstmt.executeUpdate();
+			pstmt.close();				
 	    } catch (SQLException eS) {
 			System.err.println("Delete Process: SQL Error");
 			status="error: SQL error";

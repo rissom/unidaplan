@@ -45,11 +45,12 @@ import org.json.JSONObject;
 		}
 	    
 	 	DBconnection dBconn=new DBconnection(); // initialize database
-	    dBconn.startDB();	   
 	    PreparedStatement pStmt = null;
 	    
 		
 		try {
+		    dBconn.startDB();	   
+
 			// find the stringkey
 			pStmt=dBconn.conn.prepareStatement(
 					"SELECT stringkey FROM ot_parametergrps WHERE id=?");

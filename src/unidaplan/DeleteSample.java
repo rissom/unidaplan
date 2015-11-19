@@ -7,32 +7,22 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * Servlet implementation class DeleteSample
- */
+
 public class DeleteSample extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public DeleteSample() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
+ 
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
+		userID=userID+1;
+		userID=userID-1;
 		request.setCharacterEncoding("utf-8");
 	    response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
@@ -42,7 +32,6 @@ public class DeleteSample extends HttpServlet {
 		PreparedStatement pstmt = null; 	// Declare variables
 		int objID;
 	 	DBconnection DBconn=new DBconnection(); // New connection to the database
-	 	DBconn.startDB();
 	 	
 		// get Parameter for id
 		try{
@@ -54,6 +43,8 @@ public class DeleteSample extends HttpServlet {
 	 	
 		
 	    try {
+		 	DBconn.startDB();
+
 		 	if (objID>0){
 		 		Boolean DeletionPossible=true;			
 

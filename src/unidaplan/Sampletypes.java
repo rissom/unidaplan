@@ -37,11 +37,11 @@ import org.json.JSONObject;
 		JSONArray sampletypes = null;
 	    
 	    DBconnection DBconn=new DBconnection();   // New connection to the database
-	    DBconn.startDB();
 	    
 	 	ArrayList<String> stringkeys = new ArrayList<String>(); 
 
 	 	try {	
+		    DBconn.startDB();
 	 		pstmt= DBconn.conn.prepareStatement("SELECT ot.id,ot.string_key,ot.description, count(otg.id) "
 			+"FROM objecttypes ot "
 			+"LEFT JOIN ot_parametergrps otg ON otg.ot_id=ot.id "

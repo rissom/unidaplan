@@ -31,23 +31,20 @@ public class DeleteSampleType extends HttpServlet {
 		userID=userID-1;
 		int name = 0;
 		request.setCharacterEncoding("utf-8");
-	    response.setContentType("application/json");
-	    response.setCharacterEncoding("utf-8");
-	    PrintWriter out = response.getWriter(); 
 	    String status="ok";
 	    
 		PreparedStatement pStmt = null; 	// Declare variables
 		int sampleTypeID=0;
 		int description=0;
 	 	DBconnection dBconn=new DBconnection(); // New connection to the database
-	 	dBconn.startDB();
 	 	
 		// get Parameter for id
 		try{
-			 sampleTypeID=Integer.parseInt(request.getParameter("id")); }
+			dBconn.startDB();
+			sampleTypeID=Integer.parseInt(request.getParameter("id")); }
 		catch (Exception e1) {
 			sampleTypeID=-1;
-			System.err.print("Delete Sample Type: no sampleType ID given!");
+			System.err.print("DeleteSampleType: no sampleType ID given!");
 			status="error: no process ID";
 		}
 	 	
@@ -66,13 +63,12 @@ public class DeleteSampleType extends HttpServlet {
 					pStmt.close();
 				}
 		    } catch (SQLException eS) {
-				System.err.println("Delete Process: SQL Error");
+				System.err.println("DeleteSampleType: SQL Error");
 				status="error: SQL error";
 				eS.printStackTrace();
 			} catch (Exception e) {
-				System.err.println("Delete Sample Type: Some Error, probably JSON");
+				System.err.println("DeleteSampleType: Some Error, probably JSON");
 				status="error: JSON error";
-				e.printStackTrace();
 			}
 		 
 		  try {
@@ -87,11 +83,9 @@ public class DeleteSampleType extends HttpServlet {
 		    } catch (SQLException eS) {
 				System.err.println("Delete Process: SQL Error");
 				status="error: SQL error";
-				eS.printStackTrace();
 			} catch (Exception e) {
 				System.err.println("Delete Sample Type: Some Error, probably JSON");
 				status="error: JSON error";
-				e.printStackTrace();
 			}
 		 
 	    try {
@@ -107,11 +101,11 @@ public class DeleteSampleType extends HttpServlet {
 	    } catch (SQLException eS) {
 			System.err.println("Delete Process: SQL Error");
 			status="error: SQL error";
-			eS.printStackTrace();
+			response.setStatus(404);
 		} catch (Exception e) {
-			System.err.println("Delete Sample Type: Some Error, probably JSON");
-			status="error: JSON error";
-			e.printStackTrace();
+			System.err.println("DeleteSampleType: Some Error occurred");
+			status="error";
+			response.setStatus(404);
 		} 
 	    
 finally {
@@ -122,11 +116,11 @@ finally {
 	    	   }
 	        } catch (Exception e) {
 				status="error: error closing the database";
-				System.err.println("Delete Sample Type: Some Error closing the database");
+				System.err.println("DeleteSampleType: Some Error closing the database");
 				e.printStackTrace();
 		   	}
         }
-	    out.println("{\"status:\":\""+status+"\"}");
+	    Unidatoolkit.sendStandardAnswer(status, response);
 
 		
 	}

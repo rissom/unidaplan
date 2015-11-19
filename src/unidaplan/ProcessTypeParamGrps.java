@@ -46,10 +46,10 @@ public class ProcessTypeParamGrps extends HttpServlet {
 	    JSONArray parameterGrps= null;		
 	    JSONArray processTypeGrps= null;
 	 	DBconnection dBconn=new DBconnection(); // New connection to the database
-	 	dBconn.startDB();
 	 	ArrayList<String> stringkeys = new ArrayList<String>(); 
 		 	
 	    try{
+		 	dBconn.startDB();
  			pStmt = dBconn.conn.prepareStatement(	
 			   "SELECT processtypes.id, processtypes.position, ptgroup, processtypes.name, "
  			  +"description, processtypes.lastuser "

@@ -50,10 +50,10 @@ import org.json.JSONObject;
 		}
 
 	 	DBconnection dBconn=new DBconnection();
-	    dBconn.startDB();
 	    
 	    // Delete the old parameter.
 	    try{
+		    dBconn.startDB();
 		    pStmt= dBconn.conn.prepareStatement( "DELETE FROM p_string_data WHERE ProcessID=? AND P_Parameter_ID=?");
 		    pStmt.setInt(1, processID);
 		    pStmt.setInt(2, parameterID);

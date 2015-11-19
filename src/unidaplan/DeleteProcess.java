@@ -27,16 +27,14 @@ public class DeleteProcess extends HttpServlet {
 		
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
+		userID=userID+1;
+		userID=userID-1;
 		request.setCharacterEncoding("utf-8");
-	    response.setContentType("application/json");
-	    response.setCharacterEncoding("utf-8");
-	    PrintWriter out = response.getWriter(); 
 	    String status="ok";
 	    
 		PreparedStatement pstmt = null; 	// Declare variables
 		int processID;
 	 	DBconnection DBconn=new DBconnection(); // New connection to the database
-	 	DBconn.startDB();
 	 	
 		// get Parameter for id
 		try{
@@ -49,6 +47,7 @@ public class DeleteProcess extends HttpServlet {
 	 	
 		
 	    try {
+		 	DBconn.startDB();
 		 	if (processID>0){			
 				// delete the process
 		        pstmt = DBconn.conn.prepareStatement(	
@@ -77,7 +76,7 @@ public class DeleteProcess extends HttpServlet {
 				e.printStackTrace();
 		   	}
         }
-	    out.println("{\"status:\":\""+status+"\"}");
+	    Unidatoolkit.sendStandardAnswer(status, response);
 
 		
 	}

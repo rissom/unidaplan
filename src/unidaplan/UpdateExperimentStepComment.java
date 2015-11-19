@@ -49,11 +49,11 @@ import org.json.JSONObject;
 		}
 	    
 	 	DBconnection dBconn=new DBconnection();
-	    dBconn.startDB();	   
 	    PreparedStatement pstmt = null;
 	    
 		
 		try {
+		    dBconn.startDB();	   
 			// get the old string key.
 			pstmt=dBconn.conn.prepareStatement(
 					"SELECT note FROM exp_plan_steps WHERE id=?");

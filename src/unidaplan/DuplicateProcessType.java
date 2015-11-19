@@ -42,7 +42,6 @@ public class DuplicateProcessType extends HttpServlet {
  		int descKey=0;
  		int id = 0;
 	 	DBconnection dBconn=new DBconnection(); // New connection to the database
-	 	dBconn.startDB();
 	 	
 		// get Parameter for id
 		try{
@@ -56,6 +55,8 @@ public class DuplicateProcessType extends HttpServlet {
 		
 		//copy the strings
 		 try {
+			 	dBconn.startDB();
+
 			 	if (processTypeID>0){		
 			        pStmt = dBconn.conn.prepareStatement(	
 			        	"SELECT language,value FROM Stringtable WHERE string_key = (SELECT name FROM processtypes WHERE id=?)");

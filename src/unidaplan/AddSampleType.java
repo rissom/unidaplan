@@ -35,7 +35,6 @@ import org.json.JSONObject;
 	    response.setCharacterEncoding("utf-8");
 	    
 	 	DBconnection dBconn=new DBconnection();
-	    dBconn.startDB();	   
 	    
 	    int stringKeyName=0;
 	    int stringKeyDesc=0; 
@@ -82,6 +81,7 @@ import org.json.JSONObject;
   
 	    PreparedStatement pStmt = null;
 		try {	
+		    dBconn.startDB();	   
 			pStmt= dBconn.conn.prepareStatement( 			
 				"INSERT INTO objecttypes values(default,?,?,?,?,NOW(),?)");
 			pStmt.setInt(1, position);

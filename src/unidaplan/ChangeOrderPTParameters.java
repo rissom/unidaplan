@@ -30,15 +30,15 @@ import org.json.JSONObject;
 		} catch (JSONException e) {
 			System.err.println("ChangeOrderPTParameters: Input is not valid JSON");
 		}
-
-	    
-	    // Initialize Database
-		DBconnection dBconn=new DBconnection();
-	    dBconn.startDB();	
-	    PreparedStatement pStmt = null;
 	    
 	   
 	    try {
+	    	
+		    // Initialize Database
+			DBconnection dBconn=new DBconnection();
+		    dBconn.startDB();	
+		    PreparedStatement pStmt = null;
+
 	    	for (int i=0;i<jsonIn.length();i++){
 	    		JSONObject parameter=jsonIn.getJSONObject(i);
 	    		pStmt= dBconn.conn.prepareStatement( 			
@@ -50,6 +50,7 @@ import org.json.JSONObject;
 				pStmt.executeUpdate();
 	    	}
 			pStmt.close();
+			dBconn.closeDB();
 		} catch (JSONException e) {
 			System.err.println("ChangeOrderPTParameters: Error parsing ID-Field");
 			status = "Error parsing ID-Field";
@@ -64,7 +65,6 @@ import org.json.JSONObject;
 			response.setStatus(404);
 		}
 
-		dBconn.closeDB();
 		
     // tell client that everything is fine
     Unidatoolkit.sendStandardAnswer(status, response);

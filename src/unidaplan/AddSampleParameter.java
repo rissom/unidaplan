@@ -45,12 +45,12 @@ import org.json.JSONObject;
 		}
 
 	    
-	    // look up the datatype in Database	    
-	 	DBconnection DBconn=new DBconnection();
-	    DBconn.startDB();	   
-	    PreparedStatement pstmt = null;
-	    int type=-1;
-		try {	
+	    try {
+		    // look up the datatype in Database	    
+		 	DBconnection DBconn=new DBconnection();
+		    DBconn.startDB();	   
+		    PreparedStatement pstmt = null;
+		    int type=-1;
 			pstmt= DBconn.conn.prepareStatement( 			
 					 "SELECT paramdef.datatype FROM Ot_parameters otp \n"
 					+"JOIN paramdef ON otp.definition=paramdef.id \n"
@@ -59,17 +59,9 @@ import org.json.JSONObject;
 		   	JSONObject answer=DBconn.jsonObjectFromPreparedStmt(pstmt);
 			type= answer.getInt("datatype");
 
-		} catch (SQLException e) {
-			System.err.println("SaveSampleParameter: Problems with SQL query");
-		} catch (JSONException e){
-			System.err.println("SaveSampleParameter: Problems creating JSON");
-		} catch (Exception e) {
-			System.err.println("SaveSampleParameter: Strange Problems");
-		}	
-		
-		// differentiate according to type
-		try {
 			
+	
+			// differentiate according to type
 			if (jsonIn.getString("value").length()>0) {
 
 			switch (type) {
@@ -119,15 +111,17 @@ import org.json.JSONObject;
 			ResultSet pidResult=pstmt.executeQuery();
 			pidResult.next();
 			pstmt.close(); 		
+			DBconn.closeDB();
 	} catch (SQLException e) {
 		System.err.println("SaveSampleParameter: More Problems with SQL query");
-		e.printStackTrace();
+		response.setStatus(404);
 	} catch (JSONException e){
 		System.err.println("SaveSampleParameter: More Problems creating JSON");
+		response.setStatus(404);
 	} catch (Exception e) {
 		System.err.println("SaveSampleParameter: More Strange Problems");
+		response.setStatus(404);
 	}
-	DBconn.closeDB();
 
 		
     // tell client that everything is fine

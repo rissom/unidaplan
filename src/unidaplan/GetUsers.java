@@ -26,8 +26,8 @@ import org.json.JSONException;
 	    response.setCharacterEncoding("utf-8");
 	    PrintWriter out = response.getWriter();
 	 	DBconnection DBconn=new DBconnection();
-	    DBconn.startDB();
 	    try {  
+		    DBconn.startDB();
 			pstmt= DBconn.conn.prepareStatement( 	
 			"SELECT users.id, users.fullname, users.username, users.email, "
 		   +"                 users.blocked, users.lastchange, "

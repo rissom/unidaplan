@@ -46,10 +46,10 @@ import org.json.JSONObject;
 	    
 	    // look up the datatype in Database	    
 	 	DBconnection DBconn=new DBconnection();
-	    DBconn.startDB();	   
 	    PreparedStatement pstmt = null;
 	    int type=-1;
 		try {	
+		    DBconn.startDB();	   
 			pstmt= DBconn.conn.prepareStatement( 			
 					 "SELECT paramdef.datatype FROM Ot_parameters otp \n"
 					+"JOIN paramdef ON otp.definition=paramdef.id \n"

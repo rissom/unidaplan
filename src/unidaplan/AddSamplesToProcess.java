@@ -46,11 +46,12 @@ import org.json.JSONObject;
 		}
 	    
 	 	DBconnection DBconn=new DBconnection();
-	    DBconn.startDB();	   
 	    PreparedStatement pstmt = null;
 	    
 		
 		try {	
+		    DBconn.startDB();	   
+
 			JSONArray samples=(JSONArray) jsonIn.get("samples");
 			pstmt= DBconn.conn.prepareStatement( 
 					"SELECT sampleid FROM samplesinprocess WHERE processid=?");
@@ -119,8 +120,6 @@ import org.json.JSONObject;
 
 		
     // tell client that everything is fine
-    PrintWriter out = response.getWriter();
-    out.print("{\"processid\":"+processid+",");
-	out.println("\"status\":\""+status+"\"}");
+    Unidatoolkit.sendStandardAnswer(status, response);
 	}
 }	

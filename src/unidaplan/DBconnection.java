@@ -28,20 +28,21 @@ public class DBconnection  {
 
     
     
-  public void startDB() {
+  public void startDB() throws Exception {
 	try {
 		Class.forName(DEFAULT_DRIVER);
 		conn = DriverManager.getConnection(dbURL2, user, pass);
 	} catch (SQLException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
+		System.err.println("DBconnection: Error connecting to database! Is PostgreSQL running?");
+		throw new Exception();
 	} catch (ClassNotFoundException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
+		System.err.println("DBconnection: Error connecting to database. Class not found.");
+		throw new Exception();
 	}
   	if (conn==null) {
     	System.err.println("DBconnection: conn null! " );
     	System.err.println("DBconnection: Error connecting to database");
+		throw new Exception();
     } 
   }
   
@@ -50,8 +51,7 @@ public class DBconnection  {
 	try {
 		conn.close();
 	} catch (SQLException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
+		System.err.println("Error closing database");
 	}
   }
 
@@ -77,10 +77,8 @@ public class DBconnection  {
           stmt.close();
   	  } catch (SQLException e) {   // Exception for SQL database
   		  System.err.println("DBconnection: Problem with the database! Error! ");
-  		  e.printStackTrace();
   	  } catch (Exception e) {
   		  System.err.println("DBconnection: Some problem during first database query. Error! ");
-	  		  e.printStackTrace();
 	  }
 	  return result;
   }

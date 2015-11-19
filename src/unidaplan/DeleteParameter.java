@@ -33,11 +33,9 @@ public class DeleteParameter extends HttpServlet {
 	    response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
 	    String status="ok";
-	    
-		PreparedStatement pstmt = null; 	// Declare variables
 		int processID;
-	 	DBconnection DBconn=new DBconnection(); // New connection to the database
-	 	DBconn.startDB();
+
+	
 	 	
 		// get Parameter for id
 		try{
@@ -50,6 +48,10 @@ public class DeleteParameter extends HttpServlet {
 	 	
 		
 	    try {
+	    	PreparedStatement pstmt = null; 	
+		 	DBconnection DBconn=new DBconnection(); // New connection to the database
+		 	DBconn.startDB();
+		 	
 		 	if (processID>0){			
 				// delete the process
 		        pstmt = DBconn.conn.prepareStatement(	
@@ -58,26 +60,16 @@ public class DeleteParameter extends HttpServlet {
 				pstmt.executeUpdate();
 				pstmt.close();
 			}
+		 	DBconn.closeDB();  // close the database 
 	    } catch (SQLException eS) {
 			System.err.println("Delete Process: SQL Error");
 			status="error: SQL error";
-			eS.printStackTrace();
+			response.setStatus(404);
 		} catch (Exception e) {
 			System.err.println("DeleteParameter: Some Error, probably JSON");
 			status="error: JSON error";
-			e.printStackTrace();
-		} finally {
-		try{	
-	         
-	    	   if (DBconn.conn != null) { 
-	    		   DBconn.closeDB();  // close the database 
-	    	   }
-	        } catch (Exception e) {
-				status="error: error closing the database";
-				System.err.println("DeleteParameter: Some Error closing the database");
-				e.printStackTrace();
-		   	}
-        }
+			response.setStatus(404);
+ 		} 
   
 	    // tell client that everything is fine
 	    Unidatoolkit.sendStandardAnswer(status,response);

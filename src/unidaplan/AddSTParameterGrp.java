@@ -1,6 +1,5 @@
 package unidaplan;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -40,7 +39,6 @@ import org.json.JSONObject;
 	    response.setCharacterEncoding("utf-8");
 	    
 	 	DBconnection dBconn=new DBconnection();
-	    dBconn.startDB();	   
 	    
 	    int stringKeyName=0;
 	    
@@ -63,19 +61,23 @@ import org.json.JSONObject;
 			response.setStatus(404);
 		} catch (Exception e) {
 			System.err.println("AddSTParameterGrp: Error creating Strings");
+			response.setStatus(404);
 		}	
   
 	    // get current max position and add 1
 	    PreparedStatement pStmt = null;
 	    try {	
+		    dBconn.startDB();	   
 			pStmt= dBconn.conn.prepareStatement( 			
 					"SELECT max(pos) FROM ot_parametergrps WHERE ot_id=?");
 		   	pStmt.setInt(1, sampleTypeID);
 		   	position=dBconn.getSingleIntValue(pStmt)+1;
 		} catch (SQLException e) {
 			System.err.println("AddSTParameterGrp: Problems with SQL query");
+			response.setStatus(404);
 		} catch (Exception e) {
 			System.err.println("AddSTParameterGrp: Strange Problems");
+			response.setStatus(404);
 		}	
 		
 	    
@@ -91,20 +93,15 @@ import org.json.JSONObject;
 		   	pStmt.executeUpdate();
 		} catch (SQLException e) {
 			System.err.println("AddSTParameterGrp: Problems with SQL query");
+			response.setStatus(404);
 		} catch (Exception e) {
 			System.err.println("AddSTParameterGrp: Strange Problems");
+			response.setStatus(404);
 		}	
 		
 	
 		
     // tell client that everything is fine
-    PrintWriter out = response.getWriter();
-	    try {
-	        JSONObject answer = new JSONObject();
-			answer.put("status", status);
-			out.println(answer.toString());
-		} catch (JSONException e) {
-			System.err.println("AddSTParameterGrp: Problems creating JSON answer");
-		}    
+    Unidatoolkit.sendStandardAnswer(status, response);
 	}
 }	

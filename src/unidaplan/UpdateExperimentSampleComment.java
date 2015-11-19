@@ -49,11 +49,11 @@ import org.json.JSONObject;
 		}
 	    
 	 	DBconnection dBconn=new DBconnection();
-	    dBconn.startDB();	   
 	    PreparedStatement pstmt = null;
 	    
 		
 		try {
+		    dBconn.startDB();	   
 			// get the old string key.
 			pstmt=dBconn.conn.prepareStatement(
 					"SELECT note FROM expp_samples WHERE id=?");
@@ -95,12 +95,15 @@ import org.json.JSONObject;
 		} catch (SQLException e) {
 			System.err.println("UpdateExperimentProcessComment: Problems with SQL query");
 			status="SQL error";
+			response.setStatus(404);
 		} catch (JSONException e){
 			System.err.println("UpdateExperimentProcessComment: Problems creating JSON");
 			status="JSON error";
+			response.setStatus(404);
 		} catch (Exception e) {
 			System.err.println("UpdateExperimentProcessComment: Strange Problems");
 			status="error";
+			response.setStatus(404);
 		}	
 		
 		dBconn.closeDB();

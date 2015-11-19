@@ -1,7 +1,6 @@
 package unidaplan;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -23,15 +22,11 @@ public class DeleteExperimentParameter extends HttpServlet {
 		userID=userID+1; // REMOVE ME!!!
 		userID=userID-1; // REMOVE ME!!!
 		request.setCharacterEncoding("utf-8");
-	    response.setContentType("application/json");
-	    response.setCharacterEncoding("utf-8");
-	    PrintWriter out = response.getWriter(); 
 	    String status="ok";
 	    
 		PreparedStatement pstmt = null; 	// Declare variables
 		int experimentID;
 	 	DBconnection DBconn=new DBconnection(); // New connection to the database
-	 	DBconn.startDB();
 	 	
 		// get Parameter for id
 		try{
@@ -44,6 +39,7 @@ public class DeleteExperimentParameter extends HttpServlet {
 	 	
 		
 	    try {
+		 	DBconn.startDB();
 		 	if (experimentID>0){			
 				// delete the experiment
 		        pstmt = DBconn.conn.prepareStatement(	
@@ -72,7 +68,7 @@ public class DeleteExperimentParameter extends HttpServlet {
 				e.printStackTrace();
 		   	}
         }
-	    out.println("{\"status:\":\""+status+"\"}");
+	    Unidatoolkit.sendStandardAnswer(status, response);
 
 		
 	}

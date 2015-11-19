@@ -46,11 +46,12 @@ import org.json.JSONObject;
 		}
 
 	 	DBconnection DBconn=new DBconnection();
-	    DBconn.startDB();	   
-	    PreparedStatement pstmt = null;
+
 	    
 		
 		try {	
+		    DBconn.startDB();	   
+		    PreparedStatement pstmt = null;
 			if (jsonIn.has("ancestors")){
 				JSONArray newAncestors=(JSONArray) jsonIn.get("ancestors");
 				pstmt= DBconn.conn.prepareStatement( 

@@ -1,6 +1,5 @@
 package unidaplan;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -39,12 +38,14 @@ public class AddProcess extends HttpServlet {
 			response.setStatus(404);
 		}
 	    
-	    // create entry in the database	    
-	 	DBconnection dBconn=new DBconnection();
-	    dBconn.startDB();	   
-	    PreparedStatement pstmt = null;
+
 	    
 		try{
+		    // create entry in the database	    
+		 	DBconnection dBconn=new DBconnection();
+		    dBconn.startDB();	   
+		    PreparedStatement pstmt = null;
+			
 			// find the current maximum of process number parameter
 			pstmt= dBconn.conn.prepareStatement( 	
 			"SELECT n.value as maximum, pp.id AS parameterid "
@@ -60,37 +61,15 @@ public class AddProcess extends HttpServlet {
 		   		lastProcessID= answer.getInt("maximum");
 		   	}
 			pstmt.close();
-		} catch (SQLException e) {
-			System.err.println("AddProcess: Problems with SQL query1");
-			status="SQL error";
-		} catch (JSONException e){
-			System.err.println("AddProcess: Problems with JSON");
-			status="JSON error";
-		} catch (Exception e) {
-			System.err.println("AddProcess: Strange Problems");
-			status="error";
-		}	    
 
-		try {
 			pstmt= dBconn.conn.prepareStatement( 			
 					 "INSERT INTO processes values(default, ?, NOW(), ?) RETURNING id");
 		   	pstmt.setInt(1, processTypeID);
 		   	pstmt.setInt(2, userID);
-		   	JSONObject answer=dBconn.jsonObjectFromPreparedStmt(pstmt);
+		   	JSONObject newProcessID=dBconn.jsonObjectFromPreparedStmt(pstmt);
 		   	pstmt.close();
-			id= answer.getInt("id");
-		} catch (SQLException e) {
-			System.err.println("AddProcess: Problems with SQL query1");
-			status="SQL error";
-		} catch (JSONException e){
-			System.err.println("AddProcess: Problems with JSON");
-			status="JSON error";
-		} catch (Exception e) {
-			System.err.println("AddProcess: Strange Problems");
-			status="error";
-		}	
-	
-		try{
+			id= newProcessID.getInt("id");
+
 	   	
 			// write processnumber 
 	    	pstmt= dBconn.conn.prepareStatement("INSERT INTO p_integer_data VALUES(default, ?,"
@@ -144,12 +123,9 @@ public class AddProcess extends HttpServlet {
 			System.err.println("AddProcess: Strange Problems");
 			status="error";
 		}
-			// Preset sample name parameters
 		
 			
 	    // tell client that everything is fine
-	    PrintWriter out = response.getWriter();
-	    out.print("{\"id\":"+id+",");
-		out.println("\"status\":\""+status+"\"}");
+	    Unidatoolkit.sendStandardAnswer(status, response);
 	}
 }	

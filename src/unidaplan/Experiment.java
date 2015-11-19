@@ -34,7 +34,6 @@ import org.json.JSONObject;
 	    response.setCharacterEncoding("utf-8");
 	    PrintWriter out = response.getWriter();
 	 	DBconnection dBconn=new DBconnection();
-	    dBconn.startDB();
 	    JSONObject expPlans = new JSONObject();
 	    int id=-1;
 	    
@@ -55,6 +54,7 @@ import org.json.JSONObject;
 			response.setStatus(404);
 	   	}
 	    try {  
+		    dBconn.startDB();
 	    	// get basic experiment data (creator, id, name, status, number)
 			pstmt= dBconn.conn.prepareStatement( 	
 			"SELECT exp_plan.ID AS ID,users.fullname as creator, exp_plan.name ,status , intd.value AS number "

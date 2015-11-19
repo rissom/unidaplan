@@ -38,12 +38,12 @@ public class AvailableProcesstypes extends HttpServlet {
 	    JSONArray processList= null;
 	    JSONArray recipes= null;		
 	 	DBconnection DBconn=new DBconnection(); // New connection to the database
-	 	DBconn.startDB();
 	 			 	
 	 	ArrayList<String> stringkeys = new ArrayList<String>(); 
 		 	
 		 	
 	 		try{
+	 		 	DBconn.startDB();
 	 			pstmt = DBconn.conn.prepareStatement(	
 				  "SELECT id, name, description  FROM processtypes");
 	 			processList=DBconn.jsonArrayFromPreparedStmt(pstmt); // get ResultSet from the database using the query

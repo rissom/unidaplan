@@ -41,7 +41,6 @@ public class DeleteProcessType extends HttpServlet {
 		int name = 0;
 		int description=0;
 	 	DBconnection dBconn=new DBconnection(); // New connection to the database
-	 	dBconn.startDB();
 	 	
 		// get Parameter for id
 		try{
@@ -53,6 +52,8 @@ public class DeleteProcessType extends HttpServlet {
 		}
 	 	
 		 try {
+			 	dBconn.startDB();
+
 			 	if (processTypeID>0){			
 					// get string_key_table references for later deletion
 			        pStmt = dBconn.conn.prepareStatement(	

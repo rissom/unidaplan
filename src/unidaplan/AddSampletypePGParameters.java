@@ -45,15 +45,13 @@ import org.json.JSONObject;
 		}
 
 	    
-	    // Initialize Database
-		DBconnection dBconn=new DBconnection();
-	    dBconn.startDB();	
-	    PreparedStatement pStmt = null;
-	    
-	    
 	    
 	    // add Parameters to the parametergroup
 		try {	
+		    // Initialize Database
+			DBconnection dBconn=new DBconnection();
+		    PreparedStatement pStmt = null;
+		    dBconn.startDB();	
 			for (int i=0; i<ids.length();i++){
 				pStmt= dBconn.conn.prepareStatement( 			
 						 "INSERT INTO ot_parameters (objecttypesID,parametergroup,compulsory,id_field,hidden,pos,definition,stringkeyname,lastuser)"
@@ -71,8 +69,8 @@ import org.json.JSONObject;
 			}
 //			pStmt.executeBatch();
 			pStmt.close();
-		
-			
+			dBconn.closeDB();
+
 			
 		} catch (SQLException e) {
 			System.err.println("AddSampletypePGParameters: Problems with SQL query");
@@ -82,7 +80,6 @@ import org.json.JSONObject;
 			status = "Misc Error (line70)";
 		}
 
-		dBconn.closeDB();
 		
     // tell client that everything is fine
 	Unidatoolkit.sendStandardAnswer(status, response);

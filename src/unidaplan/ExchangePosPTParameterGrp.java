@@ -44,12 +44,12 @@ public class ExchangePosPTParameterGrp extends HttpServlet {
 		int pos1=0;
 		int pos2=0;
 	 	DBconnection DBconn=new DBconnection(); // New connection to the database
-	 	DBconn.startDB();
 
 		
 
 	    JSONObject jsonIn = null;	    
 	    try {
+	    	
 	    	jsonIn = new JSONObject(in);
 			paramGrpID1=jsonIn.getInt("id1"); 
 			paramGrpID2=jsonIn.getInt("id2"); 
@@ -63,23 +63,25 @@ public class ExchangePosPTParameterGrp extends HttpServlet {
 	 	
 		
 	    try {
-				// set new position id for PG 1.
-		        pstmt = DBconn.conn.prepareStatement(	
-		        	"UPDATE p_parametergrps pg SET (pos,lastuser)=(?,?) WHERE ID=?");
-				pstmt.setInt(1,pos1);
-				pstmt.setInt(2,userID);
-				pstmt.setInt(3,paramGrpID1);
-				pstmt.executeUpdate();
-				pstmt.close();
-				
-				// set new position id for PG 2.
-		        pstmt = DBconn.conn.prepareStatement(	
-			        "UPDATE p_parametergrps pg SET (pos,lastuser)=(?,?) WHERE ID=?");
-				pstmt.setInt(1,pos2);
-				pstmt.setInt(2,userID);
-				pstmt.setInt(3,paramGrpID2);
-				pstmt.executeUpdate();
-				pstmt.close();				
+		 	DBconn.startDB();
+
+			// set new position id for PG 1.
+	        pstmt = DBconn.conn.prepareStatement(	
+	        	"UPDATE p_parametergrps pg SET (pos,lastuser)=(?,?) WHERE ID=?");
+			pstmt.setInt(1,pos1);
+			pstmt.setInt(2,userID);
+			pstmt.setInt(3,paramGrpID1);
+			pstmt.executeUpdate();
+			pstmt.close();
+			
+			// set new position id for PG 2.
+	        pstmt = DBconn.conn.prepareStatement(	
+		        "UPDATE p_parametergrps pg SET (pos,lastuser)=(?,?) WHERE ID=?");
+			pstmt.setInt(1,pos2);
+			pstmt.setInt(2,userID);
+			pstmt.setInt(3,paramGrpID2);
+			pstmt.executeUpdate();
+			pstmt.close();				
 	    } catch (SQLException eS) {
 			System.err.println("Delete Process: SQL Error");
 			status="error: SQL error";
@@ -89,19 +91,16 @@ public class ExchangePosPTParameterGrp extends HttpServlet {
 			status="error: JSON error";
 			e.printStackTrace();
 		} finally {
-			
-			
-			
-		try{	
+			try{	
 	    	   if (DBconn.conn != null) { 
 	    		   DBconn.closeDB();  // close the database 
 	    	   }
-	        } catch (Exception e) {
+		    } catch (Exception e) {
 				status="error: error closing the database";
 				System.err.println("ExchangePosPTParameterGrp: Some Error closing the database");
-				e.printStackTrace();
-		   	}
-        }
+				response.setStatus(404);
+	 		}
+		}
 	    
 	    
 	    
@@ -113,6 +112,6 @@ public class ExchangePosPTParameterGrp extends HttpServlet {
 			System.err.println("DeletePTParameterGrp: Problems creating JSON answer");
     	}
 
-
-}}
+	}
+}
 

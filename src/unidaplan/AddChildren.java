@@ -1,10 +1,8 @@
 package unidaplan;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -45,12 +43,14 @@ import org.json.JSONObject;
 			response.setStatus(404);
 		}
 
-	 	DBconnection DBconn=new DBconnection();
-	    DBconn.startDB();	   
-	    PreparedStatement pstmt = null;
+
 	    
 		
 		try {	
+		 	DBconnection DBconn=new DBconnection();
+		    DBconn.startDB();	   
+		    PreparedStatement pstmt = null;
+		    
 			if (jsonIn.has("children")){
 				JSONArray newChildren=(JSONArray) jsonIn.get("children");
 				pstmt= DBconn.conn.prepareStatement( 
@@ -104,6 +104,9 @@ import org.json.JSONObject;
 			pstmt.executeBatch();
 			pstmt.close();}
 			
+			
+			DBconn.closeDB();
+
 
 		} catch (SQLException e) {
 			System.err.println("AddChildren: Problems with SQL query");
@@ -117,12 +120,9 @@ import org.json.JSONObject;
 			status="error";
 		}	
 		
-		DBconn.closeDB();
 
 		
     // tell client that everything is fine
-    PrintWriter out = response.getWriter();
-    out.print("{\"processid\":"+sampleID+",");
-	out.println("\"status\":\""+status+"\"}");
+    Unidatoolkit.sendStandardAnswer(status, response);
 	}
 }	

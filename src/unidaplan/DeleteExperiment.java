@@ -1,7 +1,6 @@
 package unidaplan;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -23,15 +22,9 @@ public class DeleteExperiment extends HttpServlet {
 		userID=userID+1; // REMOVE ME!!!
 		userID=userID-1; // REMOVE ME!!!
 		request.setCharacterEncoding("utf-8");
-	    response.setContentType("application/json");
-	    response.setCharacterEncoding("utf-8");
-	    PrintWriter out = response.getWriter(); 
 	    String status="ok";
-	    
-		PreparedStatement pstmt = null; 	// Declare variables
-		int experimentID;
-	 	DBconnection DBconn=new DBconnection(); // New connection to the database
-	 	DBconn.startDB();
+		int experimentID=-1;
+
 	 	
 		// get Parameter for id
 		try{
@@ -44,6 +37,9 @@ public class DeleteExperiment extends HttpServlet {
 	 	
 		
 	    try {
+			PreparedStatement pstmt = null; 	// Declare variables
+		 	DBconnection DBconn=new DBconnection(); // New connection to the database
+		 	DBconn.startDB();
 		 	if (experimentID>0){			
 				// delete the experiment
 		        pstmt = DBconn.conn.prepareStatement(	
@@ -52,29 +48,21 @@ public class DeleteExperiment extends HttpServlet {
 				pstmt.executeUpdate();
 				pstmt.close();
 			}
+ 		   DBconn.closeDB();  // close the database 
+
 	    } catch (SQLException eS) {
 			System.err.println("Delete Experiment: SQL Error");
 			status="error: SQL error";
-			eS.printStackTrace();
+			response.setStatus(404);
 		} catch (Exception e) {
 			System.err.println("Delete Experiment: Some Error, probably JSON");
 			status="error: JSON error";
-			e.printStackTrace();
-		} finally {
-		try{	
-	         
-	    	   if (DBconn.conn != null) { 
-	    		   DBconn.closeDB();  // close the database 
-	    	   }
-	        } catch (Exception e) {
-				status="error: error closing the database";
-				System.err.println("Delete Experiment: Some Error closing the database");
-				e.printStackTrace();
-		   	}
-        }
-	    out.println("{\"status:\":\""+status+"\"}");
+			response.setStatus(404);
+		}
+	    
+	    
+	    Unidatoolkit.sendStandardAnswer(status, response);
 
-		
 	}
 
 

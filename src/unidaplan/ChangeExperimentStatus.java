@@ -1,7 +1,6 @@
 package unidaplan;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -22,10 +21,11 @@ public class ChangeExperimentStatus extends HttpServlet {
 			int userID=authentificator.GetUserID(request,response);
 			userID=userID+1; // Remove me!!
 			userID=userID-1;
+			String status="ok";
 		    request.setCharacterEncoding("utf-8");
 		    // look up the datatype in Database	    
 		    int id=-1;
-		    int status=-1;
+		    int processstatus=-1;
 		  	try {
 		   		 id=Integer.parseInt(request.getParameter("id")); 
 		    } catch (Exception e1) {
@@ -33,35 +33,35 @@ public class ChangeExperimentStatus extends HttpServlet {
 				response.setStatus(404);
 		   	}
 		    try {
-		    	status=Integer.parseInt(request.getParameter("status")); 
+		    	processstatus=Integer.parseInt(request.getParameter("status")); 
 			} catch (Exception e1) {
 		   		System.err.println("no status given!");
+		   		status="no status given!";
 				response.setStatus(404);
 			}
 		    
-		 	DBconnection DBconn=new DBconnection();
-		    DBconn.startDB();	   
-		    PreparedStatement pstmt = null;
+
 			try {	
+			 	DBconnection DBconn=new DBconnection();
+			    PreparedStatement pstmt = null;
+			    DBconn.startDB();	   
 				pstmt= DBconn.conn.prepareStatement( 			
 						 "UPDATE exp_plan SET status=? WHERE id=?");
 			   	pstmt.setInt(2, id);
-			   	pstmt.setInt(1, status);
+			   	pstmt.setInt(1, processstatus);
 			   	pstmt.executeUpdate();
 			} catch (SQLException e) {
 				System.err.println("SaveSampleParameter: Problems with SQL query");
+				status="SaveSampleParameter: Problems with SQL query";
+				response.setStatus(404);
 			} catch (Exception e) {
 				System.err.println("SaveSampleParameter: Strange Problems");
+				status="SaveSampleParameter: Strange Problems";
+				response.setStatus(404);
 			}
 			
 	    // tell client that everything is fine
-	    PrintWriter out = response.getWriter();
-	    if (status==-1 || id==-1) {
-		    out.print("{\"id\":"+id+",");
-			out.println("\"status\":"+status+"}");	
-	    } else {
-	    out.print("{\"id\":"+id+",");
-		out.println("\"status\":\"ok\"}");
-		}
+	    Unidatoolkit.sendStandardAnswer(status, response);
+	    
 	}	
 }
