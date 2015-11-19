@@ -21,6 +21,8 @@ import org.json.JSONObject;
 	      throws ServletException, IOException {	
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
+		userID=userID+1;
+		userID=userID-1;
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
 	    JSONObject  jsonIn = null;	    

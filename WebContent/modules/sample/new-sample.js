@@ -18,7 +18,7 @@ function newSampleController(restfactory,$state,key2string,types){
 
 		
 	this.addSample = function() {
-		var promise = restfactory.GET("add-sample?sampletypeid="+this.sampletype.id)
+		var promise = restfactory.POST("add-sample?sampletypeid="+this.sampletype.id)
 		promise.then(function(rest){
 			if (rest.data.status=="ok") {
 				$state.go('sample',{sampleID:rest.data.id})

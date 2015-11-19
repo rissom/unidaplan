@@ -61,7 +61,7 @@ function editSearchController(restfactory,$state,$translate,key2string,sampleTyp
 	
 	this.getSampleType = function(id) {sampleTypeID
 		return sampleService.loadSample(sampleID)
-	},
+	}
    
 }  
 

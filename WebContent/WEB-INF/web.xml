@@ -27,6 +27,18 @@
     <servlet-name>SamplesByName</servlet-name>
     <url-pattern>/samples_by_name</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <description>shows all parameters for one sample type</description>
+    <display-name>AllSampleTypeParams</display-name>
+    <servlet-name>AllSampleTypeParams</servlet-name>
+    <servlet-class>unidaplan.AllSampleTypeParams</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AllSampleTypeParams</servlet-name>
+    <url-pattern>/all-sample-type-params</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
     <description>shows available sample types</description>
     <display-name>Sampletypes</display-name>
