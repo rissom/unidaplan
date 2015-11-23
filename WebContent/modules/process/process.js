@@ -83,13 +83,6 @@ function process($state,$stateParams,avSampleTypeService,types,$modal,processDat
   
   
   
-  var reload=function() {
-	    var current = $state.current;
-	    var params = angular.copy($stateParams);
-	    return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
-  }
-	
-  
   
   this.paramKeyUp = function(keyCode,newValue,parameter) {
 		if (keyCode===13) {				// Return key pressed

@@ -82,6 +82,21 @@
 	
 </div>
 <br/><br/><br/>
+
+<div class="col-xs-6">
+Modus:
+	<select
+    class="form-control" 
+	style="width:300px;"
+	ng-model="editSearchCtrl.mode"
+	ng-change="editSearchCtrl.changeMode()"
+	ng-selected="$first">
+		<option ng-repeat="mode in editSearchCtrl.modes" value="{{$index+1}}" ng-selected="$index==0">
+			{{mode}}		
+		</option>
+	</select>
+</div>
+<br/><br/><br/><br/>
 <table class="table">
 	<thead class=parametertablehead>
 	<tr>

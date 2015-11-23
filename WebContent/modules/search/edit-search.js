@@ -1,7 +1,8 @@
 (function(){
 'use strict';
 
-function editSearchController(avParameters,restfactory,$state,$translate,$modal,key2string,sampleTypes,ptypes,languages){
+function editSearchController(avParameters,restfactory,$state,$translate,$modal,
+		key2string,sampleTypes,ptypes,search,languages){
 		
 	var thisController = this;
 	
@@ -10,8 +11,8 @@ function editSearchController(avParameters,restfactory,$state,$translate,$modal,
 	this.processTypes=ptypes;
 				
 	this.searchTypes=[$translate.instant('Sample'),$translate.instant('Process'),$translate.instant('object specific processparameters')];
-	
-	this.groups = [$translate.instant('public'),$translate.instant('only me')]
+		
+	this.modes=[$translate.instant("All of the following"),$translate.instant("One of the following")];
 	
 	this.operators = ["⋀","⋁"];
 	
@@ -48,21 +49,53 @@ function editSearchController(avParameters,restfactory,$state,$translate,$modal,
 		// Parameter laden
 	}
 	
-//	this.groups += alle meine Projektgruppen
+	this.groups = [$translate.instant('public'),$translate.instant('only me')]
+	//	this.groups += alle meine Projektgruppen
+
+
 	
 	this.keyUp = function(keyCode,newValue,parameter) {
 		if (keyCode===13) {				// Return key pressed
 		}
 	}
+	
+	
 		
 	this.addSearch = function() {
 		// searchService.saveSearch
 	}
 	
+	
+	
+	this.edit = function(field){
+		console.log("field:",field)
+		thisController.editFieldNL1 = (field=="NL1");
+		thisController.editFieldNL2 = (field=="NL2");
+		thisController.newNameL1=thisController.nameL1;
+		thisController.newNameL2=thisController.nameL2;
+	}
+		
+	
+	
+	this.keyUp = function(keyCode,name,language) {
+		if (keyCode===13) {				// Return key pressed
+			var promise=SearchService.updateSearchName(name, language, search.id);	
+			promise.then(function(){reload();},function(){console.log("error")});
+		}
+		if (keyCode===27) {		// Escape key pressed
+			  thisController.editmode=false;
+		}
+	}
+
+	
+	
+	
 	this.getSampleType = function(id) {sampleTypeID
 		return sampleService.loadSample(sampleID)
 	}
    
+	
+	
     this.addParameter = function () {
     	console.log ("Add Parameter");
 		var modalInstance = $modal.open({
@@ -88,6 +121,7 @@ function editSearchController(avParameters,restfactory,$state,$translate,$modal,
 }  
 
 
-angular.module('unidaplan').controller('editSearchController',['avParameters','restfactory','$state','$translate','$modal','key2string','sampleTypes','ptypes','languages',editSearchController]);
+angular.module('unidaplan').controller('editSearchController',['avParameters','restfactory','$state','$translate',
+                          '$modal','key2string','sampleTypes','ptypes','search','languages',editSearchController]);
 
 })();

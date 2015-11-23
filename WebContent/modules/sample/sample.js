@@ -21,22 +21,6 @@ function sampleController(sample,$state,$stateParams,$modal,$filter,types,sample
 	if (this.previous) {this.previous.typeid = sample.typeid;}
 	this.typestringkey = sample.typestringkey;
 	this.typeid = sample.typeid;
-
-	
-	var reload=function() {
-	    var current = $state.current;
-	    var params = angular.copy($stateParams);
-	    params.editmode=thisController.editmode;
-	    return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
-	}
-	
-	// language change
-//	$rootScope.$on('$translateChangeStart', function(event, args) {
-//		avSampleTypeService.translate();
-//		avProcessTypeService.translate();
-//		sampleService.translate();
-//		reload();
-//	});
 	
 	
 	// returns the translated name of a process

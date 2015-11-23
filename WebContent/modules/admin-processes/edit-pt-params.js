@@ -53,14 +53,7 @@ function editPtParamsController($state,$modal,$stateParams,$translate,avParamete
 	  thisController.newNameL2=thisController.nameL2;
   }
 	
-  
-  
-  var reload=function() {
-	  var current = $state.current;
-	  var params = angular.copy($stateParams);
-	  return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
-  }
-  
+
   
   
   this.editNL1= function(parameter){
