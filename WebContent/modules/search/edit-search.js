@@ -1,8 +1,8 @@
 (function(){
 'use strict';
 
-function editSearchController(restfactory,$state,$translate,key2string,sampleTypes,ptypes,languages){
-	
+function editSearchController(avParameters,restfactory,$state,$translate,$modal,key2string,sampleTypes,ptypes,languages){
+		
 	var thisController = this;
 	
 	this.sampleTypes=sampleTypes;
@@ -63,9 +63,31 @@ function editSearchController(restfactory,$state,$translate,key2string,sampleTyp
 		return sampleService.loadSample(sampleID)
 	}
    
+    this.addParameter = function () {
+    	console.log ("Add Parameter");
+		var modalInstance = $modal.open({
+		animation: false,
+	    templateUrl: 'modules/modal-parameter-choser/modal-parameter-choser.html',
+	    controller: 'modalParameterChoser as mParameterChoserCtrl',
+	    resolve: {
+	    	mode		  	 : function(){return 'immediate'; },
+	    	avParameters     : function(){return avParameters; },
+		}
+	});
+		  
+		  modalInstance.result.then(function (result) {  // get the new Parameterlist + Info if it has changed from Modal.  
+	    	  if (result.chosen.length>0){
+	    		  var promise=avProcessTypeService.AddProcesstypePGParameters(thisController.processtype,
+	    				  parameterGrp.id,result.chosen);
+	    		  promise.then(function(){reload();});		    	  
+	    	  }
+		    }, function () {
+		      console.log('Strange Error: Modal dismissed at: ' + new Date());
+		    });
+    };
 }  
 
 
-angular.module('unidaplan').controller('editSearchController',['restfactory','$state','$translate','key2string','sampleTypes','ptypes','languages',editSearchController]);
+angular.module('unidaplan').controller('editSearchController',['avParameters','restfactory','$state','$translate','$modal','key2string','sampleTypes','ptypes','languages',editSearchController]);
 
 })();

@@ -86,9 +86,6 @@
 	<thead class=parametertablehead>
 	<tr>
 		<td>
-			Verknüpfung
-		</td>
-		<td>
 			Parameter
 		</td>
 		<td>
@@ -101,16 +98,6 @@
 	
 	</thead>
 	<tr  ng-repeat="parameter in editSearchCtrl.sampleParameters">
-		<td>
-			<div ng-hide="$first">
-			<select class="form-control input-sm" 
-				style="width:45px;"	
-				ng-model="parameter.operator">
-			<option ng-repeat="operator in editSearchCtrl.operators" value="{{$index+1}}" ng-selected="$index==0">
-		    	{{operator}}  
-		    </option> 
-			</select></div>
-		</td>
 		<td>
 			<div>Parameter {{$index}}</div>
 		</td>
@@ -130,7 +117,7 @@
 </table>
 <br/>
 <button class="btn btn-default"
-		ng-click="newSampleCtrl.addSearch()"
+		ng-click="editSampleCtrl.addSearch()"
 		ng-class= "{disabled: !editSearchCtrl.validSearch}">
 	+ {{'Add Parameter'|translate}}
 </button>
@@ -185,12 +172,17 @@
 		</td>
 	</tr>
 </table>
-
-<p />
-<p />
 <button class="btn btn-default"
-		ng-click="newSampleCtrl.addSearch()"
+		ng-click="editSearchCtrl.addParameter()">
+	+ {{'Add Parameter'|translate}}
+</button>
+<button class="btn btn-default"
+		ng-click="editSampleCtrl.addSearch()"
 		ng-class= "{disabled: !editSearchCtrl.validSearch}">
 	{{'Create Search'|translate}}
 </button>	
+<br/>
+<br/>
+<br/>
+<br/>
 

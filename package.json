@@ -12,8 +12,8 @@
     "prod": "gulp prod",
     "jshint": "gulp jshint"
   },
-  "author": "f. streicher u. d. weiss gbr",
-  "license": "ISC",
+  "author": "Thorsten Rissom",
+  "license": "All rights reserved",
   "dependencies": {
     "eslint-plugin-angular": "^0.13.0",
     "gulp": "^3.9.0",

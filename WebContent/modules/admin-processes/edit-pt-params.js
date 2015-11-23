@@ -127,27 +127,27 @@ function editPtParamsController($state,$modal,$stateParams,$translate,avParamete
   
   
   
-	this.addParameter = function () {
-		  var modalInstance = $modal.open({
-		    animation: false,
-		    templateUrl: 'modules/modal-parameter-choser/modal-parameter-choser.html',
-		    controller: 'modalParameterChoser as mParameterChoserCtrl',
-		    resolve: {
-		    	mode		  	 : function(){return 'immediate'; },
-		    	avParameters     : function(){return avParameters; },
-			}
-		  });
-		  
-		  modalInstance.result.then(function (result) {  // get the new Parameterlist + Info if it has changed from Modal.  
-	    	  if (result.chosen.length>0){
-	    		  var promise=avProcessTypeService.AddProcesstypePGParameters(thisController.processtype,
-	    				  parameterGrp.id,result.chosen);
-	    		  promise.then(function(){reload();});		    	  
-	    	  }
-		    }, function () {
-		      console.log('Strange Error: Modal dismissed at: ' + new Date());
-		    });
-	  };
+  this.addParameter = function () {
+	  var modalInstance = $modal.open({
+	    animation: false,
+	    templateUrl: 'modules/modal-parameter-choser/modal-parameter-choser.html',
+	    controller: 'modalParameterChoser as mParameterChoserCtrl',
+	    resolve: {
+	    	mode		  	 : function(){return 'immediate'; },
+	    	avParameters     : function(){return avParameters; },
+		}
+	  });
+	  
+	  modalInstance.result.then(function (result) {  // get the new Parameterlist + Info if it has changed from Modal.  
+    	  if (result.chosen.length>0){
+    		  var promise=avProcessTypeService.AddProcesstypePGParameters(thisController.processtype,
+    				  parameterGrp.id,result.chosen);
+    		  promise.then(function(){reload();});		    	  
+    	  }
+	    }, function () {
+	      console.log('Strange Error: Modal dismissed at: ' + new Date());
+	    });
+  };
 	
   
   

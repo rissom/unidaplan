@@ -52,12 +52,15 @@ import org.json.JSONObject;
 		} catch (SQLException e) {
 			System.err.println("AddSample: Problems with SQL query");
 			status="SQL error";
+			response.setStatus(404);
 		} catch (JSONException e){
 			System.err.println("AddSample: Problems creating JSON");
 			status="JSON error";
+			response.setStatus(404);
 		} catch (Exception e) {
 			System.err.println("AddSample: Strange Problems");
 			status="error";
+			response.setStatus(404);
 		}
 		try{
 		// find the current maximum of sample name parameters

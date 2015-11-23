@@ -32,7 +32,7 @@ import org.json.JSONObject;
 	    response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
 	    PrintWriter out = response.getWriter();
-	    
+	        
 	    PreparedStatement pstmt = null;		// Declare variables
 		JSONArray sampletypes = null;
 	    

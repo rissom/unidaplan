@@ -22,3 +22,9 @@
 	    }       
 	    return true;
 	}
+	
+	var reload=function() {
+		var current = $state.current;
+		var params = angular.copy($stateParams);
+		return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
+	}

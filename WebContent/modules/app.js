@@ -125,6 +125,19 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	        		}
 	        }
         })
+        
+        
+        .state('openSearch', {
+	        url: '/searches',
+	        controller:'oSearchController as oSearchCtrl',
+	        templateUrl: "modules/experiments/open-searches.html",
+	        resolve: {
+	        	searches:
+	        		function(searchService){
+	        			return searchService.getSearches();
+	        		}
+	        }
+        })
 
         
         .state('editSTParams', {
@@ -155,7 +168,11 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
                 ptypes: 
                 	function(avProcessTypeService){
         	   	    	return avProcessTypeService.getProcessTypes()
-        	   	    }
+        	   	    },
+        	   	avParameters: 
+        	   		function(parameterService){
+		   	    		return parameterService.getParameters()
+        	   		}
 	        }
         })
         

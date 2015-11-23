@@ -1,0 +1,125 @@
+
+		<!--  My Experiments -->
+
+		<h3 ng-show="oexpCtrl.myexperiments().length>0">
+			{{ 'My Experiments' | translate }}
+		</h3>
+	
+		<table class="table">
+			<thead class=parametertablehead>
+			<tr><td><b>{{'No.'|translate}}</b></td>
+				<td><b>Name</b></td><td><b>Status</b></td>
+				<td><b>{{'Delete Experiment'|translate}}</b></td>
+			</tr>
+			</thead>
+			<tbody>
+			<tr ng-repeat="experiment in oexpCtrl.myexperiments()">
+				<td>
+				<a ui-sref="experiment({experimentID:experiment.id,editmode:'false'})">{{experiment.number}}</a>
+				</td>
+				<td>
+				<a ui-sref="experiment({experimentID:experiment.id,editmode:'false'})">{{experiment.namef()}}</a>
+				</td>
+				<td>
+	  				<div class="dropdown" dropdown on-toggle="toggled(open)">
+					      <a class="dropdown-toggle" dropdown-toggle>
+				  			{{oexpCtrl.getStatus(experiment)}}
+					      </a>
+					      <ul class="dropdown-menu">
+					        <li ng-repeat="choice in oexpCtrl.statusItems">
+					          <a  ng-click="oexpCtrl.setStatus($index,experiment)">{{choice}}</a>
+					        </li>
+					      </ul>
+	  				 </div>
+				</td>
+				<td>
+					<button type="button" class="btn btn-default btn-xs"  ng-click="oexpCtrl.deleteExperiment(experiment)">
+						<span class="glyphicon glyphicon-remove"></span>
+					</button>
+				</td>
+			</tr>  <!-- ends ng-repeat -->
+			<tr ng-show="oexpCtrl.editmode"><td><input 						   
+				type="text"
+			    ng-model="oexpCtrl.newNameL1"> </td><td><input 						   
+				type="text"
+			    ng-model="oexpCtrl.newNameL2"> </td><td><input 						   
+				type="text"
+			    ng-model="oexpCtrl.newNameL3"> </td><td></td></tr>
+			<tr><td></td><td></td><td></td><td></td></tr></tbody>
+		</table>
+
+		<button type="button" 
+				class="btn btn-default"
+				ng-hide="oexpCtrl.editmode"
+				ng-click="oexpCtrl.addExperiment()" >
+			{{'Add Experiment'|translate}}
+		</button>
+		
+		<button type="button" 
+				class="btn btn-default"
+				ng-show="oexpCtrl.editmode"
+				ng-click="oexpCtrl.cancelAdd()" >
+			{{'Cancel'|translate}}
+		</button>
+		
+		<button type="button" 
+				class="btn btn-default"
+				ng-show="oexpCtrl.editmode"
+				ng-click="oexpCtrl.newExperiment()" >
+			{{'Add this Experiment'|translate}}
+		</button>
+				
+		<br/>
+		<br/>
+		
+
+
+		<!--  Other Experiments -->
+		
+		<h3 ng-show="oexpCtrl.otherexperiments().length>0">
+			{{ 'Other Experiments' | translate }}</h3>
+		<table class="table" ng-show="oexpCtrl.otherexperiments().length>0">
+		<thead class=parametertablehead>
+			<tr>
+				<td><b>{{'No.'|translate}}</b></td>
+				<td><b>{{'created by'|translate}}</b></td>
+				<td><b>Name</b></td><td><b>Status</b></td>
+				<td><b>{{'Delete Experiment'|translate}}</b>
+			</td>
+			</tr>
+			</thead>
+			<tbody>
+			<tr ng-repeat="experiment in oexpCtrl.otherexperiments()">
+				<td>
+					<a ui-sref="experiment({experimentID:experiment.id,editmode:'false'})">
+						{{experiment.number}}
+					</a>
+				</td>
+				<td>
+					{{experiment.creator}}
+				</td>	
+				<td>
+					<a ui-sref="experiment({experimentID:experiment.id,editmode:'false'})">
+						{{experiment.namef()}}
+					</a>
+				</td>
+				<td>
+				    <div class="dropdown" dropdown on-toggle="toggled(open)">
+				     	<a class="dropdown-toggle" dropdown-toggle>
+			  				{{oexpCtrl.getStatus(experiment)}}
+				      	</a>
+				      	<ul class="dropdown-menu">
+				        	<li ng-repeat="choice in oexpCtrl.statusItems">
+				          		<a ng-click="oexpCtrl.setStatus($index,experiment)">{{choice}}</a>
+				        	</li>
+				      	</ul>
+  				  	</div>
+				</td>
+				<td>
+					<button type="button" class="btn btn-default btn-xs"  ng-click="oexpCtrl.deleteExperiment(experiment)">
+						<span class="glyphicon glyphicon-remove"></span>
+					</button>
+				</td>
+			</tr>
+			<tr><td></td><td></td><td></td><td></td><td></td></tr></tbody>
+		</table>
