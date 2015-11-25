@@ -1,12 +1,12 @@
 (function(){
 'use strict';
 
-function experimentController($modal,$scope,$stateParams,experimentService,restfactory,$translate,$state,key2string,
+function experimentController($modal,$scope,editmode,experimentService,restfactory,$translate,$state,key2string,
 							  avSampleTypeService,avProcessTypeService,experimentData,ptypes,stypes,avParameters) {
 	
 	this.experiment = experimentData;
 	
-	this.editmode=$stateParams.editmode==='true';
+	this.editmode=editmode;
 	
 	this.sampleActions = [$translate.instant("Go to sample"),
 	                      $translate.instant("Delete Sample from Experiment"),
@@ -383,15 +383,6 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 	
 	
 	
-	var reload=function() {
-	    var current = $state.current;
-	    var params = angular.copy($stateParams);
-	    params.editmode=thisController.editmode;
-	    return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
-	}
-	
-	
-	
 	this.deleteSample = function(sample){
 		var promise= experimentService.deleteSampleFromExperiment(sample.id);
 		promise.then(function(){reload();});
@@ -402,7 +393,7 @@ function experimentController($modal,$scope,$stateParams,experimentService,restf
 }
     
         
-angular.module('unidaplan').controller('experimentController',['$modal','$scope','$stateParams','experimentService','restfactory',
+angular.module('unidaplan').controller('experimentController',['$modal','$scope','editmode','experimentService','restfactory',
                '$translate','$state','key2string','avSampleTypeService','avProcessTypeService','experimentData','ptypes','stypes',
                'avParameters',experimentController]);
 

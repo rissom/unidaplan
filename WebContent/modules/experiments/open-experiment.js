@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-function oExpController(restfactory,$translate,$scope,$state,experimentService,experiments) {
+function oExpController(restfactory,$translate,$scope,$state,$stateParams,experimentService,experiments) {
 	
 	var thisController=this;
 
@@ -86,9 +86,16 @@ function oExpController(restfactory,$translate,$scope,$state,experimentService,e
 	};
 	
 	
+
+	 var reload=function() {
+	 	var current = $state.current;
+	 	var params = angular.copy($stateParams);
+	 	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
+	 }
+	 
 };
     
         
-angular.module('unidaplan').controller('oExpController',['restfactory','$translate','$scope','$state','experimentService','experiments',oExpController]);
+angular.module('unidaplan').controller('oExpController',['restfactory','$translate','$scope','$state','$stateParams','experimentService','experiments',oExpController]);
 
 })();
