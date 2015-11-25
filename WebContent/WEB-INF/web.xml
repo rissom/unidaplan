@@ -40,6 +40,17 @@
   </servlet-mapping>
   
   <servlet>
+    <description>Add search</description>
+    <display-name>AddSearch</display-name>
+    <servlet-name>AddSearch</servlet-name>
+    <servlet-class>unidaplan.AddSearch</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddSearch</servlet-name>
+    <url-pattern>/add-search</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
     <description>shows available sample types</description>
     <display-name>Sampletypes</display-name>
     <servlet-name>Sampletypes</servlet-name>
@@ -49,8 +60,8 @@
     <servlet-name>Sampletypes</servlet-name>
     <url-pattern>/sampletypes</url-pattern>
   </servlet-mapping>
-  <servlet>
   
+  <servlet>
     <description>shows available Experiments</description>
     <display-name>Experiments</display-name>
     <servlet-name>Experiments</servlet-name>
@@ -150,6 +161,7 @@
     <servlet-name>GetUser</servlet-name>
     <url-pattern>/get-user</url-pattern>
   </servlet-mapping>
+  
   <servlet>
     <description>Delete user</description>
     <display-name>DeleteUser</display-name>
@@ -160,6 +172,18 @@
     <servlet-name>DeleteUser</servlet-name>
     <url-pattern>/delete-user</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <description>show a search</description>
+    <display-name>Search</display-name>
+    <servlet-name>Search</servlet-name>
+    <servlet-class>unidaplan.Search</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Search</servlet-name>
+    <url-pattern>/search</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
     <description>Sign Up</description>
     <display-name>SignUp</display-name>
@@ -757,6 +781,16 @@
     <url-pattern>/change-order-st-parameters</url-pattern>
   </servlet-mapping>
   
+  <servlet>
+    <description>UpdateSearchName</description>
+    <display-name>UpdateSearchName</display-name>
+    <servlet-name>UpdateSearchName</servlet-name>
+    <servlet-class>unidaplan.UpdateSearchName</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateSearchName</servlet-name>
+    <url-pattern>/update-search-name</url-pattern>
+  </servlet-mapping>
   
   <servlet>
     <description>UpdateSTParamGrp</description>

@@ -34,13 +34,13 @@ public class AllSampleTypeParams extends HttpServlet {
 	    response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
 	    PrintWriter out = response.getWriter(); 
-	    int sampleTypeId=-1;
-	    try {
-	    	JSONObject jsonIn = new JSONObject(request.getReader().readLine());
-	    	sampleTypeId = jsonIn.getInt("sampletypeid");
-		} catch (JSONException e) {
-			System.err.println("UpdateProcessTypeData: Input is not valid JSON");
-		}  	
+	    int sampleTypeID=-1;
+	  	try {
+	  		sampleTypeID=Integer.parseInt(request.getParameter("sampletypeid")); 
+	    } catch (Exception e1) {
+	   		System.err.println("no sampletype ID given!");
+			response.setStatus(404);
+	   	}
 		PreparedStatement pStmt = null; 	// Declare variables
 	    JSONArray parameterGrps= null;		
 	    JSONArray processTypeGrps= null;
@@ -49,14 +49,27 @@ public class AllSampleTypeParams extends HttpServlet {
 		 	
 	    try{
 		 	dBconn.startDB();
+		 	pStmt = dBconn.conn.prepareStatement(
+				  	   "SELECT id,pos,stringkey FROM ot_parametergrps "
+					  +"WHERE (ot_parametergrps.ot_id=?) ");
+   			pStmt.setInt(1, sampleTypeID);
+   			parameterGrps=dBconn.jsonArrayFromPreparedStmt(pStmt); 
+   			if (parameterGrps.length()>0) {
+           		for (int j=0; j<parameterGrps.length();j++) {
+           			if (parameterGrps.getJSONObject(j).has("stringkey")){
+           				stringkeys.add(Integer.toString(parameterGrps.getJSONObject(j).getInt("stringkey")));
+           			}
+           		}
+           	}		
+		 	
 //	 		stringkeys.add(Integer.toString(paramGrp.getInt("name"))); 
            	pStmt = dBconn.conn.prepareStatement(
      		  	   "SELECT ot_parameters.id, compulsory, formula, hidden, pos, definition, ot_parameters.stringkeyname as name, "
-     		  	  + "(blabla.count) IS NULL as deletable, stringkeyunit " 
+     		  	  + "stringkeyunit " 
      		  	  +"FROM ot_parameters " 
      		  	  +"JOIN paramdef ON (definition=paramdef.id)"
 				  +"WHERE objecttypesid=?"); // status, processnumber and date cannot be edited
-	 		pStmt.setInt(1, sampleTypeId);
+	 		pStmt.setInt(1, sampleTypeID);
 			processTypeGrps=dBconn.jsonArrayFromPreparedStmt(pStmt); // get ResultSet from the database using the query
 			if (processTypeGrps.length()>0) {
            		for (int j=0; j<processTypeGrps.length();j++) {
@@ -72,8 +85,11 @@ public class AllSampleTypeParams extends HttpServlet {
 	        answer.put("parametergrps",parameterGrps);
 	        answer.put("strings", dBconn.getStrings(stringkeys));
 	        out.println(answer.toString());
-	    } catch (SQLException eS) {
+	    } catch (SQLException e) {
 			System.err.println("AllSampleTypeParameters: SQL Error");
+			response.setStatus(404);
+	    } catch (JSONException e) {
+			System.err.println("AllSampleTypeParameters: JSON Error");
 			response.setStatus(404);
 	    } catch (Exception e) {
 			System.err.println("AllSampleTypeParameters: Some Error, probably JSON");
