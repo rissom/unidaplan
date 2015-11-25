@@ -187,7 +187,13 @@ function editPtParamsController($state,$modal,$stateParams,$translate,avParamete
 	  promise.then(function(){reload()},function(){console.log("error")})
   }
   
-
+  
+  
+ var reload=function() {
+ 	var current = $state.current;
+ 	var params = angular.copy($stateParams);
+ 	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
+ }
 
 };
 
