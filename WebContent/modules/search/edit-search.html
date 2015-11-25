@@ -1,32 +1,21 @@
 <p />
 <p />
-<h3>{{'New Search'|translate}}</h3>
+<h3>{{'Edit Search'|translate}}</h3>
 <p />
 <br/>
 <h4>{{'General information'|translate}}</h4>
-{{'Can be used by'|translate}}:
 
-<select 
-	class="form-control"
-	style="width:300px;"	
-    ng-change="editSearchCtrl.setStatus()"
-    ng-model="editSearchCtrl.newStatus"
-    ng-blur="editSearchCtrl.editStatus=false" >
-	<option ng-repeat="group in editSearchCtrl.groups" value="{{$index+1}}" ng-selected="$index==0">
-    	{{group}}  
-    </option> 
-</select>
-<br/>
 <table class="table">
 <tr ng-dblclick="editSearchCtrl.edit('NL1')">
 	<td>Name ({{editSearchCtrl.lang1}}):</td>
 	<td>
 		<span ng-hide="editSearchCtrl.editFieldNL1">{{editSearchCtrl.nameL1}}</span>
 		<input ng-show="editSearchCtrl.editFieldNL1" 
-			   ng-keyup="editSearchCtrl.keyUp($event.keyCode,editSTParamsCtrl.newNameL1,editSTParamsCtrl.lang1key)"
+			   ng-keyup="editSearchCtrl.keyUp($event.keyCode,editSearchCtrl.newNameL1,editSearchCtrl.lang1key)"
 			   ng-blur="editSearchCtrl.editNL1=false"
 			   type="text"
-			   ng-model="editSearchCtrl.newNameL1">
+			   ng-model="editSearchCtrl.newNameL1"
+			   autofocus>
 	</td>
 </tr>
 <tr ng-dblclick="editSearchCtrl.edit('NL2')">
@@ -41,6 +30,21 @@
 	</td>
 </tr>
 </table>
+
+{{'Can be used by'|translate}}:
+
+<select 
+	class="form-control"
+	style="width:300px;"	
+    ng-change="editSearchCtrl.setStatus()"
+    ng-model="editSearchCtrl.newStatus"
+    ng-blur="editSearchCtrl.editStatus=false" >
+	<option ng-repeat="group in editSearchCtrl.groups" value="{{$index+1}}" ng-selected="$index==0">
+    	{{group}}  
+    </option> 
+</select>
+<br/>
+
 
 <br/>
 <h4>{{'Search Criteria'|translate}}</h4>

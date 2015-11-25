@@ -1,84 +1,13 @@
 (function(){
 'use strict';
 
-var searchService = function (restfactory,$q,$translate,key2string) {
+var searchService = function (restfactory,$q,$translate,key2string,languages) {
 	// restfactory is a wrapper for $html.
 
-	var thisController=this;
+	var thisController=this;	
 	
-	
-	this.getExperiments = function() {
-        var defered=$q.defer();
-		var promise = restfactory.GET("experiments");
-		 		
-	    promise.then(function(rest) {
-	    	thisController.experiments = rest.data.experiments;
-	    	thisController.expsStrings = rest.data.strings;
-	    	
-	    	
-			angular.forEach(thisController.experiments, function(anExp) {
-				anExp.namef=function(){return key2string.key2string(anExp.name,thisController.expsStrings)}
-			})
-	    	
-	    	
-	    	defered.resolve(thisController.experiments)
-	    }, function(rest) {
-	    });
-		return defered.promise;
-	};
-	
-	
-	
-	this.getExperiment = function(id) {
-        var defered=$q.defer();
-			var promise = restfactory.GET("experiment?id="+id);
-	    	promise.then(function(rest) {
-    	    	thisController.experiment = rest.data.experiment;
-    	    	thisController.strings = rest.data.strings;
-    			thisController.experiment.namef=function(){
-    				return key2string.key2string(thisController.experiment.name,thisController.strings);
-    			}
-    			angular.forEach(thisController.experiment.parameters, function(parameter) {
-    				parameter.namef=function(){
-    					return key2string.key2string(parameter.stringkeyname,thisController.strings)
-    				}
-    				parameter.nameLang=function(lang){				
-    					return key2string.key2stringWithLangStrict(parameter.stringkeyname,thisController.strings,lang)
-    				}
-     				parameter.unitf=function(){
-    					return key2string.unitf(parameter.stringkeyunit,thisController.strings)
-    				}
-    				parameter.unitLang=function(lang){				
-    					return key2string.key2stringWithLangStrict(parameter.stringkeyunit,thisController.strings,lang)
-    				}
-    				if (parameter.datatype==="date+time") {
-    					parameter.date=new Date(parameter.value)
-    				}
-//    				parameter.trname=key2string.key2string(parameter.stringkeyname,thisController.strings);
-    			})
-    			angular.forEach(thisController.experiment.samples, function(sample){
-    				if (sample.note!=undefined) {
-    					sample.trnote=key2string.key2string(sample.note,thisController.strings);
-    				}
-    				angular.forEach(sample.pprocesses, function(pprocess){
-    					if (pprocess.note){
-    						pprocess.trnote=key2string.key2string(pprocess.note,thisController.strings);
-    					}
-    				})
-    			});
-    			thisController.pushExperiment(thisController.experiment);
-    	    	defered.resolve(thisController.experiment)
-	    	}, function(rest) {    	    		
-	    		console.log("Error loading experiment");
-	    		defered.reject({"error":"Error loading experiment"});
-	    	});
-		return defered.promise;
-	}
-	
-	
-	
-	this.ExpStepChangeRecipe = function(id,recipe) {
-		return restfactory.POST("exp-step-change-recipe?processstepid="+id+"&recipe="+recipe);
+	this.addSearch = function(name) {
+		return restfactory.POST("add-search",{"name":name});
 	}
 	
     
@@ -88,8 +17,32 @@ var searchService = function (restfactory,$q,$translate,key2string) {
 	}
 	
 	
-	this.addSearch = function(experiment){
-
+	
+	this.getSearch = function(searchID){
+		var defered=$q.defer();
+		var promise = restfactory.GET("search?id="+searchID);
+		promise.then(function(rest) {
+		  	thisController.search = rest.data.search;
+		  	thisController.strings = rest.data.strings;
+	  		thisController.search.namef=function(){
+	  			return key2string.key2string(thisController.search.name,thisController.strings);
+	  		}
+	  		thisController.search.nameL1=
+	  			key2string.key2stringWithLangStrict(thisController.search.name,
+	  			thisController.strings,languages[0].key);
+		  	thisController.search.nameL2=
+		  		key2string.key2stringWithLangStrict(thisController.search.name,
+		  		thisController.strings,languages[1].key);	  		
+			defered.resolve(thisController.search);
+		});
+       return defered.promise
+	}
+	
+	
+	
+	this.updateSearchName = function(searchID,name,language){
+		var promise = restfactory.PUT("update-search-name",{searchID:searchID,newname:name,language:language})
+		return promise;
 	}
 	
 	
@@ -105,6 +58,7 @@ var searchService = function (restfactory,$q,$translate,key2string) {
 }
 
 
-angular.module('unidaplan').service('searchService', ['restfactory','$q','$translate','key2string',searchService]);
+angular.module('unidaplan').service('searchService', ['restfactory','$q','$translate',
+               'key2string','languages',searchService]);
 
 })();

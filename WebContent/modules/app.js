@@ -5,6 +5,8 @@
 // Declare app level module which depends on filters, and services
 angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router'])
 
+
+// Languages for this installation
 .constant("languages",[{"key": "de","name":"german"},{"key": "en","name":"english"}])
 
 .config(function($stateProvider, $urlRouterProvider) {
@@ -22,6 +24,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	        url: '/about',
 	        templateUrl: 'modules/help/about.html'
         })
+     
         
                 
         .state('adminProcesses', {
@@ -89,6 +92,39 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
         })
         
         
+                
+        .state('editSearch', {
+	    	url: '/edit-search?:id&:newSearch',
+//	    	url: '/edit-search/{searchID:int}',
+//	    	url: '/experiment?:experimentID&:editmode',
+	        templateUrl: 'modules/search/edit-search.html',
+	        controller: 'editSearchController as editSearchCtrl',
+	        resolve:{
+                sampleTypes: 
+            	    function(avSampleTypeService){
+        	   	    	return avSampleTypeService.getSampleTypes()
+                	},
+                ptypes: 
+                	function(avProcessTypeService){
+        	   	    	return avProcessTypeService.getProcessTypes()
+        	   	    },
+        	   	avParameters: 
+        	   		function(parameterService){
+		   	    		return parameterService.getParameters()
+        	   		},
+        	   	search:
+        	   		function(searchService,$stateParams){
+        	   			return searchService.getSearch($stateParams.id)        	   			
+        	   		},
+        	   	newSearch:
+        	   		function($stateParams){
+        	   			return $stateParams.newSearch==="true";
+        	   		}
+	        }
+        })
+        
+        
+        
         .state('editSTParamGrps', {
         	url: '/editsampletype/{sampleTypeID:int}',
 	        templateUrl: 'modules/admin-samples/edit-sample-param-grps.html',
@@ -106,38 +142,6 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
     		template: "<h1>ERROR!!!</h1>"
     	})
         
-    	
-        .state('login', {
-	    	url: '/login',
-	    	templateUrl: 'modules/login/login.html',
-	    	controller: 'loginController as loginCtrl'
-    	})
-    	
-    	
-        .state('openExperiment', {
-	        url: '/experiments',
-	        controller:'oExpController as oexpCtrl',
-	        templateUrl: "modules/experiments/open-experiment.html",
-	        resolve: {
-	        	experiments:
-	        		function(experimentService){
-	        			return experimentService.getExperiments();
-	        		}
-	        }
-        })
-        
-        
-        .state('openSearch', {
-	        url: '/searches',
-	        controller:'oSearchController as oSearchCtrl',
-	        templateUrl: "modules/experiments/open-searches.html",
-	        resolve: {
-	        	searches:
-	        		function(searchService){
-	        			return searchService.getSearches();
-	        		}
-	        }
-        })
 
         
         .state('editSTParams', {
@@ -154,28 +158,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 			   	    }
 				}
         })
-        
-        
-        .state('editSearch', {
-	    	url: '/edit-search',
-	        templateUrl: 'modules/search/edit-search.html',
-	        controller: 'editSearchController as editSearchCtrl',
-	        resolve:{
-                sampleTypes: 
-            	    function(avSampleTypeService){
-        	   	    	return avSampleTypeService.getSampleTypes()
-                	},
-                ptypes: 
-                	function(avProcessTypeService){
-        	   	    	return avProcessTypeService.getProcessTypes()
-        	   	    },
-        	   	avParameters: 
-        	   		function(parameterService){
-		   	    		return parameterService.getParameters()
-        	   		}
-	        }
-        })
-        
+
         
         .state('experiment', {
 	    	url: '/experiment?:experimentID&:editmode',
@@ -197,10 +180,15 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 		        avParameters: 
 		        	function(parameterService){
 			   	    	return parameterService.getParameters()
-			   	    }
+			   	    },
+	            editmode: 
+	            	function($stateParams){
+	        			return $stateParams.editmode==="true"
+	        	    },
 	        }
         })
            
+        
         .state('groups', {
 	    	url: '/admin/groups',
 	        templateUrl: 'modules/groups/groups.html',
@@ -214,6 +202,13 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
         })
         
         
+        .state('login', {
+	    	url: '/login',
+	    	templateUrl: 'modules/login/login.html',
+	    	controller: 'loginController as loginCtrl'
+    	})
+        
+    	
         .state('newSample', {
 	    	url: '/new-sample',
 	        templateUrl: 'modules/sample/new-sample.html',
@@ -236,6 +231,32 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
                 	function(avProcessTypeService){
         	   	    	return avProcessTypeService.getProcessTypes()
         	   	    }
+	        }
+        })
+        
+        
+        .state('openExperiment', {
+	        url: '/experiments',
+	        controller:'oExpController as oexpCtrl',
+	        templateUrl: "modules/experiments/open-experiment.html",
+	        resolve: {
+	        	experiments:
+	        		function(experimentService){
+	        			return experimentService.getExperiments();
+	        		}
+	        }
+        })
+        
+        
+        .state('openSearch', {
+	        url: '/searches',
+	        controller:'oSearchController as oSearchCtrl',
+	        templateUrl: "modules/experiments/open-searches.html",
+	        resolve: {
+	        	searches:
+	        		function(searchService){
+	        			return searchService.getSearches();
+	        		}
 	        }
         })
         

@@ -1,5 +1,6 @@
 package unidaplan;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -125,7 +126,9 @@ public class AddProcess extends HttpServlet {
 		}
 		
 			
-	    // tell client that everything is fine
-	    Unidatoolkit.sendStandardAnswer(status, response);
+	    // tell client the new id and that everything is fine
+	    PrintWriter out = response.getWriter();
+	    out.print("{\"id\":"+id+",");
+		out.println("\"status\":\""+status+"\"}");
 	}
 }	

@@ -1,10 +1,12 @@
 (function(){
 'use strict';
 
-function editSearchController(avParameters,restfactory,$state,$translate,$modal,
-		key2string,sampleTypes,ptypes,search,languages){
+function editSearchController(avParameters,restfactory,$state,$stateParams,$translate,$modal,
+		key2string,sampleTypes,ptypes,search,newSearch,languages,searchService){
 		
 	var thisController = this;
+	
+	this.editFieldNL1=newSearch;
 	
 	this.sampleTypes=sampleTypes;
 	
@@ -21,14 +23,16 @@ function editSearchController(avParameters,restfactory,$state,$translate,$modal,
 	this.sampleParameters = [{name:"halli"}, {name:"hallo"}, {name:"hallo2"}]
 	
 	this.languages=languages;
+	
+	this.search=search;
 	  
-	this.nameL1 = "Horst" //parameterGrp.nameLang(languages[0].key);
+	this.nameL1 = search.nameL1 //parameterGrp.nameLang(languages[0].key);
 	  
-	this.newNameL1 = "Peter" //parameterGrp.nameLang(languages[0].key);
+	this.newNameL1 = search.nameL1 //parameterGrp.nameLang(languages[0].key);
 	 
-	this.nameL2 = "John" //parameterGrp.nameLang(languages[1].key);
+	this.nameL2 = search.nameL2 //parameterGrp.nameLang(languages[1].key);
 
-	this.newNameL2 = "John" //parameterGrp.nameLang(languages[1].key);
+	this.newNameL2 = search.nameL2 //parameterGrp.nameLang(languages[1].key);
 	    
 	this.lang1=$translate.instant(languages[0].name);
 	  
@@ -37,13 +41,11 @@ function editSearchController(avParameters,restfactory,$state,$translate,$modal,
 	this.lang1key=$translate.instant(languages[0].key);
 	  
 	this.lang2key=$translate.instant(languages[1].key);
-	 
-	this.editFieldNL1=false;
-	  
+	 	  
 	this.editFieldNL2=false;
 	
 	this.searchType=1;
-	
+		
 	this.changeSampleType = function () {
 		console.log ("changing sampletype");
 		// Parameter laden
@@ -79,7 +81,9 @@ function editSearchController(avParameters,restfactory,$state,$translate,$modal,
 	
 	this.keyUp = function(keyCode,name,language) {
 		if (keyCode===13) {				// Return key pressed
-			var promise=SearchService.updateSearchName(name, language, search.id);	
+			console.log("name",name)
+			console.log("language",language)
+			var promise=searchService.updateSearchName(search.id,name, language);	
 			promise.then(function(){reload();},function(){console.log("error")});
 		}
 		if (keyCode===27) {		// Escape key pressed
@@ -97,31 +101,42 @@ function editSearchController(avParameters,restfactory,$state,$translate,$modal,
 	
 	
     this.addParameter = function () {
-    	console.log ("Add Parameter");
 		var modalInstance = $modal.open({
-		animation: false,
-	    templateUrl: 'modules/modal-parameter-choser/modal-parameter-choser.html',
-	    controller: 'modalParameterChoser as mParameterChoserCtrl',
-	    resolve: {
-	    	mode		  	 : function(){return 'immediate'; },
-	    	avParameters     : function(){return avParameters; },
-		}
-	});
+			animation: false,
+		    templateUrl: 'modules/modal-parameter-choser/modal-parameter-choser.html',
+		    controller: 'modalParameterChoser as mParameterChoserCtrl',
+		    resolve: {
+		    	mode		  	 : function(){return 'immediate'; },
+		    	avParameters     : function(){return avParameters; },
+				}
+		});
 		  
-		  modalInstance.result.then(function (result) {  // get the new Parameterlist + Info if it has changed from Modal.  
-	    	  if (result.chosen.length>0){
-	    		  var promise=avProcessTypeService.AddProcesstypePGParameters(thisController.processtype,
-	    				  parameterGrp.id,result.chosen);
-	    		  promise.then(function(){reload();});		    	  
-	    	  }
-		    }, function () {
-		      console.log('Strange Error: Modal dismissed at: ' + new Date());
-		    });
+		
+		
+		modalInstance.result.then(
+			function (result) {  // get the new Parameterlist + Info if it has changed from Modal.  
+				if (result.chosen.length>0){
+					var promise=avProcessTypeService.AddProcesstypePGParameters(thisController.processtype,
+					  parameterGrp.id,result.chosen);
+					promise.then(function(){reload();});		    	  
+				}
+			},function () {
+				console.log('Strange Error: Modal dismissed at: ' + new Date());
+		    }
+		);
     };
+    
+    
+    
+    var reload=function() {
+    	var current = $state.current;
+    	var params = angular.copy($stateParams);
+    	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
+    }
 }  
 
 
-angular.module('unidaplan').controller('editSearchController',['avParameters','restfactory','$state','$translate',
-                          '$modal','key2string','sampleTypes','ptypes','search','languages',editSearchController]);
+angular.module('unidaplan').controller('editSearchController',['avParameters','restfactory','$state','$stateParams','$translate',
+                          '$modal','key2string','sampleTypes','ptypes','search','newSearch','languages','searchService',editSearchController]);
 
 })();

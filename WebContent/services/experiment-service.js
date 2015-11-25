@@ -117,7 +117,9 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 		return restfactory.DELETE("delete-experiment?id="+id);
 	}
 	
-	
+	this.addExperiment = function(){
+		console.log ("Not implemented yet");
+	}
 	
 	this.addParameters = function(experimentid,parameters) {
 		return  restfactory.POST("add-experiment-parameter",{ experimentid : experimentid , parameters : parameters });
