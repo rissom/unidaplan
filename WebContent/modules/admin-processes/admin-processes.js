@@ -17,7 +17,7 @@ function aProcessesController($state,$stateParams,$translate,restfactory,process
   
 	this.newProcessType=function(){
 		this.editmode=true;
-	}
+	};
   
   
   
@@ -27,13 +27,13 @@ function aProcessesController($state,$stateParams,$translate,restfactory,process
 		}
 		if (action.action==="duplicate"){
 	  	  	var promise=processService.duplicateProcessType(process.id);
-	  	  	promise.then(function(){reload();},function(){console.log("error");})
+	  	  	promise.then(function(){reload();},function(){console.log("error");});
 		}
 		if (action.action==="delete"){
-	  	  	var promise=processService.deleteProcessType(process.id);
-	  	  	promise.then(function(){reload();},function(){console.log("error");})
+	  	  	var promise2=processService.deleteProcessType(process.id);
+	  	  	promise2.then(function(){reload();},function(){console.log("error");});
 		}
-	}
+	};
   
   
   
@@ -44,7 +44,7 @@ function aProcessesController($state,$stateParams,$translate,restfactory,process
 		if (keyCode===27) {		// Escape key pressed
 			this.editmode=false;
 		}
-	}
+	};
   
   
   
@@ -57,10 +57,18 @@ function aProcessesController($state,$stateParams,$translate,restfactory,process
 		description[languages[1].key]=this.newDescL2; 	  
 		var newProcessType={"name":name,"description":description};	  
 		var promise = processService.addProcessType(newProcessType);
-		promise.then(function(){ reload();},function(){console.log("error");})
-	} 
+		promise.then(function(){ reload();},function(){console.log("error");});
+	};
+	
+	
+	
+	var reload=function() {
+		var current = $state.current;
+		var params = angular.copy($stateParams);
+		return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
+	};
 
-};
+}
 
 angular.module('unidaplan').controller('aProcessesController', ['$state','$stateParams','$translate','restfactory','processService','ptypes','languages',aProcessesController]);
 

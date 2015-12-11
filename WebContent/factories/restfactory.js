@@ -13,7 +13,7 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 		if (fstate.name!='login'){
 			rest.failedState=fstate;
 		}
-	}
+	};
 	
 	rest.origin = window.location.origin;
 	rest.protocol = window.location.protocol;
@@ -116,7 +116,7 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 		var defer = $q.defer();
 		try {
 			var text ="";
-			if (jsonParamObj != undefined) {
+			if (jsonParamObj !== undefined) {
 				text = angular.toJson(jsonParamObj);
 				if (text.length>100) {
 					text = text.substring(0,100)+"...";
@@ -185,7 +185,7 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 			console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!! rest.filterUTF8canvgSave: inString.indexOf(u0020): "+inString.indexOf("\u0020"));
 		}
 		return inString;
-	}
+	};
 	
 	return rest;
 }]);

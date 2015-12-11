@@ -5,11 +5,13 @@ var recentProcessController = function(ptypes,avProcessTypeService,processServic
 
 	this.getRecentProcesses=function(){
 		return processService.recentProcesses;
-	}
+	};
+	
+	
 	
 	this.getType = function(process){
 		return avProcessTypeService.getProcessType(process,ptypes);
-	}
+	};
 	
 };
     

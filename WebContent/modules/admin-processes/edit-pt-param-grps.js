@@ -5,7 +5,10 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,restfac
   
   var thisController=this;
     
-  this.parametergrps=processType.parametergrps.sort(function(a,b){return a.pos-b.pos});
+  this.parametergrps=processType.parametergrps.sort(
+	  function(a,b){
+		  return a.pos-b.pos;
+	  });
   
   this.strings=processType.strings;
   
@@ -30,20 +33,18 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,restfac
   this.lang1=$translate.instant(languages[0].name);
   
   this.lang2=$translate.instant(languages[1].name);
-    
-  var thisController=this;
-  
+      
   
   
   this.getGrpName=function(grp,lang){
-	  key2string.key2stringWithLangStrict(grp.name,thisController.strings,lang)
-  }
+	  key2string.key2stringWithLangStrict(grp.name,thisController.strings,lang);
+  };
   
   
   
   this.newParameter=function(){
 	  this.editmode=true;
-  }
+  };
   
   
   
@@ -52,7 +53,7 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,restfac
 	  thisController.editNL2 = (field=="NL2");
 	  thisController.editDL1 = (field=="DL1");
 	  thisController.editDL2 = (field=="DL2");
-  }
+  };
 	
   
   
@@ -60,19 +61,19 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,restfac
 	    var current = $state.current;
 	    var params = angular.copy($stateParams);
 	    return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
-  }
+  };
   
   
   
   this.performAction=function(parametergrp,action){
-	  if (action.action==="edit") {
+	  if (action.action==="edit" && !action.disabled) {
 		  $state.go("editPtParams",{"paramGrpID":parametergrp.id})
 	  }
-	  if (action.action=="delete") {
+	  if (action.action=="delete" && !action.disabled) {
 		  var promise = avProcessTypeService.deletePTParameterGrp(parametergrp.id);
 		  promise.then(function(){reload()},function(){console.log("error")});
 	  }
-  }
+  };
   
   
   
@@ -101,7 +102,7 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,restfac
 				console.log(data);
 			 }
 			);
-  }
+  };
   
 
   
@@ -120,7 +121,7 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,restfac
 		thisController.newDescL1 = processType.descLang(languages[0].key);
 		thisController.newDescL2 = processType.descLang(languages[1].key);
 	}
-  }
+  };
 
   
   
@@ -131,7 +132,7 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,restfac
 	  var pos2=thisController.parametergrps[index].pos;
 	  var promise = avProcessTypeService.exPosPTParamGrp(id1,pos1,id2,pos2);
 	  promise.then(function(){reload()},function(){console.log("error")})
-  }
+  };
 
   
   this.up=function(index){
@@ -141,7 +142,7 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,restfac
 	  var pos2=thisController.parametergrps[index-1].pos;
 	  var promise = avProcessTypeService.exPosPTParamGrp(id1,pos1,id2,pos2);
 	  promise.then(function(){reload()},function(){console.log("error")})
-  }
+  };
   
   
   
@@ -153,13 +154,13 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,restfac
 	if (keyCode===27) {		// Escape key pressed
 		this.editmode=false;
 	}
-  }
+  };
   
   
   
   this.newParameterGroup=function(){
 	  thisController.editmode=true;
-  }
+  };
   
   
   
@@ -181,7 +182,7 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,restfac
 			console.log(data);
 		 }
 		);
- }
+ };
  
 
 };

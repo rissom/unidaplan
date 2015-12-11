@@ -8,7 +8,6 @@ var duration=function($translate) {
 		var daysStr=$translate.instant('days');
 		var hourStr=$translate.instant('hour');
 		var hoursStr=$translate.instant('hours');
-		var minStr=$translate.instant('minute');
 		var minStr=$translate.instant('minutes');		
 		var yearStr=$translate.instant('year');
 		
@@ -23,10 +22,11 @@ var duration=function($translate) {
 	    if(hours > 0 && years<1) durationString += (hours > 1) ? (hours + " "+hoursStr+" ") : (hours + " "+hourStr+" ");
 	    if(minutes >= 0  && days<1) durationString += (minutes > 1) ? (minutes + " "+minStr+" ") : (minutes + " "+minStr+" ");
 	    return durationString;
-	}
-}
+	};
+};
 
-angular.module('unidaplan').filter('duration',['$translate',duration])
 
+
+angular.module('unidaplan').filter('duration',['$translate',duration]);
 
 })();

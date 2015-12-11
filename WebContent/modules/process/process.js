@@ -50,7 +50,7 @@ function process($state,$stateParams,avSampleTypeService,types,$modal,processDat
   // return the translated name string of a type for a sample
   this.getType=function(sample){
 	  return avSampleTypeService.getType(sample,types);
-  }
+  };
   
   
   
@@ -61,30 +61,30 @@ function process($state,$stateParams,avSampleTypeService,types,$modal,processDat
   	} else {
   		return parameter.value;
   	} 
-  }
+  };
   
   
   
-  this.status=function(){
-	  switch (this.process.status){
-		  case 3 : return this.statusStrings[2]; break;
-		  case 2 : return this.statusStrings[1]; break;
-		  default: return this.statusStrings[0]; 
-	  }
-  }
+    this.status=function(){
+	    switch (this.process.status){
+		    case 3 : return this.statusStrings[2]; 
+		    case 2 : return this.statusStrings[1]; 
+		    default: return this.statusStrings[0]; 
+	    }
+    };
   
   
   
-  this.setStatus=function(){
-	  var promise=processService.setStatus(processData,this.newStatus);
-	  promise.then(function(){
-		  reload();});
-  }
+  	this.setStatus=function(){
+		 var promise=processService.setStatus(processData,this.newStatus);
+		 promise.then(function(){
+		 reload();});
+  	};
   
   
   
   
-  this.paramKeyUp = function(keyCode,newValue,parameter) {
+  	this.paramKeyUp = function(keyCode,newValue,parameter) {
 		if (keyCode===13) {				// Return key pressed
 			parameter.editing=false; 
 			var oldValue=parameter.value;
@@ -102,20 +102,20 @@ function process($state,$stateParams,avSampleTypeService,types,$modal,processDat
 		if (keyCode===27) {		// Escape key pressed
 			parameter.editing=false;		
 		}
-	}
+	};
   
   
   
   this.deleteProcess = function(){
 	  return processService.deleteProcess(this.process.id);
-  }
+  };
   
   
   
   this.assign=function(){
 	  var samples2assign={samples:this.process.samples, id:processData.id};
 	  var promise = restfactory.POST("add-sample-to-process",samples2assign);
-  }
+  };
  
   
   
@@ -123,9 +123,9 @@ function process($state,$stateParams,avSampleTypeService,types,$modal,processDat
   	var current = $state.current;
   	var params = angular.copy($stateParams);
   	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
-  }
+  };
   
-};
+}
 
 angular.module('unidaplan').controller('process', ['$state','$stateParams','avSampleTypeService','types', '$modal',
                                                    'processData','restfactory','processService',process]);

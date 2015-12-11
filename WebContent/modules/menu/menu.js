@@ -17,17 +17,17 @@ function menuf(searchService,restfactory,$translate,$rootScope,$state) {
 	
 	this.checkLocalStorageSupport =function() {
 		  try {
-		    return 'localStorage' in window && window['localStorage'] !== null;
+		    return 'localStorage' in window && window.localStorage !== null;
 		  } catch (e) {
 		    return false;
 		  }
-		}
+	};
 	
 	
 	
 	this.language = function(){
 		return $translate.use();
-	}
+	};
 	
 	
 	
@@ -41,7 +41,7 @@ function menuf(searchService,restfactory,$translate,$rootScope,$state) {
 		function(){
 			console.log("Error creating new Search");
 		});
-	}
+	};
 	
 	
 	
@@ -52,14 +52,14 @@ function menuf(searchService,restfactory,$translate,$rootScope,$state) {
 				window.localStorage.setItem("language",lang);
 			};
 		}
-	}
+	};
 	
 	
 	
 	$rootScope.$on('$stateChangeStart', 
 			function(event, toState, toParams, fromState, fromParams){ 
 				thisController.navCollapsed = true;
-	})
+	});
 	
 	
 	
@@ -71,13 +71,13 @@ function menuf(searchService,restfactory,$translate,$rootScope,$state) {
 			function(){
 				console.log("Error!");	
 			});
-	}
+	};
 	
 	
 	
 	this.getUserName = function(){
 		return "Thorsten Rissom";
-	}
+	};
 	
 	
 }

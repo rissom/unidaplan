@@ -14,17 +14,18 @@ function choseProcessController(restfactory,$state,ptypes,avProcessTypeService){
 		if (keyCode==13) {				// Return key pressed
 			this.choseProcess();
 		}
-	}
+	};
 
+	
 		
 	this.choseProcess = function() {
-		var promise = restfactory.GET("process-by-number?number="+thisController.pnumber+"&type="+thisController.processType.id)
+		var promise = restfactory.GET("process-by-number?number="+thisController.pnumber+"&type="+thisController.processType.id);
 		promise.then( function(rest){
 			$state.go('process',{processID:rest.data.processid});	
 			},function(){
 				console.log("Error");
 			});
-	}
+	};
 	
 	
 	
@@ -38,7 +39,7 @@ function choseProcessController(restfactory,$state,ptypes,avProcessTypeService){
 }  
 
 
-angular.module('unidaplan').controller('choseProcessController',['restfactory','$state','ptypes',
-                                                               'avProcessTypeService',choseProcessController]);
+angular.module('unidaplan').controller('choseProcessController',['restfactory','$state',
+    'ptypes','avProcessTypeService',choseProcessController]);
 
 })();

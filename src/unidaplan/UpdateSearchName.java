@@ -56,7 +56,6 @@ import org.json.JSONObject;
 					"SELECT name FROM searches WHERE id=?");
 			pStmt.setInt(1,searchID);
 			int stringKey=dBconn.getSingleIntValue(pStmt);
-			System.out.println(pStmt);
 			pStmt.close();
 			
 			// delete old entries in the same language
@@ -65,7 +64,6 @@ import org.json.JSONObject;
 			pStmt.setString(1,language);
 			pStmt.setInt(2,stringKey);
 			pStmt.executeUpdate();
-			System.out.println(pStmt);
 			pStmt.close();
 			
 		

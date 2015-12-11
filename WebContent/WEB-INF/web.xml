@@ -174,7 +174,29 @@
   </servlet-mapping>
   
   <servlet>
-    <description>show a search</description>
+    <description>a searchresult</description>
+    <display-name>Result</display-name>
+    <servlet-name>Result</servlet-name>
+    <servlet-class>unidaplan.Result</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Result</servlet-name>
+    <url-pattern>/result</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>data for search editing</description>
+    <display-name>SearchData</display-name>
+    <servlet-name>SearchData</servlet-name>
+    <servlet-class>unidaplan.SearchData</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SearchData</servlet-name>
+    <url-pattern>/searchdata</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>data for entering search criteria</description>
     <display-name>Search</display-name>
     <servlet-name>Search</servlet-name>
     <servlet-class>unidaplan.Search</servlet-class>
@@ -573,6 +595,18 @@
   </servlet-mapping>
   
   <servlet>
+    <description>UpdateSearchOutput</description>
+    <display-name>UpdateSearchOutput</display-name>
+    <servlet-name>UpdateSearchOutput</servlet-name>
+    <servlet-class>unidaplan.UpdateSearchOutput</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateSearchOutput</servlet-name>
+    <url-pattern>/update-search-output</url-pattern>
+  </servlet-mapping>
+  
+  
+  <servlet>
     <description>UpdateProcessTypeData</description>
     <display-name>UpdateProcessTypeData</display-name>
     <servlet-name>UpdateProcessTypeData</servlet-name>
@@ -581,6 +615,18 @@
   <servlet-mapping>
     <servlet-name>UpdateProcessTypeData</servlet-name>
     <url-pattern>/update-process-type-data</url-pattern>
+  </servlet-mapping>
+  
+  
+  <servlet>
+    <description>all or just one of the criteria (AND/OR)</description>
+    <display-name>UpdateSearchOperation</display-name>
+    <servlet-name>UpdateSearchOperation</servlet-name>
+    <servlet-class>unidaplan.UpdateSearchOperation</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateSearchOperation</servlet-name>
+    <url-pattern>/update-search-operation</url-pattern>
   </servlet-mapping>
   
   <servlet>
@@ -658,6 +704,17 @@
   <servlet-mapping>
     <servlet-name>ChangeOrderPTParameters</servlet-name>
     <url-pattern>/change-order-pt-parameters</url-pattern>
+  </servlet-mapping>
+  
+   <servlet>
+    <description>Searches</description>
+    <display-name>Searches</display-name>
+    <servlet-name>Searches</servlet-name>
+    <servlet-class>unidaplan.Searches</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Searches</servlet-name>
+    <url-pattern>/open-searches</url-pattern>
   </servlet-mapping>
   
   <servlet>
@@ -760,6 +817,28 @@
   </servlet-mapping>
   
   <servlet>
+    <description>ChangeOrderSTParameters</description>
+    <display-name>ChangeOrderSTParameters</display-name>
+    <servlet-name>ChangeOrderSTParameters</servlet-name>
+    <servlet-class>unidaplan.ChangeOrderSTParameters</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ChangeOrderSTParameters</servlet-name>
+    <url-pattern>/change-order-st-parameters</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>DeleteSearch</description>
+    <display-name>DeleteSearch</display-name>
+    <servlet-name>DeleteSearch</servlet-name>
+    <servlet-class>unidaplan.DeleteSearch</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeleteSearch</servlet-name>
+    <url-pattern>/delete-search</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
     <description>DeleteSTParameter</description>
     <display-name>DeleteSTParameter</display-name>
     <servlet-name>DeleteSTParameter</servlet-name>
@@ -771,14 +850,25 @@
   </servlet-mapping>
   
   <servlet>
-    <description>ChangeOrderSTParameters</description>
-    <display-name>ChangeOrderSTParameters</display-name>
-    <servlet-name>ChangeOrderSTParameters</servlet-name>
-    <servlet-class>unidaplan.ChangeOrderSTParameters</servlet-class>
+    <description>UpdateComparison</description>
+    <display-name>UpdateComparison</display-name>
+    <servlet-name>UpdateComparison</servlet-name>
+    <servlet-class>unidaplan.UpdateComparison</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>ChangeOrderSTParameters</servlet-name>
-    <url-pattern>/change-order-st-parameters</url-pattern>
+    <servlet-name>UpdateComparison</servlet-name>
+    <url-pattern>/update-comparison</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>UpdateObjectOutputParamSearch</description>
+    <display-name>UpdateObjectOutputParamSearch</display-name>
+    <servlet-name>UpdateObjectOutputParamSearch</servlet-name>
+    <servlet-class>unidaplan.UpdateObjectOutputParamSearch</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateObjectOutputParamSearch</servlet-name>
+    <url-pattern>/update-object-output-param-search</url-pattern>
   </servlet-mapping>
   
   <servlet>
@@ -793,6 +883,17 @@
   </servlet-mapping>
   
   <servlet>
+    <description>UpdateSearchOwner</description>
+    <display-name>UpdateSearchOwner</display-name>
+    <servlet-name>UpdateSearchOwner</servlet-name>
+    <servlet-class>unidaplan.UpdateSearchOwner</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateSearchOwner</servlet-name>
+    <url-pattern>/update-search-owner</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
     <description>UpdateSTParamGrp</description>
     <display-name>UpdateSTParamGrp</display-name>
     <servlet-name>UpdateSTParamGrp</servlet-name>
@@ -803,6 +904,16 @@
     <url-pattern>/update-st-paramgrp</url-pattern>
   </servlet-mapping>
   
+  <servlet>
+    <description>update the value for a parameter in a search</description>
+    <display-name>UpdateSearchParamValue</display-name>
+    <servlet-name>UpdateSearchParamValue</servlet-name>
+    <servlet-class>unidaplan.UpdateSearchParamValue</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateSearchParamValue</servlet-name>
+    <url-pattern>/update-search-param-value</url-pattern>
+  </servlet-mapping>
   
   <servlet>
     <description>DeleteSTParameterGrp</description>

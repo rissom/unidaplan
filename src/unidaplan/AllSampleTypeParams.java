@@ -41,14 +41,31 @@ public class AllSampleTypeParams extends HttpServlet {
 	   		System.err.println("no sampletype ID given!");
 			response.setStatus(404);
 	   	}
+	  	
 		PreparedStatement pStmt = null; 	// Declare variables
 	    JSONArray parameterGrps= null;		
-	    JSONArray processTypeGrps= null;
+	    JSONArray parameters= null;
 	 	DBconnection dBconn=new DBconnection(); // New connection to the database
 	 	ArrayList<String> stringkeys = new ArrayList<String>(); 
 		 	
 	    try{
 		 	dBconn.startDB();
+		 	
+		 	// if the sampletypeid is 0, set it to the first existing sample type 
+		 	if (sampleTypeID==0){
+		 		pStmt = dBconn.conn.prepareStatement(
+					  	   "SELECT id FROM objecttypes "
+						  +"ORDER BY position "
+						  +"LIMIT 1");
+		 		sampleTypeID = dBconn.getSingleIntValue(pStmt);
+		 		if (sampleTypeID<1) {
+		 			System.err.println("No sampletypes in database!");
+					response.setStatus(404);
+		 			throw new Exception();
+		 		}
+		 	}
+		 	
+		 	// get the parametergroups
 		 	pStmt = dBconn.conn.prepareStatement(
 				  	   "SELECT id,pos,stringkey FROM ot_parametergrps "
 					  +"WHERE (ot_parametergrps.ot_id=?) ");
@@ -60,29 +77,46 @@ public class AllSampleTypeParams extends HttpServlet {
            				stringkeys.add(Integer.toString(parameterGrps.getJSONObject(j).getInt("stringkey")));
            			}
            		}
-           	}		
-		 	
-//	 		stringkeys.add(Integer.toString(paramGrp.getInt("name"))); 
+           	}	
+   			
+   			
+   			// get the parameters
            	pStmt = dBconn.conn.prepareStatement(
      		  	   "SELECT ot_parameters.id, compulsory, formula, hidden, pos, definition, ot_parameters.stringkeyname as name, "
-     		  	  + "stringkeyunit " 
+     		  	  + "stringkeyunit, parametergroup " 
      		  	  +"FROM ot_parameters " 
      		  	  +"JOIN paramdef ON (definition=paramdef.id)"
 				  +"WHERE objecttypesid=?"); // status, processnumber and date cannot be edited
 	 		pStmt.setInt(1, sampleTypeID);
-			processTypeGrps=dBconn.jsonArrayFromPreparedStmt(pStmt); // get ResultSet from the database using the query
-			if (processTypeGrps.length()>0) {
-           		for (int j=0; j<processTypeGrps.length();j++) {
-           			stringkeys.add(Integer.toString(processTypeGrps.getJSONObject(j).getInt("name")));
-           			if (processTypeGrps.getJSONObject(j).has("stringkeyunit")){
-           				stringkeys.add(Integer.toString(processTypeGrps.getJSONObject(j).getInt("stringkeyunit")));
+			parameters=dBconn.jsonArrayFromPreparedStmt(pStmt); // get ResultSet from the database using the query
+			
+			if (parameters.length()>0) {
+				// get all the stringkeys from the parameters
+           		for (int j=0; j<parameters.length();j++) {
+           			JSONObject parameter=parameters.getJSONObject(j);
+           			stringkeys.add(Integer.toString(parameter.getInt("name")));
+           			if (parameter.has("stringkeyunit")){
+           				stringkeys.add(Integer.toString(parameters.getJSONObject(j).getInt("stringkeyunit")));
            			}
            		}
-           	}		
-		
+           		
+//    			// assign parameters to parametergroups (not needed any more)
+//           		for (int k=0; k<parameterGrps.length();k++){
+//           			JSONObject parameterGrp=parameterGrps.getJSONObject(k);
+//           			JSONArray grpParameters = new JSONArray();
+//               		for (int j=0; j<parameters.length();j++) {
+//               			JSONObject parameter=parameters.getJSONObject(j);
+//	           			if (parameterGrp.getInt("id")==parameter.getInt("parametergroup")){
+//	           				grpParameters.put(parameter);
+//	           			}
+//               		}
+//           			parameterGrp.put("parameters", grpParameters);
+//           		}
+           	}
+					
 	        JSONObject answer=new JSONObject();
-	        answer.put("parameters", processTypeGrps);
 	        answer.put("parametergrps",parameterGrps);
+	        answer.put("parameters",parameters);
 	        answer.put("strings", dBconn.getStrings(stringkeys));
 	        out.println(answer.toString());
 	    } catch (SQLException e) {
@@ -90,6 +124,7 @@ public class AllSampleTypeParams extends HttpServlet {
 			response.setStatus(404);
 	    } catch (JSONException e) {
 			System.err.println("AllSampleTypeParameters: JSON Error");
+			e.printStackTrace();
 			response.setStatus(404);
 	    } catch (Exception e) {
 			System.err.println("AllSampleTypeParameters: Some Error, probably JSON");

@@ -101,10 +101,8 @@ public class DBconnection  {
           }     
           pStmt.close();
   	  } catch (SQLException e) {   // Exception for SQL database
-  		  System.err.println("DBconnection: No result, or problem with the database");
-  		  System.err.println(pStmt.toString());
-
-  		  e.printStackTrace();
+  		  System.err.println("DBconnection: No result, or problem with the database"); // please remove this!
+  		  System.err.println(pStmt.toString());  // please remove this!
   	  } catch (Exception e) {
   		  System.err.print("DBconnection: Some problem with database query. Error! ");
 	  		  e.printStackTrace();
@@ -113,6 +111,83 @@ public class DBconnection  {
   }
   
   
+  
+  	public JSONArray getDataTable(PreparedStatement pStmt) throws Exception{
+  		ResultSet rs=null;
+  		JSONArray jsArray = new JSONArray();	  
+	  		try{
+	  			if (pStmt==null) {
+	  				System.err.println("DBconnection: prepared statement null! " );
+	  			} else {
+	  				rs = pStmt.executeQuery(); 
+	  			}
+	  			if (rs==null) {
+	  				System.err.println("DBconnection: statement result null! ");
+	  			} else {
+	  				int columns = rs.getMetaData().getColumnCount();
+	  				while (rs.next()) {
+	  					ArrayList<String> zeilenarray = new ArrayList<String>();
+	  					for (int i = 1; i <= columns; i++) {
+	  						zeilenarray.add(rs.getString(i));
+	  					}
+	  					jsArray.put(zeilenarray);                  
+	  				}
+	  			}   
+	  			rs.close();
+	  			pStmt.close();
+	  		} catch (SQLException e) {   // Exception for SQL database
+	  			System.err.println("DBconnection: No result, or problem with the database");
+	  			System.err.println(pStmt.toString());
+	  		} catch (Exception e) {
+	  			System.err.println("DBconnection: Some problem with database query. Error! ");
+	  		  	e.printStackTrace();
+	  		}
+	  	return jsArray;
+  	}
+  	
+  	
+  	
+	public JSONArray getSearchTable(PreparedStatement pStmt) throws Exception{
+  		ResultSet rs=null;
+  		JSONArray jsArray = new JSONArray();	  
+	  		try{
+	  			if (pStmt==null) {
+	  				System.err.println("DBconnection: prepared statement null! " );
+	  			} else {
+	  				rs = pStmt.executeQuery(); 
+	  			}
+	  			if (rs==null) {
+	  				System.err.println("DBconnection: statement result null! ");
+	  			} else {
+	  				int columns = rs.getMetaData().getColumnCount();
+	  				while (rs.next()) {
+	  					JSONObject rowObj=new JSONObject();
+	  					rowObj.put("id", rs.getInt(1));
+	  					rowObj.put("name", rs.getString(2));
+	  					rowObj.put("type", rs.getInt(3));
+	  					ArrayList<String> zeilenarray = new ArrayList<String>();
+	  					for (int i = 4; i <= columns; i++) {
+	  						zeilenarray.add(rs.getString(i));
+	  					}
+	  					rowObj.put("rowdata",zeilenarray);
+	  					jsArray.put(rowObj);                  
+	  				}
+	  			}   
+	  			rs.close();
+	  			pStmt.close();
+	  		} catch (SQLException e) {   // Exception for SQL database
+	  			System.err.println("DBconnection: No result, or problem with the database");
+	  			e.printStackTrace();
+	  			System.err.println(pStmt.toString());
+	  		} catch (Exception e) {
+	  			System.err.println("DBconnection: Some problem with database query. Error! ");
+	  		  	e.printStackTrace();
+	  		}
+	  	return jsArray;
+  	}
+  
+  
+  	
   
   public int createNewStringKey(String input) throws Exception{
 	  PreparedStatement pStmt=conn.prepareStatement("INSERT INTO string_key_table values(default,?) RETURNING id");

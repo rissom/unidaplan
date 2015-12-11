@@ -23,7 +23,8 @@ function oExpController(restfactory,$translate,$scope,$state,$stateParams,experi
 	    }, function(rest) {
 	    	console.log("ERROR");
 	    });
-	}
+	};
+	
 	
 	
 	$scope.$on('language changed', function(event, args) {
@@ -32,25 +33,32 @@ function oExpController(restfactory,$translate,$scope,$state,$stateParams,experi
 	});
 	
 	
+	
 	this.getStatus = function(experiment) {
 		return this.statusItems[experiment.status];
 	};
 	
 	
+	
 	this.addExperiment=function(){
 		this.editmode=true;
-	}
+	};
+	
+	
 	
 	this.cancelAdd=function(){
 		this.editmode=false;
-	}
+	};
+	
 	
 	
 	this.newExperiment=function(){
 		var promise= experimentService.addExperiment();
 		promise.then(function(){reload();},function(){console.log("error");})
 		this.editmode=false;
-	}
+	};
+	
+	
 	
 	this.myexperiments = function() {  // returns all my experiments
 		var myExps=[];
@@ -61,7 +69,9 @@ function oExpController(restfactory,$translate,$scope,$state,$stateParams,experi
 			}
 		});
 		return myExps;
-	}
+	};
+	
+	
 	
 	this.otherexperiments = function() {  // liefert alle meine Experimente zurück
 		var otherExps=[];
@@ -73,6 +83,8 @@ function oExpController(restfactory,$translate,$scope,$state,$stateParams,experi
 		});
 		return otherExps;
 	};
+	
+	
 	
 	this.deleteExperiment = function(experiment) {
 		var promise=experimentService.deleteExperiment(experiment.id);
@@ -91,7 +103,7 @@ function oExpController(restfactory,$translate,$scope,$state,$stateParams,experi
 	 	var current = $state.current;
 	 	var params = angular.copy($stateParams);
 	 	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
-	 }
+	 };
 	 
 };
     

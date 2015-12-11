@@ -1,102 +1,95 @@
 (function(){
 'use strict';
 
-function oSearchController(restfactory,$translate,$scope,$state) {
+function openSearchController(restfactory,$translate,$scope,$state,$stateParams,searches,searchService) {
 	
 	var thisController=this;
 
-	this.experiments=experiments;
+	this.searches=searches;
 	
 	this.strings = [];
 	
-	this.myName='Thorsten Rissom';
-	
-	this.statusItems=[$translate.instant("planning phase"),$translate.instant("planned"),
-	                  $translate.instant("running"),$translate.instant("completed")]
-	
-
-	
-	this.setStatus=function(status,experiment){
-		experiment.status=status;
-		var promise = restfactory.GET("change-experiment-status?id="+experiment.id+"&status="+status)
-	    promise.then(function(rest) {
-	    }, function(rest) {
-	    	console.log("ERROR");
-	    });
-	}
+	var me ='Thorsten Rissom';
+		
 	
 	
-	$scope.$on('language changed', function(event, args) {
-		thisController.statusItems=[$translate.instant("planning phase"),$translate.instant("planned"),
-	                  $translate.instant("running"),$translate.instant("completed")]
-	});
-	
-	
-	this.getStatus = function(experiment) {
-		return this.statusItems[experiment.status];
+	this.addSearch=function(){
+		var name={};
+        name[$translate.use()]=$translate.instant("New Search");
+		var promise=searchService.addSearch(name);
+		promise.then(function(rest){
+			$state.go("editSearch",{id:rest.data.id,newSearch:true});
+		},
+		function(){
+			console.log("Error creating new Search");
+		});
 	};
 	
 	
-	this.addExperiment=function(){
-		this.editmode=true;
-	}
 	
-	this.cancelAdd=function(){
-		this.editmode=false;
-	}
-	
-	
-	this.newExperiment=function(){
-		var promise= experimentService.addExperiment();
-		promise.then(function(){reload();},function(){console.log("error");})
-		this.editmode=false;
-	}
-	
-	this.myexperiments = function() {  // returns all my experiments
-		var myExps=[];
-		var me=this.myName;
-		angular.forEach(this.experiments, function(anExp) {
-			if (anExp.creator==me) {
-				myExps.push(anExp);
+	this.mySearches = function() {  // returns all my searches
+		var mySearches=[];
+		angular.forEach(this.searches, function(aSearch) {
+			if (aSearch.owner==me) {
+				mySearches.push(aSearch);
 			}
 		});
-		return myExps;
-	}
-	
-	this.otherexperiments = function() {  // liefert alle meine Experimente zurück
-		var otherExps=[];
-		var me=this.myName;
-		angular.forEach(this.experiments, function(anExp) {
-			if (anExp.creator!=me) {
-				otherExps.push(anExp);
-			}
-		});
-		return otherExps;
+		return mySearches;
 	};
 	
-	this.deleteExperiment = function(experiment) {
-		var promise=experimentService.deleteExperiment(experiment.id);
+	
+	  
+	this.performAction=function(search,action){
+		if (action.action==="edit") {
+			$state.go("editSearch",{id:search.id});
+		}
+		if (action.action=="delete") {
+			var promise = searchService.deleteSearch(search);
+			promise.then(function(){
+				reload();
+			},function(){
+				console.log("error");
+			});
+		}
+	};
+	
+	
+	
+	this.otherSearches = function() {  
+		// returns all searches that are not owned by me
+		var otherSearches=[];
+		angular.forEach(this.searches, function(aSearch) {
+			if (aSearch.owner!=me) {
+				otherSearches.push(aSearch);
+			}
+		});
+		return otherSearches;
+	};
+	
+	
+	
+	this.deleteSearch = function(search) {
+		var promise=searchService.deleteSearch(search);
 		promise.then(function(){
 				reload();
 			},
 			function(){
-				console.log("error deleting experiment");
-			})       
-//		$scope.$watch('thisController.experiments');
+				console.log("error deleting search");
+			});   
 	};
 	
 	
-	  
-	  var reload=function() {
-		    var current = $state.current;
-		    var params = angular.copy($stateParams);
-		    return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
-	  }
-	  
+  
+	var reload=function() {
+		var current = $state.current;
+		var params = angular.copy($stateParams);
+		return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
+	};
+  
 	
-};
+}
     
         
-angular.module('unidaplan').controller('oSearchController',['restfactory','$translate','$scope','$state',oSearchController]);
+angular.module('unidaplan').controller('openSearchController',['restfactory','$translate','$scope','$state','$stateParams','searches','searchService',openSearchController]);
 
 })();

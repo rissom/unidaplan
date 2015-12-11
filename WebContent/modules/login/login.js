@@ -9,7 +9,7 @@ var loginController=function($state,restfactory,$scope,$translate){
 	
 	this.checkLocalStorageSupport =function() {
 		  try {
-		    return 'localStorage' in window && window['localStorage'] !== null;
+		    return 'localStorage' in window && window.localStorage !== null;
 		  } catch (e) {
 		    return false;
 		  }
@@ -27,7 +27,7 @@ var loginController=function($state,restfactory,$scope,$translate){
 				  } else {
 					  if(thisController.checkLocalStorageSupport){
 					        var lang = window.localStorage.getItem("language");
-					        if(lang != null){
+					        if(lang !== null){
 					        	  if (this.old_language!=$translate.use()) {
 					      			$translate.use(lang);
 					        	  }

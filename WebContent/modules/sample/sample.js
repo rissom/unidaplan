@@ -8,7 +8,7 @@ function sampleController(sample,$state,$stateParams,$modal,$filter,types,sample
 		
 	if (sample.error) this.error=sample.error;
 	this.parameters = sample.parameters;
-	this.processes = $filter('orderBy')(sample.processes, 'date', false)
+	this.processes = $filter('orderBy')(sample.processes, 'date', false);
 	this.titleparameters = sample.titleparameters;
 	this.children = sample.children?sample.children:[];
 	this.ancestors = sample.ancestors?sample.ancestors:[];
@@ -26,7 +26,7 @@ function sampleController(sample,$state,$stateParams,$modal,$filter,types,sample
 	// returns the translated name of a process
 	this.getProcessType = function(process){
 		return avProcessTypeService.getProcessType(process,ptypes);
-	}
+	};
 	
 	
 	
@@ -37,7 +37,7 @@ function sampleController(sample,$state,$stateParams,$modal,$filter,types,sample
 			duration = this.processes[index+1].date-this.processes[index].date;
 		}
 		return duration;
-	}
+	};
 	
 
 	this.openDialog = function (mode) {			
@@ -64,7 +64,7 @@ function sampleController(sample,$state,$stateParams,$modal,$filter,types,sample
 		        				eSamples2.push({sampleid:sample.id,typeid:sample.typeid,name:sample.name});
 		        				return eSamples2;
 		        				},
-		        mode		: function() { return "multiple"},
+		        mode		: function() { return "multiple";},
 		        buttonLabel	: function() { return $translate.instant('assign to sample'); }
 		    }		        
 		});
@@ -96,7 +96,7 @@ function sampleController(sample,$state,$stateParams,$modal,$filter,types,sample
 			a2.push(ancestors[i].sampleid);
 		}
 		sampleService.addAncestors(sample.id,a2);
-	}
+	};
 	
 	
 	
@@ -107,7 +107,7 @@ function sampleController(sample,$state,$stateParams,$modal,$filter,types,sample
 			c2.push(children[i].sampleid);
 		}		
 		sampleService.addChildren(sample.id,c2);
-	}
+	};
 	
 	
 	
@@ -116,32 +116,32 @@ function sampleController(sample,$state,$stateParams,$modal,$filter,types,sample
 			parameter.editing=false; 
 			var oldValue=parameter.value;
 			parameter.value=newValue;
-			 if (parameter.pid) {
-				var res = sampleService.updateSampleParameter(parameter)
+			var res;
+			  if (parameter.pid) {
+				res = sampleService.updateSampleParameter(parameter);
 				res.then(function(data, status, headers, config) {
-						 },
-						 function(data, status, headers, config) {
+						},
+						function(data, status, headers, config) {
 							parameter.value=oldValue;
 							console.log('error');
 							console.log(data);
-						 }
-						);
+						}
+				);
 			 } else {
-				var res = sampleService.addSampleParameter(sample.id,parameter);
-					res.then(function(data) {
-							 },
-							 function(data) {
-								parameter.value=oldValue;
-								console.log('error');
-								console.log(data);
-							 }
-							);
+				res = sampleService.addSampleParameter(sample.id,parameter);
+				res.then(function(data) {
+						},function(data) {
+							parameter.value=oldValue;
+							console.log('error');
+							console.log(data);
+						}
+				);
 			 }
 		}
 		if (keyCode===27) {		// Escape key pressed
 			parameter.editing=false;			
 		}
-	}
+	};
 	
 	
 	
@@ -149,20 +149,20 @@ function sampleController(sample,$state,$stateParams,$modal,$filter,types,sample
 	{  
 		var promise = sampleService.deleteSample(sample.id);
 		promise.then(function(data) {  			// success
-				$state.go('openExperiment')	// go to experiments			
+				$state.go('openExperiment');	// go to experiments			
 			},
 				function(data) { 	 // fail
 			    console.log("Error deleting Sample");
-				$state.go(error)
+				$state.go(error);
 			}
 		);
-	}
+	};
 	
 
 	
 	this.getType = function(sample){
 		return avSampleTypeService.getType(sample,types);
-	}
+	};
 
 	
 	

@@ -100,12 +100,12 @@ gulp.task('jswidgetsdev', function () {
 });
 
 gulp.task('jswidgetsprod', function () {
-	  gulp.src([dir.src+'widgets/**/*.js'])
-	      .pipe(ngAnnotate())
-	      .pipe(uglify().on('error', gutil.log))
-	    .pipe(gulp.dest('./dist/widgets/'))
-	    .pipe(connect.reload());
-	}); 
+  gulp.src([dir.src+'widgets/**/*.js'])
+    .pipe(ngAnnotate())
+    .pipe(uglify().on('error', gutil.log))
+    .pipe(gulp.dest('./dist/widgets/'))
+    .pipe(connect.reload());
+});
 
 gulp.task('minify-html', function() {
   var opts = {
@@ -121,20 +121,24 @@ gulp.task('minify-html', function() {
 });
 
 gulp.task('jshint', function() {
-  return gulp.src([dir.src+'directives/**/*.js',dir.src+'factories/**/*.js'])
+  return gulp.src([dir.src+'directives/**/*.js',dir.src+'factories/**/*.js',
+    dir.src+'modules/**/*.js',dir.src+'filters/**/*.js',dir.src+'services/**/*.js',
+    dir.src+'stuff/**/*.js',dir.src+'constants/**/*.js'])
     .pipe(jshint())
     .pipe(jshint.reporter('jshint-stylish'));
 });
 
 gulp.task('eslint', function() {
-  return gulp.src([dir.src+'directives/**/*.js',dir.src+'factories/**/*.js'])
+  return gulp.src([dir.src+'directives/**/*.js',dir.src+'factories/**/*.js',
+    dir.src+'modules/**/*.js',dir.src+'filters/**/*.js',dir.src+'services/**/*.js',
+    dir.src+'constants/**/*.js'])
     .pipe(eslint())
     .pipe(eslint.format());
 });
 
 // WS and REST proxy to use gulp.connect
-var proxyPath = '/activecockpit';
-var proxyTarget = 'http://10.0.12.57:8080';
+var proxyPath = '/unidaplan';
+var proxyTarget = 'http://localhost:8080';
 
 console.log("+------------------------------------------------------------------------------");
 console.log("+");
@@ -154,15 +158,14 @@ gulp.task('connect', function () {
                     changeOrigin:true,
                     ws: true      // <-- set it to 'true' to proxy WebSockets
                 })
-            ]
+            ];
         }
-    })
+    });
 });
  
 gulp.task('watch', function() {
 	gulp.watch([dir.src+'**/*.html'], ['minify-html']);
 	gulp.watch([dir.src+'core/app.js',dir.src+'core/**/*.js'],['jscore']);
-	gulp.watch([dir.src+'widgets/**/*.js'],['jswidgets']);
 	gulp.watch([dir.src+'**/*.css'],['css']);
 	gulp.watch([dir.src+'data/**/*'],['data']);
 });
@@ -175,7 +178,7 @@ gulp.task('builddev', ['css','data','minify-html','jscoredev','jswidgetsdev','js
 gulp.task('dev',['builddev','connect', 'watch' ]);
 
 gulp.task('prod',['clean'], function () {
-	  gulp.start('css','data','minify-html','jscoreprod','jswidgetsprod','jsvendor');
+  gulp.start('css','data','minify-html','jscoreprod','jswidgetsprod','jsvendor');
 });
 
 gulp.task('default',['prod']);

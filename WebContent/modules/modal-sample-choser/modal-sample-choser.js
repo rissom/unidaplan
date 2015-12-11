@@ -20,12 +20,12 @@ function modalSampleChoser(avSampleTypeService,$translate,$scope,$modalInstance,
 	
 	$scope.$watch('mSampleChoserCtrl.selectedtypes', function (seltypes){
 		var typeList=[];
-		if (seltypes==undefined || seltypes.length==0){  // Nothing selected => Everything selected
+		if (seltypes===undefined || seltypes.length===0){  // Nothing selected => Everything selected
 			angular.forEach(types,function(type) {
 				typeList.push(type.id);			
 			});
 		} else {
-		if (seltypes[0].id==0){  // all types field selected => Everything selected
+		if (seltypes[0].id===0){  // all types field selected => Everything selected
 			angular.forEach(types,function(type) {
 				typeList.push(type.id);			
 			});
@@ -38,13 +38,13 @@ function modalSampleChoser(avSampleTypeService,$translate,$scope,$modalInstance,
 		
 		//check if there was change
 		var oldUserinput="";
-		if (thisController.userinput!=undefined) {
+		if (thisController.userinput!==undefined) {
 			oldUserinput=thisController.userinput;
 		}
 		var oldTypeIDs = thisController.selectedTypesVar;
 		  setTimeout(function() {
 			  	var newUserinput="";
-				if (thisController.userinput!=undefined){
+				if (thisController.userinput!==undefined){
 					newUserinput=thisController.userinput;
 				}
 			    if (oldUserinput==newUserinput){
@@ -63,13 +63,13 @@ function modalSampleChoser(avSampleTypeService,$translate,$scope,$modalInstance,
 	$scope.$watch('mSampleChoserCtrl.userinput', function (tmpStr){
 		//check if there was change
 		var oldUserinput="";
-		if (thisController.userinput!=undefined) {
+		if (thisController.userinput!==undefined) {
 			oldUserinput=thisController.userinput;
 		}
 		var oldTypeIDs = thisController.selectedTypesVar;
 		  setTimeout(function() {
 			  	var newUserinput="";
-				if (thisController.userinput!=undefined){
+				if (thisController.userinput!==undefined){
 					newUserinput=thisController.userinput;
 				}
 			    if (oldUserinput==newUserinput){
@@ -88,7 +88,7 @@ function modalSampleChoser(avSampleTypeService,$translate,$scope,$modalInstance,
 		var details={}
 		details.sampletypes=this.selectedTypesVar;	
 		var name="";
-		if (thisController.userinput!=undefined){name=thisController.userinput}
+		if (thisController.userinput!==undefined){name=thisController.userinput}
 			var promise=sampleService.getSamplesByName(name,details);
 			promise.then(function(data){
 				var tempSamples=[];
@@ -202,14 +202,7 @@ function modalSampleChoser(avSampleTypeService,$translate,$scope,$modalInstance,
 		if (this.immediate){this.assignSamples()}
 	}
 	
-	
-	var thisController = this;
-	$scope.$on('language changed', function(event, args) {
-		thisController.translate(args.language);
-	});
-	
-	
-	
+
 	//activate function
 	this.firsttime=true;
 	this.init();

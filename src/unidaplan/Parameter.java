@@ -37,7 +37,7 @@ import org.json.JSONObject;
 		    dBconn.startDB();
 			pstmt= dBconn.conn.prepareStatement( 	
 			"SELECT paramdef.id,stringkeyname,stringkeyunit,datatype,maxdigits,id_description, "
-			+"(blabla.count) IS NULL as deletable "
+			+"max((blabla.count)) IS NULL as deletable "
 			+"FROM paramdef "
 			+"LEFT JOIN "
 			+" (SELECT count(a.id),definition FROM p_parameters a GROUP BY definition "
@@ -46,7 +46,7 @@ import org.json.JSONObject;
 			+"  UNION ALL "
 			+"  SELECT count(c.id),definition FROM expp_param c GROUP BY definition "
 			+" ) AS blabla ON definition=paramdef.id "
-			+"WHERE paramdef.id>2");
+			+"WHERE paramdef.id>2 GROUP BY paramdef.id");
 			parameters=dBconn.jsonArrayFromPreparedStmt(pstmt);
 			pstmt.close();
 			  for (int i=0; i<parameters.length();i++) {

@@ -10,16 +10,15 @@ var processService = function (restfactory,$q,$translate,key2string) {
 			              $translate.instant("failed")];
 	
 	
-	
 	this.setStatus = function(process,status){
 		return this.updateParameter(process.id,process.statuspid,status);
-	}
+	};
 	
 	
 	
 	this.addProcessType = function(process){
 		return restfactory.POST("add-process-type",process);
-	}
+	};
 	
 	
 	
@@ -32,30 +31,30 @@ var processService = function (restfactory,$q,$translate,key2string) {
 	    	    	thisController.strings = rest.data.strings;
 	    	    	thisController.process.fprocesstype = function(){
 	    	    		return key2string.key2string(thisController.process.pt_string_key,thisController.strings);
-	    	    	}
+	    	    	};
 	    	    	thisController.translate();
 	    	    	thisController.pushProcess(thisController.process);
-	    	    	defered.resolve(thisController.process)
+	    	    	defered.resolve(thisController.process);
     	    	}, function(rest) {    	    		
     	    		console.log("Error loading process");
     	    		defered.reject({"error":"Error loading process"});
     	    	});
 		return defered.promise;
-	}
+	};
       
 	
 	
 	this.pushProcess = function(process){
 		var i;
 		var found=false;
-		if (this.recentProcesses==undefined) {
-			this.recentProcesses=[]
+		if (this.recentProcesses===undefined) {
+			this.recentProcesses=[];
 		}
 		var tProcess={"id":process.id,"processtype":process.processtype,"pnumber":process.pnumber};
 		for (i=0;i<this.recentProcesses.length;i++){
 			if (this.recentProcesses[i].pnumber==tProcess.pnumber &&
 				this.recentProcesses[i].processtype==tProcess.processtype){
-				found=true			
+				found=true;	
 			}
 		}
 		if (!found) {
@@ -64,7 +63,7 @@ var processService = function (restfactory,$q,$translate,key2string) {
 		if (this.recentProcesses.length>20){
 			this.recentProcesses.slice(0,this.recentProcesses.length-20);
 		}
-	}
+	};
 	
 	
 	
@@ -76,46 +75,48 @@ var processService = function (restfactory,$q,$translate,key2string) {
 				}
 			}
 		return restfactory.DELETE("delete-process?id="+id);
-	}
+	};
 	
 	
 	
 	this.updateParameter=function(processID,paramID,newValue){
 		var parameter={"processid":processID,"parameterid":paramID, "value":newValue};	
-		return restfactory.POST('update-process-parameter',parameter);
-	}
+		return restfactory.PUT('update-process-parameter',parameter);
+	};
 	
 	
 	
 	// delete a processtype
 	this.deleteProcessType = function(id){
 		return restfactory.DELETE("delete-process-type?id="+id);
-	}
+	};
+	
 	
 	
 	// duplicate a process
 	this.duplicateProcessType = function(id){
 		return restfactory.POST("duplicate-process-type?id="+id);
-	}
+	};
+	
 	
 	
 	this.translate = function() {
 		
-		this.process.trprocesstype = key2string.key2string(this.process.pt_string_key,this.strings)		
+		this.process.trprocesstype = key2string.key2string(this.process.pt_string_key,this.strings);
 		var thisController=this;
 		angular.forEach(thisController.process.parameters, function(parameter) {
 			parameter.namef = function(){
 				return key2string.key2string(parameter.stringkeyname,thisController.strings);
-			}
+			};
 			if (parameter.unit){
 				parameter.unitf= function(){
 					return key2string.key2string(parameter.unit,thisController.strings);
-				}
+				};
 			}
-		})
-	}
+		});
+	};
 	
-}
+};
 
 
 angular.module('unidaplan').service('processService', ['restfactory','$q','$translate','key2string',processService]);

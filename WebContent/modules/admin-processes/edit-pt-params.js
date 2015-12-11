@@ -7,7 +7,9 @@ function editPtParamsController($state,$modal,$stateParams,$translate,avParamete
   
   var activeParameter={};
     
-  this.parameters=parameterGrp.parameters.sort(function(a,b){return a.pos-b.pos});
+  this.parameters=parameterGrp.parameters.sort(function(a,b){
+	  return a.pos-b.pos;
+  });
   
   this.strings=parameterGrp.strings;
   
@@ -34,16 +36,16 @@ function editPtParamsController($state,$modal,$stateParams,$translate,avParamete
   this.editFieldNL1=false;
   
   this.editFieldNL2=false;
+  
+  this.av=avParameters;
     
-  var thisController=this;
   
   
   
   this.getGrpName=function(grp,lang){
-	  key2string.key2stringWithLangStrict(grp.name,thisController.strings,lang)
-  }
+	  key2string.key2stringWithLangStrict(grp.name,thisController.strings,lang);
+  };
   
-
   
   
   this.edit = function(field){
@@ -51,9 +53,8 @@ function editPtParamsController($state,$modal,$stateParams,$translate,avParamete
 	  thisController.editFieldNL2 = (field=="NL2");
 	  thisController.newNameL1=thisController.nameL1;
 	  thisController.newNameL2=thisController.nameL2;
-  }
+  };
 	
-
   
   
   this.editNL1= function(parameter){
@@ -61,7 +62,7 @@ function editPtParamsController($state,$modal,$stateParams,$translate,avParamete
 	  parameter.editNL1=true;
 	  parameter.newParameterNameL1=parameter.nameLang(thisController.lang1key);
 	  activeParameter=parameter;
-  }
+  };
   
   
   
@@ -70,7 +71,7 @@ function editPtParamsController($state,$modal,$stateParams,$translate,avParamete
 	  parameter.editNL2=true;
 	  parameter.newParameterNameL2=parameter.nameLang(thisController.lang2key);
 	  activeParameter=parameter;
-  }
+  };
   
   
   
@@ -79,7 +80,7 @@ function editPtParamsController($state,$modal,$stateParams,$translate,avParamete
 			  			  hidden : parameter.hidden};
 	  var promise= avProcessTypeService.updateParameter(tempParameter);
  	  promise.then(function(){reload()},function(){console.log("error")})
-  }
+  };
   
   
   
@@ -89,7 +90,7 @@ function editPtParamsController($state,$modal,$stateParams,$translate,avParamete
 	  console.log(tempParameter)
 	  var promise= avProcessTypeService.updateParameter(tempParameter);
  	  promise.then(function(){reload()},function(){console.log("error")})
-  }
+  };
   
   
   
@@ -106,17 +107,17 @@ function editPtParamsController($state,$modal,$stateParams,$translate,avParamete
 //	  console.log (tempParameter)
 	  var promise= avProcessTypeService.updateParameter(tempParameter);
  	  promise.then(function(){reload()},function(){console.log("error")})
-  }
+  };
   
   
  
   
   this.performAction=function(parameter,action){
-	  if (action.action==="delete") {
+	  if (action.action==="delete" && !action.disabled) {
 		  var promise = avProcessTypeService.deletePTParameter(parameter.id);
 		  promise.then(function(){reload()},function(){console.log("error")});
 	  }
-  }
+  };
   
   
   
@@ -126,8 +127,9 @@ function editPtParamsController($state,$modal,$stateParams,$translate,avParamete
 	    templateUrl: 'modules/modal-parameter-choser/modal-parameter-choser.html',
 	    controller: 'modalParameterChoser as mParameterChoserCtrl',
 	    resolve: {
-	    	mode		  	 : function(){return 'immediate'; },
-	    	avParameters     : function(){return avParameters; },
+	    	mode		   : function(){return 'immediate'; },
+	    	avParameters   : function(){return avParameters; },
+	    	parameters     : function(){return []; }
 		}
 	  });
 	  
@@ -152,20 +154,20 @@ function editPtParamsController($state,$modal,$stateParams,$translate,avParamete
 	if (keyCode===27) {		// Escape key pressed
 		  thisController.editmode=false;
 	}
-  }
+  };
 
   
   
   this.keyUpParameter = function(keyCode,parameter) {
-		if (keyCode===13) {				// Return key pressed
-			console.log("Return pressed");
-			thisController.submitParameter();
-		}
-		if (keyCode===27) {		// Escape key pressed
-			parameter.editNL1=false;
-			parameter.editNL2=false;
-		}
+	  if (keyCode===13) {				// Return key pressed
+		  console.log("Return pressed");
+		  thisController.submitParameter();
 	  }
+	  if (keyCode===27) {		// Escape key pressed
+		  parameter.editNL1=false;
+		  parameter.editNL2=false;
+	  }
+  };
   
   
   
@@ -175,7 +177,7 @@ function editPtParamsController($state,$modal,$stateParams,$translate,avParamete
 	  newPositions.push({"id":thisController.parameters[index+1].id,"position":thisController.parameters[index].pos});
 	  var promise = avProcessTypeService.changeOrderPTParameters(newPositions);
 	  promise.then(function(){reload()},function(){console.log("error")})
-  }
+  };
 
   
   
@@ -185,15 +187,15 @@ function editPtParamsController($state,$modal,$stateParams,$translate,avParamete
 	  newPositions.push({"id":thisController.parameters[index].id,"position":thisController.parameters[index-1].pos});
 	  var promise = avProcessTypeService.changeOrderPTParameters(newPositions);
 	  promise.then(function(){reload()},function(){console.log("error")})
-  }
+  };
   
   
   
- var reload=function() {
- 	var current = $state.current;
- 	var params = angular.copy($stateParams);
- 	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
- }
+  var reload=function() {
+	  var current = $state.current;
+	  var params = angular.copy($stateParams);
+	  return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
+  };
 
 };
 

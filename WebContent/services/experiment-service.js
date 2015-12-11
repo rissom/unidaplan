@@ -10,18 +10,15 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 	this.getExperiments = function() {
         var defered=$q.defer();
 		var promise = restfactory.GET("experiments");
-		 		
 	    promise.then(function(rest) {
 	    	thisController.experiments = rest.data.experiments;
 	    	thisController.expsStrings = rest.data.strings;
-	    	
-	    	
 			angular.forEach(thisController.experiments, function(anExp) {
-				anExp.namef=function(){return key2string.key2string(anExp.name,thisController.expsStrings)}
-			})
-	    	
-	    	
-	    	defered.resolve(thisController.experiments)
+				anExp.namef=function(){
+					return key2string.key2string(anExp.name,thisController.expsStrings);
+				};
+			});
+	    	defered.resolve(thisController.experiments);
 	    }, function(rest) {
 	    });
 		return defered.promise;
@@ -37,62 +34,61 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
     	    	thisController.strings = rest.data.strings;
     			thisController.experiment.namef=function(){
     				return key2string.key2string(thisController.experiment.name,thisController.strings);
-    			}
+    			};
     			angular.forEach(thisController.experiment.parameters, function(parameter) {
     				parameter.namef=function(){
-    					return key2string.key2string(parameter.stringkeyname,thisController.strings)
-    				}
+    					return key2string.key2string(parameter.stringkeyname,thisController.strings);
+    				};
     				parameter.nameLang=function(lang){				
-    					return key2string.key2stringWithLangStrict(parameter.stringkeyname,thisController.strings,lang)
-    				}
+    					return key2string.key2stringWithLangStrict(parameter.stringkeyname,thisController.strings,lang);
+    				};
      				parameter.unitf=function(){
-    					return key2string.unitf(parameter.stringkeyunit,thisController.strings)
-    				}
+    					return key2string.unitf(parameter.stringkeyunit,thisController.strings);
+    				};
     				parameter.unitLang=function(lang){				
-    					return key2string.key2stringWithLangStrict(parameter.stringkeyunit,thisController.strings,lang)
-    				}
+    					return key2string.key2stringWithLangStrict(parameter.stringkeyunit,thisController.strings,lang);
+    				};
     				if (parameter.datatype==="date+time") {
-    					parameter.date=new Date(parameter.value)
+    					parameter.date=new Date(parameter.value);
     				}
-//    				parameter.trname=key2string.key2string(parameter.stringkeyname,thisController.strings);
-    			})
+    			});
     			angular.forEach(thisController.experiment.samples, function(sample){
-    				if (sample.note!=undefined) {
+    				if (sample.note!==undefined) {
     					sample.trnote=key2string.key2string(sample.note,thisController.strings);
     				}
     				angular.forEach(sample.pprocesses, function(pprocess){
     					if (pprocess.note){
     						pprocess.trnote=key2string.key2string(pprocess.note,thisController.strings);
     					}
-    				})
+    				});
     			});
     			thisController.pushExperiment(thisController.experiment);
-    	    	defered.resolve(thisController.experiment)
+    	    	defered.resolve(thisController.experiment);
 	    	}, function(rest) {    	    		
 	    		console.log("Error loading experiment");
 	    		defered.reject({"error":"Error loading experiment"});
 	    	});
 		return defered.promise;
-	}
+	};
 	
 	
 	
 	this.ExpStepChangeRecipe = function(id,recipe) {
 		return restfactory.POST("exp-step-change-recipe?processstepid="+id+"&recipe="+recipe);
-	}
+	};
 	
     
 	
 	// save experiment for "recent experiments"
 	this.pushExperiment = function(experiment){
 		var found=false;
-		if (this.recentExperiments==undefined) {
-			this.recentExperiments=[]
+		if (this.recentExperiments===undefined) {
+			this.recentExperiments=[];
 		}
 		var tExperiment={"id":experiment.id,"number":experiment.number,"trname":experiment.trname,"name":experiment.name};
 		for (var i=0;i<this.recentExperiments.length;i++){
 			if (this.recentExperiments[i].id==tExperiment.id) {
-				found=true			
+				found=true;	
 			}
 		}
 		if (!found) {
@@ -101,13 +97,13 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 		if (this.recentExperiments.length>20){
 			this.recentExperiments.slice(0,this.recentExperiments.length-20);
 		}
-	}
+	};
 	
 	
 	
 	// delete an experiment (also from recent experiments)
 	this.deleteExperiment = function(id){
-			if (this.recentExperiments!=undefined) {
+			if (this.recentExperiments!==undefined) {
 				for (var i=0;i<this.recentExperiments.length;i++){
 					if (this.recentExperiments[i].id==id){
 						this.recentExperiments.splice(i,1);
@@ -115,21 +111,24 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 				}
 			}
 		return restfactory.DELETE("delete-experiment?id="+id);
-	}
+	};
+	
 	
 	this.addExperiment = function(){
 		console.log ("Not implemented yet");
-	}
+	};
+	
+	
 	
 	this.addParameters = function(experimentid,parameters) {
 		return  restfactory.POST("add-experiment-parameter",{ experimentid : experimentid , parameters : parameters });
-	}
+	};
 	
 	
 	
 	this.addSampleToExperiment = function (expid,sampleid,pos){
 		return  restfactory.POST("add-sample-to-experiment?experimentid="+expid+"&position="+pos+"&sampleid="+sampleid);
-	}
+	};
 
 	
 	
@@ -159,7 +158,7 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 	
 	this.updatePositionsForProcessesInExperiment=function(processes){
 		return restfactory.POST("update-positions-for-processes-in-experiment",processes);
-	}
+	};
 	
 	
 	
@@ -168,7 +167,7 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 			parameter.tz=parameter.date.getTimezoneOffset();
 		}
 		return restfactory.POST('update-experiment-parameter',parameter);		
-	}
+	};
 	
 	
 	
@@ -176,7 +175,7 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 		var promise = restfactory.POST('update-experiment-sample-comment',
 				{"id":id,"comment":comment});
 		return promise;
-	}
+	};
 	
 	
 
@@ -184,38 +183,38 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 		var promise = restfactory.POST('update-experiment-step-comment',
 						{"id":id,"comment":comment});
 		return promise;
-	}
+	};
 	
 	
 	
 	this.deleteSampleFromExperiment = function(id){
 		// Removes a sample from an experiment. 
 		return restfactory.DELETE("delete-sample-from-experiment?id="+id);
-	}
+	};
 	
 	
 	
 	this.deleteParameter=function(id){
 		//removes a proces from an experiment
 		return restfactory.DELETE("delete-experiment-parameter?id="+id);
-	}
+	};
 	
 	
 	
 	this.deleteProcess=function(id){
 		//removes a proces from an experiment
 		return restfactory.DELETE("delete-process-from-experiment?id="+id);
-	}
+	};
 	
 	
 	
 	this.replaceSampleInExperiment = function(id, newSampleId){
 		// replaces a sample in an experiment
 		return restfactory.POST("replace-sample-in-experiment?id="+id+"&sampleid="+newSampleId);
-	}
+	};
 	
 	
-}
+};
 
 
 angular.module('unidaplan').service('experimentService', ['restfactory','$q','$translate','key2string',experimentService]);

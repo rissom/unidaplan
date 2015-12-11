@@ -3,9 +3,9 @@
 
 function groupController(restfactory,$translate,$scope) {
 	
-	this.groups =  [{"id":1,"name":"Microscopy Group"}
-					,{"id":2,"name":"X-Ray Diffraction Group"}
-					,{"id":3,"name":"Solar Energy Groups","deletable":true}];			
+	this.groups =  [{"id":1,"name":"Microscopy Group"},
+	                {"id":2,"name":"X-Ray Diffraction Group"},
+	                {"id":3,"name":"Solar Energy Groups","deletable":true}];			
 
 	this.strings = [];
 			

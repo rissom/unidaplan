@@ -15,32 +15,31 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 			parameterids     : parameters,
 		};
 		return restfactory.POST('add-pt-pg-parameters',tempObj);
-	}
+	};
 	
 	
 	
 	this.getProcessType = function(process,pTypes) {
-		var processTypeName
+		var processTypeName;
 		  angular.forEach(pTypes,function(ptype) {
 			if (process.processtype==ptype.id){
 				processTypeName=ptype.namef();
 			}
-	      })
+	      });
 		return processTypeName; 
-	}
+	};
 
 	
 	
 	this.updateParamGrp = function (name, language, paramgrpid){
-		return restfactory.PUT("update-pt-paramgrp",{"newname":name, "paramgrpid":paramgrpid, "language":language})
-	}
+		return restfactory.PUT("update-pt-paramgrp",{"newname":name, "paramgrpid":paramgrpid, "language":language});
+	};
 	
 	
 	
 	this.updateParameter = function (parameter){
 		return restfactory.PUT("update-pt-parameter",parameter);
-			
-	}
+	};
 	
 	
 	
@@ -51,33 +50,33 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 	    	thisController.processType = rest.data;
 	    	thisController.strings = rest.data.strings;
 	    	thisController.processType.nameLang=function(lang){
-    			return (key2string.key2stringWithLangStrict(thisController.processType.name,thisController.strings,lang))
-	    	}
+    			return (key2string.key2stringWithLangStrict(thisController.processType.name,thisController.strings,lang));
+	    	};
 	    	thisController.processType.descLang=function(lang){
-    			return (key2string.key2stringWithLangStrict(thisController.processType.description,thisController.strings,lang))
-	    	}
+    			return (key2string.key2stringWithLangStrict(thisController.processType.description,thisController.strings,lang));
+	    	};
 	    	angular.forEach(thisController.processType.parametergrps,function(ptgrp) {
 	    		ptgrp.namef=function(){
-	    			return (key2string.key2string(ptgrp.stringkey,thisController.strings))
-	    		}
+	    			return (key2string.key2string(ptgrp.stringkey,thisController.strings));
+	    		};
 	    		ptgrp.nameLang=function(lang){
-	    			return (key2string.key2stringWithLangStrict(ptgrp.stringkey,thisController.strings,lang))
-	    		}
+	    			return (key2string.key2stringWithLangStrict(ptgrp.stringkey,thisController.strings,lang));
+	    		};
 	    		ptgrp.actions=[{action:"edit",name:$translate.instant("edit")},
-	    		               {action:"delete",name:$translate.instant("delete"),disabled:ptgrp.deletable}]	    		
-	         })
-	    	defered.resolve(thisController.processType)	    	
+	    		               {action:"delete",name:$translate.instant("delete"),disabled:!ptgrp.deletable}];	    		
+	         });
+	    	defered.resolve(thisController.processType);	
 		    }, function(rest) {
 			console.log("Error loading processtypes");
 		 });
 	    return defered.promise;
-	}
+	};
 	
 	
 	
 	this.changeOrderPTParameters=function(newPositions){
-		return restfactory.PUT("change-order-pt-parameters",newPositions)
-	}
+		return restfactory.PUT("change-order-pt-parameters",newPositions);
+	};
 	
 	
 	
@@ -87,22 +86,22 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 			if (process.processtype==ptype.id){
 				recipes=ptype.recipes;
 			}
-	      })
-		return recipes
-	}
+	      });
+		return recipes;
+	};
 	
 	
 	
 	this.addPTParameterGrp = function(processTypeID,position,name){
 		var temp={"processtypeid":processTypeID,"position":position,"name":name};
 		return restfactory.POST("add-pt-parameter-grp",temp);
-	}
+	};
 	
 	
 	
 	this.deletePTParameterGrp=function(id){
 		return restfactory.DELETE("delete-pt-parameter-grp?id="+id);
-	}
+	};
 	
 	
 	
@@ -121,34 +120,34 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 	    	thisController.processTypes = rest.data.processes;
 	    	angular.forEach(thisController.processTypes,function(ptype) {
 	    		ptype.namef=function(){
-	    			return (key2string.key2string(ptype.name,thisController.strings))
-	    		}
+	    			return (key2string.key2string(ptype.name,thisController.strings));
+	    		};
 	    		ptype.nameLang=function(lang){
-	    			return (key2string.key2stringWithLangStrict(ptype.name,thisController.strings,lang))
-	    		}
+	    			return (key2string.key2stringWithLangStrict(ptype.name,thisController.strings,lang));
+	    		};
 	    		ptype.descf=function(){
-	    			return (key2string.key2string(ptype.description,thisController.strings))
-	    		}
+	    			return (key2string.key2string(ptype.description,thisController.strings));
+	    		};
 	    		ptype.descLang=function(lang){
-	    			return (key2string.key2stringWithLangStrict(ptype.description,thisController.strings,lang))
-	    		}
+	    			return (key2string.key2stringWithLangStrict(ptype.description,thisController.strings,lang));
+	    		};
 	    		ptype.actions= [{action:"edit",     name:$translate.instant("edit")},
 	    		                {action:"duplicate",name:$translate.instant("duplicate")},
 	    		                {action:"delete",   name:$translate.instant("delete"), disabled:!ptype.deletable}];
 	    		angular.forEach(ptype.recipes, function(recipe) {
 	    			recipe.namef=function(){
 	    				return (key2string.key2string(recipe.name,thisController.strings));
-	    			}
-	    		})
-	         })
+	    			};
+	    		});
+	         });
 	         thisController.strings = rest.data.strings;
 	    	thisController.loaded=true;
-	    	defered.resolve(thisController.processTypes)	    	
+	    	defered.resolve(thisController.processTypes);	    	
 		    }, function(rest) {
 			console.log("Error loading processtypes");
 		 });
 	    return defered.promise;
-	}
+	};
 
 	
 	
@@ -160,36 +159,36 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 	    	thisController.paramGrp = rest.data;
 	    	thisController.paramGrp.nameLang=function(lang){
     			return (key2string.key2stringWithLangStrict(thisController.paramGrp.name,thisController.paramGrp.strings,lang));
-	    	}
+	    	};
 	    	angular.forEach(thisController.paramGrp.parameters,function(parameter) {
 	    		parameter.namef=function(){
 	    			return (key2string.key2string(parameter.name,thisController.paramGrp.strings));
-	    		}
+	    		};
 	    		parameter.nameLang=function(lang){
 	    			return (key2string.key2stringWithLangStrict(parameter.name,thisController.paramGrp.strings,lang));
-	    		}
+	    		};
 	    		parameter.unitf=function(){
 	    			return (key2string.key2string(parameter.stringkeyunit,thisController.paramGrp.strings));
-	    		}
+	    		};
 	    		parameter.unitLang=function(lang){
 	    			return (key2string.key2stringWithLangStrict(parameter.stringkeyunit,thisController.paramGrp.strings,lang));
-	    		}
+	    		};
 	    		// actions for the context menu. Have to be implemented in editPtParamsCtrl.performAction
-	    		parameter.actions=[{action:"delete",name:$translate.instant("delete"), disabled:!parameter.deletable}]; 
-	         })
+	    		parameter.actions=[{action:"delete",name:$translate.instant("delete"), disabled:!parameter.deletable}];
+	         });
 	         
-	    	defered.resolve(thisController.paramGrp)	    	
+	    	defered.resolve(thisController.paramGrp);
 		    }, function(rest) {
 			console.log("Error loading parametergroup");
 		 });
 	    return defered.promise;
-	}
+	};
 
 	
 	
 	this.deletePTParameter=function(id){
 		return restfactory.DELETE("delete-PT-Parameter?id="+id);
-	}
+	};
 	
 	
 	
@@ -197,8 +196,8 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 		var tempObj={"processtypeid":processtypeID,"field":field,"newvalue":value,"lang":lang};
 		console.log ("tempObj",tempObj);
 		return restfactory.POST('update-process-type-data',tempObj);
-	}
-}
+	};
+};
 
 
 angular.module('unidaplan').service('avProcessTypeService', ['restfactory','$q','key2string','$translate','languages',avProcessTypeService]);

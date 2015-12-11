@@ -60,8 +60,8 @@ import org.json.JSONObject;
 	    PreparedStatement pStmt = null;
 
 			pStmt= dBconn.conn.prepareStatement( 			
-					"INSERT INTO searches (Name,lastChange,operation,owner) VALUES(?,NOW(),true,?) "
-					+ "RETURNING ID");
+					"INSERT INTO searches (Name,lastChange,operation,owner,type) VALUES(?,NOW(),true,?,1) "
+				   +"RETURNING ID");
 		   	pStmt.setInt(1, stringKeyName);
 		   	pStmt.setInt(2, userID);
 			searchID=dBconn.getSingleIntValue(pStmt);

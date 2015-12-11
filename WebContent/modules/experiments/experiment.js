@@ -14,7 +14,7 @@ function experimentController($modal,$scope,editmode,experimentService,restfacto
 
 	var thisController =this;	
 	
-	this.avProcesses = ptypes
+	this.avProcesses = ptypes;
 	
 	
 
@@ -47,7 +47,7 @@ function experimentController($modal,$scope,editmode,experimentService,restfacto
 	this.deleteParameter = function(parameter){
 		var promise = experimentService.deleteParameter(parameter.id);
 		promise.then(function(){reload();});
-	}
+	};
 	
 	
 	
@@ -75,7 +75,7 @@ function experimentController($modal,$scope,editmode,experimentService,restfacto
 		  modalInstance.result.then(function (result) {  // get the new Samplelist + Info if it is changed from Modal. 
 		      if (result.changed) {
 		    	  if (result.chosen.length>0){
-		    		    if (thisController.experiment.samples==undefined) {
+		    		    if (thisController.experiment.samples===undefined) {
 		    		    	thisController.experiment.samples=[];
 		    		    }
 		    			var promise=experimentService.addSampleToExperiment(thisController.experiment.id,
@@ -96,7 +96,7 @@ function experimentController($modal,$scope,editmode,experimentService,restfacto
 	  	} else {
 	  		return parameter.value;
 	  	} 
-	}
+	};
     
     
 	
@@ -138,34 +138,34 @@ function experimentController($modal,$scope,editmode,experimentService,restfacto
 	this.getSampleType = function(sample) {
 //		console.log ("getting Sampletype with id:", id)
 		return avSampleTypeService.getType(sample,stypes);
-	}
+	};
 	
 	
 	
 	this.getProcessType = function(process) {
 //		console.log ("getting Sampletype with id:", id)
 		return avProcessTypeService.getProcessType(process,ptypes);
-	}
+	};
 	
 	
 	
 	this.getProcessRecipes = function(process){
 		return avProcessTypeService.getProcessRecipes(process,ptypes);
-	}
+	};
 	
 	
 	
 	this.setProcesstype = function(process, processtype){
 		var promise= experimentService.setProcesstype(process.id, processtype.id);
 		promise.then(function(){reload();});
-	}
+	};
 	
 	
 	
 	this.changeRecipe = function(pprocess){
 		var promise=experimentService.ExpStepChangeRecipe(pprocess.process_step_id,pprocess.recipe);
 		promise.then(function(){reload();});
-	}
+	};
 	
 	
 	
@@ -178,21 +178,22 @@ function experimentController($modal,$scope,editmode,experimentService,restfacto
 		}
 		var mystyle= {'width':500+230*numProc+'px'};
 		return mystyle;
-	}
+	};
 	
 	
 	
 	this.changeProcessStep = function($event,process,sample){
 			// unchecking a process step
-			if (!$event.target.checked) {
-				var p=this.getPlannedProcess(process,sample.pprocesses)
-				var promise = experimentService.deactivateProcessStep(p.process_step_id);
-				promise.then(function(){reload();});
-			} else{
-				var promise = experimentService.addProcessStep(process.id, sample.id);
-				promise.then(function(){reload();});
-			}
-	}
+		var promise;
+		if (!$event.target.checked) {
+			var p=this.getPlannedProcess(process,sample.pprocesses)
+			promise = experimentService.deactivateProcessStep(p.process_step_id);
+			promise.then(function(){reload();});
+		} else{
+			promise = experimentService.addProcessStep(process.id, sample.id);
+			promise.then(function(){reload();});
+		}
+	};
 	
 	
 	
@@ -200,7 +201,7 @@ function experimentController($modal,$scope,editmode,experimentService,restfacto
 		// add a process (not a single step) to the experiment
 		var promise= experimentService.addProcessToExperiment(processtype.id, this.experiment.id);
 		promise.then(function(){reload();});
-	}
+	};
 	
 	
 	
@@ -212,7 +213,7 @@ function experimentController($modal,$scope,editmode,experimentService,restfacto
 		}
 		process.position=process.position+1;
 		this.updatePositionsForProcesses();
-	}
+	};
 	
 	
 	
@@ -224,27 +225,27 @@ function experimentController($modal,$scope,editmode,experimentService,restfacto
 		}
 		process.position=process.position-1;
 		this.updatePositionsForProcesses();
-	}
+	};
 	
 	
 	
 	this.markColumn=function(processID){
 		var promise=experimentService.markAllProcesses(this.experiment.id,processID);
 		promise.then(function(){reload();});
-	}
+	};
 	
 	
 	
 	this.updatePositionsForProcesses = function(){
 		experimentService.updatePositionsForProcessesInExperiment(this.experiment.processes);
-	}
+	};
 	
 	
 	
 	this.deleteProcess = function(process){
 		var promise = experimentService.deleteProcess(process.id);
 		promise.then(function(){reload();});
-	}
+	};
 	
 	
 	
@@ -258,7 +259,7 @@ function experimentController($modal,$scope,editmode,experimentService,restfacto
 			}
 		}
 		return retprocess;
-	}
+	};
 	
 	
 	
@@ -270,13 +271,13 @@ function experimentController($modal,$scope,editmode,experimentService,restfacto
 		var pplength=0;
 		var finishedProcesses=[];
 		var plannedProcesses=[];
-		if (sample.fprocesses!=undefined) {
+		if (sample.fprocesses!==undefined) {
 			for (var i=0;i++;i<sample.fprocesses.length){
 				fprocess[i].date=Date(fprocesses[i].date);
 			}
 			finishedProcesses=sample.fprocesses.sort(function(a,b){return b.date<a.date}) // Sort finished processes by date
 		}
-		if (sample.pprocesses!=undefined){
+		if (sample.pprocesses!==undefined){
 			plannedProcesses=sample.pprocesses;
 		}
 		var fpi=0;
@@ -297,7 +298,7 @@ function experimentController($modal,$scope,editmode,experimentService,restfacto
 			mprocesses.push({"fprocess":fp,"pprocess":pp});
 		}
 		sample.mprocesses=mprocesses;
-	})
+	});
 		
 			
 	
@@ -308,7 +309,7 @@ function experimentController($modal,$scope,editmode,experimentService,restfacto
 		if (keyCode===27) {		// Escape key pressed
 			parameter.editing=false;		
 		}
-	}
+	};
 
 
 
@@ -331,7 +332,7 @@ function experimentController($modal,$scope,editmode,experimentService,restfacto
 				console.log(data);
 			}
 		);
-	}
+	};
 	
 	
 
@@ -355,7 +356,7 @@ function experimentController($modal,$scope,editmode,experimentService,restfacto
 		if (keyCode===27) {		// Escape key pressed
 			sample.editing=false;		
 		}
-	}
+	};
 	
 	
 	
@@ -379,14 +380,14 @@ function experimentController($modal,$scope,editmode,experimentService,restfacto
 		if (keyCode===27) {		// Escape key pressed
 			step.edit=false;		
 		}
-	}
+	};
 	
 	
 	
 	this.deleteSample = function(sample){
 		var promise= experimentService.deleteSampleFromExperiment(sample.id);
 		promise.then(function(){reload();});
-	}
+	};
 
 	
 

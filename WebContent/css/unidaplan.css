@@ -129,8 +129,11 @@ ol {
 
 .parametertablehead{
     font-weight: bold;
-    background-color: #F7F7F7;
-	    
+    background-color: #F7F7F7;	    
+}
+
+.oddtablerow{
+	background-color: #07F7F7;	    
 }
 
 .parametertd{

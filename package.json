@@ -10,7 +10,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "gulp dev",
     "prod": "gulp prod",
-    "jshint": "gulp jshint"
+    "jshint": "gulp jshint",
+    "eslint": "gulp eslint"
   },
   "author": "Thorsten Rissom",
   "license": "All rights reserved",

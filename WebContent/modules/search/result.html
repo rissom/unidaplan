@@ -1,0 +1,47 @@
+<p />
+<button class="btn btn-default"
+		ui-sref="openSearch">
+		&#x25c0;&#x25c0;	{{'Back to searches'|translate}}
+</button>
+
+<button class="btn btn-default"
+		ui-sref="search({id:resultCtrl.result.searchid})">
+	 &#x25c0; {{'Adjust parameters'|translate}}
+</button>
+<br/>
+<h3>{{'Searchresult'|translate}}</h3>
+<p />
+<br/><br/><br/>
+<table class="table">
+	<thead class=parametertablehead>
+		<tr>
+			<td> {{'sample'|translate}} </td>
+			<td ng-repeat="col in resultCtrl.result.headings">
+			 	{{col.namef()}} {{col.unitf()?'(':''}}{{col.unitf()}}{{col.unitf()?')':''}}
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="row in resultCtrl.result.data">
+			<td > <a ui-sref="sample({sampleID:row.id})">{{resultCtrl.getType(row.type)}} {{row.name}} </a> </td>
+			<td ng-repeat="col in row.rowdata track by $index">
+			 	{{col}}
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<br/>
+<button class="btn btn-default"
+		ng-click="resultCtrl.saveCSV()">
+	 {{'Save as .csv'|translate}}
+</button>
+<button class="btn btn-default"
+		ng-click="resultCtrl.saveExcel()">
+	 {{'Save as .xls'|translate}}
+</button>
+<br/>
+<br/>
+<br/>
+<br/>
+

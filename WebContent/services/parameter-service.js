@@ -20,15 +20,14 @@ var parameterService = function (restfactory,$q,key2string) {
 					return key2string.key2string(parameter.stringkeyname,thisController.strings);
 				};
 				parameter.nameUnitf=function(){
+					var unit="";
 					if (parameter.stringkeyunit){
-						var unit=key2string.key2string(parameter.stringkeyunit,thisController.strings);
+						unit=key2string.key2string(parameter.stringkeyunit,thisController.strings);
 						if (unit.length>0){
-							unit=" ("+unit+")"
+							unit=" ("+unit+")";
 						}
-					} else {
-						var unit="";
-					} 
-					return key2string.key2string(parameter.stringkeyname,thisController.strings)+unit
+					}
+					return key2string.key2string(parameter.stringkeyname,thisController.strings)+unit;
 				};
 				parameter.unitLang=function(lang){
 					return key2string.key2stringWithLangStrict(parameter.stringkeyunit,thisController.strings,lang);
@@ -42,29 +41,27 @@ var parameterService = function (restfactory,$q,key2string) {
 				parameter.descf=function(){
 					return key2string.key2string(parameter.id_description,thisController.strings);
 				};	
-	    	})
-	    	defered.resolve(thisController.parameters)
+	    	});
+	    	defered.resolve(thisController.parameters);
     	}, function(rest) {
     		console.log("Error loading parameters");
     	});
 		return defered.promise;
-	} 
+	};
 
 	
 	
 	this.addParameter = function (parameter){
 		var promise=restfactory.POST("add-parameter",parameter);
 		return promise;
-	}
+	};
 	
 
 	
 	this.deleteParameter = function (id){
 		return restfactory.DELETE("delete-parameter?id="+id);
-	}
-	
-	
-}
+	};
+};
 
 
 angular.module('unidaplan').service('parameterService', ['restfactory','$q','key2string',parameterService]);

@@ -20,7 +20,7 @@ var userService = function(restfactory,$q){
 			}
 		);
 		return defered.promise;
-	}
+	};
 		
   
 	
@@ -43,14 +43,14 @@ var userService = function(restfactory,$q){
 			}
 	    );
 		return defered.promise;
-	}
+	};
 	
 	
 	
 	// sign up a new User (needs to have the correct token)
 	this.signUpUser = function(userData){
 		return restfactory.POST("sign-up",userData);
-	}
+	};
 
 	
 	  
@@ -74,23 +74,23 @@ var userService = function(restfactory,$q){
 		    }
 	    );
 		return defered.promise;
-	}
+	};
 	
 	
 	
 	// delete user
 	this.deleteUser = function(user) {
 		return restfactory.DELETE("delete-user?id="+user.id);
-	}	
+	};
 	
 	
 	
 	// resend token
 	this.resendToken = function(user) {
 		return restfactory.PUT("resend-token?id="+user.id);
-	}	
+	};
 	
-}
+};
 
 
 

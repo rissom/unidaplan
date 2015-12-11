@@ -20,7 +20,7 @@ var key2stringService = function($translate){
 					keyfound=true;
 				}
 			}
-		})
+		});
 		return returnString;
 	};
 	
@@ -38,7 +38,7 @@ var key2stringService = function($translate){
 						keyfound=true;
 					}
 				}
-			})
+			});
 		}
 		return returnString;
 	};
@@ -52,10 +52,10 @@ var key2stringService = function($translate){
 			if (!keyfound && stringkey==translation.string_key &&
 				translation.language==lang) {
 					returnString = translation.value;
-			}})
+			}});
 		return returnString;
-	}
-}
+	};
+};
 
 
 angular.module('unidaplan').service('key2string', ['$translate',key2stringService]);

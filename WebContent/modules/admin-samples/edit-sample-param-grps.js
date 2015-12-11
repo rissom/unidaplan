@@ -30,20 +30,18 @@ function editSampleParamGrpsController($state,$stateParams,$translate,$scope,res
   this.lang1=$translate.instant(languages[0].name);
   
   this.lang2=$translate.instant(languages[1].name);
-    
-  var thisController=this;
-  
+      
   
   
   this.getGrpName=function(grp,lang){
 	  key2string.key2stringWithLangStrict(grp.name,thisController.strings,lang)
-  }
+  };
   
   
   
   this.newParameter=function(){
 	  this.editmode=true;
-  }
+  };
   
   
   
@@ -52,7 +50,7 @@ function editSampleParamGrpsController($state,$stateParams,$translate,$scope,res
 	  thisController.editNL2 = (field=="NL2");
 	  thisController.editDL1 = (field=="DL1");
 	  thisController.editDL2 = (field=="DL2");
-  }
+  };
 	
   
   
@@ -66,7 +64,7 @@ function editSampleParamGrpsController($state,$stateParams,$translate,$scope,res
 		  var promise = avSampleTypeService.deleteSTParameterGrp(parametergrp.id);
 		  promise.then(function(){reload()},function(){console.log("error")});
 	  }
-  }
+  };
   
   
   
@@ -94,7 +92,7 @@ function editSampleParamGrpsController($state,$stateParams,$translate,$scope,res
 				console.log(data);
 			 }
 			);
-  }
+  };
   
 
   
@@ -113,7 +111,7 @@ function editSampleParamGrpsController($state,$stateParams,$translate,$scope,res
 		thisController.newDescL1 = sampleType.descLang(languages[0].key);
 		thisController.newDescL2 = sampleType.descLang(languages[1].key);
 	}
-  }
+  };
 
   
   
@@ -124,8 +122,9 @@ function editSampleParamGrpsController($state,$stateParams,$translate,$scope,res
 	  var pos2=thisController.parametergrps[index].pos;
 	  var promise = avSampleTypeService.exPosSTParamGrp(id1,pos1,id2,pos2);
 	  promise.then(function(){reload()},function(){console.log("error")})
-  }
+  };
 
+  
   
   this.up=function(index){
 	  var id1=thisController.parametergrps[index-1].id;
@@ -134,7 +133,7 @@ function editSampleParamGrpsController($state,$stateParams,$translate,$scope,res
 	  var pos2=thisController.parametergrps[index-1].pos;
 	  var promise = avSampleTypeService.exPosSTParamGrp(id1,pos1,id2,pos2);
 	  promise.then(function(){reload()},function(){console.log("error")})
-  }
+  };
   
   
   
@@ -145,17 +144,17 @@ function editSampleParamGrpsController($state,$stateParams,$translate,$scope,res
 	if (keyCode===27) {		// Escape key pressed
 		this.editmode=false;
 	}
-  }
+  };
   
   
   
   this.newParameterGroup=function(){
 	  thisController.editmode=true;
-  }
+  };
   
   
   
- this.addParameterGroup=function(){
+  this.addParameterGroup=function(){
 	 // add a new ParameterGroup to the database.
 	var name={}
 	name[languages[0].key]=thisController.newGrpNameL1;
@@ -173,15 +172,15 @@ function editSampleParamGrpsController($state,$stateParams,$translate,$scope,res
 			console.log(data);
 		 }
 		);
- }
+  };
  
  
  
- var reload=function() {
+  var reload=function() {
  	var current = $state.current;
  	var params = angular.copy($stateParams);
  	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
- }
+  };
  
  
 };

@@ -28,6 +28,7 @@ import org.json.JSONObject;
 	    try {
 			  jsonIn = new JSONObject(in);
 		} catch (JSONException e) {
+			response.setStatus(404);
 			System.err.println("UpdateProcessTypeData: Input is not valid JSON");
 		}
 		response.setContentType("application/json");

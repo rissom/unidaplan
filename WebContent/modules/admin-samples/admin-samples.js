@@ -16,20 +16,19 @@ function aSamplesController($state,$stateParams,$translate,restfactory,sampleSer
   
   this.newSampleType=function(){
 	  thisController.editmode=true;
-  }
+  };
   
  
   
   this.performAction = function(index,sampleType){
-	  	if (index==0){
+	  	if (index===0){
 			$state.go("editSTParamGrps",{sampleTypeID:sampleType.id});
 	  	}
 	  	if (index==1){
 	  		var promise=sampleService.deleteSampleType(sampleType.id);
 	  		promise.then(function(){reload();},function(){console.log("error");})
 	  	}
-
-  }
+  };
   
   
   
@@ -40,8 +39,7 @@ function aSamplesController($state,$stateParams,$translate,restfactory,sampleSer
 	if (keyCode===27) {		// Escape key pressed
 		thisController.editmode=false;
 	}
-  }
-  
+  };
   
   
   
@@ -55,7 +53,7 @@ function aSamplesController($state,$stateParams,$translate,restfactory,sampleSer
 	  var newSampleType={"name":name,"description":description};	  
 	  var promise = sampleService.addSampleType(newSampleType);
 	  promise.then(function(){ reload();},function(){console.log("error");})
-  }
+  };
   
  
 

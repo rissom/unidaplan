@@ -33,7 +33,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	        controller:"aProcessesController as aProcessesCtrl",
 	        resolve:{
                	ptypes: function(avProcessTypeService){
-        	   	    	return avProcessTypeService.getProcessTypes()
+        	   	    	return avProcessTypeService.getProcessTypes();
         	   	    }
 			}
         })
@@ -45,7 +45,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	        controller:"aSamplesController as aSamplesCtrl",
 	        resolve:{
                	types: function(avSampleTypeService){
-        	   	    	return avSampleTypeService.getSampleTypes()
+        	   	    	return avSampleTypeService.getSampleTypes();
         	   	    }
 			}
         })
@@ -58,7 +58,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	        resolve:{
                 ptypes: 
                 	function(avProcessTypeService){
-        	   	    	return avProcessTypeService.getProcessTypes()
+        	   	    	return avProcessTypeService.getProcessTypes();
         	   	    }
 	        }
         })
@@ -86,7 +86,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
         	   	    },
 		        avParameters: 
 		        	function(parameterService){
-			   	    	return parameterService.getParameters()
+			   	    	return parameterService.getParameters();
 			   	    }
 				}
         })
@@ -102,19 +102,23 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	        resolve:{
                 sampleTypes: 
             	    function(avSampleTypeService){
-        	   	    	return avSampleTypeService.getSampleTypes()
+        	   	    	return avSampleTypeService.getSampleTypes();
                 	},
                 ptypes: 
                 	function(avProcessTypeService){
-        	   	    	return avProcessTypeService.getProcessTypes()
+        	   	    	return avProcessTypeService.getProcessTypes();
         	   	    },
-        	   	avParameters: 
-        	   		function(parameterService){
-		   	    		return parameterService.getParameters()
+        	   	users: 
+	        	    function(userService){
+        	   	    	return userService.getUsers();
         	   		},
-        	   	search:
+        	   	searchData:
         	   		function(searchService,$stateParams){
-        	   			return searchService.getSearch($stateParams.id)        	   			
+        	   			return searchService.getSearchData($stateParams.id);	   			
+        	   		},
+        	   	iSampleParamsAndGrps: 
+        	   		function(avSampleTypeService){
+        	   			return avSampleTypeService.getAllSTParameters(0);
         	   		},
         	   	newSearch:
         	   		function($stateParams){
@@ -154,7 +158,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
         	   	    },
 		        avParameters: 
 		        	function(parameterService){
-			   	    	return parameterService.getParameters()
+			   	    	return parameterService.getParameters();
 			   	    }
 				}
         })
@@ -167,23 +171,23 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	        resolve:{
 	            stypes: 
 	        	    function(avSampleTypeService){
-	        	   	    return avSampleTypeService.getSampleTypes()
+	        	   	    return avSampleTypeService.getSampleTypes();
 	                },
                 ptypes: 
                 	function(avProcessTypeService){
-        	   	    	return avProcessTypeService.getProcessTypes()
+        	   	    	return avProcessTypeService.getProcessTypes();
         	   	    },
 	            experimentData: 
 	            	function(experimentService,$stateParams){
-	        			return experimentService.getExperiment($stateParams.experimentID)
+	        			return experimentService.getExperiment($stateParams.experimentID);
 	        	    },
 		        avParameters: 
 		        	function(parameterService){
-			   	    	return parameterService.getParameters()
+			   	    	return parameterService.getParameters();
 			   	    },
 	            editmode: 
 	            	function($stateParams){
-	        			return $stateParams.editmode==="true"
+	        			return $stateParams.editmode==="true";
 	        	    },
 	        }
         })
@@ -216,7 +220,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	        resolve:{
                 types: 
             	    function(avSampleTypeService){
-        	   	    	return avSampleTypeService.getSampleTypes()
+        	   	    	return avSampleTypeService.getSampleTypes();
                 	}
 	        }
         })
@@ -229,7 +233,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	        resolve:{
                 ptypes: 
                 	function(avProcessTypeService){
-        	   	    	return avProcessTypeService.getProcessTypes()
+        	   	    	return avProcessTypeService.getProcessTypes();
         	   	    }
 	        }
         })
@@ -250,8 +254,8 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
         
         .state('openSearch', {
 	        url: '/searches',
-	        controller:'oSearchController as oSearchCtrl',
-	        templateUrl: "modules/experiments/open-searches.html",
+	        controller:'openSearchController as openSearchCtrl',
+	        templateUrl: "modules/search/open-search.html",
 	        resolve: {
 	        	searches:
 	        		function(searchService){
@@ -268,7 +272,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	        resolve:{
                 parameters: 
                 	function(parameterService){
-        	   	    	return parameterService.getParameters()
+        	   	    	return parameterService.getParameters();
         	   	    }
 	        }
         })
@@ -281,14 +285,14 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	        resolve:{
 	            types: 
 	        	    function(avSampleTypeService){
-	        	   	    return avSampleTypeService.getSampleTypes()
+	        	   	    return avSampleTypeService.getSampleTypes();
 	                },
 	            processData: 
 	            	function(processService,$stateParams){
-	        			return processService.getProcess($stateParams.processID)
+	        			return processService.getProcess($stateParams.processID);
 	        	    },
                	ptypes: function(avProcessTypeService){
-        	   	    	return avProcessTypeService.getProcessTypes()
+        	   	    	return avProcessTypeService.getProcessTypes();
         	   	    }
 			}
         })
@@ -301,7 +305,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 		    resolve:{
 	                types: 
 	            	    function(avSampleTypeService){
-	        	   	    	return avSampleTypeService.getSampleTypes()
+	        	   	    	return avSampleTypeService.getSampleTypes();
 	                	}
 		    }
     	})
@@ -314,7 +318,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 		    resolve:{
 	                ptypes: 
 	            	    function(avProcessTypeService){
-	        	   	    	return avProcessTypeService.getProcessTypes()
+	        	   	    	return avProcessTypeService.getProcessTypes();
 	                	}
 		    }
     	})
@@ -327,6 +331,27 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
     	})
     	
     	
+    	.state('result', {
+	    	url: '/result/',
+	        templateUrl: 'modules/search/result.html',
+	        controller: 'resultController as resultCtrl',
+	        // shorthand default values
+	        params: {
+	        	searchParams: "searchParams"
+	        },
+	        resolve:{
+			    types:  
+			    	function(avSampleTypeService){
+	   	    			return avSampleTypeService.getSampleTypes();
+	   	    		},
+        	   	result:
+        	   		function(searchService,$stateParams){
+        	   			return searchService.startSearch($stateParams.searchParams);
+        	   		}
+	        }
+        })
+    	
+        
     	.state('sampleChoser', {
 	        url: '/sample',
 	        templateUrl: 'modules/sample/sample-choser.html',
@@ -334,7 +359,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	        resolve: {
 	            types: 
                     function(avSampleTypeService){
-                		return avSampleTypeService.getSampleTypes()
+                		return avSampleTypeService.getSampleTypes();
                 	}
 	        }
         })
@@ -346,17 +371,30 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	        controller: "sampleController as sampleCtrl",
 	        resolve: {
 	        	sample: function($stateParams,sampleService){
-	        				return sampleService.loadSample($stateParams.sampleID)
+	        				return sampleService.loadSample($stateParams.sampleID);
 	        			},
 			    types:  function(avSampleTypeService){
-        	   	    		return avSampleTypeService.getSampleTypes()
+        	   	    		return avSampleTypeService.getSampleTypes();
         	   	    	},
         	   	ptypes: function(avProcessTypeService){
-            	   	    	return avProcessTypeService.getProcessTypes()
+            	   	    	return avProcessTypeService.getProcessTypes();
             	   	    }
 	        }
+        })       
+        
+                
+        .state('search', {
+	    	url: '/search/{id:int}',
+	        templateUrl: 'modules/search/search.html',
+	        controller: 'searchController as searchCtrl',
+	        resolve:{
+        	   	search:
+        	   		function(searchService,$stateParams){
+        	   			return searchService.getSearch($stateParams.id);	   			
+        	   		}
+	        }
         })
-            	
+        
         
         .state('signup', {
 	    	url: '/signup/{userID:int}/{token:string}',
@@ -382,10 +420,10 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	        resolve:{
 	            users: 
 	        	    function(userService){
-	        	   	    return userService.getUsers()
+	        	   	    return userService.getUsers();
 	                }
 			 }
-        })
+        });
     
     })
        
@@ -469,9 +507,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
     		}
     	}
     };
-
     
-})
+});
+
 })();
-
-

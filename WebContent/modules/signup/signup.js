@@ -18,7 +18,7 @@ function signupController(userService,$state,user,token){
 			username : this.username,
 			email : this.email,
 			password : this.pwinput,
-		}
+		};
 		userService.signUpUser(userData).then(
 			 function(data, status, headers, config){
 				 $state.go("openExperiment");
@@ -37,6 +37,6 @@ function signupController(userService,$state,user,token){
 }
 
 
-angular.module('unidaplan').controller('signupController',['userService','$state','user','token',signupController])
+angular.module('unidaplan').controller('signupController',['userService','$state','user','token',signupController]);
 	
 })();

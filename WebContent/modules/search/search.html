@@ -1,0 +1,52 @@
+<p />
+
+	<button class="btn btn-default"
+			ui-sref="openSearch">
+			&#x25c0;	{{'Back to searches'|translate}}
+	</button>
+<p />
+<h3>{{'Search'|translate}}</h3>
+<p />
+{{'searching for'|translate}} {{searchCtrl.type()}} {{'with'|translate}} {{searchCtrl.mode()}} {{'following properties'|translate}}:
+<br/><br/><br/>
+
+<table class="table">
+	<thead class=parametertablehead>
+		<tr>
+			<td>
+				Parameter
+			</td>
+			<td>
+				{{'Comparison operation'|translate}}
+			</td>
+			<td>
+			   {{'value'|translate}}
+			</td>
+		</tr>
+	</thead>
+	<tr  ng-repeat="parameter in searchCtrl.parameters">
+		<td>
+			<div>{{parameter.fname()}}</div>
+		</td>
+		<td>
+			<select class="form-control input-sm" 
+				style="width:50px;"	
+				ng-model="parameter.comparison"
+				ng-options="comparator.index as comparator.label for comparator in searchCtrl.comparators"> 
+			</select>
+		</td>
+		<td>
+			<input ng-model="parameter.value">
+		</td>
+	</tr>
+</table>
+<br/>
+<button class="btn btn-default"
+		ng-click="searchCtrl.startSearch()">
+	 {{'start search'|translate}}
+</button>
+<br/>
+<br/>
+<br/>
+<br/>
+

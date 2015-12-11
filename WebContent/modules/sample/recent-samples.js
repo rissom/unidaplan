@@ -5,13 +5,13 @@ var recentSampleController = function(types,avSampleTypeService,sampleService) {
 
 	this.getRecentSamples=function(){
 		return sampleService.recentSamples;
-	}
+	};
+	
+	
 	
 	this.getType = function(sample){
 		return avSampleTypeService.getType(sample,types);
-	}
-	
-	
+	};
 };
     
         

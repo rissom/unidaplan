@@ -15,7 +15,7 @@ function userController(users,userService) {
 
 	this.performAction=function(index,user){
 		if (index==1){
-			user.edit=true
+			user.edit=true;
 		}
 		if (index==2){
 			this.resendToken(user);
@@ -23,7 +23,7 @@ function userController(users,userService) {
 		if (index==3){
 			this.deleteUser(user);
 		}
-	}
+	};
 	
 	
 	
@@ -39,41 +39,45 @@ function userController(users,userService) {
 		if (user.deletable){
 			actions.push("delete");
 		}
-		return actions
-	}
+		return actions;
+	};
 	
 	this.resendToken = function(user) {
 		var promise = userService.resendToken(user);
 	    promise.then(function(rest) {
 	    	var promise2 = userService.getUsers();
-	    	promise2.then(function(users){thisController.users=users}, console.log("fehler"));
+	    	promise2.then(function(users){
+	    		thisController.users=users;
+	    	}, console.log("fehler"));
 	    }, function(rest) {
 	    	console.log("ERROR");
 	    });
-	}	
+	};
 
 	this.deleteUser = function(user) {
 		var promise = userService.deleteUser(user);
 	    promise.then(function(rest) {
 	    	var promise2 = userService.getUsers();
-	    	promise2.then(function(users){thisController.users=users}, console.log("fehler"));
+	    	promise2.then(function(users){
+	    		thisController.users=users;
+	    	}, console.log("fehler"));
 	    }, function(rest) {
 	    	console.log("ERROR");
 	    });
-	}	
+	};
 	
 	
 	
 	
 	this.addUser = function() {
 		this.edit=true;
-	}
+	};
 	
 	
 	
 	this.cancel = function() {
 		this.edit=false;
-	}
+	};
 	
 	
 	
@@ -87,13 +91,16 @@ function userController(users,userService) {
 		var promise = userService.submitUser(newUser);
 		thisController.edit=false;
 		promise.then(
-				function(users){
-					thisController.users=users
-				}, 
-				function(users){console.log("fehler")});
-	}
+			function(users){
+				thisController.users=users;
+			}, 
+			function(users){
+				console.log("fehler");
+			}
+		);
+	};
 	
-};
+}
   
         
 angular.module('unidaplan').controller('userController',['users','userService',userController]);
@@ -112,7 +119,7 @@ angular.module('unidaplan').directive('username', function() {
 	    				{
 	    					valid=false;
 	    				}
-	    		})
+	    		});
 	    		return valid;
 	      	};
 	    }

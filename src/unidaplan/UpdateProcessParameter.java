@@ -18,7 +18,7 @@ import org.json.JSONObject;
 		private static final long serialVersionUID = 1L;
 
 	@Override
-	  public void doPost(HttpServletRequest request, HttpServletResponse response)
+	  public void doPut(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {
 		
 		Authentificator authentificator = new Authentificator();

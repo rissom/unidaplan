@@ -23,16 +23,17 @@ public class DeleteSearch extends HttpServlet {
 		userID=userID-1; // REMOVE ME!!!
 		request.setCharacterEncoding("utf-8");
 	    String status="ok";
-		int experimentID=-1;
+		int searchID=-1;
 
 	 	
-		// get Parameter for id
+		// get the id
 		try{
-			 experimentID=Integer.parseInt(request.getParameter("id")); }
+			 searchID=Integer.parseInt(request.getParameter("searchid")); }
 		catch (Exception e1) {
-			experimentID=-1;
-			System.err.print("Delete Experiment: no experiment ID given!");
-			status="error: no experiment ID";
+			searchID=-1;
+			System.err.print("DeleteSearch: no search ID given!");
+			status="error: no search ID";
+			response.setStatus(404);
 		}
 	 	
 		
@@ -40,22 +41,22 @@ public class DeleteSearch extends HttpServlet {
 			PreparedStatement pstmt = null; 	// Declare variables
 		 	DBconnection DBconn=new DBconnection(); // New connection to the database
 		 	DBconn.startDB();
-		 	if (experimentID>0){			
-				// delete the experiment
+		 	if (searchID>0){			
+				// delete the search
 		        pstmt = DBconn.conn.prepareStatement(	
-		        	"DELETE FROM exp_plan WHERE id=?");
-				pstmt.setInt(1,experimentID);
+		        	"DELETE FROM searches WHERE id=?");
+				pstmt.setInt(1,searchID);
 				pstmt.executeUpdate();
 				pstmt.close();
 			}
  		   DBconn.closeDB();  // close the database 
 
 	    } catch (SQLException eS) {
-			System.err.println("Delete Experiment: SQL Error");
+			System.err.println("DeleteSearch: SQL Error");
 			status="error: SQL error";
 			response.setStatus(404);
 		} catch (Exception e) {
-			System.err.println("Delete Experiment: Some Error, probably JSON");
+			System.err.println("DeleteSearch: Some Error, probably JSON");
 			status="error: JSON error";
 			response.setStatus(404);
 		}
