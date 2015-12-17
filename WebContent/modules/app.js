@@ -206,6 +206,25 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
         })
         
         
+        .state('import', {
+	        url: '/import',
+	        templateUrl: 'modules/import/import.html',
+		    controller: 'importController as importCtrl',
+	    	resolve:{
+                sampleTypes: 
+            	    function(avSampleTypeService){
+        	   	    	return avSampleTypeService.getSampleTypes();
+                	}
+		    }
+        })
+        
+        
+        .state('importFinished', {
+	        url: '/import-finished',
+	        templateUrl: 'modules/import/import-finished.html'
+        })
+        
+        
         .state('login', {
 	    	url: '/login',
 	    	templateUrl: 'modules/login/login.html',

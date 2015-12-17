@@ -71,6 +71,7 @@
     <servlet-name>Experiments</servlet-name>
     <url-pattern>/experiments</url-pattern>
   </servlet-mapping>
+  
   <servlet>
     <description>show a process</description>
     <display-name>Process</display-name>
@@ -81,26 +82,18 @@
     <servlet-name>Process</servlet-name>
     <url-pattern>/process</url-pattern>
   </servlet-mapping>
+
   <servlet>
-    <description>Update sample parameter</description>
-    <display-name>UpdateSampleParameter</display-name>
-    <servlet-name>UpdateSampleParameter</servlet-name>
-    <servlet-class>unidaplan.UpdateSampleParameter</servlet-class>
+    <description>Save a parameter for a sample</description>
+    <display-name>SaveSampleParameter</display-name>
+    <servlet-name>SaveSampleParameter</servlet-name>
+    <servlet-class>unidaplan.SaveSampleParameter</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>UpdateSampleParameter</servlet-name>
-    <url-pattern>/update-sample-parameter</url-pattern>
+    <servlet-name>SaveSampleParameter</servlet-name>
+    <url-pattern>/save-sample-parameter</url-pattern>
   </servlet-mapping>
-  <servlet>
-    <description>Add sample parameter</description>
-    <display-name>AddSampleParameter</display-name>
-    <servlet-name>AddSampleParameter</servlet-name>
-    <servlet-class>unidaplan.AddSampleParameter</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>AddSampleParameter</servlet-name>
-    <url-pattern>/add-sample-parameter</url-pattern>
-  </servlet-mapping>
+  
   <servlet>
     <description>Change the status of an experiment</description>
     <display-name>ChangeExperimentStatus</display-name>
@@ -581,6 +574,28 @@
   <servlet-mapping>
     <servlet-name>DuplicateProcessType</servlet-name>
     <url-pattern>/duplicate-process-type</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>ImportCSV</description>
+    <display-name>ImportCSV</display-name>
+    <servlet-name>ImportCSV</servlet-name>
+    <servlet-class>unidaplan.ImportCSV</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ImportCSV</servlet-name>
+    <url-pattern>/import-csv</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <description>ImportIntoDB</description>
+    <display-name>ImportIntoDB</display-name>
+    <servlet-name>ImportIntoDB</servlet-name>
+    <servlet-class>unidaplan.ImportIntoDB</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ImportIntoDB</servlet-name>
+    <url-pattern>/import-into-db</url-pattern>
   </servlet-mapping>
   
   <servlet>

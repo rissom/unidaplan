@@ -166,11 +166,17 @@ function sampleController(sample,$state,$stateParams,$modal,$filter,types,sample
 
 	
 	
+	this.sayHello = function() {  
+		return "Hello";
+	}
+	
+	
 	
 	this.saveParameter = function(parameter) {
-		var promise = sampleService.saveParameter(parameter);
+		var promise = sampleService.saveParameter(sample.id,parameter);
 		promise.then(
 				function(data) {
+					reload();
 				},
 				function(data) {
 					console.log('error');
@@ -179,6 +185,17 @@ function sampleController(sample,$state,$stateParams,$modal,$filter,types,sample
 		);
 	};
 	
+	
+	
+	this.updateSampleParameter = sampleService.updateSampleParameter;
+	
+	
+	
+	var reload=function() {
+	    var current = $state.current;
+	    var params = angular.copy($stateParams);
+	    return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
+	};
 	
 
 }  

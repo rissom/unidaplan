@@ -12,7 +12,26 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 	
 	
 	this.getSampleTypeParameters = function (sampleTypeID){
-		return restfactory.GET('/all-sample-type-params',{id:sampleTypeID});
+    	var defered=$q.defer();
+		var promise = restfactory.GET('/all-sample-type-params?sampletypeid='+sampleTypeID);
+		promise.then(function(rest) {			// getting the parameters
+			var parameters = {parameters:rest.data.parameters,parametergrps:rest.data.parametergrps};
+			var strings = rest.data.strings;
+			angular.forEach(parameters.parameters,function(parameter){
+				parameter.namef = function(){
+					return key2string.key2string(parameter.name,strings);
+				}
+			});
+			angular.forEach(parameters.parametergrps,function(grp){
+				grp.namef = function(){
+					return key2string.key2string(grp.stringkey,strings);
+				}
+			});
+			defered.resolve(parameters);
+		}, function () {
+			console.log("Error getting Parameters")
+		}); // promise.then
+	    return defered.promise;
 	}
 
 	
@@ -68,22 +87,23 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 	
 	
 	
-	this.saveParameter = function(parameter) {
-		return restfactory.POST('savesampleparameter',parameter);
+	this.saveParameter = function(sampleid,parameter) {
+		return restfactory.POST('save-sample-parameter',{sampleid:sampleid, pid:parameter.id, value:parameter.value});
 	};
 	
+//	
+//	this.updateSampleParameter = function(parameter){
+//		console.log("parameter",parameter)
+//		return restfactory.POST('update-sample-parameter',parameter);
+//	};
+//	
+//	
+//	this.addSampleParameter = function(id,parameter){
+//		return restfactory.POST('add-sample-parameter?sampleid='+id,parameter);
+//	};
 	
 	
-	
-	this.addSampleParameter = function(id,parameter){
-		return restfactory.POST('add-sample-parameter?sampleid='+id,parameter);
-	};
-	
-	
-	
-	this.updateSampleParameter = function(parameter){
-		return restfactory.POST('update-sample-parameter',parameter);
-	};
+
 
 	
 	

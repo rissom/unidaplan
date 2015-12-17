@@ -17,34 +17,8 @@
 	
 	
 	<!-- Parameters -->
-		<h4>{{'Base Parameters'|translate}}</h4>
-		<div class=col-md-6>
-			<table class="table">
-				<tr ng-repeat="parameter in sampleCtrl.parameters| orderBy : sampleCtrl.parameters.pos" 
-				ng-dblclick="parameter.editing=true; newValue=parameter.value">
-					<td>
-					    {{parameter.namef()}} :
-					</td>
-					<td >
-						<span ng-hide="parameter.editing">{{parameter.value}}
-						</span>
-						<input 						   
-							ng-keyup="sampleCtrl.keyUp($event.keyCode,newValue,parameter)"
-							ng-show="parameter.editing" type="text"
-						    ng-model="newValue" 
-						    ng-blur="parameter.editing=false">
-						<span ng-show="parameter.unit">
-							{{parameter.unitf()}}
-						</span>
-					</td>
-				</tr>
-				<tr>
-					<td></td>
-					<td></td>
-				</tr>
-				<!-- um letzten Strich in Tabelle zu erzeugen -->
-			</table>
-		</div>
+	<h4>{{'Base Parameters'|translate}}</h4>
+		<paramfield parameters="sampleCtrl.parameters" pupdate="sampleCtrl.saveParameter(parameter)"></paramfield>		
 	</div>
 	
 	

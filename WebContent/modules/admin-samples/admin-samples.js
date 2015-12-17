@@ -55,6 +55,14 @@ function aSamplesController($state,$stateParams,$translate,restfactory,sampleSer
 	  promise.then(function(){ reload();},function(){console.log("error");})
   };
   
+  
+  
+  var reload = function() {
+  	var current = $state.current;
+  	var params = angular.copy($stateParams);
+  	params.newSearch=false;
+  	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
+  };
  
 
 };

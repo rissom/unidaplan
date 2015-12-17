@@ -25,7 +25,7 @@
 		<tr ng-repeat="row in resultCtrl.result.data">
 			<td > <a ui-sref="sample({sampleID:row.id})">{{resultCtrl.getType(row.type)}} {{row.name}} </a> </td>
 			<td ng-repeat="col in row.rowdata track by $index">
-			 	{{col}}
+			 	<tparameter parameter="col"></tparameter>
 			</td>
 		</tr>
 	</tbody>
