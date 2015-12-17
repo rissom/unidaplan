@@ -1,6 +1,7 @@
 <h3>
 	{{'Parameters'|translate}}
 </h3>
+<form name="parameterForm">
 <table class="table">
 	<thead class=parametertablehead>
 		<tr>
@@ -111,6 +112,7 @@
 			<td class="parametertd">
 				<input 						   
 				type="text"
+				ng-keyup="parameterCtrl.keyUp($event.keyCode)"
 			    ng-model="parameterCtrl.newDescL2"> 
 			</td>
 					
@@ -138,7 +140,7 @@
 		ng-click="parameterCtrl.addParameter()" >
 	{{'Save Parameter'|translate}}
 </button>
-
+</form>
 
 
 

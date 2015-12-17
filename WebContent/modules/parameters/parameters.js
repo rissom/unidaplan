@@ -1,7 +1,7 @@
 (function(){
   'use strict';
 
-function parameterController($state,$stateParams,$translate,parameterService,restfactory,parameters,languages){
+function parameterController($scope,$state,$stateParams,$translate,parameterService,restfactory,parameters,languages){
   
   var thisController=this;
   
@@ -56,9 +56,29 @@ function parameterController($state,$stateParams,$translate,parameterService,res
 	  promise.then(function(){reload();},function(){console.log("error");});
   };
   
+
+  
+  this.keyUp = function(keyCode) {
+	if (keyCode===13) {				// Return key pressed
+		if ($scope.parameterForm.$valid){
+			thisController.addParameter(parameter);
+		}
+	}
+	if (keyCode===27) {		// Escape key pressed
+		parameter.editing=false;
+	}
+  };
+  
+  var reload=function() {
+  	var current = $state.current;
+  	var params = angular.copy($stateParams);
+  	params.newSearch=false;
+  	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
+  };
+  
 };
 
-angular.module('unidaplan').controller('parameterController', ['$state','$stateParams','$translate',
+angular.module('unidaplan').controller('parameterController', ['$scope','$state','$stateParams','$translate',
     'parameterService','restfactory','parameters','languages',parameterController]);
 
 })();

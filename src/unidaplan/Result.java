@@ -70,6 +70,7 @@ import org.json.JSONObject;
 			
 			// get the searchparameters according to searchtype from the database
 			String query="";
+			String[] ptables = null;
 			String parameterTable="";
 			switch (search.getInt("type")){
 				case 1:   // sample search
@@ -79,6 +80,8 @@ import org.json.JSONObject;
 							 +"JOIN ot_parameters ON (ot_parameters.id=otparameter) "
 							 +"JOIN paramdef ON (paramdef.id=ot_parameters.definition) "
 							 +"WHERE search=?";
+					String[] otables= {"o_integer_data","o_float_data","o_measurement_data","o_string_data","o_timestamp_data"};
+					ptables = otables;
 					break;
 				case 2:   // process search
 					query = "SELECT pparameter AS pid, comparison, value, "
@@ -87,6 +90,8 @@ import org.json.JSONObject;
 							 +"JOIN p_parameters ON (p_parameters.id=pparameter) "
 							 +"JOIN paramdef ON (paramdef.id=p_parameters.definition) "
 							 +"WHERE search=?";
+					String[] pptables= {"p_integer_data","p_float_data","p_measurement_data","p_string_data","p_timestamp_data"};
+					ptables = pptables; // Warum kann man keine Arraykonstanten definieren???
 					break;
 				default : // sample specific processparameter
 					query = "SELECT poparameter AS pid, poparameter, comparison, value, "
@@ -95,6 +100,8 @@ import org.json.JSONObject;
 							 +"JOIN po_parameters ON (po_parameters.id=poparameter) "
 							 +"JOIN paramdef ON (paramdef.id=po_parameters.definition) "
 							 +"WHERE search=?";
+					String[] potables= {"po_integer_data","po_float_data","po_measurement_data","po_string_data","po_timestamp_data"};
+					ptables = potables;
 					break;
 			}
 			pStmt= dBconn.conn.prepareStatement(query);
@@ -103,7 +110,6 @@ import org.json.JSONObject;
 			query="SELECT samples.id FROM samples ";
 			String where="";
 			int datatype;
-			String[] ptables= {"o_integer_data","o_float_data","o_measurement_data","o_string_data","o_timestamp_data"};
 			String[] comparators= {"<",">","=","NOT"};
 
 			for (int i=0; i<parameters.length();i++){

@@ -2,10 +2,13 @@ package unidaplan;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,12 +24,15 @@ import org.json.JSONObject;
 		int dataType=0;
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
+	    System.out.println(in);
 	    JSONObject  jsonIn = null;
 	    int maxdigits=0;
 	    
 	    try {
 			jsonIn = new JSONObject(in);
-	  	  	maxdigits=jsonIn.getInt("maxdigits");
+			if (jsonIn.has("maxdigits") && !jsonIn.isNull("maxdigits")) {
+	  	  		maxdigits=jsonIn.getInt("maxdigits");
+			}
 			dataType= jsonIn.getInt("datatype");
 		} catch (JSONException e) {
 			System.err.println("AddParameter: Input is not valid JSON");
@@ -58,9 +64,14 @@ import org.json.JSONObject;
 			 if (jsonIn.has("unit")){
 				 JSONObject unit=jsonIn.getJSONObject("unit");
 				 String [] units = JSONObject.getNames(unit);
-				 stringKeyUnit=dBconn.createNewStringKey(unit.getString(units[0]));
-				 for (int i=0; i<units.length; i++){
-					 dBconn.addString(stringKeyUnit,units[i],unit.getString(units[i]));
+				 if (units!=null) {
+					 System.out.println("units:"+units.toString());
+					 if (units.length>0){
+						 stringKeyUnit=dBconn.createNewStringKey(unit.getString(units[0]));
+						 for (int i=0; i<units.length; i++){
+							 dBconn.addString(stringKeyUnit,units[i],unit.getString(units[i]));
+						 }
+					 }
 				 }
 			 }
 			 if (jsonIn.has("description")){
@@ -77,24 +88,33 @@ import org.json.JSONObject;
 			pstmt= dBconn.conn.prepareStatement( 			
 					"INSERT INTO paramdef values(default,?,?,?,?,?, NOW(),?)");
 		   	pstmt.setInt(1, stringKeyName);
-		   	pstmt.setInt(2, stringKeyUnit);
+		   	if (stringKeyUnit>0){
+		   		pstmt.setInt(2, stringKeyUnit);
+		   	}else{
+		   		pstmt.setNull(2, Types.INTEGER);
+		   	}
 		   	pstmt.setInt(3, dataType);
 		   	pstmt.setInt(4, maxdigits);
 		   	pstmt.setInt(5, stringKeyDesc);
 		   	pstmt.setInt(6, userID);
-			if (dataType>0 && dataType<9){
+			if (dataType>0 && dataType<10){
 			   	pstmt.executeUpdate();
 			}else{
 				status="illegal datatype";
 			}
+			pstmt.close();
+			dBconn.closeDB();
 
 		} catch (SQLException e) {
 			System.err.println("AddParameter: Problems with SQL query");
 			response.setStatus(404);
+			e.printStackTrace();
 		} catch (JSONException e) {
 			System.err.println("AddParameter: Error JSON-Error");
+			e.printStackTrace();
 		} catch (Exception e) {
 			System.err.println("AddParameter: Error");
+			e.printStackTrace();
 		}					
     // tell client that everything is fine
 	Unidatoolkit.sendStandardAnswer(status, response);

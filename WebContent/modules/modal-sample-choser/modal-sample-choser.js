@@ -4,16 +4,22 @@
 
 function modalSampleChoser(avSampleTypeService,$translate,$scope,$modalInstance,restfactory,types,samples,except,buttonLabel,mode,sampleService) {
 
+	var thisController=this;
+	
 	if (samples) {
 		this.chosenSamples=samples.slice(0);
 	} else {
 		this.chosenSamples=[];
 	}
+	
 	this.oldChosenSamples=this.chosenSamples.slice(0);
+	
 	this.samples=[];
+	
 	this.selectedTypesVar=[];
+	
 	this.selectortypes=[];
-	thisController=this;
+	
 	this.immediate= (mode=='immediate');
 	
 	

@@ -54,7 +54,7 @@ import org.json.JSONObject;
 			pStmt= DBconn.conn.prepareStatement( 			
 					 "SELECT paramdef.datatype FROM Ot_parameters otp \n"
 					+"JOIN paramdef ON otp.definition=paramdef.id \n"
-					+"WHERE otp.id=? \n");
+					+"WHERE otp.id=?");
 		   	pStmt.setInt(1, id);
 		   	JSONObject answer=DBconn.jsonObjectFromPreparedStmt(pStmt);
 			type= answer.getInt("datatype");
@@ -122,8 +122,7 @@ import org.json.JSONObject;
 			}
 			}
 		
-			ResultSet pidResult=pStmt.executeQuery();
-			pidResult.next();
+			pStmt.executeUpdate();
 			pStmt.close();
 			DBconn.closeDB();
 	} catch (SQLException e) {

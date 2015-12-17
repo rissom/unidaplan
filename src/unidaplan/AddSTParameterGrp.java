@@ -42,6 +42,7 @@ import org.json.JSONObject;
 	    
 	    // generate strings for the name
 	    try {	
+		    dBconn.startDB();	   
 			 if (jsonIn.has("name")){
 				 JSONObject name=jsonIn.getJSONObject("name");
 				 String [] names = JSONObject.getNames(name);
@@ -65,7 +66,6 @@ import org.json.JSONObject;
 	    // get current max position and add 1
 	    PreparedStatement pStmt = null;
 	    try {	
-		    dBconn.startDB();	   
 			pStmt= dBconn.conn.prepareStatement( 			
 					"SELECT max(pos) FROM ot_parametergrps WHERE ot_id=?");
 		   	pStmt.setInt(1, sampleTypeID);

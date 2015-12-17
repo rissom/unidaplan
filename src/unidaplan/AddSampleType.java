@@ -35,7 +35,7 @@ import org.json.JSONObject;
 	    response.setCharacterEncoding("utf-8");
 	    
 	 	DBconnection dBconn=new DBconnection();
-	    
+
 	    int stringKeyName=0;
 	    int stringKeyDesc=0; 
 	    int position=0;
@@ -45,9 +45,12 @@ import org.json.JSONObject;
 	    
 	    // generate strings for the name and the unit
 	    try {	
-			 if (jsonIn.has("name")){
+		    dBconn.startDB();	   
+			if (jsonIn.has("name")){
 				 JSONObject name=jsonIn.getJSONObject("name");
 				 String [] names = JSONObject.getNames(name);
+				 System.out.println("names0:"+names[0]);
+				 System.out.println("key:"+name.getString(names[0]));
 				 stringKeyName=dBconn.createNewStringKey(name.getString(names[0]));
 				 for (int i=0; i<names.length; i++){
 					 dBconn.addString(stringKeyName,names[i],name.getString(names[i]));
@@ -69,19 +72,8 @@ import org.json.JSONObject;
 			 }
 			 if (jsonIn.has("otgroup")){
 				 otgroup=jsonIn.getInt("ptgroup");
-			 }
-		} catch (JSONException e) {
-			System.err.println("AddSampleType: Error creating Strings");
-			response.setStatus(404);
-			status="JSON String error";
-		} catch (Exception e) {
-			System.err.println("AddSampleType: Error creating Strings");
-			status="String error";
-		}	
-  
+			 }  
 	    PreparedStatement pStmt = null;
-		try {	
-		    dBconn.startDB();	   
 			pStmt= dBconn.conn.prepareStatement( 			
 				"INSERT INTO objecttypes values(default,?,?,?,?,NOW(),?)");
 			pStmt.setInt(1, position);
@@ -92,9 +84,11 @@ import org.json.JSONObject;
 		   	pStmt.executeUpdate();
 		} catch (SQLException e) {
 			status="SQL error";
+			e.printStackTrace();
 			System.err.println("AddSampleType: Problems with SQL query");
 		} catch (Exception e) {
 			System.err.println("AddSampleType: Strange Problems");
+			e.printStackTrace();
 		}	
 		
 		

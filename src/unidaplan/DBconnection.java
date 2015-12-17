@@ -190,7 +190,8 @@ public class DBconnection  {
   	
   
   public int createNewStringKey(String input) throws Exception{
-	  PreparedStatement pStmt=conn.prepareStatement("INSERT INTO string_key_table values(default,?) RETURNING id");
+	  PreparedStatement pStmt= null;
+	  pStmt=conn.prepareStatement("INSERT INTO string_key_table VALUES (default,?,NOW()) RETURNING id");
 	  pStmt.setString(1, input);
 	  int id=getSingleIntValue(pStmt);
 	  return id;

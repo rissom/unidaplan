@@ -46,8 +46,6 @@ import org.json.JSONObject;
 					 "SELECT type FROM searches WHERE id=?");
 			pStmt.setInt(1, searchID);
 			searchType = dBconn.getSingleIntValue(pStmt);
-			System.out.println(pStmt.toString());
-			System.out.println("Searchtype:" +searchType);
 			pStmt.close();
 			
 			String table="";
@@ -75,7 +73,6 @@ import org.json.JSONObject;
 				pStmt.setInt(3,parameter);
 				pStmt.setInt(4,userID);
 				pStmt.addBatch();
-				System.out.println(pStmt.toString());
 			}
 			pStmt.executeBatch();
 			pStmt.close();

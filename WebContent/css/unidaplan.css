@@ -98,6 +98,11 @@ ol {
   	border-bottom: 1px solid grey;
 }
 
+.importtable {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
 .status{
 	padding: 7px;
 }
