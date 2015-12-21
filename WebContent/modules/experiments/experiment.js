@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-function experimentController($modal,$scope,editmode,experimentService,restfactory,$translate,$state,key2string,
+function experimentController($modal,$scope,editmode,experimentService,restfactory,$translate,$state,$stateParams,key2string,
 							  avSampleTypeService,avProcessTypeService,experimentData,ptypes,stypes,avParameters) {
 	
 	this.experiment = experimentData;
@@ -400,7 +400,7 @@ function experimentController($modal,$scope,editmode,experimentService,restfacto
     
         
 angular.module('unidaplan').controller('experimentController',['$modal','$scope','editmode','experimentService','restfactory',
-               '$translate','$state','key2string','avSampleTypeService','avProcessTypeService','experimentData','ptypes','stypes',
-               'avParameters',experimentController]);
+               '$translate','$state','$stateParams','key2string','avSampleTypeService','avProcessTypeService',
+               'experimentData','ptypes','stypes','avParameters',experimentController]);
 
 })();
