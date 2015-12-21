@@ -123,9 +123,18 @@ public class Showsample extends HttpServlet {
 		e.printStackTrace();
 	}	
     	
-    	
-	//get the parameters
+    // get the parametergroups
 	try {
+		pstmt= dBconn.conn.prepareStatement(
+				"SELECT parametergroup, max(stringkey) AS paramgrpkey, min(ot_parametergrps.pos) AS pos FROM ot_parameters "+
+				"JOIN ot_parametergrps ON parametergroup=ot_parametergrps.id "+
+				"WHERE objecttypesid=? GROUP BY parametergroup");
+		pstmt.setInt(1,typeid);
+		JSONArray parametergrps=dBconn.jsonArrayFromPreparedStmt(pstmt);
+		pstmt.close();
+		
+		
+		//get the parameters
 		pstmt= dBconn.conn.prepareStatement( 	 
 		   "SELECT ot_parameters.id, parametergroup, compulsory, ot_parameters.pos, "
 		   +"ot_parameters.stringkeyname,  pid, value, ot_parametergrps.id AS pgrpid, "
@@ -142,30 +151,42 @@ public class Showsample extends HttpServlet {
 		pstmt.setInt(1,objID);
 		pstmt.setInt(2,typeid);
 		JSONArray parameters=dBconn.jsonArrayFromPreparedStmt(pstmt);
-		if (parameters.length()>0) {
-			jsSample.put("parameters",parameters);
-	      	for (int i=0; i<parameters.length();i++) {
-	      		JSONObject tempObj=(JSONObject) parameters.get(i);
-	      		stringkeys.add(Integer.toString(tempObj.getInt("stringkeyname")));
-	      		if (tempObj.has("unit")){ 
-	      			stringkeys.add(Integer.toString(tempObj.getInt("unit")));
-	      			String datatype="undefined";
-		      		switch (tempObj.getInt("datatype")) {
-			      		case 1: datatype="integer"; break;
-			      		case 2: datatype="float";  break;
-			      		case 3: datatype="measurement";  break;
-			      		case 4: datatype="string"; break;
-			      		case 5: datatype="long string";  break;
-			      		case 6: datatype="chooser"; break;
-			      		case 7: datatype="date+time";  break;
-			      		case 8: datatype="checkbox"; break;
-			      		default: datatype="undefined"; break;		    
+		if (parameters.length()>0 && parametergrps.length()>0) {
+			for (int j=0;j<parametergrps.length();j++){
+				JSONArray prmgrpprms=new JSONArray();
+				JSONObject prmgrp=parametergrps.getJSONObject(j);
+	      		stringkeys.add(Integer.toString(prmgrp.getInt("paramgrpkey")));				
+		      	for (int i=0; i<parameters.length();i++) {
+		      		JSONObject tParam=(JSONObject) parameters.get(i);
+
+		      		stringkeys.add(Integer.toString(tParam.getInt("stringkeyname")));
+		      		if (tParam.has("parametergroup")&&
+		      			tParam.getInt("parametergroup")==prmgrp.getInt("parametergroup")){		      			
+			      		if (tParam.has("unit")){ 
+			      			stringkeys.add(Integer.toString(tParam.getInt("unit")));
+			      			String datatype="undefined";
+				      		switch (tParam.getInt("datatype")) {
+					      		case 1: datatype="integer"; break;
+					      		case 2: datatype="float";  break;
+					      		case 3: datatype="measurement";  break;
+					      		case 4: datatype="string"; break;
+					      		case 5: datatype="long string";  break;
+					      		case 6: datatype="chooser"; break;
+					      		case 7: datatype="date+time";  break;
+					      		case 8: datatype="checkbox"; break;
+					      		default: datatype="undefined"; break;		    
+				      		}
+				      		tParam.remove("datatype");
+				      		tParam.put("datatype",datatype);
+					      	prmgrpprms.put(tParam);
+			      		}
 		      		}
-		      		parameters.getJSONObject(i).remove("datatype");
-		      		parameters.getJSONObject(i).put("datatype",datatype);
-	      		}
-	      	}
+		      	}
+	      		prmgrp.put("parameter",prmgrpprms);
+			}
 		}
+		jsSample.put("parametergroups",parametergrps);
+
 	} catch (SQLException e) {
 		System.err.println("Showsample: Problems with SQL query for sample parameters");
 		e.printStackTrace();

@@ -7,7 +7,7 @@ function sampleController(sample,$state,$stateParams,$modal,$filter,types,sample
 	var thisController = this;
 		
 	if (sample.error) this.error=sample.error;
-	this.parameters = sample.parameters;
+	this.parametergroups = sample.parametergroups;
 	this.processes = $filter('orderBy')(sample.processes, 'date', false);
 	this.titleparameters = sample.titleparameters;
 	this.children = sample.children?sample.children:[];
@@ -173,6 +173,8 @@ function sampleController(sample,$state,$stateParams,$modal,$filter,types,sample
 	
 	
 	this.saveParameter = function(parameter) {
+		console.log ("hello")
+		console.log ("parameter")
 		var promise = sampleService.saveParameter(sample.id,parameter);
 		promise.then(
 				function(data) {

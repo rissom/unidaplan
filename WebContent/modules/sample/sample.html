@@ -1,5 +1,4 @@
 <!-- Heading with sample name -->
-<div class="row">
 <h3>{{sampleCtrl.getType({typeid:sampleCtrl.typeid})}} 
 		<span ng-repeat="tparameter in sampleCtrl.titleparameters"
 			  ng-dblclick="tparameter.editing=true; newValue=tparameter.value">
@@ -15,14 +14,16 @@
 	</h3>
 	<br />
 	
-	
 	<!-- Parameters -->
-	<h4>{{'Base Parameters'|translate}}</h4>
-		<paramfield parameters="sampleCtrl.parameters" pupdate="sampleCtrl.saveParameter(parameter)"></paramfield>		
-	</div>
+	<h4>{{'Parameters'|translate}}</h4>
+		<paramgrps 
+			parametergrps="sampleCtrl.parametergroups" 
+			editable="false"
+			pupdate="sampleCtrl.saveParameter(parameter)">
+		</paramgrps>		
+
 	
-	
-	
+		
 	<!-- Files -->
 	<h4>{{'Files' | translate}}</h4>
 	<button type="button" class="btn btn-default disabled" ng-click="addFile()">

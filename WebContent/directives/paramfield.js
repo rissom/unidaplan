@@ -15,7 +15,7 @@ var paramfield = function() {
 		restrict: 'E',
 		templateUrl: 'directives/paramfield.html',
 		scope:{
-			pupdate:'&pupdate',
+			pupdate:'&',
 			parameters: '='
 		},
 		controller: function($scope){
@@ -25,6 +25,7 @@ var paramfield = function() {
 					var oldValue=parameter.value;
 					parameter.value=newValue;
 					$scope.pupdate({parameter:parameter});
+//					$scope.pupdate();
 				}
 				if (keyCode===27) {		// Escape key pressed
 					parameter.editing=false;			
