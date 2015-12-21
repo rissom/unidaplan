@@ -40,15 +40,52 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
     	var defered=$q.defer();
 		var promise = restfactory.GET("showsample?id="+id);
 	    promise.then(function(rest) {			// save the sample for recent samples
-	        var sample = {"id"		  	   : rest.data.id,
+	        var sample = { "id"		  	   : rest.data.id,
 		    			   "typeid"		   : rest.data.typeid,
 		    			   "typestringkey" : rest.data.typestringkey,
 		    			   "name"		   : rest.data.name};
 //		    			   "trtype"		   : avSampleTypeService.getType(rest.data.typeid)}; // TODO: Weg damit???
 		    thisController.pushSample(sample);
 	        thisController.sample = rest.data;
-	        thisController.translate();
-		    defered.resolve(thisController.sample);
+	        var strings = rest.data.strings;
+	        
+	        // translate
+			angular.forEach(thisController.sample.parametergroups, function(paramgrp) {
+				paramgrp.grpnamef=function(){
+					return key2string.key2string(paramgrp.paramgrpkey,strings);
+				};
+				angular.forEach(paramgrp.parameter, function(parameter) {
+					parameter.namef=function(){
+						return key2string.key2string(parameter.stringkeyname,strings);
+					};
+					if (parameter.parametergroup){
+						parameter.grpnamef=function(){
+							return key2string.key2string(parameter.parametergrp_key,strings);
+						};
+					}
+					if (parameter.unit){
+						parameter.unitf=function(){
+							return key2string.key2string(parameter.unit,thisController.sample.strings); 
+						};
+					}
+				});
+			});
+			angular.forEach(thisController.sample.plans, function(plan) {
+				plan.namef=function(){
+					return key2string.key2string(plan.name,thisController.sample.strings);
+				};
+				plan.notef=function(){
+					return key2string.key2string(plan.note,thisController.sample.strings);
+				};
+				angular.forEach(plan.plannedprocesses, function(process) {
+					if (process.note!==undefined) {
+						process.trnote=key2string.key2string(process.note,thisController.sample.strings);
+					}
+					if (process.recipename!==undefined) {
+						process.trrecipe=key2string.key2string(process.recipename,thisController.sample.strings);
+					}
+				});
+			});		    defered.resolve(thisController.sample);
 	    }, function(rest) {
 	    	console.log("Sample not found");
 	    	defered.reject({"error":"Not Found!"});
@@ -91,20 +128,6 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 		return restfactory.POST('save-sample-parameter',{sampleid:sampleid, pid:parameter.id, value:parameter.value});
 	};
 	
-//	
-//	this.updateSampleParameter = function(parameter){
-//		console.log("parameter",parameter)
-//		return restfactory.POST('update-sample-parameter',parameter);
-//	};
-//	
-//	
-//	this.addSampleParameter = function(id,parameter){
-//		return restfactory.POST('add-sample-parameter?sampleid='+id,parameter);
-//	};
-	
-	
-
-
 	
 	
 	this.pushSample = function(sample){
@@ -135,36 +158,6 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 		return restfactory.DELETE("delete-sample-type?id="+id);
 	};
 
-	
-	
-	this.translate = function() {
-		angular.forEach(this.sample.parameters, function(parameter) {
-			parameter.namef=function(){
-				return key2string.key2string(parameter.stringkeyname,thisController.sample.strings);
-			};
-			if (parameter.unit){
-				parameter.unitf=function(){
-					return key2string.key2string(parameter.unit,thisController.sample.strings); 
-				};
-			}
-		});
-		angular.forEach(this.sample.plans, function(plan) {
-			plan.namef=function(){
-				return key2string.key2string(plan.name,thisController.sample.strings);
-			};
-			plan.notef=function(){
-				return key2string.key2string(plan.note,thisController.sample.strings);
-			};
-			angular.forEach(plan.plannedprocesses, function(process) {
-				if (process.note!==undefined) {
-					process.trnote=key2string.key2string(process.note,thisController.sample.strings);
-				}
-				if (process.recipename!==undefined) {
-					process.trrecipe=key2string.key2string(process.recipename,thisController.sample.strings);
-				}
-			});
-		});
-	};
 };
 
 
