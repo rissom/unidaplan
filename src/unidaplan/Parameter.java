@@ -36,7 +36,7 @@ import org.json.JSONObject;
 	    try {  
 		    dBconn.startDB();
 			pstmt= dBconn.conn.prepareStatement( 	
-			"SELECT paramdef.id,stringkeyname,stringkeyunit,datatype,maxdigits,id_description, "
+			"SELECT paramdef.id,stringkeyname,stringkeyunit,datatype,maxdigits,description, "
 			+"max((blabla.count)) IS NULL as deletable "
 			+"FROM paramdef "
 			+"LEFT JOIN "
@@ -57,8 +57,8 @@ import org.json.JSONObject;
 	      		  if (tempObj.has("stringkeyunit")){
 	      			  stringkeys.add(Integer.toString(tempObj.getInt("stringkeyunit")));
 	      		  }
-	      		  if (tempObj.has("id_description")){
-	      			  stringkeys.add(Integer.toString(tempObj.getInt("id_description")));
+	      		  if (tempObj.has("description")){
+	      			  stringkeys.add(Integer.toString(tempObj.getInt("description")));
 	      		  }
 	      	  }
     	} catch (SQLException e) {

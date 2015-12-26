@@ -39,7 +39,7 @@ import org.json.JSONObject;
 	    try {  
 		    dBconn.startDB();
 			pstmt= dBconn.conn.prepareStatement( 	
-			"SELECT otp.id,otp.stringkeyname, paramdef.stringkeyunit, datatype,paramdef.id_description " 
+			"SELECT otp.id,otp.stringkeyname, paramdef.stringkeyunit, datatype,paramdef.description " 
 			+"FROM ot_AllSampleTypeParameters otp "
 			+"JOIN paramdef ON otp.definition=paramdef.id "
 			+"WHERE objecttypesid=1");
@@ -53,8 +53,8 @@ import org.json.JSONObject;
 	      		  if (tempObj.has("stringkeyunit")){
 	      			  stringkeys.add(Integer.toString(tempObj.getInt("stringkeyunit")));
 	      		  }
-	      		  if (tempObj.has("id_description")){
-	      			  stringkeys.add(Integer.toString(tempObj.getInt("id_description")));
+	      		  if (tempObj.has("description")){
+	      			  stringkeys.add(Integer.toString(tempObj.getInt("description")));
 	      		  }
 	      	  }
     	} catch (SQLException e) {

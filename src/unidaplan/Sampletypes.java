@@ -42,10 +42,11 @@ import org.json.JSONObject;
 
 	 	try {	
 		    DBconn.startDB();
-	 		pstmt= DBconn.conn.prepareStatement("SELECT ot.id,ot.string_key,ot.description, count(otg.id) "
-			+"FROM objecttypes ot "
-			+"LEFT JOIN ot_parametergrps otg ON otg.ot_id=ot.id "
-			+"GROUP BY ot.id");
+	 		pstmt= DBconn.conn.prepareStatement(
+	 			"SELECT ot.id,ot.string_key,ot.description, count(otg.id) "
+	 			+"FROM objecttypes ot "
+	 			+"LEFT JOIN ot_parametergrps otg ON otg.ot_id=ot.id "
+	 			+"GROUP BY ot.id");
 		    sampletypes=DBconn.jsonArrayFromPreparedStmt(pstmt); // get ResultSet from the database using the query
 
 	 		  if (sampletypes.length()>0) {
@@ -54,7 +55,9 @@ import org.json.JSONObject;
 	           		  if (dings.getInt("count")==0) dings.put("deletable",true);
 	           		  dings.remove("count");
 	           		  stringkeys.add(Integer.toString(dings.getInt("string_key")));
-	           		  stringkeys.add(Integer.toString(dings.getInt("description")));
+	           		  if (dings.has("description")){
+	           			  stringkeys.add(Integer.toString(dings.getInt("description")));
+	           		  }
 	           	  }
 		          JSONObject answer=new JSONObject();
 		          answer.put("sampletypes", sampletypes);

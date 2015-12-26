@@ -59,9 +59,14 @@ public class SampleTypeParamGrps extends HttpServlet {
  			sampleType=dBconn.jsonObjectFromPreparedStmt(pStmt); 
  			// get ResultSet from the database using the query
  			pStmt.close();
-           	stringkeys.add(Integer.toString(sampleType.getInt("string_key")));
-           	stringkeys.add(Integer.toString(sampleType.getInt("description")));
+ 			if (sampleType.has("string_key")){
+ 				stringkeys.add(Integer.toString(sampleType.getInt("string_key")));
+ 			}
+ 			if (sampleType.has("description")){
+ 				stringkeys.add(Integer.toString(sampleType.getInt("description")));
+ 			}
            	
+ 			// get all objecttypesgrps
            	pStmt = dBconn.conn.prepareStatement(
      		  	   "SELECT id, position, name FROM objecttypesgrp");
 			sampleTypeGrps=dBconn.jsonArrayFromPreparedStmt(pStmt); 
@@ -72,12 +77,16 @@ public class SampleTypeParamGrps extends HttpServlet {
            		}
            	}		
            	
+			// get all parametergroups for this sampletype
    			pStmt = dBconn.conn.prepareStatement(
-		  	   "SELECT id,pos,stringkey FROM ot_parametergrps "
-			  +"WHERE (ot_parametergrps.ot_id=?) ");
+		  	   "SELECT ot_parametergrps.id,ot_parametergrps.pos,ot_parametergrps.stringkey, "
+   				+"count(ot_parameters.id)=0 AS deletable "
+   				+"FROM ot_parametergrps "
+				+"LEFT JOIN ot_parameters ON ot_parameters.parametergroup=ot_parametergrps.id "
+				+"WHERE (ot_parametergrps.ot_id=?) "
+				+"GROUP BY ot_parametergrps.id"); 
    			pStmt.setInt(1, sampleTypeID);
    			parameterGrps=dBconn.jsonArrayFromPreparedStmt(pStmt); 
-   			// get ResultSet from the database using the query
 
            	if (parameterGrps.length()>0) {
            		for (int j=0; j<parameterGrps.length();j++) {
@@ -95,6 +104,7 @@ public class SampleTypeParamGrps extends HttpServlet {
 			System.err.println("SampleTypeParameters: SQL Error");
 		} catch (Exception e) {
 			System.err.println("SampleTypeParameters: Some Error, probably JSON");
+			e.printStackTrace();
 		} finally {
 		try{
 			if (pStmt != null) { 

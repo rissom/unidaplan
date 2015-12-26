@@ -60,7 +60,7 @@ function editSampleParamGrpsController($state,$stateParams,$translate,$scope,res
 	  if (action.action==="edit") {
 		  $state.go("editSTParams",{"paramGrpID":parametergrp.id})
 	  }
-	  if (action.action==="delete") {
+	  if (action.action==="delete"  && !action.disabled) {
 		  var promise = avSampleTypeService.deleteSTParameterGrp(parametergrp.id);
 		  promise.then(function(){reload()},function(){console.log("error")});
 	  }

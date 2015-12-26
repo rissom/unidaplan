@@ -55,8 +55,7 @@ import org.json.JSONObject;
 				 for (int i=0; i<names.length; i++){
 					 dBconn.addString(stringKeyName,names[i],name.getString(names[i]));
 				 }
-			 }else
-			 {
+			 }else{
 				 System.out.println("no name exists");
 			 }
 			 if (jsonIn.has("description")){

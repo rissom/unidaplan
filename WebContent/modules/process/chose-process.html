@@ -3,27 +3,27 @@
 {{'Select processtype'|translate}}
 <p />
 
-	<select class="form-control" 
-		style="width:300px;"	
-		ng-model="choseProcessCtrl.processType"
-		ng-options="ptype.namef() group by ptype.group for ptype in choseProcessCtrl.processTypes" 	
-		ng-selected="$first">
-	</select>
-	
-	<p />
+<select class="form-control" 
+	style="width:300px;"	
+	ng-model="choseProcessCtrl.processType"
+	ng-options="ptype.namef() group by ptype.group for ptype in choseProcessCtrl.processTypes" 	
+	ng-selected="$first">
+</select>
+
+<p />
 
 
-	<input type="number" 
-	   ng-model="choseProcessCtrl.pnumber"
-	   ng-keyup="choseProcessCtrl.keyUp($event.keyCode)"
-	   style="width: 253px;" 
-	   placeholder="{{'Enter processnumber here'|translate}}">
+<input type="number" 
+   ng-model="choseProcessCtrl.pnumber"
+   ng-keyup="choseProcessCtrl.keyUp($event.keyCode)"
+   style="width: 253px;" 
+   placeholder="{{'Enter processnumber here'|translate}}">
 
-	<p />
-	<p />
-	<button class="btn btn-default"
-			ng-click="choseProcessCtrl.choseProcess()"
-			ng-class= "{disabled: !choseProcessCtrl.pnumber}">
-		{{'Go to process'|translate}}
-	</button>	
+<p />
+<p />
+<button class="btn btn-default"
+		ng-click="choseProcessCtrl.choseProcess()"
+		ng-class= "{disabled: !choseProcessCtrl.pnumber}">
+	{{'Go to process'|translate}}
+</button>	
 

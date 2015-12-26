@@ -3,10 +3,13 @@ package unidaplan;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.json.JSONObject;
 
 public class DeleteSampleType extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -51,14 +54,14 @@ public class DeleteSampleType extends HttpServlet {
 			 	if (sampleTypeID>0){			
 					// get string_key_table references for later deletion
 			        pStmt = dBconn.conn.prepareStatement(	
-			        	"SELECT string_key FROM objecttypes WHERE id=?");
+			        	"SELECT string_key,description FROM objecttypes WHERE id=?");
 					pStmt.setInt(1,sampleTypeID);
-					name = dBconn.getSingleIntValue(pStmt);
+					JSONObject ot=dBconn.jsonObjectFromPreparedStmt(pStmt);
 					pStmt.close();
-			        pStmt = dBconn.conn.prepareStatement(	
-				        	"SELECT description FROM objecttypes WHERE id=?");
-					pStmt.setInt(1,sampleTypeID);
-					description = dBconn.getSingleIntValue(pStmt);
+					name = ot.getInt("string_key");
+			        if (ot.has("description")){
+			        	description = ot.getInt("description");
+			        } else description=0;
 					pStmt.close();
 				}
 		    } catch (SQLException eS) {
@@ -90,15 +93,17 @@ public class DeleteSampleType extends HttpServlet {
 	    try {
 		 	if (sampleTypeID>0){			
 				// delete the stringkeys
-		        pStmt = dBconn.conn.prepareStatement(	
+		        pStmt = dBconn.conn.prepareStatement(
 		        	"DELETE FROM string_key_table WHERE id IN (?,?)");
 				pStmt.setInt(1,name);
 				pStmt.setInt(2,description);
+				System.out.println(pStmt.toString());
 				pStmt.executeUpdate();
 				pStmt.close();
 			}
 	    } catch (SQLException eS) {
-			System.err.println("Delete Process: SQL Error");
+			System.err.println("DeleteSampleType: SQL Error");
+			eS.printStackTrace();
 			status="error: SQL error";
 			response.setStatus(404);
 		} catch (Exception e) {

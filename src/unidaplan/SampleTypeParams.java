@@ -45,6 +45,7 @@ public class SampleTypeParams extends HttpServlet {
 	    JSONObject paramGrp= null;
 	    JSONArray parameterGrps= null;		
 	    JSONArray processTypeGrps= null;
+	    JSONArray siblings=null;
 	 	DBconnection dBconn=new DBconnection(); // New connection to the database
 	 	ArrayList<String> stringkeys = new ArrayList<String>(); 
 		 	
@@ -59,6 +60,23 @@ public class SampleTypeParams extends HttpServlet {
  			pStmt.close();
  			if (paramGrp.length()>0){
 	 		 	stringkeys.add(Integer.toString(paramGrp.getInt("name"))); 
+	 		 	
+	 		 	// get siblings
+	 		 	pStmt = dBconn.conn.prepareStatement(	
+	 				   "SELECT otp.id,stringkey AS name "
+	 				  +"FROM objecttypes "
+	 				  +"JOIN ot_parametergrps otp ON otp.ot_id=objecttypes.id "
+	 				  +"WHERE objecttypes.id=? AND NOT otp.id=?");
+	 		 	pStmt.setInt(1, paramGrp.getInt("sampletype"));
+	 		 	pStmt.setInt(2, paramgroupid);
+	 		 	siblings=dBconn.jsonArrayFromPreparedStmt(pStmt);
+	 		 	if (siblings.length()>0){
+	 		 		for (int i=0;i<siblings.length();i++){
+	 		 			stringkeys.add(Integer.toString(siblings.getJSONObject(i).getInt("name")));
+	 		 		}
+	 		 	}
+
+	 		 	
 	 		// check if the parameter can be deleted. (No, if corresponding data exists).
 	           	pStmt = dBconn.conn.prepareStatement(
 	     		  	   "SELECT ot_parameters.id, compulsory, formula, hidden, pos, definition, ot_parameters.stringkeyname as name, "
@@ -95,6 +113,9 @@ public class SampleTypeParams extends HttpServlet {
 		
 	        JSONObject answer=new JSONObject();
 	        answer=paramGrp;
+	        if (siblings.length()>0){
+	        	answer.put("siblings", siblings);
+	        }
 	        answer.put("parameters", processTypeGrps);
 	        answer.put("parametergrps",parameterGrps);
 	        answer.put("strings", dBconn.getStrings(stringkeys));

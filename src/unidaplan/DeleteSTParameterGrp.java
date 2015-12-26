@@ -43,6 +43,7 @@ import javax.servlet.http.HttpServletResponse;
 		} catch (SQLException e) {
 			System.err.println("DeleteSTParameterGrp: Problems with SQL query");
 			status="SQL Error; DeleteSTParameterGrp";
+			e.printStackTrace();
 			response.setStatus(403);
 		} catch (Exception e) {
 			System.err.println("DeleteSTParameterGrp: Strange Problems");

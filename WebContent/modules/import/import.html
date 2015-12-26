@@ -1,0 +1,72 @@
+
+<h3>Import</h3>
+<input type="file" id="inputfile">
+<br/>
+
+<button ng-click="importCtrl.importStuff()" class="btn btn-default">{{'import file'|translate}}</button>
+<br/>
+<br/>
+{{"sampletype"|translate}}: 
+<select
+	ng-model="importCtrl.activeSampleType"
+	ng-options="type.id as type.namef() for type in importCtrl.sampleTypes"
+	ng-change="importCtrl.getParameters()"
+	class="input-sm">
+</select>
+
+<table ng-show="importCtrl.activeSampleType==0">
+	<tr>
+		<td>
+			{{importCtrl.languages[0].name}}
+		</td>
+		<td>
+			<input 						   
+				type="text"
+				ng-model="importCtrl.newSampleTypeNameL1"
+				autofocus select-on-click> 
+		</td>
+	</tr>
+	<tr>
+		<td>
+			{{importCtrl.languages[1].name}}
+		</td>
+		<td>
+			<input 						   
+				type="text"
+				ng-model="importCtrl.newSampleTypeNameL2"
+				autofocus select-on-click> 
+		</td>
+	</tr>
+</table>
+<br/>
+<br/>
+
+<table>
+	<thead class=parametertablehead>
+		<tr>
+			<td nowrap class=importtable ng-repeat="heading in importCtrl.table.data[0]">
+				{{heading}}
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td nowrap class=importtable ng-repeat="col in importCtrl.columns">
+				<select ng-init="col.parameter=0"
+					ng-model="col.parameter"
+					ng-options="param.id as param.namef() for param in importCtrl.parameters.parameters"
+					class="input-sm">
+				</select>
+			</td>
+		</tr>
+		<tr ng-repeat="row in importCtrl.table.data.slice(1) track by $index">
+			<td nowrap class=importtable ng-repeat="entry in row track by $index">
+				{{entry}}
+			</td>
+		</tr>
+	</tbody>
+</table>
+<br/>
+<button ng-click="importCtrl.importToDB()" class="btn btn-default"> Import to DB</button>
+
+

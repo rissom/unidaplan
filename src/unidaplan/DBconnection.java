@@ -200,7 +200,8 @@ public class DBconnection  {
   
   
   public int addString(int key, String lang,String input) throws Exception {
-	  PreparedStatement pStmt=conn.prepareStatement("INSERT INTO stringtable values(default,?,?,?) RETURNING id");
+	  PreparedStatement pStmt=conn.prepareStatement("INSERT INTO stringtable (string_key,language,value,lastchange)"
+	  		+ " VALUES (?,?,?,NOW()) RETURNING id");
 	  pStmt.setInt(1, key);
 	  pStmt.setString(2, lang);
 	  pStmt.setString(3, input);

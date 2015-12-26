@@ -122,7 +122,7 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 		return defered.promise;
 	};
 	
-     
+	     
 	
 	this.getSTypeParams = function(paramGrpID){
 		var defered=$q.defer();
@@ -147,6 +147,19 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	    		};
 	    		parameter.actions=[{action:"edit",name:$translate.instant("edit")},
 	    		                   {action:"delete",name:$translate.instant("delete"),disabled:!parameter.deletable}];
+	    		if ("siblings" in thisController.paramGrp){
+	    			thisController.paramGrp.siblings.map(function(sibling){
+	    				var name=key2string.key2string(sibling.name,thisController.paramGrp.strings);
+	    				parameter.actions.push(
+    						{ action	  : "move",
+    						  name		  : $translate.instant("move to")+" "+name,
+    						  destination : sibling.id
+    						}
+    					);
+	    			});
+	    		}
+	    		
+	    		                   
 	         });
 	         
 	    	defered.resolve(thisController.paramGrp);  	
@@ -208,6 +221,12 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	    return defered.promise;
 	};
 	
+	
+	
+	this.moveParameterToGrp = function(parameter,destination){
+		return restfactory.PUT('move-parameter-to-grp',{parameterid:parameter,destination:destination});
+	}
+
 	
 	
 	this.updateSampleTypeData=function(sampletypeID,field,value,lang){

@@ -24,7 +24,7 @@ import org.json.JSONObject;
 		int dataType=0;
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
-	    System.out.println(in);
+	    String pattern="";
 	    JSONObject  jsonIn = null;
 	    int maxdigits=0;
 	    
@@ -65,7 +65,6 @@ import org.json.JSONObject;
 				 JSONObject unit=jsonIn.getJSONObject("unit");
 				 String [] units = JSONObject.getNames(unit);
 				 if (units!=null) {
-					 System.out.println("units:"+units.toString());
 					 if (units.length>0){
 						 stringKeyUnit=dBconn.createNewStringKey(unit.getString(units[0]));
 						 for (int i=0; i<units.length; i++){
@@ -74,19 +73,29 @@ import org.json.JSONObject;
 					 }
 				 }
 			 }
+			 if (jsonIn.has("pattern")){
+				 pattern=jsonIn.getString("pattern");
+			 } else {
+				 pattern="";
+			 }
 			 if (jsonIn.has("description")){
 				 JSONObject description=jsonIn.getJSONObject("description");
-				 String [] descriptions = JSONObject.getNames(description);
-				 stringKeyDesc=dBconn.createNewStringKey(description.getString(descriptions[0]));
-				 for (int i=0; i<descriptions.length; i++){
-					 dBconn.addString(stringKeyDesc,descriptions[i],description.getString(descriptions[i]));
-				 }	 
+				 if (description.length()>0){
+					 String [] descriptions = JSONObject.getNames(description);
+					 stringKeyDesc=dBconn.createNewStringKey(description.getString(descriptions[0]));
+					 for (int i=0; i<descriptions.length; i++){
+						 dBconn.addString(stringKeyDesc,descriptions[i],description.getString(descriptions[i]));
+					 }	 
+				 } else {
+					 stringKeyDesc=38;
+				 }
 			 }
   
 	    PreparedStatement pstmt = null;
 
 			pstmt= dBconn.conn.prepareStatement( 			
-					"INSERT INTO paramdef values(default,?,?,?,?,?, NOW(),?)");
+					"INSERT INTO paramdef (StringKeyName,StringKeyUnit,Datatype,maxdigits,description,pattern,lastChange,lastUser) "
+					+ "VALUES (?,?,?,?,?,?,NOW(),?)");
 		   	pstmt.setInt(1, stringKeyName);
 		   	if (stringKeyUnit>0){
 		   		pstmt.setInt(2, stringKeyUnit);
@@ -96,7 +105,12 @@ import org.json.JSONObject;
 		   	pstmt.setInt(3, dataType);
 		   	pstmt.setInt(4, maxdigits);
 		   	pstmt.setInt(5, stringKeyDesc);
-		   	pstmt.setInt(6, userID);
+		   	if (pattern!=""){
+		   		pstmt.setString(6, pattern);
+		   	}else{
+		   		pstmt.setInt(6, java.sql.Types.VARCHAR);
+		   	}
+		   	pstmt.setInt(7, userID);
 			if (dataType>0 && dataType<10){
 			   	pstmt.executeUpdate();
 			}else{

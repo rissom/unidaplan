@@ -214,7 +214,11 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
                 sampleTypes: 
             	    function(avSampleTypeService){
         	   	    	return avSampleTypeService.getSampleTypes();
-                	}
+                	},
+                parameters: 
+                	function(parameterService){
+        	   	    	return parameterService.getParameters();
+        	   	    }
 		    }
         })
         

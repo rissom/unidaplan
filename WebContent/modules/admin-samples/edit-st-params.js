@@ -128,16 +128,20 @@ function editSTParamsController($state,$modal,$stateParams,$translate,
   
   	this.performAction=function(parameter,action){
   		// actions are defined in av-sampletype-service.getSTypeParams
-  		if (action.action==="edit"){
+  		if (action.action==="edit"  && !action.disabled){
   			console.log("not implemented yet");
   		}
-  		if (action.action==="delete") {
+  		if (action.action==="delete" && !action.disabled) {
   			var promise = avSampleTypeService.deleteSTParameter(parameter.id);
   			promise.then(function(){
   				reload();
   			},function(){
   				console.log("error");
   			});
+  		}
+  		if (action.action==="move" && !action.disabled) {
+  			var promise = avSampleTypeService.moveParameterToGrp(parameter.id,action.destination);
+  			promise.then(function(){reload();});
   		}
   	};
   
