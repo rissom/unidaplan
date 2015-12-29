@@ -163,18 +163,10 @@ function sampleController(sample,$state,$stateParams,$modal,$filter,types,sample
 	this.getType = function(sample){
 		return avSampleTypeService.getType(sample,types);
 	};
-
-	
-	
-	this.sayHello = function() {  
-		return "Hello";
-	}
 	
 	
 	
 	this.saveParameter = function(parameter) {
-		console.log ("hello")
-		console.log ("parameter")
 		var promise = sampleService.saveParameter(sample.id,parameter);
 		promise.then(
 				function(data) {
@@ -189,7 +181,7 @@ function sampleController(sample,$state,$stateParams,$modal,$filter,types,sample
 	
 	
 	
-	this.updateSampleParameter = sampleService.updateSampleParameter;
+	this.updateSampleParameter = sampleService.saveSampleParameter;
 	
 	
 	

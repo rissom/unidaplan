@@ -34,8 +34,7 @@
 			</td>
 		</tr>
 	</thead>
-	
-	
+
 	<tbody>
 		<tr ng-repeat="parameter in parameterCtrl.parameters | orderBy : 'nameLang(parameterCtrl.lang1Key)'">
 			<td class="parametertd">
@@ -51,7 +50,7 @@
 	 			{{parameter.unitLang(parameterCtrl.lang2Key)}}
 			</td>
 			<td class="parametertd">
-	 			{{parameterCtrl.datatype[parameter.datatype]}}
+	 			{{parameter.datatype}}
 			</td>
 			<td class="parametertd">
 				{{parameter.maxdigits}}

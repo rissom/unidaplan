@@ -60,7 +60,7 @@ import org.json.JSONObject;
 			datatype= answer.getInt("datatype");			
 			
 			// delete old values.
-			String[] tables={"","o_integer_data","o_float_data","o_measurement_data","o_string_data","o_string_data","o_string_data","o_timestamp_data","o_integer_data","o_string_data"};
+			String[] tables={"","o_integer_data","o_float_data","o_measurement_data","o_string_data","o_string_data","o_string_data","o_timestamp_data","o_integer_data","o_string_data","o_string_data"};
 			pStmt= DBconn.conn.prepareStatement( 			
 					 "DELETE FROM "+tables[datatype]+" "
 					+"WHERE ot_parameter_id=? AND objectid=?");
@@ -83,7 +83,7 @@ import org.json.JSONObject;
 		// differentiate according to type
 		// Datatype        INTEGER NOT NULL,  
 		// 1: integer, 2: float, 3: measurement, 4: string, 5: long string 
-		// 6: chooser, 7: timestamp, 8: checkbox, 9: URL
+		// 6: chooser, 7: date+time, 8: checkbox 9:timestring 10: URL
 		try {	
 
 		  switch (datatype) {
@@ -148,8 +148,19 @@ import org.json.JSONObject;
 					  pStmt.setInt(4, userID);
 			   		  break;
 			        }
-	        case 9: { pStmt= DBconn.conn.prepareStatement( 			// URL
-				 		"INSERT INTO o_string_data (objectid,ot_parameter_id,value,value,lastchange,lastUser) VALUES (?,?,?,NOW(),?)");
+	        case 9: {  //   7: timestamp,
+		   		  pStmt= DBconn.conn.prepareStatement( 			
+		   			"INSERT INTO o_timestamp_data (objectid,ot_parameter_id,value,tz,lastchange,lastUser) VALUES (?,?,?,?,NOW(),?)");
+		   		  SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+				  SimpleDateFormat sqldf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+				  java.sql.Timestamp ts = java.sql.Timestamp.valueOf(sqldf.format(sdf.parse(jsonIn.getString("date"))));		   
+				  pStmt.setTimestamp(3, (Timestamp) ts);
+				  pStmt.setInt(4, jsonIn.getInt("tz")); //Timezone in Minutes
+				  pStmt.setInt(5, userID);     		   			
+		   		  break;
+			    }
+	        case 10: { pStmt= DBconn.conn.prepareStatement( 			// URL
+				 		"INSERT INTO o_string_data (objectid,ot_parameter_id,value,lastchange,lastUser) VALUES (?,?,?,NOW(),?)");
 					  pStmt.setString(3, jsonIn.getString("value"));
 					  pStmt.setInt(4, userID);
 					  break;

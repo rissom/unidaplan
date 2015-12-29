@@ -1,0 +1,12 @@
+<div>
+<span ng-hide="parameter.editing">{{parameter.value}}
+</span>
+<input 						   
+	ng-keyup="stringParamCtrl.keyUp($event.keyCode)"
+	ng-show="parameter.editing" type="text"
+    ng-model="stringParamCtrl.newValue"
+    ng-blur="parameter.editing=false">
+<span ng-show="parameter.unit">
+	{{parameter.unitf()}}
+</span>
+</div>

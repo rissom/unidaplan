@@ -18,22 +18,7 @@ var paramfield = function() {
 			pupdate:'&',
 			parameters: '='
 		},
-		controller: function($scope){
-			this.keyUp = function(keyCode,newValue,parameter) {
-				if (keyCode===13) {				// Return key pressed
-					parameter.editing=false; 
-					var oldValue=parameter.value;
-					parameter.value=newValue;
-					$scope.pupdate({parameter:parameter});
-//					$scope.pupdate();
-				}
-				if (keyCode===27) {		// Escape key pressed
-					parameter.editing=false;			
-				}
-			}
-						
-		},
-		controllerAs: 'paramFieldCtrl'
+		replace: true
 	};
 };
     

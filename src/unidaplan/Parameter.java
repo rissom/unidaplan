@@ -60,6 +60,31 @@ import org.json.JSONObject;
 	      		  if (tempObj.has("description")){
 	      			  stringkeys.add(Integer.toString(tempObj.getInt("description")));
 	      		  }
+	      		  int datatype=tempObj.getInt("datatype");
+	      		  tempObj.remove("datatype");
+		      	  switch (datatype) {
+		      		case 1: tempObj.put("datatype", "integer");
+		      				break;
+		      		case 2: tempObj.put("datatype", "float");
+		      				break;
+		      		case 3: tempObj.put("datatype", "measurement");
+		      				break;
+		      		case 4: tempObj.put("datatype", "string");
+	  						break;
+		      		case 5: tempObj.put("datatype", "long string");
+							break;
+		      		case 6: tempObj.put("datatype", "chooser");
+		      				break;
+		      		case 7: tempObj.put("datatype", "date+time");
+							break;
+		      		case 8: tempObj.put("datatype", "checkbox"); 
+		      				break;
+		      		case 9: tempObj.put("datatype", "timestamp");
+	  						break;
+		      		case 10: tempObj.put("datatype", "URL");
+							 break;
+		      		default: tempObj.put("datatype", "undefined");
+		      	  }
 	      	  }
     	} catch (SQLException e) {
     		System.err.println("Parameters: Problems with SQL query parameters");

@@ -106,25 +106,25 @@ function userController(users,userService) {
 angular.module('unidaplan').controller('userController',['users','userService',userController]);
 
 angular.module('unidaplan').directive('username', function() {
-	  return {
+	return {
 	    require: 'ngModel',
 	    link: function(scope, elm, attrs, ctrl) {
-	      ctrl.$validators.integer = function(modelValue, viewValue) {
-	        if (ctrl.$isEmpty(modelValue)) {
-	        	return true;
-	        }
-	        	var valid=true;
+	    	ctrl.$validators.integer = function(modelValue, viewValue) {
+	    		if (ctrl.$isEmpty(modelValue)) {
+	    			return true;
+	    		}
+	    		var valid=true;
 	    		angular.forEach(scope.userCtrl.users, function(existinguser){
 	    			if (existinguser.username==viewValue)
-	    				{
-	    					valid=false;
-	    				}
+    				  	{
+	        		      	valid=false;
+    				  	}
 	    		});
 	    		return valid;
-	      	};
+      	  	};
 	    }
-	  };
-	});
+	};
+});
 	
 
 })();

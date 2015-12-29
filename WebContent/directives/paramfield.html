@@ -5,16 +5,18 @@
 		    {{parameter.namef()}} :
 		</td>
 		<td >
-			<span ng-hide="parameter.editing">{{parameter.value}}
-			</span>
-			<input 						   
-				ng-keyup="paramFieldCtrl.keyUp($event.keyCode,newValue,parameter)"
-				ng-show="parameter.editing" type="text"
-			    ng-model="newValue" 
-			    ng-blur="parameter.editing=false">
-			<span ng-show="parameter.unit">
-				{{parameter.unitf()}}
-			</span>
+			<div ng-show="parameter.datatype=='string'">
+				<string-parameter  parameter=parameter pupdate="pupdate({parameter:parameter})">
+				</string-parameter>
+			</div>
+			<div ng-if="parameter.datatype=='integer'">
+				<integer-parameter parameter=parameter pupdate="pupdate({parameter:parameter})">
+				</integer-parameter>
+			</div>
+			<div ng-if="parameter.datatype=='URL'">
+				<url-parameter parameter=parameter pupdate="pupdate({parameter:parameter})">
+				</url-parameter>
+			</div>
 		</td>
 	</tr>
 	<tr>

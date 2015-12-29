@@ -17,11 +17,7 @@ function parameterController($scope,$state,$stateParams,$translate,parameterServ
   
   this.parameters=parameters;
   
-  this.dataTypes=["integer","float","measurement","string","long string","chooser","timestamp","checkbox"];
-  
-  this.datatype=['none','integer','float','measurement','string',
-                 'long string','chooser','timestamp','checkbox'];
-  
+  this.dataTypes=["integer","float","measurement","string","long string","chooser","date","checkbox","timestamp","URL","somethingelse"];
   
   
   this.newParameter=function(){

@@ -164,22 +164,44 @@ public class Showsample extends HttpServlet {
 		      			tParam.getInt("parametergroup")==prmgrp.getInt("parametergroup")){		      			
 			      		if (tParam.has("unit")){ 
 			      			stringkeys.add(Integer.toString(tParam.getInt("unit")));
-			      			String datatype="undefined";
-				      		switch (tParam.getInt("datatype")) {
-					      		case 1: datatype="integer"; break;
-					      		case 2: datatype="float";  break;
-					      		case 3: datatype="measurement";  break;
-					      		case 4: datatype="string"; break;
-					      		case 5: datatype="long string";  break;
-					      		case 6: datatype="chooser"; break;
-					      		case 7: datatype="date+time";  break;
-					      		case 8: datatype="checkbox"; break;
-					      		default: datatype="undefined"; break;		    
-				      		}
-				      		tParam.remove("datatype");
-				      		tParam.put("datatype",datatype);
-					      	prmgrpprms.put(tParam);
 			      		}
+		      			int datatype=tParam.getInt("datatype");
+			      		tParam.remove("datatype");
+			      		switch (datatype) {
+				      		case 1: tParam.put("datatype","integer"); 
+				      				if (tParam.has("value")){
+				      					int x=Integer.parseInt(tParam.getString("value"));
+				      					tParam.remove("value");
+					      				tParam.put("value", x);
+				      				}
+				      				break;
+				      		case 2: tParam.put("datatype","float"); 
+				      				if (tParam.has("value")){
+					      				double y=Double.parseDouble(tParam.getString("value"));
+					      				tParam.remove("value");
+					      				tParam.put("value", y);
+				      				}
+				      				break;
+				      		case 3: tParam.put("datatype","measurement");  
+				      				break;
+				      		case 4: tParam.put("datatype","string"); 
+				      				break;
+				      		case 5: tParam.put("datatype","long string");  
+				      				break;
+				      		case 6: tParam.put("datatype","chooser"); 
+				      				break;
+				      		case 7: tParam.put("datatype","date+time");  
+				      				break;
+				      		case 8: tParam.put("datatype","checkbox"); 
+				      				break;
+				      		case 9: tParam.put("datatype","timestamp");
+				      				break;
+				      		case 10: tParam.put("datatype","URL");
+				      				break;
+				      		default: tParam.put("datatype","undefined"); 
+				      				break;	    
+			      		}
+					    prmgrpprms.put(tParam);
 		      		}
 		      	}
 	      		prmgrp.put("parameter",prmgrpprms);
