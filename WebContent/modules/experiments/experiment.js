@@ -25,6 +25,7 @@ function experimentController($modal,$scope,editmode,experimentService,restfacto
 		    templateUrl: 'modules/modal-parameter-choser/modal-parameter-choser.html',
 		    controller: 'modalParameterChoser as mParameterChoserCtrl',
 		    resolve: {
+		    	parameters		 : function(){return []; },
 		    	mode		  	 : function(){return 'immediate'; },
 		    	avParameters     : function(){return avParameters; },
 			}
