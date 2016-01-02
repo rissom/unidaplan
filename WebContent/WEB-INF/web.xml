@@ -480,17 +480,6 @@
   </servlet-mapping>
   
   <servlet>
-    <description>UpdateProcessParameter</description>
-    <display-name>UpdateProcessParameter</display-name>
-    <servlet-name>UpdateProcessParameter</servlet-name>
-    <servlet-class>unidaplan.UpdateProcessParameter</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>UpdateProcessParameter</servlet-name>
-    <url-pattern>/update-process-parameter</url-pattern>
-  </servlet-mapping>
-  
-  <servlet>
     <description>DeleteExperimentParameter</description>
     <display-name>DeleteExperimentParameter</display-name>
     <servlet-name>DeleteExperimentParameter</servlet-name>
@@ -533,6 +522,17 @@
     <servlet-name>ResendToken</servlet-name>
     <url-pattern>/resend-token</url-pattern>
   </servlet-mapping>  
+  
+  <servlet>
+    <description>Save a process-parameter, delete all old values.</description>
+    <display-name>SaveProcessParameter</display-name>
+    <servlet-name>SaveProcessParameter</servlet-name>
+    <servlet-class>unidaplan.SaveProcessParameter</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SaveProcessParameter</servlet-name>
+    <url-pattern>/save-process-parameter</url-pattern>
+  </servlet-mapping>
   
   <servlet>
     <description>AddProcessType</description>

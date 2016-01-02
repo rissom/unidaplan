@@ -104,11 +104,11 @@ public class Showsample extends HttpServlet {
 		   +"ORDER BY pos");
 		pstmt.setInt(1,objID);
 		pstmt.setInt(2,typeid);
-		JSONArray parameters=dBconn.jsonArrayFromPreparedStmt(pstmt);
-		if (parameters.length()>0) {
-			jsSample.put("titleparameters",parameters);
-	      	for (int i=0; i<parameters.length();i++) {
-	      		JSONObject tempObj=(JSONObject) parameters.get(i);
+		JSONArray titleparameters=dBconn.jsonArrayFromPreparedStmt(pstmt);
+		if (titleparameters.length()>0) {
+			jsSample.put("titleparameters",titleparameters);
+	      	for (int i=0; i<titleparameters.length();i++) {
+	      		JSONObject tempObj=(JSONObject) titleparameters.get(i);
 	      		stringkeys.add(Integer.toString(tempObj.getInt("stringkeyname")));
 	      	}
 		}

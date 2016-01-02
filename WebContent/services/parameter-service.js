@@ -36,10 +36,10 @@ var parameterService = function (restfactory,$q,key2string) {
 					return key2string.key2string(parameter.stringkeyunit,thisController.strings);
 				};	
 				parameter.descLang=function(lang){
-					return key2string.key2stringWithLangStrict(parameter.id_description,thisController.strings,lang);
+					return key2string.key2stringWithLangStrict(parameter.description,thisController.strings,lang);
 				};
 				parameter.descf=function(){
-					return key2string.key2string(parameter.id_description,thisController.strings);
+					return key2string.key2string(parameter.description,thisController.strings);
 				};	
 	    	});
 	    	defered.resolve(thisController.parameters);

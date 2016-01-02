@@ -14,11 +14,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-	public class UpdateProcessParameter extends HttpServlet {
+	public class SaveProcessParameter extends HttpServlet {
 		private static final long serialVersionUID = 1L;
 
 	@Override
-	  public void doPut(HttpServletRequest request, HttpServletResponse response)
+	  public void doPost(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {
 		
 		Authentificator authentificator = new Authentificator();
@@ -30,7 +30,7 @@ import org.json.JSONObject;
 	    try {
 			  jsonIn = new JSONObject(in);
 		} catch (JSONException e) {
-			System.err.println("UpdateProcessParameter: Input is not valid JSON");
+			System.err.println("SaveProcessParameter: Input is not valid JSON");
 			status="error";
 		}
 		response.setContentType("application/json");
@@ -40,43 +40,51 @@ import org.json.JSONObject;
 	    // get the id
 	    int processID=0;
 	    int parameterID=-1;
+	    int datatype=-1;
+	    
 	    try {
 			processID=jsonIn.getInt("processid");	
      		parameterID=jsonIn.getInt("parameterid");
 		} catch (JSONException e) {
-			System.err.println("UpdateProcessParameter: Error parsing ID-Field");
+			System.err.println("SaveProcessParameter: Error parsing ID-Field");
 			status="error parsing ID-Field";
 			response.setStatus(404);
 		}
 
 	 	DBconnection dBconn=new DBconnection();
-	    
-	    // Delete the old parameter.
-	    try{
-		    dBconn.startDB();
-		    pStmt= dBconn.conn.prepareStatement( "DELETE FROM p_string_data WHERE ProcessID=? AND P_Parameter_ID=?");
-		    pStmt.setInt(1, processID);
-		    pStmt.setInt(2, parameterID);
-		    pStmt.executeUpdate();
-		    pStmt= dBconn.conn.prepareStatement( "DELETE FROM p_float_data WHERE ProcessID=? AND P_Parameter_ID=?");
-		    pStmt.setInt(1, processID);
-		    pStmt.setInt(2, parameterID);
-		    pStmt.executeUpdate();
-		    pStmt= dBconn.conn.prepareStatement( "DELETE FROM p_integer_data WHERE ProcessID=? AND P_Parameter_ID=?");
-		    pStmt.setInt(1, processID);
-		    pStmt.setInt(2, parameterID);
-		    pStmt.executeUpdate();
-		    pStmt= dBconn.conn.prepareStatement( "DELETE FROM p_measurement_data WHERE ProcessID=? AND P_Parameter_ID=?");
-		    pStmt.setInt(1, processID);
-		    pStmt.setInt(2, parameterID);
-		    pStmt.executeUpdate();
-		    pStmt.close();
-	    } catch (SQLException e) {
-			System.err.println("UpdateProcessParameter: Problems with SQL query for deletion");
-			status="error";
+	 	
+	 	try {	
+		    // look up the datatype in Database	    
+		    dBconn.startDB();	   
+			pStmt = dBconn.conn.prepareStatement( 			
+					 "SELECT paramdef.datatype FROM p_parameters pp \n"
+					+"JOIN paramdef ON pp.definition=paramdef.id \n"
+					+"WHERE pp.id=?");
+		   	pStmt.setInt(1, parameterID);
+		   	JSONObject answer=dBconn.jsonObjectFromPreparedStmt(pStmt);
+		   	pStmt.close();
+			datatype= answer.getInt("datatype");			
+			
+
+			// Delete the old values.
+			String[] tables={"","p_integer_data","p_float_data","p_measurement_data","p_string_data","p_string_data","p_string_data","p_timestamp_data","p_integer_data","p_string_data","p_string_data"};
+			pStmt= dBconn.conn.prepareStatement( 			
+					 "DELETE FROM "+tables[datatype]+" "
+					+"WHERE p_parameter_id=? AND processid=?");
+		   	pStmt.setInt(1, parameterID);
+		   	pStmt.setInt(2, processID);
+		   	pStmt.executeUpdate();
+		   	pStmt.close();
+		} catch (SQLException e) {
+			System.err.println("SaveSampleParameter: Problems with SQL query");
+			status="Problems with SQL query";
+			e.printStackTrace();
+		} catch (JSONException e){
+			System.err.println("SaveSampleParameter: Problems creating JSON");
+			status="Problems creating JSON";
 		} catch (Exception e) {
-			System.err.println("UpdateProcessParameter: Strange Problems deleting old parameter");
-			status="error";
+			System.err.println("SaveSampleParameter: Strange Problems");
+			status="Strange Problems";
 		}
 	    
 	    
@@ -91,13 +99,13 @@ import org.json.JSONObject;
 		   	JSONObject answer=dBconn.jsonObjectFromPreparedStmt(pStmt);
 			type= answer.getInt("datatype");
 		} catch (SQLException e) {
-			System.err.println("UpdateProcessParameter: Problems with SQL query");
+			System.err.println("SaveProcessParameter: Problems with SQL query");
 			status="error";
 		} catch (JSONException e){
-			System.err.println("UpdateProcessParameter: Problems creating JSON");
+			System.err.println("SaveProcessParameter: Problems creating JSON");
 			status="error";
 		} catch (Exception e) {
-			System.err.println("UpdateProcessParameter: Strange Problems");
+			System.err.println("SaveProcessParameter: Strange Problems");
 			status="error";
 		}
 		
@@ -170,14 +178,14 @@ import org.json.JSONObject;
 	    myResponse.put("id", id);
 		out.println(myResponse.toString());
 	} catch (SQLException e) {
-		System.err.println("UpdateProcessParameter: More Problems with SQL query");
+		System.err.println("SaveProcessParameter: More Problems with SQL query");
 		status="error";
 		e.printStackTrace();
 	} catch (JSONException e){
-		System.err.println("UpdateProcessParameter: More Problems creating JSON");
+		System.err.println("SaveProcessParameter: More Problems creating JSON");
 		status="error";
 	} catch (Exception e) {
-		System.err.println("UpdateProcessParameter: More Strange Problems");
+		System.err.println("SaveProcessParameter: More Strange Problems");
 		status="error";
 	}
 		

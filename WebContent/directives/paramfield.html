@@ -5,7 +5,7 @@
 		    {{parameter.namef()}} :
 		</td>
 		<td >
-			<div ng-show="parameter.datatype=='string'">
+			<div ng-if="parameter.datatype=='string'">
 				<string-parameter  parameter=parameter pupdate="pupdate({parameter:parameter})">
 				</string-parameter>
 			</div>
@@ -16,6 +16,14 @@
 			<div ng-if="parameter.datatype=='URL'">
 				<url-parameter parameter=parameter pupdate="pupdate({parameter:parameter})">
 				</url-parameter>
+			</div>
+			<div ng-if="parameter.datatype=='float'">
+				<float-parameter parameter=parameter pupdate="pupdate({parameter:parameter})">
+				</float-parameter>
+			</div>
+			<div ng-if="parameter.datatype=='measurement'">
+				<measurement-parameter parameter=parameter pupdate="pupdate({parameter:parameter})">
+				</measurement-parameter>
 			</div>
 		</td>
 	</tr>

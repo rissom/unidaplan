@@ -49,7 +49,7 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 	        thisController.sample = rest.data;
 	        var strings = rest.data.strings;
 	        
-	        // translate
+	    	// add translation functions
 			angular.forEach(thisController.sample.parametergroups, function(paramgrp) {
 				paramgrp.grpnamef=function(){
 					return key2string.key2string(paramgrp.paramgrpkey,strings);
@@ -65,7 +65,7 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 					}
 					if (parameter.unit){
 						parameter.unitf=function(){
-							return key2string.key2string(parameter.unit,thisController.sample.strings); 
+							return key2string.key2string(parameter.unit,strings); 
 						};
 					}
 				});

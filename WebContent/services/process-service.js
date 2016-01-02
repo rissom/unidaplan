@@ -4,14 +4,12 @@
 var processService = function (restfactory,$q,$translate,key2string) {
 	// restfactory is a wrapper for $html.
 
-	
-	this.statusStrings = [$translate.instant("OK"),
-			              $translate.instant("attention"),
-			              $translate.instant("failed")];
+	var thisController=this;
+
 	
 	
 	this.setStatus = function(process,status){
-		return this.updateParameter(process.id,process.statuspid,status);
+		return this.saveParameter(process.id,{id:process.statuspid,value:status});
 	};
 	
 	
@@ -24,16 +22,37 @@ var processService = function (restfactory,$q,$translate,key2string) {
 	
 	this.getProcess = function(id) {
         var defered=$q.defer();
-    	    	var thisController=this;
     			var promise = restfactory.GET("process?id="+id);
     	    	promise.then(function(rest) {
 	    	    	thisController.process = rest.data;
-	    	    	thisController.strings = rest.data.strings;
+	    	    	
+	    	    	// add translation functions
+	    	    	var strings = rest.data.strings;
 	    	    	thisController.process.fprocesstype = function(){
-	    	    		return key2string.key2string(thisController.process.pt_string_key,thisController.strings);
+	    	    		return key2string.key2string(thisController.process.pt_string_key,strings);
 	    	    	};
-	    	    	thisController.translate();
-	    	    	thisController.pushProcess(thisController.process);
+	    	    	thisController.process.trprocesstype = key2string.key2string(thisController.process.pt_string_key,strings);
+	    			angular.forEach(thisController.process.parametergroups, function(paramgrp) {
+	    				paramgrp.grpnamef=function(){
+	    					return key2string.key2string(paramgrp.paramgrpkey,strings);
+	    				};
+	    				angular.forEach(paramgrp.parameter, function(parameter) {
+	    					parameter.namef=function(){
+	    						return key2string.key2string(parameter.stringkeyname,strings);
+	    					};
+	    					if (parameter.parametergroup){
+	    						parameter.grpnamef=function(){
+	    							return key2string.key2string(parameter.parametergrp_key,strings);
+	    						};
+	    					}
+	    					if (parameter.unit){
+	    						parameter.unitf=function(){
+	    							return key2string.key2string(parameter.unit,strings); 
+	    						};
+	    					}
+	    				});
+	    			});   	
+	    			thisController.pushProcess(thisController.process);
 	    	    	defered.resolve(thisController.process);
     	    	}, function(rest) {    	    		
     	    		console.log("Error loading process");
@@ -77,12 +96,12 @@ var processService = function (restfactory,$q,$translate,key2string) {
 		return restfactory.DELETE("delete-process?id="+id);
 	};
 	
+
 	
-	
-	this.updateParameter=function(processID,paramID,newValue){
-		var parameter={"processid":processID,"parameterid":paramID, "value":newValue};	
-		return restfactory.PUT('update-process-parameter',parameter);
+	this.saveParameter = function(processid,parameter) {
+		return restfactory.POST('save-process-parameter',{processid:processid, parameterid:parameter.id, value:parameter.value});
 	};
+
 	
 	
 	
@@ -101,19 +120,6 @@ var processService = function (restfactory,$q,$translate,key2string) {
 	
 	
 	this.translate = function() {
-		
-		this.process.trprocesstype = key2string.key2string(this.process.pt_string_key,this.strings);
-		var thisController=this;
-		angular.forEach(thisController.process.parameters, function(parameter) {
-			parameter.namef = function(){
-				return key2string.key2string(parameter.stringkeyname,thisController.strings);
-			};
-			if (parameter.unit){
-				parameter.unitf= function(){
-					return key2string.key2string(parameter.unit,thisController.strings);
-				};
-			}
-		});
 	};
 	
 };

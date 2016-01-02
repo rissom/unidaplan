@@ -1,33 +1,17 @@
-<p />
-<p />
-<p />
 <h3>{{processCtrl.process.fprocesstype()}} {{processCtrl.process.pnumber}}</h3>
 <br />
-<h4>{{'Params'|translate}}</h4>
-<table class="table">
-	<tr ng-repeat="parameter in processCtrl.process.parameters"
-		ng-dblclick="parameter.editing=true; newValue=parameter.value">
-		<td>{{parameter.namef()}} :</td>
-		<td>
-			<span ng-hide="parameter.editing">{{processCtrl.showParam(parameter)}}
-			</span>
-			<input 						   
-				ng-keyup="processCtrl.paramKeyUp($event.keyCode,newValue,parameter)"
-				ng-show="parameter.editing" type="text"
-			    ng-model="newValue" 
-			    ng-blur="parameter.editing=false">
-			<span ng-show="parameter.unit">
-				{{parameter.unitf()}}
-			</span>
-	</tr>
-	<tr>
-		<td></td>
-		<td></td>
-	</tr>
-	<!-- um letzten Strich in Tabelle zu erzeugen -->
-</table>
-		
 
+
+
+<!-- Parameters -->
+<h4>{{'Parameters'|translate}}</h4>
+<paramgrps 
+	parametergrps="processCtrl.process.parametergroups" 
+	editable="false"
+	pupdate="processCtrl.saveParameter(parameter)">
+</paramgrps>
+
+		
 
 {{'Status of process run'|translate}}:&nbsp;<span 
 ng-hide="processCtrl.editStatus"
@@ -46,8 +30,9 @@ ng-class="{'1':'ok','2':'att','3':'failed'}[processCtrl.process.status]" >&nbsp;
 <br />
 <br />
 
-<h4>{{'Samples in process'|translate}}</h4>
 
+
+<h4>{{'Samples in process'|translate}}</h4>
 <span ng-repeat="sample in processCtrl.process.samples | orderBy:['trtype','name']">
 	<a ui-sref="sample({sampleID:sample.sampleid})">
 		{{processCtrl.getType(sample)}} {{sample.name}}</a><br/></span>
@@ -56,9 +41,8 @@ ng-class="{'1':'ok','2':'att','3':'failed'}[processCtrl.process.status]" >&nbsp;
 <button class="btn btn-default" ng-click="processCtrl.openDialog()">
 	{{'Add/Remove samples'|translate}}
 </button>
-<p />
-<p />
-<p />
+<br />
+<br />
 	<table>
 		<tr>
 			<td align="center">
@@ -89,4 +73,4 @@ ng-class="{'1':'ok','2':'att','3':'failed'}[processCtrl.process.status]" >&nbsp;
 			</td>
 		</tr>
 	</table>
-	<p>
+<p/>

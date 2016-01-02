@@ -17,7 +17,7 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 	
 	rest.origin = window.location.origin;
 	rest.protocol = window.location.protocol;
-	rest.path 		= "/unidaplan/";	
+	rest.path 		= "";	
 	
 //	console.log("restfactory: using: "+rest.path);
     

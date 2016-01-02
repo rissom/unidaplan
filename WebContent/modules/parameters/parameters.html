@@ -36,7 +36,7 @@
 	</thead>
 
 	<tbody>
-		<tr ng-repeat="parameter in parameterCtrl.parameters | orderBy : 'nameLang(parameterCtrl.lang1Key)'">
+		<tr ng-repeat="parameter in parameterCtrl.parameters | orderBy : 'namef()'">
 			<td class="parametertd">
 	 			{{parameter.nameLang(parameterCtrl.lang1Key)}}
 			</td>
