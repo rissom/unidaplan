@@ -97,7 +97,6 @@ public class DeleteSampleType extends HttpServlet {
 		        	"DELETE FROM string_key_table WHERE id IN (?,?)");
 				pStmt.setInt(1,name);
 				pStmt.setInt(2,description);
-				System.out.println(pStmt.toString());
 				pStmt.executeUpdate();
 				pStmt.close();
 			}

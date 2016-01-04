@@ -20,11 +20,11 @@ function aSamplesController($state,$stateParams,$translate,restfactory,sampleSer
   
  
   
-  this.performAction = function(index,sampleType){
-	  	if (index===0){
+  this.performAction = function(sampleType,action){
+	  	if (action.action==="edit"){
 			$state.go("editSTParamGrps",{sampleTypeID:sampleType.id});
 	  	}
-	  	if (index==1){
+	  	if (action.action==="delete" && sampleType.deletable){
 	  		var promise=sampleService.deleteSampleType(sampleType.id);
 	  		promise.then(function(){reload();},function(){console.log("error");})
 	  	}

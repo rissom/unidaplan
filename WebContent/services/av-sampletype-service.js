@@ -105,8 +105,8 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	    		sampleType.descLang=function(lang){
 					return (key2string.key2stringWithLangStrict(sampleType.description,thisController.strings,lang));
 				};
-	    		sampleType.actions= [ {name: $translate.instant("edit")},
-	    		                      {name: $translate.instant("delete") , disabled:!sampleType.deletable}
+	    		sampleType.actions= [ {action:"edit",name: $translate.instant("edit")},
+	    		                      {action:"delete",name: $translate.instant("delete") , disabled:!sampleType.deletable}
 	    						    ];
 				angular.forEach(sampleType.recipes, function(recipe) {
 					recipe.namef=function(){

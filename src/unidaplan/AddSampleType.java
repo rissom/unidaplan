@@ -49,8 +49,6 @@ import org.json.JSONObject;
 			if (jsonIn.has("name")){
 				 JSONObject name=jsonIn.getJSONObject("name");
 				 String [] names = JSONObject.getNames(name);
-				 System.out.println("names0:"+names[0]);
-				 System.out.println("key:"+name.getString(names[0]));
 				 stringKeyName=dBconn.createNewStringKey(name.getString(names[0]));
 				 for (int i=0; i<names.length; i++){
 					 dBconn.addString(stringKeyName,names[i],name.getString(names[i]));
