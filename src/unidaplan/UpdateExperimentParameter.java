@@ -27,8 +27,10 @@ public class UpdateExperimentParameter extends HttpServlet {
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
 	    JSONObject  jsonIn = null;	    
+	    
 	    try {
-			  jsonIn = new JSONObject(in);
+			 jsonIn = new JSONObject(in);
+//			 System.out.println("jsonIn:"+jsonIn.toString());
 		} catch (JSONException e) {
 			System.err.println("UpdateExperimentParameter: Input is not valid JSON");
 		}
@@ -57,32 +59,34 @@ public class UpdateExperimentParameter extends HttpServlet {
 		    dBconn.startDB();	   
 
 			pStmt= dBconn.conn.prepareStatement( 			
-					 "DELETE FROM Expp_integer_data WHERE expp_id=? AND expp_param_id=?");
+					 "DELETE FROM Expp_integer_data WHERE expp_id=? AND expp_param=?");
 		   	pStmt.setInt(1, expID);
 		   	pStmt.setInt(2, expParamID);
 		   	pStmt.executeUpdate();
 			pStmt= dBconn.conn.prepareStatement( 			
-					 "DELETE FROM Expp_float_data WHERE expp_id=? AND expp_param_id=?");
+					 "DELETE FROM Expp_float_data WHERE expp_id=? AND expp_param=?");
 		   	pStmt.setInt(1, expID);
 		   	pStmt.setInt(2, expParamID);
 		   	pStmt.executeUpdate();
 			pStmt= dBconn.conn.prepareStatement( 			
-					 "DELETE FROM Expp_string_data WHERE expp_id=? AND expp_param_id=?");
+					 "DELETE FROM Expp_string_data WHERE expp_id=? AND expp_param=?");
 		   	pStmt.setInt(1, expID);
 		   	pStmt.setInt(2, expParamID);
 		   	pStmt.executeUpdate();
 			pStmt= dBconn.conn.prepareStatement( 			
-					 "DELETE FROM Expp_measurement_data WHERE expp_id=? AND expp_param_id=?");
+					 "DELETE FROM Expp_measurement_data WHERE expp_id=? AND expp_param=?");
 		   	pStmt.setInt(1, expID);
 		   	pStmt.setInt(2, expParamID);
 		   	pStmt.executeUpdate();
 			pStmt= dBconn.conn.prepareStatement( 			
-					 "DELETE FROM Expp_timestamp_data WHERE expp_id=? AND expp_param_id=?");
+					 "DELETE FROM Expp_timestamp_data WHERE expp_id=? AND expp_param=?");
 		   	pStmt.setInt(1, expID);
 		   	pStmt.setInt(2, expParamID);
 		   	pStmt.executeUpdate();
 		} catch (SQLException e) {
 			System.err.println("UpdateExperimentParameter: Problems with SQL query");
+			status = "SQL Error";
+			e.printStackTrace();
 			status = "SQL Error";
 		} catch (Exception e) {
 			System.err.println("UpdateExperimentParameter: Strange Problems");
@@ -95,13 +99,14 @@ public class UpdateExperimentParameter extends HttpServlet {
 		try {	
 
 			pStmt= dBconn.conn.prepareStatement( 			
-					 "SELECT paramdef.datatype FROM Expp_param ep \n"
-					+"JOIN paramdef ON ep.definition=paramdef.id \n"
+					 "SELECT paramdef.datatype FROM Expp_param ep "
+					+"JOIN paramdef ON ep.definition=paramdef.id "
 					+"WHERE ep.id=?");
 		   	pStmt.setInt(1, expParamID);
 			dataType= dBconn.getSingleIntValue(pStmt);
 		} catch (SQLException e) {
 			System.err.println("UpdateExperimentParameter: Problems with SQL query");
+			e.printStackTrace();
 			status = "SQL Error";
 		} catch (JSONException e){
 			System.err.println("UpdateExperimentParameter: Problems creating JSON");
@@ -155,7 +160,7 @@ public class UpdateExperimentParameter extends HttpServlet {
 					   pStmt.setInt(4, userID);
 					   break;
 				    }
-	        case 7: {  pStmt= dBconn.conn.prepareStatement( 			// Timestamp data	
+	        case 7: {  pStmt= dBconn.conn.prepareStatement( 			// date data	
 			 			"INSERT INTO expp_timestamp_data VALUES (default,?,?,?,?,NOW(),?)");
 					   pStmt.setInt(1, expID); //experiment ID
 				       pStmt.setInt(2, expParamID); // Parameter ID
@@ -177,6 +182,8 @@ public class UpdateExperimentParameter extends HttpServlet {
 			status = "SQL Error";
 		} catch (JSONException e){
 			System.err.println("UpdateExperimentParameter: More Problems creating JSON");
+			e.printStackTrace();
+			System.err.println(pStmt.toString());
 			status = "JSON Error";
 		} catch (Exception e) {
 			System.err.println("UpdateExperimentParameter: More Strange Problems");

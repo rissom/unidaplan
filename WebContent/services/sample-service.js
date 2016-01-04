@@ -20,7 +20,7 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 			angular.forEach(parameters.parameters,function(parameter){
 				parameter.namef = function(){
 					return key2string.key2string(parameter.name,strings);
-				}
+				}				
 			});
 			angular.forEach(parameters.parametergrps,function(grp){
 				grp.namef = function(){
@@ -67,6 +67,9 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 						parameter.unitf=function(){
 							return key2string.key2string(parameter.unit,strings); 
 						};
+					}
+					if (parameter.datatype==="date" || parameter.datatype==="timestamp"){			
+						parameter.newDate=new Date(parameter.value);
 					}
 				});
 			});
@@ -125,9 +128,20 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 	
 	
 	this.saveParameter = function(sampleid,parameter) {
-		return restfactory.POST('save-sample-parameter',{sampleid:sampleid, pid:parameter.id, value:parameter.value});
+		var json={sampleid:sampleid, parameterid:parameter.id, value:parameter.value};
+		if ("date" in parameter) {
+			json.date=parameter.date;
+			json.tz=parameter.tz;
+		}
+		if ("time" in parameter) {
+			json.time=parameter.time;
+		}
+		if ("error" in parameter) {
+			json.error=parameter.time;
+		} 
+		return restfactory.POST('save-sample-parameter',json);
 	};
-	
+
 	
 	
 	this.pushSample = function(sample){

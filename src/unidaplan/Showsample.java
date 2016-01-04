@@ -190,7 +190,7 @@ public class Showsample extends HttpServlet {
 				      				break;
 				      		case 6: tParam.put("datatype","chooser"); 
 				      				break;
-				      		case 7: tParam.put("datatype","date+time");  
+				      		case 7: tParam.put("datatype","date");
 				      				break;
 				      		case 8: tParam.put("datatype","checkbox"); 
 				      				break;

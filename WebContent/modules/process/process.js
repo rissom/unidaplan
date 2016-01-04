@@ -58,31 +58,6 @@ function process($state,$stateParams,$translate,avSampleTypeService,types,$modal
   
   
   
-	this.showParam=function(parameter){
-		if (parameter.datatype===7){
-			var date=new Date(parameter.value);
-			return date.toLocaleDateString()+", "+date.toLocaleTimeString().substring(0,5);  		
-		} else {
-			return parameter.value;
-		} 
-	};
-  
-  
-  
-    this.status=function(){
-    	return this.statusStrings[this.process.status-1]; 
-    };
-  
-  
-  
-  	this.setStatus=function(){
-  		var promise=processService.setStatus(processData,this.newStatus);
-		promise.then(function(){
-		reload();});
-  	};
-  
-  
-  
   	this.paramKeyUp = function(keyCode,newValue,parameter) {
 		if (keyCode===13) {				// Return key pressed
 			parameter.editing=false; 
@@ -131,7 +106,21 @@ function process($state,$stateParams,$translate,avSampleTypeService,types,$modal
 		);
 	};
 	
+	
+	
+    this.status=function(){
+    	return this.statusStrings[this.process.status-1]; 
+    };
   
+  
+  
+  	this.setStatus=function(){
+  		var promise=processService.setStatus(processData,this.newStatus);
+		promise.then(function(){
+		reload();});
+  	};
+  
+  	
   
 	var reload=function() {
 		var current = $state.current;

@@ -70,21 +70,32 @@ public class DeleteProcessType extends HttpServlet {
 		    } catch (SQLException eS) {
 				System.err.println("Delete Process: SQL Error");
 				status="error: SQL error";
-				eS.printStackTrace();
 			} catch (Exception e) {
 				System.err.println("Delete Sample Type: Some Error, probably JSON");
 				status="error: JSON error";
-				e.printStackTrace();
 			}
 		
 	    try {
-		 	if (processTypeID>0){			
-				// delete the process
+		 	if (processTypeID>0){	
+		 		
+		 		
+				// delete all associatied parameters
+		        pStmt = dBconn.conn.prepareStatement(	
+		        	"DELETE FROM p_parameters WHERE processtypeid=?");
+				pStmt.setInt(1,processTypeID);
+				pStmt.executeUpdate();
+				pStmt.close();
+
+		 		
+		 		
+				// delete the processtype
 		        pStmt = dBconn.conn.prepareStatement(	
 		        	"DELETE FROM processtypes WHERE id=?");
 				pStmt.setInt(1,processTypeID);
 				pStmt.executeUpdate();
 				pStmt.close();
+				
+				
 			}
 	    } catch (SQLException eS) {
 			System.err.println("Delete Processtype: SQL Error");
@@ -93,7 +104,6 @@ public class DeleteProcessType extends HttpServlet {
 		} catch (Exception e) {
 			System.err.println("Delete Processtype: Some Error, probably JSON");
 			status="error: JSON error";
-			e.printStackTrace();
 		}
 	    try {
 		 	if (processTypeID>0){			
@@ -108,11 +118,9 @@ public class DeleteProcessType extends HttpServlet {
 	    } catch (SQLException eS) {
 			System.err.println("Delete Processtype: SQL Error");
 			status="error: SQL error";
-			eS.printStackTrace();
 		} catch (Exception e) {
 			System.err.println("Delete Processtype: Some Error, probably JSON");
 			status="error: JSON error";
-			e.printStackTrace();
 		} 
 	    
 	    finally {

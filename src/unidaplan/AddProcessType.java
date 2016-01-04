@@ -26,6 +26,7 @@ import org.json.JSONObject;
 	    
 	    try {
 			jsonIn = new JSONObject(in);
+			System.out.println("jsonIn:"+jsonIn.toString());
 		} catch (JSONException e) {
 			System.err.println("AddProcessType: Input is not valid JSON");
 			status="input error";
@@ -62,10 +63,12 @@ import org.json.JSONObject;
 			 if (jsonIn.has("description")){
 				 JSONObject description=jsonIn.getJSONObject("description");
 				 String [] descriptions = JSONObject.getNames(description);
-				 stringKeyDesc=dBconn.createNewStringKey(description.getString(descriptions[0]));
-				 for (int i=0; i<descriptions.length; i++){
-					 dBconn.addString(stringKeyDesc,descriptions[i],description.getString(descriptions[i]));
-				 }	 
+				 if (descriptions!=null && descriptions.length>0){
+					 stringKeyDesc=dBconn.createNewStringKey(description.getString(descriptions[0]));
+					 for (int i=0; i<descriptions.length; i++){
+						 dBconn.addString(stringKeyDesc,descriptions[i],description.getString(descriptions[i]));
+					 } 
+				 }
 			 }
 			 if (jsonIn.has("position")){
 				 position=jsonIn.getInt("position");
@@ -82,7 +85,11 @@ import org.json.JSONObject;
 			pStmt.setInt(1, position);
 			pStmt.setInt(2, ptgroup);
 		   	pStmt.setInt(3, stringKeyName);
-		   	pStmt.setInt(4, stringKeyDesc);
+		   	if (stringKeyDesc>0){
+		   		pStmt.setInt(4, stringKeyDesc);
+		   	}else{
+		   		pStmt.setNull(4, java.sql.Types.INTEGER);
+		   	}
 		   	pStmt.setInt(5, userID);
 		   	id=dBconn.getSingleIntValue(pStmt);
 		
@@ -126,6 +133,7 @@ import org.json.JSONObject;
 			response.setStatus(404);
 		} catch (Exception e) {
 			System.err.println("AddProcessType: Strange Problems");
+			e.printStackTrace();
 			response.setStatus(404);
 		}	
 	

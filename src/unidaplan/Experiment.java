@@ -61,7 +61,7 @@ import org.json.JSONObject;
 			+"FROM  exp_plan "
 			+"JOIN users ON (users.id=exp_plan.Creator) "
 			+"JOIN expp_integer_data intd ON (intd.expp_id=exp_plan.ID) "
-			+"JOIN expp_param ON (intd.expp_param_id=expp_param.id AND expp_param.definition=2) "
+			+"JOIN expp_param ON (intd.expp_param=expp_param.id AND expp_param.definition=2) "
 			+"WHERE exp_plan.ID=?");
 			pstmt.setInt(1, id);
 			experiment=dBconn.jsonObjectFromPreparedStmt(pstmt);
@@ -208,8 +208,10 @@ import org.json.JSONObject;
 			      		case 4: datatype="string"; break;
 			      		case 5: datatype="long string";  break;
 			      		case 6: datatype="chooser"; break;
-			      		case 7: datatype="date+time";  break;
+			      		case 7: datatype="date";  break;
 			      		case 8: datatype="checkbox"; break;
+			      		case 9: datatype="timestamp"; break;
+	      				case 10: datatype="URL"; break;
 			      		default: datatype="undefined"; break;		    
 		      		}
 		      		parameters.getJSONObject(i).remove("datatype");

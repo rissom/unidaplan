@@ -6,7 +6,16 @@
 	ng-show="parameter.editing" 
 	type="text"
     ng-model="measurementParamCtrl.newValue"
-    ng-blur="parameter.editing=false">
+    ng-keyup="measurementParamCtrl.keyUp($event.keyCode)">
+ 
+<span ng-show="parameter.editing">±</span>
+<input 						   
+	ng-keyup="measurementParamCtrl.keyUp($event.keyCode)"
+	ng-show="parameter.editing" 
+	type="text"
+    ng-model="measurementParamCtrl.newError"
+    ng-keyup="measurementParamCtrl.keyUp($event.keyCode)">
+    
 <span ng-show="parameter.unit">
 	{{parameter.unitf()}}
 </span>

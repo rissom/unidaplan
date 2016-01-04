@@ -1,0 +1,18 @@
+<div>
+	<span ng-hide="parameter.editing">{{dateParamCtrl.newValue}}
+	</span>    
+	<input 
+		ng-show="parameter.editing"
+		type="date" 
+		uib-datepicker-popup 
+		ng-model="parameter.newDate"
+		is-open="status.opened"
+	 	datepicker-options="dateOptions"
+	 	close-text="Close">
+	
+	<button ng-show="parameter.editing"
+			class="btn btn-default"
+			ng-click="dateParamCtrl.update()">
+		ok
+	</button>
+</div>

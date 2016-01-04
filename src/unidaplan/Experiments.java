@@ -40,7 +40,7 @@ import org.json.JSONObject;
 			+"FROM exp_plan " 
 			+"JOIN users ON (users.id=exp_plan.Creator) " 
 			+"JOIN expp_integer_data intd ON (intd.expp_id=exp_plan.ID) "
-			+"JOIN expp_param ON (intd.expp_param_id=expp_param.id AND expp_param.definition=2)");
+			+"JOIN expp_param ON (intd.expp_param=expp_param.id AND expp_param.definition=2)");
 			experiments=dBconn.jsonArrayFromPreparedStmt(pstmt);
 			pstmt.close();
 			  for (int i=0; i<experiments.length();i++) {

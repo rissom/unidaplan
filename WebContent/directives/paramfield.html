@@ -25,6 +25,15 @@
 				<measurement-parameter parameter=parameter pupdate="pupdate({parameter:parameter})">
 				</measurement-parameter>
 			</div>
+			<div ng-if="parameter.datatype=='timestamp'">
+				<timestamp-parameter parameter=parameter pupdate="pupdate({parameter:parameter})">
+				</timestamp-parameter>
+			</div>
+			<div ng-if="parameter.datatype=='date'">
+				<date-parameter parameter=parameter pupdate="pupdate({parameter:parameter})">
+				</date-parameter>
+			</div>
+			
 		</td>
 	</tr>
 	<tr>

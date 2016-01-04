@@ -50,6 +50,9 @@ var processService = function (restfactory,$q,$translate,key2string) {
 	    							return key2string.key2string(parameter.unit,strings); 
 	    						};
 	    					}
+	    					if (parameter.datatype==="date" || parameter.datatype==="timestamp"){			
+	    						parameter.newDate=new Date(parameter.value);
+	    					}
 	    				});
 	    			});   	
 	    			thisController.pushProcess(thisController.process);
@@ -99,7 +102,20 @@ var processService = function (restfactory,$q,$translate,key2string) {
 
 	
 	this.saveParameter = function(processid,parameter) {
-		return restfactory.POST('save-process-parameter',{processid:processid, parameterid:parameter.id, value:parameter.value});
+		console.log("parameter",parameter)
+		var json={processid:processid, parameterid:parameter.id, value:parameter.value};
+		if ("date" in parameter) {
+			json.date=parameter.date;
+			json.tz=parameter.tz;
+		}
+		if ("time" in parameter) {
+			json.time=parameter.time;
+		}
+		if ("error" in parameter) {
+			json.error=parameter.error;
+		} 
+		console.log("json",json)
+		return restfactory.POST('save-process-parameter',json);
 	};
 
 	

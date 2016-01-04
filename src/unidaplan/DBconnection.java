@@ -105,6 +105,7 @@ public class DBconnection  {
           pStmt.close();
   	  } catch (SQLException e) {   // Exception for SQL database
   		  System.err.println("DBconnection: No result, or problem with the database"); // please remove this!
+  		  e.printStackTrace();
   		  System.err.println(pStmt.toString());  // please remove this!
   	  } catch (Exception e) {
   		  System.err.print("DBconnection: Some problem with database query. Error! ");
@@ -141,6 +142,7 @@ public class DBconnection  {
 	  		} catch (SQLException e) {   // Exception for SQL database
 	  			System.err.println("DBconnection: No result, or problem with the database");
 	  			System.err.println(pStmt.toString());
+	  			e.printStackTrace();
 	  		} catch (Exception e) {
 	  			System.err.println("DBconnection: Some problem with database query. Error! ");
 	  		  	e.printStackTrace();
@@ -242,7 +244,8 @@ public class DBconnection  {
 	          pStmt.close();
 	  	  } catch (SQLException e) {   // Exception for SQL database
 	  		  System.err.println("DBconnection: No result, or problem with the database");
-//	  		  e.printStackTrace();
+	  		  System.err.println(pStmt.toString());  // please remove this!
+	  		  e.printStackTrace();
 	  	  } catch (Exception e) {
 	  		  System.err.println("DBconnection: Some problem with database query. Error! ");
 //	  		  e.printStackTrace();
@@ -300,6 +303,7 @@ public class DBconnection  {
 	  	  } catch (SQLException e) {   // Exception for SQL database
 	  		  System.err.println("DBconnection: No result, or problem with the database");
 	  		  System.err.println(pStmt.toString());
+	  		  e.printStackTrace();
 	  		  result=0;
 	  	  } catch (Exception e) {
 	  		  System.err.println("DBconnection: Some problem with database query. Error! ");
@@ -334,6 +338,8 @@ public class DBconnection  {
 	          pStmt.close();
 	  	  } catch (SQLException e) {   // Exception for SQL database
 	  		  System.err.println("DBconnection: No result, or problem with the database");
+	  		  e.printStackTrace();
+	  		  System.out.println(pStmt.toString());
 	  	  } catch (Exception e) {
 	  		  System.err.println("DBconnection: Some problem with database query. Error! ");
 //	  		  e.printStackTrace();

@@ -48,7 +48,8 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
     				parameter.unitLang=function(lang){				
     					return key2string.key2stringWithLangStrict(parameter.stringkeyunit,thisController.strings,lang);
     				};
-    				if (parameter.datatype==="date+time") {
+    				if (parameter.datatype==="date") {
+    					parameter.newDate=new Date(parameter.value);
     					parameter.date=new Date(parameter.value);
     				}
     			});

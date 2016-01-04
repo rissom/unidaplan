@@ -47,6 +47,11 @@ public class Unidatoolkit {
 
     
     
+    public static String[] Datatypes={"undefined","integer","float","measurement","string",
+    	"long string","chooser","date","checkbox","datatype","timestamp","datatype","URL","undefined"};
+    
+    
+    
     public static int copyStringEntry(int stringKey, int userID, DBconnection dBconn){
     	// function for copying stringentries in the database
 		PreparedStatement pStmt = null; 

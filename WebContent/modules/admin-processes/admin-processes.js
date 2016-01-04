@@ -29,7 +29,7 @@ function aProcessesController($state,$stateParams,$translate,restfactory,process
 	  	  	var promise=processService.duplicateProcessType(process.id);
 	  	  	promise.then(function(){reload();},function(){console.log("error");});
 		}
-		if (action.action==="delete"){
+		if (action.action==="delete" && process.deletable){
 	  	  	var promise2=processService.deleteProcessType(process.id);
 	  	  	promise2.then(function(){reload();},function(){console.log("error");});
 		}

@@ -35,7 +35,7 @@ import org.json.JSONObject;
 	    int pid=0;
 	    int sampleID=0;
 	    try {
-			 pid=jsonIn.getInt("pid");
+			 pid=jsonIn.getInt("parameterid");
 			 sampleID=jsonIn.getInt("sampleid");
 		} catch (JSONException e) {
 			System.err.println("SaveSampleParameter: Error parsing ID-Field");
@@ -60,7 +60,7 @@ import org.json.JSONObject;
 			datatype= answer.getInt("datatype");			
 			
 			// delete old values.
-			String[] tables={"","o_integer_data","o_float_data","o_measurement_data","o_string_data","o_string_data","o_string_data","o_timestamp_data","o_integer_data","o_string_data","o_string_data"};
+			String[] tables={"","o_integer_data","o_float_data","o_measurement_data","o_string_data","o_string_data","o_string_data","o_timestamp_data","o_integer_data","o_timestamp_data","o_string_data"};
 			pStmt= DBconn.conn.prepareStatement( 			
 					 "DELETE FROM "+tables[datatype]+" "
 					+"WHERE ot_parameter_id=? AND objectid=?");
@@ -130,7 +130,7 @@ import org.json.JSONObject;
 					  pStmt.setInt(4, userID);
 					  break;
 	        		}
-	        case 7: {  //   7: timestamp,
+	        case 7: {  //   7: date,
      		   		  pStmt= DBconn.conn.prepareStatement( 			
      		   			"INSERT INTO o_timestamp_data (objectid,ot_parameter_id,value,tz,lastchange,lastUser) VALUES (?,?,?,?,NOW(),?)");
      		   		  SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
@@ -148,7 +148,7 @@ import org.json.JSONObject;
 					  pStmt.setInt(4, userID);
 			   		  break;
 			        }
-	        case 9: {  //   7: timestamp,
+	        case 9: {  //   9: timestamp,
 		   		  pStmt= DBconn.conn.prepareStatement( 			
 		   			"INSERT INTO o_timestamp_data (objectid,ot_parameter_id,value,tz,lastchange,lastUser) VALUES (?,?,?,?,NOW(),?)");
 		   		  SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
@@ -166,8 +166,10 @@ import org.json.JSONObject;
 					  break;
 			        }
 		}
+//		System.out.println(pStmt.toString());
 		pStmt.setInt(1, sampleID);
 		pStmt.setInt(2, pid);
+//		System.out.println(pStmt.toString());
 		pStmt.executeUpdate();
 		pStmt.close();
 		DBconn.closeDB();
@@ -176,6 +178,7 @@ import org.json.JSONObject;
 		e.printStackTrace();
 	} catch (JSONException e){
 		System.err.println("SaveSampleParameter: More Problems creating JSON");
+		e.printStackTrace();
 	} catch (Exception e) {
 		System.err.println("SaveSampleParameter: More Strange Problems");
 	}

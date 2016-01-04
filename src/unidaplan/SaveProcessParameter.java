@@ -66,8 +66,8 @@ import org.json.JSONObject;
 			datatype= answer.getInt("datatype");			
 			
 
-			// Delete the old values.
-			String[] tables={"","p_integer_data","p_float_data","p_measurement_data","p_string_data","p_string_data","p_string_data","p_timestamp_data","p_integer_data","p_string_data","p_string_data"};
+			// delete the old values.
+			String[] tables={"","p_integer_data","p_float_data","p_measurement_data","p_string_data","p_string_data","p_string_data","p_timestamp_data","p_integer_data","p_timestamp_data","p_string_data"};
 			pStmt= dBconn.conn.prepareStatement( 			
 					 "DELETE FROM "+tables[datatype]+" "
 					+"WHERE p_parameter_id=? AND processid=?");
@@ -134,8 +134,12 @@ import org.json.JSONObject;
 				         "INSERT INTO p_measurement_data VALUES(DEFAULT,?,?,?,?,NOW(),?) RETURNING ID");
 						pStmt.setInt(1, processID);
 						pStmt.setInt(2, parameterID);
-						pStmt.setDouble(3, Double.parseDouble(jsonIn.getString("value").split("±")[0]));
-						pStmt.setDouble(4, Double.parseDouble(jsonIn.getString("value").split("±")[1]));
+						pStmt.setDouble(3, jsonIn.getDouble("value"));
+						if (jsonIn.has("error")){
+							pStmt.setDouble(4, jsonIn.getDouble("error"));
+						} else {
+							pStmt.setNull(4,java.sql.Types.DOUBLE);
+						}
 						pStmt.setInt(5, userID);
 						break;
 			        }
@@ -154,13 +158,25 @@ import org.json.JSONObject;
 				       pStmt.setString(3, jsonIn.getString("value"));
 				       pStmt.setInt(4, userID);
 				   }
-	        case 7: {  pStmt= dBconn.conn.prepareStatement( 			// Timestamp data	
-		 			"INSERT INTO p_timestamp_data VALUES (default,?,?,?,?,NOW(),?)");
+	        case 7: {  pStmt= dBconn.conn.prepareStatement( 			// Date 	
+		 			"INSERT INTO p_timestamp_data VALUES (default,?,?,?,?,NOW(),?) RETURNING ID");
 			       pStmt.setInt(1, processID);
 			       pStmt.setInt(2, parameterID);
 				   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
 				   SimpleDateFormat sqldf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-				   java.sql.Timestamp ts = java.sql.Timestamp.valueOf(sqldf.format(sdf.parse(jsonIn.getString("value"))));		   
+				   java.sql.Timestamp ts = java.sql.Timestamp.valueOf(sqldf.format(sdf.parse(jsonIn.getString("date"))));
+				   pStmt.setTimestamp(3, (Timestamp) ts);
+				   pStmt.setInt(4, jsonIn.getInt("tz")); //Timezone in Minutes
+				   pStmt.setInt(5, userID);
+				   break;
+			   }
+	        case 9: {  pStmt= dBconn.conn.prepareStatement( 			// Timestamp data	
+		 			"INSERT INTO p_timestamp_data VALUES (default,?,?,?,?,NOW(),?) RETURNING ID");
+			       pStmt.setInt(1, processID);
+			       pStmt.setInt(2, parameterID);
+				   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+				   SimpleDateFormat sqldf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+				   java.sql.Timestamp ts = java.sql.Timestamp.valueOf(sqldf.format(sdf.parse(jsonIn.getString("date"))));
 				   pStmt.setTimestamp(3, (Timestamp) ts);
 				   pStmt.setInt(4, jsonIn.getInt("tz")); //Timezone in Minutes
 				   pStmt.setInt(5, userID);
@@ -183,9 +199,13 @@ import org.json.JSONObject;
 		e.printStackTrace();
 	} catch (JSONException e){
 		System.err.println("SaveProcessParameter: More Problems creating JSON");
+		e.printStackTrace();
+		System.err.println(pStmt.toString());
 		status="error";
 	} catch (Exception e) {
 		System.err.println("SaveProcessParameter: More Strange Problems");
+		System.err.println(pStmt.toString());
+		e.printStackTrace();
 		status="error";
 	}
 		

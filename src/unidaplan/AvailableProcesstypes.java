@@ -45,14 +45,18 @@ public class AvailableProcesstypes extends HttpServlet {
 	 		try{
 	 		 	DBconn.startDB();
 	 			pstmt = DBconn.conn.prepareStatement(	
-				  "SELECT id, name, description  FROM processtypes");
+				  "SELECT pt.id, pt.name, pt.description, count(pt.id)=3 AS deletable  FROM processtypes pt "
+				 +"JOIN p_parameters ON processtypeid=pt.id "
+				 +"GROUP BY pt.id");
 	 			processList=DBconn.jsonArrayFromPreparedStmt(pstmt); // get ResultSet from the database using the query
 	 			pstmt.close();
 	           	if (processList.length()>0) {
 	           		for (int i=0; i<processList.length();i++) {
 	           			JSONObject tempObj=processList.getJSONObject(i);
 	           			stringkeys.add(Integer.toString(tempObj.getInt("name")));
-	           			stringkeys.add(Integer.toString(tempObj.getInt("description")));
+	           			if (tempObj.has("description")){
+	           				stringkeys.add(Integer.toString(tempObj.getInt("description")));
+	           			}
 	           			pstmt = DBconn.conn.prepareStatement(
 	           					"SELECT id, name FROM p_recipes WHERE ot_id=?");
 	           			pstmt.setInt(1, tempObj.getInt("id"));
@@ -64,17 +68,7 @@ public class AvailableProcesstypes extends HttpServlet {
 	    	           		}
 	    	           	}
 	           		}
-	           		String query="SELECT id,string_key,language,value FROM Stringtable WHERE string_key=ANY('{";
-		           	
-           			StringBuilder buff = new StringBuilder(); // join numbers with commas
-			        String sep = "";
-			        for (String str : stringkeys) {
-			        	buff.append(sep);
-			           	buff.append(str);
-			           	sep = ",";
-			        }
-			        query+= buff.toString() + "}'::int[])";
-			        JSONArray theStrings=DBconn.jsonfromquery(query);
+			        JSONArray theStrings=DBconn.getStrings(stringkeys);
 			        JSONObject jsAvailable=new JSONObject();
 			        jsAvailable.put("processes", processList);
 			        jsAvailable.put("strings", theStrings);
