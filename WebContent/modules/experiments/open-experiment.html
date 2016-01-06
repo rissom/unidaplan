@@ -5,7 +5,7 @@
 			{{ 'My Experiments' | translate }}
 		</h3>
 	
-		<table class="table">
+		<table class="table" ng-hide="oexpCtrl.myexperiments().length==0">
 			<thead class=parametertablehead>
 			<tr><td><b>{{'No.'|translate}}</b></td>
 				<td><b>Name</b></td><td><b>Status</b></td>
