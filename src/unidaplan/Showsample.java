@@ -139,6 +139,7 @@ public class Showsample extends HttpServlet {
 		pstmt.close();
 		
 		
+		
 		//get the parameters
 		pstmt= dBconn.conn.prepareStatement( 	 
 		   "SELECT ot_parameters.id, parametergroup, compulsory, ot_parameters.pos, "
@@ -201,6 +202,8 @@ public class Showsample extends HttpServlet {
 		System.err.println("Showsample: Strange Problems with the sample parameters");
 		e.printStackTrace();
 	}	
+	
+	
     	
 	// find all corresponding processes + timestamp
 	try {
@@ -253,6 +256,7 @@ public class Showsample extends HttpServlet {
 	}
 	
 	
+	
 	// Find all experiment plans
 	try {pstmt= dBconn.conn.prepareStatement( 
 		"SELECT ep.id as exp_id, name, creator, status FROM exp_plan ep "
@@ -293,6 +297,7 @@ public class Showsample extends HttpServlet {
     		e.printStackTrace();
     	}
     	
+	
 			
 		// Find all child objects
     	try{

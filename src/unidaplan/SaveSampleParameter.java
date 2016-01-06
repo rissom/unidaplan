@@ -37,6 +37,7 @@ import org.json.JSONObject;
 	    try {
 			 pid=jsonIn.getInt("parameterid");
 			 sampleID=jsonIn.getInt("sampleid");
+//			 System.out.println(jsonIn);
 		} catch (JSONException e) {
 			System.err.println("SaveSampleParameter: Error parsing ID-Field");
 			response.setStatus(404);
@@ -108,6 +109,9 @@ import org.json.JSONObject;
 							pStmt.setDouble(3, jsonIn.getDouble("value"));
 							pStmt.setDouble(4, 0);
 					  }
+				      if (jsonIn.has("error")){
+				    	  pStmt.setDouble(4, Double.parseDouble(jsonIn.getString("error"))); 
+				      }
 					  pStmt.setInt(5,userID);
 					  break;
 			        }

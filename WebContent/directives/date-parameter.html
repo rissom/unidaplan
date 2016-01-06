@@ -7,6 +7,7 @@
 		uib-datepicker-popup 
 		ng-model="parameter.newDate"
 		is-open="status.opened"
+		ng-keyup="dateParamCtrl.keyUp($event.keyCode)"
 	 	datepicker-options="dateOptions"
 	 	close-text="Close">
 	

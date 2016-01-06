@@ -49,42 +49,30 @@ import org.json.JSONObject;
 			+"WHERE paramdef.id>2 GROUP BY paramdef.id");
 			parameters=dBconn.jsonArrayFromPreparedStmt(pstmt);
 			pstmt.close();
-			  for (int i=0; i<parameters.length();i++) {
-	      		  JSONObject tempObj=parameters.getJSONObject(i);
-	      		  if (tempObj.has("stringkeyname")){
-	      			  stringkeys.add(Integer.toString(tempObj.getInt("stringkeyname")));
-	      		  }
-	      		  if (tempObj.has("stringkeyunit")){
-	      			  stringkeys.add(Integer.toString(tempObj.getInt("stringkeyunit")));
-	      		  }
-	      		  if (tempObj.has("description")){
-	      			  stringkeys.add(Integer.toString(tempObj.getInt("description")));
-	      		  }
-	      		  int datatype=tempObj.getInt("datatype");
-	      		  tempObj.remove("datatype");
-		      	  switch (datatype) {
-		      		case 1: tempObj.put("datatype", "integer");
-		      				break;
-		      		case 2: tempObj.put("datatype", "float");
-		      				break;
-		      		case 3: tempObj.put("datatype", "measurement");
-		      				break;
-		      		case 4: tempObj.put("datatype", "string");
-	  						break;
-		      		case 5: tempObj.put("datatype", "long string");
-							break;
-		      		case 6: tempObj.put("datatype", "chooser");
-		      				break;
-		      		case 7: tempObj.put("datatype", "date+time");
-							break;
-		      		case 8: tempObj.put("datatype", "checkbox"); 
-		      				break;
-		      		case 9: tempObj.put("datatype", "timestamp");
-	  						break;
-		      		case 10: tempObj.put("datatype", "URL");
-							 break;
-		      		default: tempObj.put("datatype", "undefined");
-		      	  }
+			  	for (int i=0; i<parameters.length();i++) {
+			  		JSONObject tempObj=parameters.getJSONObject(i);
+			  		if (tempObj.has("stringkeyname")){
+			  			stringkeys.add(Integer.toString(tempObj.getInt("stringkeyname")));
+			  		}
+			  		if (tempObj.has("stringkeyunit")){
+			  			stringkeys.add(Integer.toString(tempObj.getInt("stringkeyunit")));
+			  		}
+			  		if (tempObj.has("description")){
+			  			stringkeys.add(Integer.toString(tempObj.getInt("description")));
+			  		}
+			  		int datatype=tempObj.getInt("datatype");
+			  		tempObj.remove("datatype");
+			  		tempObj.put("datatype", Unidatoolkit.Datatypes[datatype]);
+			  		if (datatype==1 && tempObj.has("value")) {				      		
+      					int x=Integer.parseInt(tempObj.getString("value"));
+      					tempObj.remove("value");
+      					tempObj.put("value", x);
+			  		}
+			  		if (datatype==1 && tempObj.has("value")) {	 
+	      				double y=Double.parseDouble(tempObj.getString("value"));
+	      				tempObj.remove("value");
+	      				tempObj.put("value", y);
+			  		}
 	      	  }
     	} catch (SQLException e) {
     		System.err.println("Parameters: Problems with SQL query parameters");

@@ -21,6 +21,8 @@ var dateParameter = function() {
 		},
 		controller: function($scope){
 			
+			var thisController=this;
+			
 			if ("value" in $scope.parameter){
 				var myDate=new Date($scope.parameter.value);
 				this.dateString = myDate.toLocaleDateString()

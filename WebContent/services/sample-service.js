@@ -137,7 +137,7 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 			json.time=parameter.time;
 		}
 		if ("error" in parameter) {
-			json.error=parameter.time;
+			json.error=parameter.error;
 		} 
 		return restfactory.POST('save-sample-parameter',json);
 	};
