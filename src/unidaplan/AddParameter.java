@@ -91,7 +91,7 @@ import org.json.JSONObject;
 				 }
 			 }
   
-	    PreparedStatement pstmt = null;
+			 PreparedStatement pstmt = null;
 
 			pstmt= dBconn.conn.prepareStatement( 			
 					"INSERT INTO paramdef (StringKeyName,StringKeyUnit,Datatype,maxdigits,description,pattern,lastChange,lastUser) "
@@ -111,7 +111,7 @@ import org.json.JSONObject;
 		   		pstmt.setInt(6, java.sql.Types.VARCHAR);
 		   	}
 		   	pstmt.setInt(7, userID);
-			if (dataType>0 && dataType<10){
+			if (dataType>0 && dataType<11){
 			   	pstmt.executeUpdate();
 			}else{
 				status="illegal datatype";

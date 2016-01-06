@@ -182,6 +182,22 @@ import org.json.JSONObject;
 				   pStmt.setInt(5, userID);
 				   break;
 			   }
+	        case 10:  { pStmt= dBconn.conn.prepareStatement( 			// String data	
+		        	"INSERT INTO p_string_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
+			       pStmt.setInt(1, processID);
+			       pStmt.setInt(2, parameterID);
+			       pStmt.setString(3, jsonIn.getString("value"));
+			       pStmt.setInt(4, userID);
+				   break;
+		        }
+	        case 11:  { pStmt= dBconn.conn.prepareStatement( 			// String data	
+		        	"INSERT INTO p_string_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
+			       pStmt.setInt(1, processID);
+			       pStmt.setInt(2, parameterID);
+			       pStmt.setString(3, jsonIn.getString("value"));
+			       pStmt.setInt(4, userID);
+				   break;
+		        }
 			}
 		
 	    int id=dBconn.getSingleIntValue(pStmt);

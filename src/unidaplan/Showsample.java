@@ -53,18 +53,23 @@ public class Showsample extends HttpServlet {
     try{
         dBconn.startDB();
 		pstmt= dBconn.conn.prepareStatement( 	
-				"SELECT name, typeid, id FROM samplenames WHERE id=?");
+				"SELECT objecttypesid FROM samples WHERE id=?");
+		pstmt.setInt(1,objID);
+		typeid=dBconn.getSingleIntValue(pstmt);
+		pstmt.close();
+		pstmt= dBconn.conn.prepareStatement( 	
+				"SELECT name FROM samplenames WHERE id=?");
 		pstmt.setInt(1,objID);
 		jsSample= dBconn.jsonObjectFromPreparedStmt(pstmt);
-		if (jsSample.length()>0) {
-			typeid=jsSample.getInt("typeid");
-			pstmt= dBconn.conn.prepareStatement( 	
-			"SELECT string_key FROM objecttypes WHERE id=?");
-			pstmt.setInt(1,typeid);
-			int stringkey= dBconn.jsonObjectFromPreparedStmt(pstmt).getInt("string_key");
-			stringkeys.add(Integer.toString(stringkey));
-			jsSample.put("typestringkey", stringkey);
-		}
+		jsSample.put("id", objID);
+		jsSample.put("typeid", typeid);
+		pstmt= dBconn.conn.prepareStatement( 	
+		"SELECT string_key FROM objecttypes WHERE id=?");
+		pstmt.setInt(1,typeid);
+		int stringkey= dBconn.jsonObjectFromPreparedStmt(pstmt).getInt("string_key");
+		stringkeys.add(Integer.toString(stringkey));
+		jsSample.put("typestringkey", stringkey);
+		
 	} catch (SQLException e) {
 		System.err.println("Showsample: Problems with SQL query for sample name");
 	} catch (JSONException e) {
@@ -167,40 +172,17 @@ public class Showsample extends HttpServlet {
 			      		}
 		      			int datatype=tParam.getInt("datatype");
 			      		tParam.remove("datatype");
-			      		switch (datatype) {
-				      		case 1: tParam.put("datatype","integer"); 
-				      				if (tParam.has("value")){
+				      	tParam.put("datatype",Unidatoolkit.Datatypes[datatype]); 
+			      		if (datatype==1 && tParam.has("value")) {				      		
 				      					int x=Integer.parseInt(tParam.getString("value"));
 				      					tParam.remove("value");
 					      				tParam.put("value", x);
 				      				}
-				      				break;
-				      		case 2: tParam.put("datatype","float"); 
-				      				if (tParam.has("value")){
+			      		if (datatype==1 && tParam.has("value")) {	 
 					      				double y=Double.parseDouble(tParam.getString("value"));
 					      				tParam.remove("value");
 					      				tParam.put("value", y);
 				      				}
-				      				break;
-				      		case 3: tParam.put("datatype","measurement");  
-				      				break;
-				      		case 4: tParam.put("datatype","string"); 
-				      				break;
-				      		case 5: tParam.put("datatype","long string");  
-				      				break;
-				      		case 6: tParam.put("datatype","chooser"); 
-				      				break;
-				      		case 7: tParam.put("datatype","date");
-				      				break;
-				      		case 8: tParam.put("datatype","checkbox"); 
-				      				break;
-				      		case 9: tParam.put("datatype","timestamp");
-				      				break;
-				      		case 10: tParam.put("datatype","URL");
-				      				break;
-				      		default: tParam.put("datatype","undefined"); 
-				      				break;	    
-			      		}
 					    prmgrpprms.put(tParam);
 		      		}
 		      	}
@@ -436,6 +418,8 @@ public class Showsample extends HttpServlet {
 			if (resultset.next()) {Deletable=false;}
 			pstmt.close();
 			jsSample.put("deletable", Deletable);
+			
+			
 		} catch (SQLException e) {
 			System.err.println("Showsample: Problems with SQL query for deletable");
 		} catch (JSONException e) {

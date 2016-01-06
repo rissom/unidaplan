@@ -39,21 +39,22 @@ import org.json.JSONObject;
 	    
 	    // create entry in the database	    
 	 	DBconnection dBconn=new DBconnection();
-	    PreparedStatement pstmt = null;
+	    PreparedStatement pStmt = null;
 		try {
 		    dBconn.startDB();	   
-			pstmt= dBconn.conn.prepareStatement( 			
+			pStmt= dBconn.conn.prepareStatement( 			
 					 "INSERT INTO samples values(default, ?, ?, NOW(), NOW(),?) RETURNING id");
-		   	pstmt.setInt(1, sampletypeID);
-		   	pstmt.setInt(2, userID);
-		   	pstmt.setInt(3, userID);
-			id= dBconn.getSingleIntValue(pstmt);
-		   	pstmt.close();
+		   	pStmt.setInt(1, sampletypeID);
+		   	pStmt.setInt(2, userID);
+		   	pStmt.setInt(3, userID);
+			id= dBconn.getSingleIntValue(pStmt);
+		   	pStmt.close();
 		} catch (SQLException e) {
 			System.err.println("AddSample: Problems with SQL query");
 			status="SQL error";
 			response.setStatus(404);
 		} catch (JSONException e){
+			e.printStackTrace();
 			System.err.println("AddSample: Problems creating JSON");
 			status="JSON error";
 			response.setStatus(404);
@@ -64,21 +65,26 @@ import org.json.JSONObject;
 		}
 		try{
 		// find the current maximum of sample name parameters
-		pstmt= dBconn.conn.prepareStatement( 	
+		pStmt= dBconn.conn.prepareStatement( 	
 		"SELECT id FROM samplenames WHERE typeid=? ORDER BY name DESC LIMIT 1");
-	   	pstmt.setInt(1, sampletypeID);
-	   	JSONObject answer=dBconn.jsonObjectFromPreparedStmt(pstmt);
-		int lastSampleID= answer.getInt("id");
-		pstmt.close();
+	   	pStmt.setInt(1, sampletypeID);
+	   	JSONObject answer=dBconn.jsonObjectFromPreparedStmt(pStmt);
+	   	int lastSampleID=0;
+	   	if (answer.length()>0){
+	   		lastSampleID= answer.getInt("id");
+	   	} 
+		System.out.println(pStmt.toString());
+		pStmt.close();
 		
 		// Liste mit Titelparametern
-		pstmt= dBconn.conn.prepareStatement( 	
+		pStmt= dBconn.conn.prepareStatement( 	
 		"SELECT ot_parameters.id,idata.value FROM ot_parameters " 
 		+"JOIN o_integer_data idata ON idata.ot_parameter_id=ot_parameters.id "
 		+"WHERE ID_Field=true AND idata.objectid=? ORDER BY pos DESC");
-	   	pstmt.setInt(1, lastSampleID);
-	   	JSONArray lastTitleParameters=dBconn.jsonArrayFromPreparedStmt(pstmt);
-		pstmt.close();
+	   	pStmt.setInt(1, lastSampleID);
+	   	JSONArray lastTitleParameters=dBconn.jsonArrayFromPreparedStmt(pStmt);
+		System.out.println(pStmt.toString());
+		pStmt.close();
 				
 	   	
 		// Titelparameter schreiben
@@ -86,13 +92,14 @@ import org.json.JSONObject;
         for (int i=0; i<lastTitleParameters.length();i++){   
         	JSONObject parameter=(JSONObject) lastTitleParameters.get(i);
 //        	System.out.println(((JSONObject)lastTitleParameters.get(i)).toString());
-        	pstmt= dBconn.conn.prepareStatement("INSERT INTO o_integer_data values(default, ?, ?, ?, NOW());");
-        	pstmt.setInt(1, id);
-        	pstmt.setInt(2, parameter.getInt("id"));
-        	pstmt.setInt(3, parameter.getInt("value")+increment);
-        	pstmt.executeUpdate();
-        	pstmt.close();
+        	pStmt= dBconn.conn.prepareStatement("INSERT INTO o_integer_data values(default, ?, ?, ?, NOW());");
+        	pStmt.setInt(1, id);
+        	pStmt.setInt(2, parameter.getInt("id"));
+        	pStmt.setInt(3, parameter.getInt("value")+increment);
+        	pStmt.executeUpdate();
+        	pStmt.close();
         	increment=0;
+    		System.out.println(pStmt.toString());
         }
 		dBconn.closeDB();
 		
@@ -103,6 +110,7 @@ import org.json.JSONObject;
 	} catch (JSONException e){
 		System.err.println("AddSample: Problems creating JSON");
 		status="JSON error";
+		e.printStackTrace();
 	} catch (Exception e) {
 		System.err.println("AddSample: Strange Problems");
 		status="error";

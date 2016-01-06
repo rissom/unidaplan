@@ -800,7 +800,18 @@
     <url-pattern>/update-sample-type-data</url-pattern>
   </servlet-mapping>
   
-    <servlet>
+  <servlet>
+    <description>upload a file</description>
+    <display-name>UploadFile</display-name>
+    <servlet-name>UploadFile</servlet-name>
+    <servlet-class>unidaplan.UploadFile</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UploadFile</servlet-name>
+    <url-pattern>/upload-file</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
     <description>AddSTParameterGrp</description>
     <display-name>AddSTParameterGrp</display-name>
     <servlet-name>AddSTParameterGrp</servlet-name>

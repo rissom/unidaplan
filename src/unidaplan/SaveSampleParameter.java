@@ -165,6 +165,12 @@ import org.json.JSONObject;
 					  pStmt.setInt(4, userID);
 					  break;
 			        }
+	        case 11: { pStmt= DBconn.conn.prepareStatement( 			// URL
+				 		"INSERT INTO o_string_data (objectid,ot_parameter_id,value,lastchange,lastUser) VALUES (?,?,?,NOW(),?)");
+					  pStmt.setString(3, jsonIn.getString("value"));
+					  pStmt.setInt(4, userID);
+					  break;
+			        }
 		}
 //		System.out.println(pStmt.toString());
 		pStmt.setInt(1, sampleID);

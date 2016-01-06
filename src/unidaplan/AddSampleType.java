@@ -3,12 +3,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -49,6 +47,8 @@ import org.json.JSONObject;
 			if (jsonIn.has("name")){
 				 JSONObject name=jsonIn.getJSONObject("name");
 				 String [] names = JSONObject.getNames(name);
+				 System.out.println("names0:"+names[0]);
+				 System.out.println("key:"+name.getString(names[0]));
 				 stringKeyName=dBconn.createNewStringKey(name.getString(names[0]));
 				 for (int i=0; i<names.length; i++){
 					 dBconn.addString(stringKeyName,names[i],name.getString(names[i]));

@@ -1,0 +1,9 @@
+<div>
+	<span ng-hide="parameter.editing"><a ng-href="mailto:{{parameter.value}}">{{parameter.value}}</a>
+	</span>
+	<input 						   
+		ng-keyup="emailParamCtrl.keyUp($event.keyCode)"
+		ng-show="parameter.editing" type="email" 
+	    ng-model="emailParamCtrl.newValue"
+	    ng-blur="parameter.editing=false">
+</div>   

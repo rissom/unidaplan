@@ -33,6 +33,10 @@
 				<date-parameter parameter=parameter pupdate="pupdate({parameter:parameter})">
 				</date-parameter>
 			</div>
+			<div ng-if="parameter.datatype=='e-mail'">
+				<email-parameter parameter=parameter pupdate="pupdate({parameter:parameter})">
+				</email-parameter>
+			</div>
 			
 		</td>
 	</tr>

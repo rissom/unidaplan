@@ -24,18 +24,6 @@ function importController(languages,parameters,restfactory,$translate,$scope,$st
 	
 //	this.regex = new RegExp('[a-zA-Z]{4}[0-9]{6,6}[a-zA-Z0-9]{3}');
 	
-	var datatypes = [{id:0,namef:function(){return "<"+$translate.instant("don't import")+">";}	},
-	                 {id:1,namef:function(){return $translate.instant("integer");}	  	},
-					 {id:2,namef:function(){return $translate.instant("float");}		},
-					 {id:3,namef:function(){return $translate.instant("measurement");} 	},
-					 {id:4,namef:function(){return $translate.instant("string");}	  	},
-					 {id:5,namef:function(){return $translate.instant("long string");} 	},
-					 {id:6,namef:function(){return $translate.instant("chooser");}	  	},
-					 {id:7,namef:function(){return $translate.instant("date+time");}	},
-					 {id:8,namef:function(){return $translate.instant("checkbox");}	  	},
-					 {id:9,namef:function(){return $translate.instant("timestamp");}   	},
-					 {id:9,namef:function(){return $translate.instant("URL");}		  	}
-				    ];
 	
 	this.parameters.parameters = parameters;
 	
@@ -61,7 +49,7 @@ function importController(languages,parameters,restfactory,$translate,$scope,$st
 			);
 		} else {
 			thisController.parameters={};
-			thisController.parameters.parameters = datatypes;
+			thisController.parameters.parameters = parameters;
 		}
 	}
 	

@@ -2,10 +2,10 @@
 <span ng-hide="parameter.editing">{{parameter.value}}
 </span>
 <input 						   
-	ng-keyup="floatParamCtrl.keyUp($event.keyCode)"
+	ng-keyup="integerParamCtrl.keyUp($event.keyCode)"
 	ng-show="parameter.editing" 
 	type="number"
-    ng-model="floatParamCtrl.newValue"
+    ng-model="integerParamCtrl.newValue"
     ng-blur="parameter.editing=false">
 <span ng-show="parameter.unit">
 	{{parameter.unitf()}}
