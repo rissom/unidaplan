@@ -99,6 +99,12 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 	
 	
 	
+	this.deletePTParameter=function(id){
+		return restfactory.DELETE("delete-PT-Parameter?id="+id);
+	};
+	
+	
+	
 	this.deletePTParameterGrp=function(id){
 		return restfactory.DELETE("delete-pt-parameter-grp?id="+id);
 	};
@@ -184,12 +190,6 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 	    return defered.promise;
 	};
 
-	
-	
-	this.deletePTParameter=function(id){
-		return restfactory.DELETE("delete-PT-Parameter?id="+id);
-	};
-	
 	
 	
 	this.updateProcessTypeData=function(processtypeID,field,value,lang){

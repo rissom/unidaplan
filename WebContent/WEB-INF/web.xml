@@ -933,6 +933,17 @@
   </servlet-mapping>
   
   <servlet>
+    <description>UpdateSTParameter</description>
+    <display-name>UpdateSTParameter</display-name>
+    <servlet-name>UpdateSTParameter</servlet-name>
+    <servlet-class>unidaplan.UpdateSTParameter</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateSTParameter</servlet-name>
+    <url-pattern>/update-st-parameter</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
     <description>UpdateSTParamGrp</description>
     <display-name>UpdateSTParamGrp</display-name>
     <servlet-name>UpdateSTParamGrp</servlet-name>

@@ -73,7 +73,6 @@ import org.json.JSONObject;
 	   	if (answer.length()>0){
 	   		lastSampleID= answer.getInt("id");
 	   	} 
-		System.out.println(pStmt.toString());
 		pStmt.close();
 		
 		// Liste mit Titelparametern
@@ -83,7 +82,6 @@ import org.json.JSONObject;
 		+"WHERE ID_Field=true AND idata.objectid=? ORDER BY pos DESC");
 	   	pStmt.setInt(1, lastSampleID);
 	   	JSONArray lastTitleParameters=dBconn.jsonArrayFromPreparedStmt(pStmt);
-		System.out.println(pStmt.toString());
 		pStmt.close();
 				
 	   	
@@ -99,7 +97,6 @@ import org.json.JSONObject;
         	pStmt.executeUpdate();
         	pStmt.close();
         	increment=0;
-    		System.out.println(pStmt.toString());
         }
 		dBconn.closeDB();
 		

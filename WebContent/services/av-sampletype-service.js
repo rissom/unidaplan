@@ -236,6 +236,11 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	
 	
 	
+	this.updateParameter = function (parameter){
+		return restfactory.PUT("update-st-parameter",parameter);
+	};
+	
+	
 	this.updateParamGrp = function (name, language, paramgrpid){
 		return restfactory.PUT("update-st-paramgrp",{"newname":name, "paramgrpid":paramgrpid, "language":language});
 	};
