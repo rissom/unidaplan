@@ -38,7 +38,6 @@ import org.json.JSONObject;
 			pstmt= DBconn.conn.prepareStatement( 	
 			"SELECT p_integer_data.processid FROM p_integer_data "
 			+"JOIN p_parameters pp ON (p_integer_data.p_parameter_id=pp.id AND id_field=true) "
-			// TODO Parameter 8 (oder war es 10??)
 			+"WHERE processtypeid=? AND p_integer_data.value=?"); 
 			pstmt.setInt(1, processType);
 			pstmt.setInt(2, processNumber);

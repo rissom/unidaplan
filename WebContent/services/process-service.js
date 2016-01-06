@@ -22,45 +22,45 @@ var processService = function (restfactory,$q,$translate,key2string) {
 	
 	this.getProcess = function(id) {
         var defered=$q.defer();
-    			var promise = restfactory.GET("process?id="+id);
-    	    	promise.then(function(rest) {
-	    	    	thisController.process = rest.data;
+		var promise = restfactory.GET("process?id="+id);
+    	promise.then(function(rest) {
+    	thisController.process = rest.data;
 	    	    	
-	    	    	// add translation functions
-	    	    	var strings = rest.data.strings;
-	    	    	thisController.process.fprocesstype = function(){
-	    	    		return key2string.key2string(thisController.process.pt_string_key,strings);
-	    	    	};
-	    	    	thisController.process.trprocesstype = key2string.key2string(thisController.process.pt_string_key,strings);
-	    			angular.forEach(thisController.process.parametergroups, function(paramgrp) {
-	    				paramgrp.grpnamef=function(){
-	    					return key2string.key2string(paramgrp.paramgrpkey,strings);
-	    				};
-	    				angular.forEach(paramgrp.parameter, function(parameter) {
-	    					parameter.namef=function(){
-	    						return key2string.key2string(parameter.stringkeyname,strings);
-	    					};
-	    					if (parameter.parametergroup){
-	    						parameter.grpnamef=function(){
-	    							return key2string.key2string(parameter.parametergrp_key,strings);
-	    						};
-	    					}
-	    					if (parameter.unit){
-	    						parameter.unitf=function(){
-	    							return key2string.key2string(parameter.unit,strings); 
-	    						};
-	    					}
-	    					if (parameter.datatype==="date" || parameter.datatype==="timestamp"){			
-	    						parameter.newDate=new Date(parameter.value);
-	    					}
-	    				});
-	    			});   	
-	    			thisController.pushProcess(thisController.process);
-	    	    	defered.resolve(thisController.process);
-    	    	}, function(rest) {    	    		
-    	    		console.log("Error loading process");
-    	    		defered.reject({"error":"Error loading process"});
-    	    	});
+	    	// add translation functions
+	    	var strings = rest.data.strings;
+	    	thisController.process.fprocesstype = function(){
+	    		return key2string.key2string(thisController.process.pt_string_key,strings);
+	    	};
+	    	thisController.process.trprocesstype = key2string.key2string(thisController.process.pt_string_key,strings);
+			angular.forEach(thisController.process.parametergroups, function(paramgrp) {
+				paramgrp.grpnamef=function(){
+					return key2string.key2string(paramgrp.paramgrpkey,strings);
+				};
+				angular.forEach(paramgrp.parameter, function(parameter) {
+					parameter.namef=function(){
+						return key2string.key2string(parameter.stringkeyname,strings);
+					};
+					if (parameter.parametergroup){
+						parameter.grpnamef=function(){
+							return key2string.key2string(parameter.parametergrp_key,strings);
+						};
+					}
+					if (parameter.unit){
+						parameter.unitf=function(){
+							return key2string.key2string(parameter.unit,strings); 
+						};
+					}
+					if (parameter.datatype==="date" || parameter.datatype==="timestamp"){			
+						parameter.newDate=new Date(parameter.value);
+					}
+				});
+			});   	
+			thisController.pushProcess(thisController.process);
+	    	defered.resolve(thisController.process);
+    	}, function(rest) {    	    		
+    		console.log("Error loading process");
+    		defered.reject({"error":"Error loading process"});
+    	});
 		return defered.promise;
 	};
       
@@ -102,7 +102,6 @@ var processService = function (restfactory,$q,$translate,key2string) {
 
 	
 	this.saveParameter = function(processid,parameter) {
-		console.log("parameter",parameter)
 		var json={processid:processid, parameterid:parameter.id, value:parameter.value};
 		if ("date" in parameter) {
 			json.date=parameter.date;
@@ -114,7 +113,6 @@ var processService = function (restfactory,$q,$translate,key2string) {
 		if ("error" in parameter) {
 			json.error=parameter.error;
 		} 
-		console.log("json",json)
 		return restfactory.POST('save-process-parameter',json);
 	};
 
