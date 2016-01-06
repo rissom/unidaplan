@@ -179,7 +179,7 @@ public class Showsample extends HttpServlet {
 				      					tParam.remove("value");
 					      				tParam.put("value", x);
 				      				}
-			      		if (datatype==1 && tParam.has("value")) {	 
+			      		if (datatype==2 && tParam.has("value")) {	 
 					      				double y=Double.parseDouble(tParam.getString("value"));
 					      				tParam.remove("value");
 					      				tParam.put("value", y);

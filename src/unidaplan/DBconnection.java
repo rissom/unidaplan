@@ -208,12 +208,18 @@ public class DBconnection  {
   
   
   public int addString(int key, String lang,String input) throws Exception {
-	  PreparedStatement pStmt=conn.prepareStatement("INSERT INTO stringtable (string_key,language,value,lastchange)"
+	  PreparedStatement pStmt=conn.prepareStatement("DELETE FROM stringtable WHERE language=? AND string_key=?");
+	  pStmt.setString(1, lang);
+	  pStmt.setInt(2, key);
+	  pStmt.executeUpdate();
+	  pStmt.close();
+	  pStmt=conn.prepareStatement("INSERT INTO stringtable (string_key,language,value,lastchange)"
 	  		+ " VALUES (?,?,?,NOW()) RETURNING id");
 	  pStmt.setInt(1, key);
 	  pStmt.setString(2, lang);
 	  pStmt.setString(3, input);
 	  int id=getSingleIntValue(pStmt);
+	  pStmt.close();
 	  return id;
   }
   

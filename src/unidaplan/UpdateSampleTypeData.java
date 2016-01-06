@@ -32,10 +32,12 @@ import org.json.JSONObject;
 		response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
 	    
-	    // get the id
+	    
+	    
+	    // get id of corresponding stringkey
 	    int objectTypeID=0;
 	    int id=0;
-	    int stringkey=-1;
+	    int stringkey=0;
 	    String newValue = null;
 	    String lang = null;
 		DBconnection dBconn=new DBconnection();
@@ -51,54 +53,43 @@ import org.json.JSONObject;
 			pStmt= dBconn.conn.prepareStatement( 			
 					 "SELECT string_key,description FROM objecttypes WHERE objecttypes.id=?");
 			pStmt.setInt(1,  objectTypeID);
-			JSONObject pt=dBconn.jsonObjectFromPreparedStmt(pStmt);
+			JSONObject sampleType=dBconn.jsonObjectFromPreparedStmt(pStmt);
+//			System.out.println("st: "+sampleType);
 			
 			if (field.equals("name")) { 
-				stringkey=pt.getInt("string_key");
-			} else{
-				stringkey=pt.getInt("description");
+				stringkey=sampleType.getInt("string_key");
+			} else{ // field is description
+				if (sampleType.has("description")){
+					stringkey=sampleType.getInt("description");
+				}
 			}
-			pStmt= dBconn.conn.prepareStatement( 			
-						 "SELECT st.id FROM stringtable st "
-					   + "WHERE st.string_key=? AND st.language=?");
-		   	pStmt.setInt(1,stringkey);
-		   	pStmt.setString(2, lang);
-		   	id=dBconn.getSingleIntValue(pStmt);
-		   	pStmt.close();
-
-		} catch (SQLException e) {
-			System.err.println("UpdateSampleTypeData: More Problems with SQL query");
-			status = "SQL Error";
-		} catch (JSONException e) {
-			System.err.println("UpdateSampleTypeData: Error parsing ID-Field");
-			status = "Error parsing ID-Field";
-			response.setStatus(404);
-		}   catch (Exception e) {
-			System.err.println("UpdateSampleTypeData: More Strange Problems");
-			status = "Misc. Error";
-		}
-
-	    try {	   
-	    	pStmt= dBconn.conn.prepareStatement( 			
-					 "INSERT INTO stringtable VALUES (default, ?, ?,?,NOW(),?)");
-		    if (id<1) { // No id, new Entry
-			   	pStmt.setInt(1, stringkey);
-			   	pStmt.setString(2, lang);
-			   	pStmt.setString(3, newValue);
-			   	pStmt.setInt(4, userID);
-		    } else{			    // If we have an id: update the field
+			
+			Boolean newKey=false; // could change.
+			
+			// if a stringkey exists: try to get id of stringtable field.
+			if (stringkey==0){ // We have no stringkey
+				stringkey=dBconn.createNewStringKey(newValue);
+				newKey=true;
+			} 	    
+			
+		   	dBconn.addString(stringkey, lang, newValue);
+		   	
+		   	
+			if (newKey && field.equals("description")){ // We have no stringkey
 				pStmt= dBconn.conn.prepareStatement( 			
-					 "UPDATE stringtable SET (value,lastuser)=(?,?) WHERE id=?");
-			   	pStmt.setString(1, newValue);
-			   	pStmt.setInt(2, userID);
-			   	pStmt.setInt(3, id);
-		    }
-			pStmt.executeUpdate();
-			pStmt.close();
+						 "UPDATE objecttypes SET description=? WHERE id=?");
+				pStmt.setInt(1, stringkey);
+				pStmt.setInt(2, objectTypeID);
+				pStmt.executeUpdate();
+				pStmt.close();
+			} 	
 			dBconn.closeDB();
+			
+			
 		} catch (SQLException e) {
 			System.err.println("UpdateSampleTypeData: Even More Problems with SQL query");
 			status = "SQL Error";
+			e.printStackTrace();
 		} catch (Exception e) {
 			System.err.println("UpdateSampleTypeData: More Strange Problems");
 			status = "Misc. Error";

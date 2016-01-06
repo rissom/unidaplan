@@ -75,7 +75,7 @@ public class DeleteSampleType extends HttpServlet {
 		 
 		  try {
 			 	if (sampleTypeID>0){			
-					// delete the process
+					// delete the sampletype
 			        pStmt = dBconn.conn.prepareStatement(	
 			        	"DELETE FROM objecttypes WHERE id=?");
 					pStmt.setInt(1,sampleTypeID);
