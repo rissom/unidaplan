@@ -56,33 +56,29 @@ import org.json.JSONObject;
 			JSONObject sampleType=dBconn.jsonObjectFromPreparedStmt(pStmt);
 //			System.out.println("st: "+sampleType);
 			
-			if (field.equals("name")) { 
+			if (field.equalsIgnoreCase("name")) { 
 				stringkey=sampleType.getInt("string_key");
-			} else{ // field is description
-				if (sampleType.has("description")){
-					stringkey=sampleType.getInt("description");
-				}
+				dBconn.addString(stringkey, lang, newValue);
 			}
 			
-			Boolean newKey=false; // could change.
-			
-			// if a stringkey exists: try to get id of stringtable field.
-			if (stringkey==0){ // We have no stringkey
-				stringkey=dBconn.createNewStringKey(newValue);
-				newKey=true;
-			} 	    
-			
-		   	dBconn.addString(stringkey, lang, newValue);
-		   	
-		   	
-			if (newKey && field.equals("description")){ // We have no stringkey
-				pStmt= dBconn.conn.prepareStatement( 			
-						 "UPDATE objecttypes SET description=? WHERE id=?");
-				pStmt.setInt(1, stringkey);
-				pStmt.setInt(2, objectTypeID);
-				pStmt.executeUpdate();
-				pStmt.close();
-			} 	
+			if (field.equalsIgnoreCase("description")){
+				if (sampleType.has("description")){
+					// if a stringkey exists: try to get id of stringtable field.
+					stringkey=sampleType.getInt("description");
+					dBconn.addString(stringkey, lang, newValue);
+				}else{
+					// We have no stringkey
+					stringkey=dBconn.createNewStringKey(newValue);
+					dBconn.addString(stringkey, lang, newValue);
+					pStmt= dBconn.conn.prepareStatement( 			
+							 "UPDATE objecttypes SET description=? WHERE id=?");
+					pStmt.setInt(1, stringkey);
+					pStmt.setInt(2, objectTypeID);
+					pStmt.executeUpdate();
+					pStmt.close();
+				} 	   
+			}
+				
 			dBconn.closeDB();
 			
 			
