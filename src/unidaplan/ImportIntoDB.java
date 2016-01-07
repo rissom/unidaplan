@@ -27,9 +27,9 @@ public class ImportIntoDB extends HttpServlet {
 			    PreparedStatement pStmt = null;
 			    int type=-1;
 				pStmt= dBconn.conn.prepareStatement( 			
-						 "SELECT paramdef.datatype FROM Ot_parameters otp \n"
-						+"JOIN paramdef ON otp.definition=paramdef.id \n"
-						+"WHERE otp.id=? \n");
+						 "SELECT paramdef.datatype FROM Ot_parameters otp "
+						+"JOIN paramdef ON otp.definition=paramdef.id "
+						+"WHERE otp.id=?");
 			   	pStmt.setInt(1, id);
 			   	type=dBconn.getSingleIntValue(pStmt);
 			   	System.out.println(pStmt.toString());
@@ -156,7 +156,7 @@ public class ImportIntoDB extends HttpServlet {
 		    
 		    try {
 		    	parameter = jsonIn.getJSONArray("parameters");
-		    	String file = jsonIn.getString("file");
+		    	String file = "/Users/thorse/Desktop/"+jsonIn.getString("file");
 		    	int sampletype=jsonIn.getInt("sampletype");
 		    	int sampleID=0;
 		    	

@@ -1,9 +1,11 @@
 
 <h3>Import</h3>
-<input type="file" id="inputfile">
+<input type="file" id="inputfile" onchange="angular.element(this).scope().importCtrl.setFiles(this)">
 <br/>
+{{file}}
 
-<button ng-click="importCtrl.importStuff()" class="btn btn-default">{{'import file'|translate}}</button>
+
+<button ng-click="importCtrl.importStuff(file)" class="btn btn-default">{{'import file'|translate}}</button>
 <br/>
 <br/>
 {{"sampletype"|translate}}: 

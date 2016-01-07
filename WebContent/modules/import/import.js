@@ -65,7 +65,7 @@ function importController(languages,parameters,restfactory,$translate,$scope,$st
 		var args={
 			parameters:parameters,
 			sampletype:this.activeSampleType,
-			file:"/Users/thorse/Desktop/Hersteller.csv"
+			file:thisController.file
 		};
 		if (this.activeSampleType==0){ // New sampletype
 			var name={};
@@ -83,9 +83,15 @@ function importController(languages,parameters,restfactory,$translate,$scope,$st
 	}
 	
 	
+	this.setFiles = function(element) {
+		console.log(element.files[0]);
+		thisController.file=element.files[0].name;
+		thisController.importStuff(element.files[0].name);
+    };
 	
-	this.importStuff=function(){
-		var promise = restfactory.GET("import-csv")
+	
+	this.importStuff=function(file){
+		var promise = restfactory.POST("import-csv",{file:file})
 	    promise.then(function(rest) {
 	    	thisController.table=rest.data;	    	
 	    	thisController.columns=[];

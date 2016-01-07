@@ -18,13 +18,34 @@ import java.io.*;
 public class ImportCSV extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
-	  	public void doGet(HttpServletRequest request, HttpServletResponse response) 
+	  	public void doPost(HttpServletRequest request, HttpServletResponse response) 
 		      throws ServletException, IOException {		
 		  	response.setContentType("application/json");
 		    request.setCharacterEncoding("utf-8");
 		    response.setCharacterEncoding("utf-8");
 		    PrintWriter out = response.getWriter();
-	        BufferedReader CSVFile = new BufferedReader(new FileReader("/Users/thorse/Desktop/Hersteller.csv"));
+		    Authentificator authentificator = new Authentificator();
+			int userID=authentificator.GetUserID(request,response);
+		
+			String status = "ok";
+		   	int paramgrpID=0;
+	        
+			String in = request.getReader().readLine();
+			System.out.println("input:");
+			System.out.println(in);
+			JSONObject  jsonIn = null;
+			String file="";
+			try {
+				jsonIn = new JSONObject(in);
+		    	file = "/Users/thorse/Desktop/"+jsonIn.getString("file");
+			} catch (JSONException e) {
+				System.err.println("UpdateSampleTypeData: Input is not valid JSON");
+			}
+		    
+
+
+		    	
+		    BufferedReader CSVFile = new BufferedReader(new FileReader(file));
 
 	        String dataRow = CSVFile.readLine(); // Read the first line of data.
 	        // The while checks to see if the data is null. If it is, we've hit
