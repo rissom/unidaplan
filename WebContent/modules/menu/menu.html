@@ -7,20 +7,20 @@
 			<span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span>
 			<span class="icon-bar"></span> <span class="icon-bar"></span>
 		</button>
-		<a class="navbar-brand" ui-sref="openExperiment">Unidaplan</a>
+		<a class="navbar-brand" ui-sref="sampleChoser">Isa Potsdam</a>
 	</div>
 	<div class="collapse navbar-collapse" collapse="menuCtrl.navCollapsed">
 		<ul class="nav navbar-nav">
 
 			<li class="dropdown" dropdown="">
 				<a href="#" class="dropdown-toggle" dropdown-toggle="" ng-disabled="disabled">
-					{{'Samples'|translate}} 
+					{{'Objects'|translate}} 
 				</a>
 				<ul class="dropdown-menu" role="menu">
 					<li class="dropdown-submenu"><a ui-sref="newSample">
-							{{'New Sample'|translate}} </a></li>
-					<li><a ui-sref="sampleChoser"> {{'Show Samples'|translate}} </a></li>
-					<li><a ui-sref="recentSamples"> {{'Recent Samples'|translate}} </a></li>
+							{{'New Object'|translate}} </a></li>
+					<li><a ui-sref="sampleChoser"> {{'Show Objects'|translate}} </a></li>
+					<li><a ui-sref="recentSamples"> {{'Recent Objects'|translate}} </a></li>
 				</ul>
 			</li>
 
@@ -36,6 +36,7 @@
 				</ul>
 			</li>
 
+<!-- 
 			<li class="dropdown" dropdown="">
 				<a href="#" class="dropdown-toggle" dropdown-toggle="" ng-disabled="disabled">
 					{{'Experiment'|translate}}
@@ -46,6 +47,8 @@
 					<li><a ui-sref="recentExperiments"> {{'Recent Experiments'|translate}} </a></li>
 				</ul>
 			</li>
+ -->
+ 
 			<li class="dropdown" dropdown="">
 				<a href="#" class="dropdown-toggle" dropdown-toggle="" ng-disabled="disabled">
 					{{'Search'|translate}} 
