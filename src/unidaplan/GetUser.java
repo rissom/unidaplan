@@ -23,7 +23,8 @@ import org.json.JSONObject;
 	    response.setContentType("application/json");
 	    request.setCharacterEncoding("utf-8");
 	    response.setCharacterEncoding("utf-8");
-	    int userID=-1;
+	    Authentificator authentificator = new Authentificator();
+		int userID=authentificator.GetUserID(request,response);
 	    String token="";
 		// get Parameter for id
 		try{

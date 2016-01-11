@@ -19,7 +19,7 @@ public class Authentificator {
 		if (session.getAttribute("userID") != null) {
 			user=(Integer) session.getAttribute("userID");
 		} else {
-//			response.setStatus(401);
+			response.setStatus(401);
 		}
 		
 //		PreparedStatement pstmt = null; 	// Declare variables
