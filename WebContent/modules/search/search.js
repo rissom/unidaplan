@@ -85,7 +85,6 @@ function searchController(restfactory,$state,$stateParams,$translate,
 				searchid:thisController.search.id,
 				parameters:thisController.parameters
 		};
-		console.log ("search JSON:",searchParams);
 		$state.go("result",{searchParams:searchParams});
 //		return searchService.startSearch({searchid:thisController.search.id,parameters:thisController.parameters});
 	};

@@ -1,6 +1,6 @@
 <p />
 <p />
-mode:{{editSearchCtrl.mode}}
+
 
 <button class="btn btn-default"
 		ui-sref="openSearch">
@@ -37,6 +37,7 @@ mode:{{editSearchCtrl.mode}}
 	</td>
 </tr>
 </table>
+<br/>
 <h4> {{'Access'|translate}}</h4>
 {{'Can be used by'|translate}}: 
 <span ng-repeat="object in editSearchCtrl.allowedUsers">
@@ -57,29 +58,27 @@ mode:{{editSearchCtrl.mode}}
 		ng-options="user.id as user.fullname for user in editSearchCtrl.users">
 	</select>
  </span>
-<br/><br/>
+<br/>
+<br/>
+<br/>
 <h4>{{'Search Criteria'|translate}}</h4>
 <div class="col-xs-6">
-	<select class="form-control" 
-	style="width:300px;"
-	ng-model="editSearchCtrl.searchType">
-		<option ng-repeat="type in editSearchCtrl.searchTypes" value="{{$index+1}}" ng-selected="$index==0">
-			{{type}}			
-		</option>
+	<select 
+		class="form-control" 
+		style="width:300px;"
+		ng-model="editSearchCtrl.searchType"
+		ng-options="type.id as type.name for type in editSearchCtrl.searchTypes" >
 	</select>
 </div>
 
 <div class="col-xs-6">
 	<select
-    class="form-control" 
-	style="width:300px;"
-	ng-show="editSearchCtrl.searchType==1"
-	ng-model="editSearchCtrl.sampleType"
-	ng-change="editSearchCtrl.changeSampleType()"
-	ng-selected="$first">
-		<option ng-repeat="type in editSearchCtrl.sampleTypes" value="{{$index+1}}" ng-selected="$index==0">
-			{{type.namef()}}			
-		</option>
+	    class="form-control" 
+		style="width:300px;"
+		ng-show="editSearchCtrl.searchType==1"
+		ng-model="editSearchCtrl.sampleType"
+		ng-change="editSearchCtrl.changeSampleType()"
+		ng-options="stype as stype.namef() for stype in editSearchCtrl.sampleTypes">
 	</select>
 	
 	<select
@@ -112,7 +111,10 @@ mode:{{editSearchCtrl.mode}}
 	<thead class=parametertablehead>
 	<tr>
 		<td>
-			Parameter
+			{{'delete'|translate}}
+		</td>
+		<td>
+			{{'Parameter'|translate}}
 		</td>
 		<td>
 			{{'Comparison operation'|translate}}
@@ -126,6 +128,14 @@ mode:{{editSearchCtrl.mode}}
 	<tr ng-repeat="parameter in editSearchCtrl.search.parameter | orderBy:'namef()'"
 		ng-dblclick="parameter.editing=true">
 		<td>
+			<button 
+				type="button" 
+				class="btn btn-default btn-xs" 
+				ng-click="editSearchCtrl.deleteParameter(parameter)" >
+				<span class="glyphicon glyphicon-remove"></span>
+			</button>
+		</td>
+		<td>
 			<div>{{parameter.namef()}}</div>
 		</td>
 		<td>
@@ -133,7 +143,7 @@ mode:{{editSearchCtrl.mode}}
 				style="width:50px;"	
 				ng-model="parameter.comparison"
 				ng-change="editSearchCtrl.changeComparison(parameter)"
-				ng-options="comparator.index as comparator.label for comparator in editSearchCtrl.comparators"> 
+				ng-options="comparator.index as comparator.label for comparator in editSearchCtrl.comparators[parameter.datatype]"> 
 			</select>
 		</td>
 		<td>
@@ -151,11 +161,19 @@ mode:{{editSearchCtrl.mode}}
 	</tr>
 </table>
 <button class="btn btn-default"
-		ng-click="editSampleCtrl.addSampleParameter()"
+		ng-click="editSearchCtrl.addSampleParameter()"
 		ng-show="editSearchCtrl.searchType==1"
 		>
 	+ {{'Add Parameter'|translate}}
 </button>
+<button class="btn btn-default"
+		ng-click="editSearchCtrl.addProcessParameter()"
+		ng-show="editSearchCtrl.searchType==2"
+		>
+	+ {{'Add Parameter'|translate}}
+</button>
+<br/>
+<br/>
 <br/>
 <br/>
 <br/>
@@ -164,7 +182,10 @@ mode:{{editSearchCtrl.mode}}
 
 <table class="table">
 	<thead class=parametertablehead>
-	<tr>
+	<tr>		
+		<td>
+			{{'delete'|translate}}
+		</td>
 		<td>
 			Parameter
 		</td>
@@ -173,13 +194,21 @@ mode:{{editSearchCtrl.mode}}
 	</thead>
 	<tr  ng-repeat="parameter in editSearchCtrl.search.output">
 		<td>
+			<button 
+				type="button" 
+				class="btn btn-default btn-xs" 
+				ng-click="editSearchCtrl.deleteOutParameter(parameter)" >
+				<span class="glyphicon glyphicon-remove"></span>
+			</button>
+		</td>
+		<td>
 			<div>{{parameter.namef()}}</div>
 		</td>
 	</tr>
 </table>
 
 <button class="btn btn-default"
-		ng-click="editSearchCtrl.addParameter()">
+		ng-click="editSearchCtrl.addOutputParameter()">
 	+ {{'Add Parameter'|translate}}
 </button>
 <p/>

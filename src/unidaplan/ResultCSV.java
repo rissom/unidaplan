@@ -16,7 +16,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-	public class Result extends HttpServlet {
+	public class ResultCSV extends HttpServlet {
 		private static final long serialVersionUID = 1L;
 
 	@Override
@@ -329,16 +329,19 @@ import org.json.JSONObject;
 			}
 			
 			// compose answer
-			result.put("headings",headings);
-			result.put("status",status);
-			result.put("data",data);
-			result.put("strings",dBconn.getStrings(stringkeys));
-			result.put("objectnames",samplenames);
-			result.put("searchid", id);
-			result.put("type",type);
-			result.put("inparams", inParams);
-			
+			for (int i=0; i<headings.length();i++){
+				out.print(headings.getString(i)+";");
+			}
 		    out.println(result.toString());
+
+//			result.put("status",status);
+//			result.put("data",data);
+//			result.put("strings",dBconn.getStrings(stringkeys));
+//			result.put("objectnames",samplenames);
+//			result.put("searchid", id);
+//			result.put("type",type);
+//			result.put("inparams", inParams);
+//			
 			dBconn.closeDB();
  		    
     	} catch (SQLException e) {

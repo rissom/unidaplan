@@ -26,6 +26,7 @@ import org.json.JSONObject;
 		JSONArray output = null;
 		userID=userID+1;
 		userID=userID-1;
+		int defaultObjecttype=0;
 		String status="ok";
 		PreparedStatement pStmt;
 		ArrayList<String> stringkeys = new ArrayList<String>(); 
@@ -61,7 +62,7 @@ import org.json.JSONObject;
 			switch (search.getInt("type")){
 			case 1:   // sample scearch
 				query = "SELECT searchobject.id, otparameter AS pid, comparison, value, "
-				  		 +"ot_parameters.stringkeyname,paramdef.stringkeyunit,paramdef.datatype "
+				  		 +"ot_parameters.stringkeyname,ot_parameters.objecttypesid AS typeid,paramdef.stringkeyunit,paramdef.datatype "
 						 +"FROM searchobject "
 						 +"JOIN ot_parameters ON (ot_parameters.id=otparameter) "
 						 +"JOIN paramdef ON (paramdef.id=ot_parameters.definition) "
@@ -69,7 +70,7 @@ import org.json.JSONObject;
 				break;
 			case 2:   // process search
 				query = "SELECT searchprocess.id, pparameter AS pid, comparison, value, "
-				  		 +"p_parameters.stringkeyname,paramdef.stringkeyunit,paramdef.datatype "
+				  		 +"p_parameters.stringkeyname,p_parameters.processtypeid AS typeid,paramdef.stringkeyunit,paramdef.datatype "
 						 +"FROM searchprocess "
 						 +"JOIN p_parameters ON (p_parameters.id=pparameter) "
 						 +"JOIN paramdef ON (paramdef.id=p_parameters.definition) "
@@ -77,7 +78,7 @@ import org.json.JSONObject;
 				break;
 			default : // sample specific processparameter
 				query = "SELECT searchpo.id, poparameter AS pid, comparison, value, "
-				 		 +"po_parameters.stringkeyname,paramdef.stringkeyunit,paramdef.datatype "
+				 		 +"po_parameters.stringkeyname,po_parameters.processtypeid AS typeid,paramdef.stringkeyunit,paramdef.datatype "
 						 +"FROM searchpo "
 						 +"JOIN po_parameters ON (po_parameters.id=poparameter) "
 						 +"JOIN paramdef ON (paramdef.id=po_parameters.definition) "
@@ -87,8 +88,15 @@ import org.json.JSONObject;
 			pStmt= dBconn.conn.prepareStatement(query);
 			pStmt.setInt(1,id);
 			parameter = dBconn.jsonArrayFromPreparedStmt(pStmt);
+			pStmt.close();
+			if (parameter.length()>0){
+				defaultObjecttype=parameter.getJSONObject(0).getInt("typeid");
+			}
 			for (int i=0; i<parameter.length();i++){
 				stringkeys.add(Integer.toString(parameter.getJSONObject(i).getInt("stringkeyname")));
+				int datatype=parameter.getJSONObject(i).getInt("datatype");
+				parameter.getJSONObject(i).remove("datatype");
+				parameter.getJSONObject(i).put("datatype", Unidatoolkit.Datatypes[datatype]);
 				if (parameter.getJSONObject(i).has("stringkeyunit")){
 					stringkeys.add(Integer.toString(parameter.getJSONObject(i).getInt("stringkeyunit")));
 				}
@@ -119,6 +127,7 @@ import org.json.JSONObject;
 			pStmt= dBconn.conn.prepareStatement(query);
 			pStmt.setInt(1,id);
 			output = dBconn.jsonArrayFromPreparedStmt(pStmt);
+			pStmt.close();
 			for (int i=0; i<output.length();i++){
 				stringkeys.add(Integer.toString(output.getJSONObject(i).getInt("stringkeyname")));			
 			}
@@ -143,10 +152,10 @@ import org.json.JSONObject;
 	   try {
 		   search.put("parameter",parameter);
 		   search.put("output",output);
+		   search.put("defaultobject", defaultObjecttype);
 		   answer.put("search", search);
 		   answer.put("strings", dBconn.getStrings(stringkeys));
 		   answer.put("status", status);
-		   answer.put("operation", operation);
 		   out.println(answer.toString());
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block

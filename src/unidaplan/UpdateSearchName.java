@@ -75,7 +75,6 @@ import org.json.JSONObject;
 			pStmt.setString(3, newName);
 			pStmt.setInt(4,userID);
 			pStmt.executeUpdate();
-			System.out.println(pStmt);
 			pStmt.close();
 			
 			

@@ -30,6 +30,17 @@
   
   <servlet>
     <description>shows all parameters for one sample type</description>
+    <display-name>AllProcessTypeParams</display-name>
+    <servlet-name>AllProcessTypeParams</servlet-name>
+    <servlet-class>unidaplan.AllProcessTypeParams</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AllProcessTypeParams</servlet-name>
+    <url-pattern>/all-process-type-params</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>shows all parameters for one sample type</description>
     <display-name>AllSampleTypeParams</display-name>
     <servlet-name>AllSampleTypeParams</servlet-name>
     <servlet-class>unidaplan.AllSampleTypeParams</servlet-class>
@@ -164,6 +175,18 @@
   <servlet-mapping>
     <servlet-name>GetUser</servlet-name>
     <url-pattern>/get-user</url-pattern>
+  </servlet-mapping>
+  
+  
+   <servlet>
+    <description>Delete Search Parameter</description>
+    <display-name>DeleteSearchParameter</display-name>
+    <servlet-name>DeleteSearchParameter</servlet-name>
+    <servlet-class>unidaplan.DeleteSearchParameter</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeleteSearchParameter</servlet-name>
+    <url-pattern>/delete-search-parameter</url-pattern>
   </servlet-mapping>
   
   <servlet>
@@ -930,6 +953,28 @@
   <servlet-mapping>
     <servlet-name>UpdateSearchOwner</servlet-name>
     <url-pattern>/update-search-owner</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>UpdateParamProcessSearch</description>
+    <display-name>UpdateParamProcessSearch</display-name>
+    <servlet-name>UpdateParamProcessSearch</servlet-name>
+    <servlet-class>unidaplan.UpdateParamProcessSearch</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateParamProcessSearch</servlet-name>
+    <url-pattern>/update-param-process-search</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>UpdateParamSampleSearch</description>
+    <display-name>UpdateParamSampleSearch</display-name>
+    <servlet-name>UpdateParamSampleSearch</servlet-name>
+    <servlet-class>unidaplan.UpdateParamSampleSearch</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateParamSampleSearch</servlet-name>
+    <url-pattern>/update-param-sample-search</url-pattern>
   </servlet-mapping>
   
   <servlet>

@@ -16,7 +16,6 @@ function modalParameterChoserGrps($translate,$modalInstance,languages,restfactor
 	};
 	
 	if (parameters) {
-		console.log("parameters",parameters);
 		this.selectedParameters=parameters.slice(0);
 	} else {
 		this.selectedParameters=[];

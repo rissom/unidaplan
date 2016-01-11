@@ -108,10 +108,19 @@ import org.json.JSONObject;
 				case 6: // chooser
 					if (comparison<3 || comparison>4) { status="error: illegal comparator";}
 					break;
-				case 7: // date+time
+				case 7: // date
 					if (comparison<1 || comparison>4) { status="error: illegal comparator";}
 					break;
 				case 8: // checkbox
+					if (comparison<3 || comparison>4) { status="error: illegal comparator";}
+					break;
+				case 9: // timestamp
+					if (comparison<1 || comparison>4) { status="error: illegal comparator";}
+					break;
+				case 10: // url
+					if (comparison<3 || comparison>4) { status="error: illegal comparator";}
+					break;
+				case 11: // url
 					if (comparison<3 || comparison>4) { status="error: illegal comparator";}
 					break;
 				default: 

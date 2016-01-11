@@ -15,7 +15,8 @@
 <table class="table">
 	<thead class=parametertablehead>
 		<tr>
-			<td> {{'sample'|translate}} </td>
+			<td ng-show="resultCtrl.result.type==1"> {{'object'|translate}} </td>
+			<td ng-show="resultCtrl.result.type==2"> {{'process'|translate}} </td>
 			<td ng-repeat="col in resultCtrl.result.headings">
 			 	{{col.namef()}} {{col.unitf()?'(':''}}{{col.unitf()}}{{col.unitf()?')':''}}
 			</td>
@@ -23,7 +24,8 @@
 	</thead>
 	<tbody>
 		<tr ng-repeat="row in resultCtrl.result.data">
-			<td > <a ui-sref="sample({sampleID:row.id})">{{resultCtrl.getType(row.type)}} {{row.name}} </a> </td>
+			<td ng-show="resultCtrl.result.type==1"> <a ui-sref="sample({sampleID:row.id})">{{resultCtrl.getType(row.type)}} {{row.name}} </a> </td>
+			<td ng-show="resultCtrl.result.type==2"> <a ui-sref="process({processID:row.id})">{{resultCtrl.getProcessType(row.type)}} {{row.name}} </a> </td>
 			<td ng-repeat="col in row.rowdata track by $index">
 			 	<tparameter parameter="col"></tparameter>
 			</td>

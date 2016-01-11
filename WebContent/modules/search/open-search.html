@@ -50,16 +50,16 @@
 		<h3 ng-show="openSearchCtrl.othersearchs().length>0">
 			{{ 'Other Searches' | translate }}</h3>
 		<table class="table" ng-show="openSearchCtrl.othersearchs().length>0">
-		<thead class=parametertablehead>
-			<tr>
-				<td><b>Name</b></td>
-				<td> </td>
-			</tr>
+			<thead class=parametertablehead>
+				<tr>
+					<td><b>Name</b></td>
+					<td> </td>
+				</tr>
 			</thead>
 			<tbody>
-			<tr ng-repeat="osearch in openSearchCtrl.othersearches()">
-				<td>
-					<a ui-sref="editSearch({id:osearch.id,editmode:'false'})">{{osearch.namef()}}</a>
+				<tr ng-repeat="osearch in openSearchCtrl.othersearches()">
+					<td>
+						<a ui-sref="editSearch({id:osearch.id,editmode:'false'})">{{osearch.namef()}}</a>
 					</td>
 					<td>
 						<div class="dropdown" dropdown on-toggle="toggled(open)">
@@ -71,8 +71,11 @@
 						        	<a ng-click="openSearchCtrl.performAction(osearch,action)">{{action.name}}</a>
 						        </li>
 				    		</ul>
-		  				 </div>
-	  				 </td>
-			</tr>
-			<tr><td></td><td></td><td></td><td></td><td></td></tr></tbody>
+		  				</div>
+	  				</td>
+				</tr>
+				<tr>
+					<td></td><td></td><td></td><td></td><td></td>
+				</tr>
+			</tbody>
 		</table>
