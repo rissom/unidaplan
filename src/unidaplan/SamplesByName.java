@@ -31,6 +31,7 @@ public class SamplesByName extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
+//		System.out.println("userID: "+userID);
 		userID=userID+1; // TODO remove me!
 		userID=userID-1;
 		request.setCharacterEncoding("utf-8");

@@ -33,11 +33,18 @@ import org.json.JSONObject;
 
 	    try {
 	    // Delete the user to the database	    
-	 	DBconnection DBconn=new DBconnection();
-	    DBconn.startDB();	   
-	    PreparedStatement pstmt = null;
+		 	DBconnection DBconn=new DBconnection();
+		    DBconn.startDB();	   
+		    PreparedStatement pstmt = null;
+		    
+		    pstmt= DBconn.conn.prepareStatement( 			
+					"DELETE FROM language_preferences WHERE user_id=?");
+		   	pstmt.setInt(1, id);
+		   	pstmt.executeUpdate();
+			pstmt.close();
+		    
 			pstmt= DBconn.conn.prepareStatement( 			
-					"DELETE FROM users WHERE id=? \n");
+					"DELETE FROM users WHERE id=?");
 		   	pstmt.setInt(1, id);
 		   	pstmt.executeUpdate();
 			pstmt.close();
@@ -45,6 +52,7 @@ import org.json.JSONObject;
 		} catch (SQLException e) {
 			System.err.println("DeleteUser: Problems with SQL query");
 			status="SQL Error; DeleteUser";
+			e.printStackTrace();
 		} catch (Exception e) {
 			System.err.println("DeleteUser: Strange Problems");
 			status="Error DeleteUser";
