@@ -9,7 +9,7 @@
 			<br/>	
 			<select multiple="multiple"
 			  		ng-model="mParameterChoserCtrl.selectedParameters" 
-			  		ng-options="parameter.id as parameter.nameUnitf() for parameter in mParameterChoserCtrl.avParameters"
+			  		ng-options="parameter.id as parameter.nameUnitf() for parameter in mParameterChoserCtrl.avParameters | orderBy:'nameUnitf()'"
 			  		size="20" style="height: 100%; width: 100%;">
 			</select>
 			<br/><br/><br/>
