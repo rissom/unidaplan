@@ -40,22 +40,22 @@
 <h4>{{'Sample Tree' | translate}}</h4>
 <div class=row>
 	<div class="col-md-6">{{'Originates from'|translate}}:<br />
-		<span ng-repeat="bsample in sampleCtrl.ancestors"> 
+		<div ng-repeat="bsample in sampleCtrl.ancestors"> 
 			<a ui-sref="sample({sampleID:bsample.sampleid})">
 				{{sampleCtrl.getType(bsample)}} {{bsample.name}}
 			</a><br />
-		</span> 
+		</div> 
 		<button class="btn btn-default"
 				ng-click="sampleCtrl.openDialog('ancestors')">
 			{{'Add/Remove samples'|translate}}
 		</button>				
 	</div>
 	<div class="col-md-6">{{'Is ancestor of'|translate}}:<br />
-		<span ng-repeat="bsample in sampleCtrl.children">
+		<div ng-repeat="bsample in sampleCtrl.children">
 			<a ui-sref="sample({sampleID:bsample.sampleid})">
 				{{sampleCtrl.getType(bsample)}} {{bsample.name}}
 			</a>
-		</span>
+		</div>
 		<br />
 		<button class="btn btn-default" ng-click="sampleCtrl.openDialog('children')">
 			{{'Add/Remove samples'|translate}}
@@ -70,7 +70,7 @@
 
 
 <!-- finished processes -->
-<h4>{{'Finished Processes'|translate}}</h4>
+<h4 ng-show="sampleCtrl.processes">{{'Finished Processes'|translate}}</h4>
 <div ng-repeat="process in sampleCtrl.processes">
 	{{process.date|date:'EEE'|translate}}, {{process.date|date:'dd-MM-yyyy, HH:mm:ss'}}&nbsp;
 	<button  class="btn btn-default"  ng-class="{'1':'ok','2':'att','3':'failed'}[process.status]"
@@ -86,7 +86,7 @@
 
 
 <!-- Experiments -->
-<h4>{{'Experiments'|translate}}</h4>
+<h4 ng-show="sampleCtrl.plans.length>0">{{'Experiments'|translate}}</h4>
 	<div ng-repeat="experiment in sampleCtrl.plans">
 		<a ui-sref="experiment({experimentID:experiment.exp_id})">
 			 Experiment no. {{experiment.exp_id}}, "{{experiment.namef()}}"
@@ -104,10 +104,9 @@
 
 <!-- Buttonbar: previous/delete/next -->
 <div class=row>
-    <div class=col-md-3>
-    </div>
-    <div class=col-md-6>
-	    <table>
+
+
+	    <table class="text-center">
 		    <tr>
 			    <td>
 					<span ng-show="sampleCtrl.previous">&#x25c0; {{'previous'|translate}} <br /> 
@@ -137,7 +136,6 @@
 				</td>
 			</tr>
 		</table>
-	</div>
 </div>
 <br />
 <br />
