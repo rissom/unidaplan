@@ -27,12 +27,12 @@ import javax.servlet.http.HttpServletResponse;
 	    String status="ok";
 
 	    try {
-	    // Delete the parameter
-	 	DBconnection DBconn=new DBconnection();
-	    DBconn.startDB();	   
-	    PreparedStatement pstmt = null;
+		    // Delete the parameter
+		 	DBconnection DBconn=new DBconnection();
+		    DBconn.startDB();	   
+		    PreparedStatement pstmt = null;
 			pstmt= DBconn.conn.prepareStatement( 			
-					"DELETE FROM ot_parameters WHERE id=? \n");
+					"DELETE FROM ot_parameters WHERE id=? ");
 		   	pstmt.setInt(1, id);
 		   	pstmt.executeUpdate();
 			pstmt.close();

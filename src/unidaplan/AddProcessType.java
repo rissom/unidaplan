@@ -26,7 +26,6 @@ import org.json.JSONObject;
 	    
 	    try {
 			jsonIn = new JSONObject(in);
-			System.out.println("jsonIn:"+jsonIn.toString());
 		} catch (JSONException e) {
 			System.err.println("AddProcessType: Input is not valid JSON");
 			status="input error";
@@ -81,7 +80,8 @@ import org.json.JSONObject;
 	    PreparedStatement pStmt = null;
 
 			pStmt= dBconn.conn.prepareStatement( 			
-					"INSERT INTO processtypes values(default,?,?,?,?,NOW(),?) RETURNING id");
+				"INSERT INTO processtypes (position,ptgroup,name,description,lastChange,lastUser) "
+				+"VALUES (?,?,?,?,NOW(),?) RETURNING id");
 			pStmt.setInt(1, position);
 			pStmt.setInt(2, ptgroup);
 		   	pStmt.setInt(3, stringKeyName);
@@ -93,44 +93,45 @@ import org.json.JSONObject;
 		   	pStmt.setInt(5, userID);
 		   	id=dBconn.getSingleIntValue(pStmt);
 		
-			int parameterGrp=0;
-			pStmt= dBconn.conn.prepareStatement( 			
-			//define a new parametergroup for basic parameters of the process
-				"INSERT INTO p_parametergrps (processtype,stringkey,pos,lastuser) "
-				+"VALUES(?,5,1,?) "
-				+"RETURNING id");
-			pStmt.setInt(1, id);
-			pStmt.setInt(2, userID);
-		   	parameterGrp=dBconn.getSingleIntValue(pStmt);
+//			int parameterGrp=0;
+//			pStmt= dBconn.conn.prepareStatement( 			
+//			//define a new parametergroup for basic parameters of the process
+//				"INSERT INTO p_parametergrps (processtype,stringkey,pos,lastuser) "
+//				+"VALUES(?,5,1,?) "
+//				+"RETURNING id");
+//			pStmt.setInt(1, id);
+//			pStmt.setInt(2, userID);
+//		   	parameterGrp=dBconn.getSingleIntValue(pStmt);
 			pStmt= dBconn.conn.prepareStatement( 			
 			//define status parameter (hidden)
-				"INSERT INTO p_parameters (ProcesstypeID,Parametergroup,compulsory,ID_Field,Formula,Hidden,pos,definition,StringKeyName,lastUser )"
-				+"values(?,?,True,False,'',True,1,1,1,?)");
+				"INSERT INTO p_parameters (ProcesstypeID,compulsory,ID_Field,Formula,Hidden,pos,definition,StringKeyName,lastUser )"
+				+"values(?,True,False,'',True,1,1,1,?)");
 			pStmt.setInt(1, id);
-			pStmt.setInt(2, parameterGrp);
-			pStmt.setInt(3, userID);
+//			pStmt.setInt(2, parameterGrp);
+			pStmt.setInt(2, userID);
 		   	pStmt.executeUpdate();
 		   	// define parameter for processnumber
 			pStmt= dBconn.conn.prepareStatement( 			
-					"INSERT INTO p_parameters (ProcesstypeID,Parametergroup,compulsory,ID_Field,Formula,Hidden,pos,definition,StringKeyName,lastUser) "
-					+"VALUES (?,?,True,True,'',False,1,8,36,?)");
+					"INSERT INTO p_parameters (ProcesstypeID,compulsory,ID_Field,Formula,Hidden,pos,definition,StringKeyName,lastUser) "
+					+"VALUES (?,True,True,'',False,1,8,36,?)");
 			pStmt.setInt(1, id);
-			pStmt.setInt(2, parameterGrp);
-			pStmt.setInt(3, userID);
+//			pStmt.setInt(2, parameterGrp);
+			pStmt.setInt(2, userID);
 		   	pStmt.executeUpdate();
 		   	// define parameter for processtime
 			pStmt= dBconn.conn.prepareStatement( 			
-					"INSERT INTO p_parameters (ProcesstypeID,Parametergroup,compulsory,ID_Field,Formula,Hidden,pos,definition,StringKeyName,lastUser) "
-					+"VALUES (?,?,True,False,'',False,1,10,40,?)");
+					"INSERT INTO p_parameters (ProcesstypeID,compulsory,ID_Field,Formula,Hidden,pos,definition,StringKeyName,lastUser) "
+					+"VALUES (?,True,False,'',False,1,10,40,?)");
 			pStmt.setInt(1, id);
-			pStmt.setInt(2, parameterGrp);
-			pStmt.setInt(3, userID);
+//			pStmt.setInt(2, parameterGrp);
+			pStmt.setInt(2, userID);
 		   	pStmt.executeUpdate();		   	
 			   	
 		} catch (SQLException e) {
 			status="SQL error";
 			System.err.println("AddProcessType: Problems with SQL query2");
 			response.setStatus(404);
+			e.printStackTrace();
 		} catch (Exception e) {
 			System.err.println("AddProcessType: Strange Problems");
 			e.printStackTrace();

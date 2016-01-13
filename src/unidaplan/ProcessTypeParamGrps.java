@@ -56,14 +56,14 @@ public class ProcessTypeParamGrps extends HttpServlet {
 			  +"FROM processtypes "
 			  +"WHERE processtypes.id=?");
 	 		pStmt.setInt(1, processTypeID);
- 			processType=dBconn.jsonObjectFromPreparedStmt(pStmt); // get ResultSet from the database using the query
+ 			processType=dBconn.jsonObjectFromPreparedStmt(pStmt);
  			pStmt.close();
            	stringkeys.add(Integer.toString(processType.getInt("name")));
            	stringkeys.add(Integer.toString(processType.getInt("description")));
            	
-           	pStmt = dBconn.conn.prepareStatement(
+           	pStmt = dBconn.conn.prepareStatement( // not implemented in frontend yet
      		  	   "SELECT id, position, name FROM processtypegroups");
-			processTypeGrps=dBconn.jsonArrayFromPreparedStmt(pStmt); // get ResultSet from the database using the query
+			processTypeGrps=dBconn.jsonArrayFromPreparedStmt(pStmt);
 			if (processTypeGrps.length()>0) {
            		for (int j=0; j<processTypeGrps.length();j++) {
            			stringkeys.add(Integer.toString(processTypeGrps.getJSONObject(j).getInt("name")));
@@ -71,8 +71,11 @@ public class ProcessTypeParamGrps extends HttpServlet {
            	}		
            	
    			pStmt = dBconn.conn.prepareStatement(
-		  	   "SELECT id,pos,stringkey FROM p_parametergrps "
-			  +"WHERE (p_parametergrps.processtype=?) ");
+   				"SELECT pgs.id,pgs.pos,pgs.stringkey, count(pp.id)=0 AS deletable "
+				+"FROM p_parametergrps pgs "
+				+"LEFT JOIN p_parameters pp ON pgs.id=pp.parametergroup "
+				+"WHERE pgs.processtype=? "
+				+"GROUP BY pgs.id ");
    			pStmt.setInt(1, processTypeID);
    			parameterGrps=dBconn.jsonArrayFromPreparedStmt(pStmt); // get ResultSet from the database using the query
 

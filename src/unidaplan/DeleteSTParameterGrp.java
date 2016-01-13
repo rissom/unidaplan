@@ -35,7 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 	    DBconn.startDB();	   
 	    PreparedStatement pstmt = null;
 			pstmt= DBconn.conn.prepareStatement( 			
-					"DELETE FROM ot_parametergrps WHERE id=? \n");
+					"DELETE FROM ot_parametergrps WHERE id=? ");
 		   	pstmt.setInt(1, id);
 		   	pstmt.executeUpdate();
 			pstmt.close();
