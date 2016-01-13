@@ -79,12 +79,14 @@
 			<td class="parametertd">
 				<input 						   
 				type="text"
-			    ng-model="parameterCtrl.newNameL2"> 
+			    ng-model="parameterCtrl.newNameL2"
+			    ng-keyup="parameterCtrl.keyUp($event.keyCode)"> 
 			</td>
 			<td class="parametertd">
 				<input 						   
 				type="text"
-			    ng-model="parameterCtrl.newUnitL1"> 
+			    ng-model="parameterCtrl.newUnitL1"
+			    ng-keyup="parameterCtrl.keyUp($event.keyCode)"> 
 			</td>
 			<td class="parametertd">
 				<input 						   
@@ -101,11 +103,13 @@
 			<td>
 				<input 						   
 				type="number"
+				ng-keyup="parameterCtrl.keyUp($event.keyCode)"
 			    ng-model="parameterCtrl.newMaxDigits"> 
 			</td>
 			<td class="parametertd">
 				<input 						   
 				type="text"
+				ng-keyup="parameterCtrl.keyUp($event.keyCode)"
 			    ng-model="parameterCtrl.newDescL1"> 
 			</td>
 			<td class="parametertd">
