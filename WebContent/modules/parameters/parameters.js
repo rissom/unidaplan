@@ -57,7 +57,7 @@ function parameterController($scope,$state,$stateParams,$translate,parameterServ
   this.keyUp = function(keyCode) {
 	if (keyCode===13) {				// Return key pressed
 		if ($scope.parameterForm.$valid){
-			thisController.addParameter(parameter);
+			thisController.addParameter();
 		}
 	}
 	if (keyCode===27) {		// Escape key pressed
