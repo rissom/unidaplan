@@ -202,7 +202,7 @@ var searchService = function (restfactory,$q,$translate,key2string,languages) {
 				heading.namef=function(){
 					return key2string.key2string(heading.stringkeyname,rest.data.strings);
 				}
-				if (heading.stringekeyunit){
+				if (heading.stringkeyunit){
 					heading.unitf=function(){
 						return key2string.key2string(heading.stringkeyunit,rest.data.strings);
 					}
