@@ -149,7 +149,7 @@ function sampleController(sample,$state,$stateParams,$modal,$filter,types,sample
 	{  
 		var promise = sampleService.deleteSample(sample.id);
 		promise.then(function(data) {  			// success
-				$state.go('openExperiment');	// go to experiments			
+				$state.go('sampleChoser');	// go to experiments			
 			},
 				function(data) { 	 // fail
 			    console.log("Error deleting Sample");
