@@ -42,6 +42,8 @@ function userController(users,userService) {
 		return actions;
 	};
 	
+	
+	
 	this.resendToken = function(user) {
 		var promise = userService.resendToken(user);
 	    promise.then(function(rest) {
@@ -54,6 +56,8 @@ function userController(users,userService) {
 	    });
 	};
 
+	
+	
 	this.deleteUser = function(user) {
 		var promise = userService.deleteUser(user);
 	    promise.then(function(rest) {
