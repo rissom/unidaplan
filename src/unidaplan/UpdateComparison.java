@@ -88,7 +88,7 @@ import org.json.JSONObject;
 			pStmt.setInt(2,id);
 			datatype = dBconn.getSingleIntValue(pStmt);
 			
-			// possible comparators: 1:< , 2:> , 3:=, 4:not
+			// possible comparators: 1:< , 2:> , 3:=, 4:not, 5:contains
 			switch (datatype){  
 				case 1: // integer,
 					if (comparison<1 || comparison>4) { status="error: illegal comparator";}
@@ -100,10 +100,10 @@ import org.json.JSONObject;
 					if (comparison<1 || comparison>4) { status="error: illegal comparator";}
 					break;
 				case 4: // string
-					if (comparison<3 || comparison>4) { status="error: illegal comparator";}
+					if (comparison<3 || comparison>5) { status="error: illegal comparator";}
 					break;
 				case 5: // long string 
-					if (comparison<3 || comparison>4) { status="error: illegal comparator";}
+					if (comparison<3 || comparison>5) { status="error: illegal comparator";}
 					break;
 				case 6: // chooser
 					if (comparison<3 || comparison>4) { status="error: illegal comparator";}
@@ -118,10 +118,10 @@ import org.json.JSONObject;
 					if (comparison<1 || comparison>4) { status="error: illegal comparator";}
 					break;
 				case 10: // url
-					if (comparison<3 || comparison>4) { status="error: illegal comparator";}
+					if (comparison<3 || comparison>5) { status="error: illegal comparator";}
 					break;
-				case 11: // url
-					if (comparison<3 || comparison>4) { status="error: illegal comparator";}
+				case 11: // email
+					if (comparison<3 || comparison>5) { status="error: illegal comparator";}
 					break;
 				default: 
 					status="error:unknown datatype";

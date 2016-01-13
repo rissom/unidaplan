@@ -10,7 +10,21 @@ function searchController(restfactory,$state,$stateParams,$translate,
 	
 	this.parameters = search.parameter;
 	
-	this.comparators = [{index:1,label:"<"},{index:2,label:">"},{index:3,label:"="},{index:4,label:"not"}];
+	var allComparators = [{index:1,label:"<"},{index:2,label:">"},{index:3,label:"="},{index:4,label:"not"},{index:5,label:$translate.instant("contains")}];
+	
+	this.comparators={ 	
+			integer		: allComparators.slice(0,4), 
+			float 		: allComparators.slice(0,4),
+ 			measurement : allComparators.slice(0,4),
+ 			string		: allComparators.slice(2),
+ 			longstring	: allComparators.slice(2),
+ 			chooser		: allComparators.slice(2),
+ 			date		: allComparators.slice(0,4),
+ 			checkbox	: allComparators.slice(2),
+ 			timestamp	: allComparators.slice(0,4),
+ 			URL			: allComparators.slice(2),
+ 			email		: allComparators.slice(2)
+		};
 	
 	this.search=search;
 	  
@@ -63,7 +77,6 @@ function searchController(restfactory,$state,$stateParams,$translate,
 			  thisController.editmode=false;
 		}
 	};
-
 	
 	
 	this.getSampleType = function(id) {

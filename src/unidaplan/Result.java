@@ -145,7 +145,7 @@ import org.json.JSONObject;
 			}
 			String where="";
 			int datatype;
-			String[] comparators= {"<",">","=","NOT"};
+			String[] comparators= {"<",">","=","NOT ","LIKE "};
 
 			for (int i=0; i<parameters.length();i++){
 				JSONObject parameter=parameters.getJSONObject(i);
@@ -167,17 +167,20 @@ import org.json.JSONObject;
 	            set.add(10);
 	            set.add(11);
 				if (set.contains(datatype)){colon="'";}
+				String value=parameter.getString("value");
+				if (parameter.getInt("comparison")==5){value="%"+value+"%";}
 				parameterTable= ptables[datatype-1];
 				query=query+" JOIN "+parameterTable+" p"+i+" ON p"+i+"."+idString+"="+tString+".id AND p"
 						+i+"."+idString2+"="+parameter.getInt("pid");
 				if (i>0) {where+=" "+operationString;}
 				where=where+" p"+i+".value "+comparators[parameter.getInt("comparison")-1]+
-						colon+parameter.getString("value")+colon;
+						colon+value+colon;
 			}
 			query += " WHERE "+ where +" GROUP BY "+tString+".id";
 
 			pStmt= dBconn.conn.prepareStatement(query);
 			sResults = dBconn.jsonArrayFromPreparedStmt(pStmt);
+//			System.out.println(pStmt.toString());
 			pStmt.close();
 			
 			

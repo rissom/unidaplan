@@ -60,19 +60,19 @@ function editSearchController(restfactory,$state,$stateParams,$translate,$modal,
 	//	this.groups += alle meine Projektgruppen
 	
 	this.users = users;
+	
+	var allComparators = [{index:1,label:"<"},{index:2,label:">"},{index:3,label:"="},{index:4,label:"not"},{index:5,label:$translate.instant("contains")}];
 
 	
-	var allComparators= [{index:1,label:"<"},{index:2,label:">"},{index:3,label:"="},{index:4,label:"not"}];
-
-	this.comparators={ 	integer		: allComparators, 
- 						float 		: allComparators,
-			 			measurement : allComparators,
+	this.comparators={ 	integer		: allComparators.slice(0,4), 
+ 						float 		: allComparators.slice(0,4),
+			 			measurement : allComparators.slice(0,4),
 			 			string		: allComparators.slice(2),
 			 			longstring	: allComparators.slice(2),
 			 			chooser		: allComparators.slice(2),
-			 			date		: allComparators,
+			 			date		: allComparators.slice(0,4),
 			 			checkbox	: allComparators.slice(2),
-			 			timestamp	: allComparators,
+			 			timestamp	: allComparators.slice(0,4),
 			 			URL			: allComparators.slice(2),
 			 			email		: allComparators.slice(2)
 					};
@@ -121,8 +121,8 @@ function editSearchController(restfactory,$state,$stateParams,$translate,$modal,
 		  	
 		modalInstance.result.then(
 			function (result) {  // get the new Parameterlist + Info if it has changed from Modal.  
+				var promise=searchService.updateParameterProcessSearch(thisController.search.id,result.chosen);
 				if (result.chosen.length>0){
-					var promise=searchService.updateParameterProcessSearch(thisController.search.id,result.chosen);
 					promise.then(function(){reload();});		    	  
 				}
 			},function () {

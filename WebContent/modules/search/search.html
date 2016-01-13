@@ -30,9 +30,9 @@
 		</td>
 		<td>
 			<select class="form-control input-sm" 
-				style="width:50px;"	
+				style="width:68px;"	
 				ng-model="parameter.comparison"
-				ng-options="comparator.index as comparator.label for comparator in searchCtrl.comparators"> 
+				ng-options="comparator.index as comparator.label for comparator in searchCtrl.comparators[parameter.datatype]"> 
 			</select>
 		</td>
 		<td>
