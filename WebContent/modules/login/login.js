@@ -33,10 +33,10 @@ var loginController=function($state,restfactory,$scope,$translate){
 					        	  }
 					        } 
 					  }
-					  $state.go('openExperiment');
+					  $state.go('sampleChoser');
 				  }
 				} else {
-					$state.go('openExperiment');	  
+					$state.go('sampleChoser');	  
 				}
 			}, function(data){
 				thisController.error=$translate.instant("unknown user or wrong password");

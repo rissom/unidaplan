@@ -80,7 +80,56 @@ public class ImportIntoDB extends HttpServlet {
 						        pStmt.setInt(2, id);
 						        pStmt.setString(3, value);
 					   			pStmt.setInt(4, userID);
+					   			break;
 						   }
+			        case 6: {  pStmt= dBconn.conn.prepareStatement( 			
+		        		 	"INSERT INTO o_string_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
+					        pStmt.setInt(2, id);
+					        pStmt.setString(3, value);
+				   			pStmt.setInt(4, userID);
+				   			break;
+					   }
+			        case 7: {  pStmt= dBconn.conn.prepareStatement( 			// date
+		        		 	"INSERT INTO o_timestamp_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
+					        pStmt.setInt(2, id);
+					        pStmt.setString(3, value);
+				   			pStmt.setInt(4, userID);
+				   			break;
+					   }
+			        case 8: {  pStmt= dBconn.conn.prepareStatement( 			// checkbox
+		        		 	"INSERT INTO o_integer_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
+					        pStmt.setInt(2, id);
+					        Integer iValue=0;
+					        if (value.equals("1")  || value.equalsIgnoreCase("true") || 
+					        		value.equalsIgnoreCase("yes")  || value.equalsIgnoreCase("ja")) {
+					        	iValue=1;
+					        }
+					        pStmt.setInt(2, id);
+					        pStmt.setInt(3, iValue);
+				   			pStmt.setInt(4, userID);
+				   			break;
+					   }
+			        case 9: {  pStmt= dBconn.conn.prepareStatement( 			// date
+		        		 	"INSERT INTO o_timestamp_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
+					        pStmt.setInt(2, id);
+					        pStmt.setString(3, value);
+				   			pStmt.setInt(4, userID);
+				   			break;
+					   }
+			        case 10: {  pStmt= dBconn.conn.prepareStatement( 			
+		        		 	"INSERT INTO o_string_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
+					        pStmt.setInt(2, id);
+					        pStmt.setString(3, value);
+				   			pStmt.setInt(4, userID);
+				   			break;
+					   }
+			        case 11: {  pStmt= dBconn.conn.prepareStatement( 			
+		        		 	"INSERT INTO o_string_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
+					        pStmt.setInt(2, id);
+					        pStmt.setString(3, value);
+				   			pStmt.setInt(4, userID);
+				   			break;
+					   }
 					}
 				}
 		        pStmt.setInt(1, sampleid);
@@ -151,7 +200,7 @@ public class ImportIntoDB extends HttpServlet {
 			try {
 				jsonIn = new JSONObject(in);
 			} catch (JSONException e) {
-				System.err.println("UpdateSampleTypeData: Input is not valid JSON");
+				System.err.println("ImportIntoDB: Input is not valid JSON");
 			}
 		    
 		    try {
@@ -235,10 +284,6 @@ public class ImportIntoDB extends HttpServlet {
 				   	paramgrpID=dBconn.getSingleIntValue(pStmt);
 				   	pStmt.close();
 				   	
-				
-				   	
-				   
-				   	
 			    }
 			    
 			    // read the file
@@ -249,28 +294,34 @@ public class ImportIntoDB extends HttpServlet {
 	            Boolean idField=true;
 	            int headingKey=0;
 	            for (int i=0; i<headingsArray.length;i++) {
-	            	if (parameter.getInt(i)>0){
-	            		headingKey=dBconn.createNewStringKey(headingsArray[i]);
-	            		dBconn.addString(headingKey,"de", headingsArray[i]);
-	            	   	pStmt= dBconn.conn.prepareStatement( 			
-								"INSERT INTO ot_parameters (objecttypesid,parametergroup,compulsory,id_field,"
-					   			+"hidden,pos,definition,stringkeyname,lastchange,lastuser) "
-								+"VALUES(?,?,?,?,?,?,?,?,NOW(),?) RETURNING id");
-	            		pStmt.setInt(1,sampletype); // objecttypesid
-	            		pStmt.setInt(2,paramgrpID); // parametergroup
-	            		pStmt.setBoolean(3,false);  // compulsory
-	            		pStmt.setBoolean(4,idField);  // id-field	 
-	            		pStmt.setBoolean(5,false); // hidden
-	            		pStmt.setInt(6,i+1); // position
-	            		pStmt.setInt(7,parameter.getInt(i)); // definition
-	            		pStmt.setInt(8,headingKey); // stringkeyname
-	            		pStmt.setInt(9,userID); // lastuser
-	            		System.out.println(pStmt.toString());
-	            		idField=false;
-	            		saveValue(headingsArray[i],parameter.getInt(i), sampleID);
-	            		int par=dBconn.getSingleIntValue(pStmt);
-	            		parameter.put(i,par);
+            		int par=0;
+	            	if (sampletype==0){
+		            	if (parameter.getInt(i)>0){
+		            		headingKey=dBconn.createNewStringKey(headingsArray[i]);
+		            		dBconn.addString(headingKey,"de", headingsArray[i]);
+		            	   	pStmt= dBconn.conn.prepareStatement( 			
+									"INSERT INTO ot_parameters (objecttypesid,parametergroup,compulsory,id_field,"
+						   			+"hidden,pos,definition,stringkeyname,lastchange,lastuser) "
+									+"VALUES(?,?,?,?,?,?,?,?,NOW(),?) RETURNING id");
+		            		pStmt.setInt(1,sampletype); // objecttypesid
+		            		pStmt.setInt(2,paramgrpID); // parametergroup
+		            		pStmt.setBoolean(3,false);  // compulsory
+		            		pStmt.setBoolean(4,idField);  // id-field	 
+		            		pStmt.setBoolean(5,false); // hidden
+		            		pStmt.setInt(6,i+1); // position
+		            		pStmt.setInt(7,parameter.getInt(i)); // definition
+		            		pStmt.setInt(8,headingKey); // stringkeyname
+		            		pStmt.setInt(9,userID); // lastuser
+		            		System.out.println(pStmt.toString());
+		            		idField=false;
+		            		saveValue(headingsArray[i],parameter.getInt(i), sampleID);
+		            		par=dBconn.getSingleIntValue(pStmt);
+		            	}
+	            	}else{
+	            		par=parameter.getInt(i);
 	            	}
+	            	parameter.put(i,par);
+	            	System.out.println("par: "+par);
 			    }
 		        
 		        

@@ -21,7 +21,7 @@ function signupController(userService,$state,user,token){
 		};
 		userService.signUpUser(userData).then(
 			 function(data, status, headers, config){
-				 $state.go("openExperiment");
+				 $state.go("sampleChoser");
 			 },
 			 function(data, status, headers, config){
 			 }

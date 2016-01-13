@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 public class Unidatoolkit {
    
+	public static Boolean localDB = true;
 	
     public static void sendStandardAnswer(String status, HttpServletResponse response) {
 	    response.setContentType("application/json");

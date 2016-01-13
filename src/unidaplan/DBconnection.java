@@ -22,13 +22,16 @@ import org.json.JSONObject;
 public class DBconnection  {
 	Connection conn = null;
 	
+	static Boolean localDB = true;
+	static String dbURL2 = "jdbc:postgresql://localhost/thorse";
+	static String user = "thorse";
+	static String pass = "jame765!";
+	
 //	static String dbURL2 = "jdbc:postgresql://isadb.czghuuewemph.eu-west-1.rds.amazonaws.com/isaheat";
 //	static String user = "thorse";
 //	static String pass = "Amaz765!";
 
-	static String dbURL2 = "jdbc:postgresql://localhost/thorse";
-	static String user = "thorse";
-	static String pass = "jame765!";
+
   
 	private static final String DEFAULT_DRIVER = "org.postgresql.Driver";
 
