@@ -538,11 +538,10 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
     
     $rootScope.$on('$stateChangeStart', function(event, toState, toStateParams) {
       // track the state the user wants to go to; authorization service needs this
-      $rootScope.toState = toState;
-      $rootScope.toStateParams = toStateParams;
-      // if the principal is resolved, do an authorization check immediately. otherwise,
-      // it'll be done when the state it resolved.
-//      if (principal.isIdentityResolved()) authorization.authorize();
+    	if (toState!="login"){
+		    $rootScope.toState = toState;
+		    $rootScope.toStateParams = toStateParams;
+	    }
     });
     
     
