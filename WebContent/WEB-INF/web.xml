@@ -29,7 +29,7 @@
   </servlet-mapping>
   
   <servlet>
-    <description>shows all parameters for one sample type</description>
+    <description>shows all parameters for one process type</description>
     <display-name>AllProcessTypeParams</display-name>
     <servlet-name>AllProcessTypeParams</servlet-name>
     <servlet-class>unidaplan.AllProcessTypeParams</servlet-class>
