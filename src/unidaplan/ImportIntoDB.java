@@ -18,10 +18,11 @@ import java.io.*;
 
 public class ImportIntoDB extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private int timeZone = 0;
 	DBconnection dBconn;
 	int userID;
 	
-		void saveValue(String value,int id, int sampleid){
+		void saveValueSample(String value,int id, int sampleid){
 		    try {
 			    // look up the datatype in Database	   			 
 			    PreparedStatement pStmt = null;
@@ -40,14 +41,14 @@ public class ImportIntoDB extends HttpServlet {
 
 					switch (type) {
 			        case 1: {   pStmt= dBconn.conn.prepareStatement( 			// Integer values
-					   					 "INSERT INTO o_integer_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
+					   					 "INSERT INTO o_integer_data VALUES(DEFAULT,?,?,?,NOW(),?)");
 					   			pStmt.setInt(2, id);
 					   			pStmt.setInt(3, Integer.valueOf(value));
 					   			pStmt.setInt(4, userID);
 					   			break;
 					        }
 			        case 2: {   pStmt= dBconn.conn.prepareStatement( 			// Double values
-			   					 		"INSERT INTO o_float_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
+			   					 		"INSERT INTO o_float_data VALUES(DEFAULT,?,?,?,NOW(),?)");
 					   			pStmt.setInt(2, id);				        
 						        pStmt.setDouble(3, Double.valueOf(value));
 					   			pStmt.setInt(4, userID);
@@ -56,7 +57,7 @@ public class ImportIntoDB extends HttpServlet {
 			        case 3: {   pStmt= dBconn.conn.prepareStatement( 			// Measurement data
 								 		"INSERT INTO o_measurement_data (ObjectID, Ot_Parameter_ID, Value, "
 								 		+"Error, lastChange, lastUser) "
-								 		+"VALUES(?,?,?,?,NOW(),?) RETURNING ID");
+								 		+"VALUES(?,?,?,?,NOW(),?)");
 			        			pStmt.setInt(2, id);
 			        			if (value.contains("±")){
 									pStmt.setDouble(3, Double.valueOf(value.split("±")[0]));
@@ -69,35 +70,35 @@ public class ImportIntoDB extends HttpServlet {
 								break;
 					        }
 			        case 4:  { pStmt= dBconn.conn.prepareStatement( 			// String data	
-						 		"INSERT INTO o_string_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
+						 		"INSERT INTO o_string_data VALUES(DEFAULT,?,?,?,NOW(),?)");
 						        pStmt.setInt(2, id);
 						        pStmt.setString(3, value);
 					   			pStmt.setInt(4, userID);
 							   break;
 					        }
 			        case 5: {  pStmt= dBconn.conn.prepareStatement( 			
-			        		 	"INSERT INTO o_string_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
+			        		 	"INSERT INTO o_string_data VALUES(DEFAULT,?,?,?,NOW(),?)");
 						        pStmt.setInt(2, id);
 						        pStmt.setString(3, value);
 					   			pStmt.setInt(4, userID);
 					   			break;
 						   }
 			        case 6: {  pStmt= dBconn.conn.prepareStatement( 			
-		        		 	"INSERT INTO o_string_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
+		        		 	"INSERT INTO o_string_data VALUES(DEFAULT,?,?,?,NOW(),?)");
 					        pStmt.setInt(2, id);
 					        pStmt.setString(3, value);
 				   			pStmt.setInt(4, userID);
 				   			break;
 					   }
 			        case 7: {  pStmt= dBconn.conn.prepareStatement( 			// date
-		        		 	"INSERT INTO o_timestamp_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
+		        		 	"INSERT INTO o_timestamp_data VALUES(DEFAULT,?,?,?,NOW(),?)");
 					        pStmt.setInt(2, id);
 					        pStmt.setString(3, value);
 				   			pStmt.setInt(4, userID);
 				   			break;
 					   }
 			        case 8: {  pStmt= dBconn.conn.prepareStatement( 			// checkbox
-		        		 	"INSERT INTO o_integer_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
+		        		 	"INSERT INTO o_integer_data VALUES(DEFAULT,?,?,?,NOW(),?)");
 					        pStmt.setInt(2, id);
 					        Integer iValue=0;
 					        if (value.equals("1")  || value.equalsIgnoreCase("true") || 
@@ -110,21 +111,21 @@ public class ImportIntoDB extends HttpServlet {
 				   			break;
 					   }
 			        case 9: {  pStmt= dBconn.conn.prepareStatement( 			// date
-		        		 	"INSERT INTO o_timestamp_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
+		        		 	"INSERT INTO o_timestamp_data VALUES(DEFAULT,?,?,?,NOW(),?)");
 					        pStmt.setInt(2, id);
 					        pStmt.setString(3, value);
 				   			pStmt.setInt(4, userID);
 				   			break;
 					   }
 			        case 10: {  pStmt= dBconn.conn.prepareStatement( 			
-		        		 	"INSERT INTO o_string_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
+		        		 	"INSERT INTO o_string_data VALUES(DEFAULT,?,?,?,NOW(),?)");
 					        pStmt.setInt(2, id);
 					        pStmt.setString(3, value);
 				   			pStmt.setInt(4, userID);
 				   			break;
 					   }
 			        case 11: {  pStmt= dBconn.conn.prepareStatement( 			
-		        		 	"INSERT INTO o_string_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
+		        		 	"INSERT INTO o_string_data VALUES(DEFAULT,?,?,?,NOW(),?)");
 					        pStmt.setInt(2, id);
 					        pStmt.setString(3, value);
 				   			pStmt.setInt(4, userID);
@@ -139,6 +140,7 @@ public class ImportIntoDB extends HttpServlet {
 				dBconn.closeDB();
 		} catch (SQLException e) {
 			System.err.println("SaveSampleParameter: More Problems with SQL query");
+			e.printStackTrace();
 		} catch (JSONException e){
 			System.err.println("SaveSampleParameter: More Problems creating JSON");
 		} catch (Exception e) {
@@ -147,6 +149,136 @@ public class ImportIntoDB extends HttpServlet {
 		}
 			
 		}
+		
+		
+		void saveValueProcess(String value,int id, int processid){
+		    try {
+			    // look up the datatype in Database	   			 
+			    PreparedStatement pStmt = null;
+			    int type=-1;
+				pStmt= dBconn.conn.prepareStatement( 			
+						 "SELECT paramdef.datatype FROM p_parameters pp "
+						+"JOIN paramdef ON pp.definition=paramdef.id "
+						+"WHERE pp.id=?");
+			   	pStmt.setInt(1, id);
+			   	type=dBconn.getSingleIntValue(pStmt);
+			   	System.out.println(pStmt.toString());
+				pStmt.close();				
+		
+				// differentiate according to type
+				if (value.length()>0) {
+
+					switch (type) {
+			        case 1: {   pStmt= dBconn.conn.prepareStatement( 			// Integer values
+					   					 "INSERT INTO p_integer_data VALUES(DEFAULT,?,?,?,NOW(),?)");
+					   			pStmt.setInt(2, id);
+					   			pStmt.setInt(3, Integer.valueOf(value));
+					   			pStmt.setInt(4, userID);
+					   			break;
+					        }
+			        case 2: {   pStmt= dBconn.conn.prepareStatement( 			// Double values
+			   					 		"INSERT INTO p_float_data VALUES(DEFAULT,?,?,?,NOW(),?)");
+					   			pStmt.setInt(2, id);				        
+						        pStmt.setDouble(3, Double.valueOf(value));
+					   			pStmt.setInt(4, userID);
+			   					break;
+		        			}
+			        case 3: {   pStmt= dBconn.conn.prepareStatement( 			// Measurement data
+								 		"INSERT INTO p_measurement_data (ObjectID, Ot_Parameter_ID, Value, "
+								 		+"Error, lastChange, lastUser) "
+								 		+"VALUES(?,?,?,?,NOW(),?)");
+			        			pStmt.setInt(2, id);
+			        			if (value.contains("±")){
+									pStmt.setDouble(3, Double.valueOf(value.split("±")[0]));
+									pStmt.setDouble(4, Double.valueOf(value.split("±")[1]));
+			        			} else {
+			        				pStmt.setDouble(3, Double.valueOf(value));
+			        				pStmt.setDouble(4, 0);
+			        			}
+					   			pStmt.setInt(5, userID);
+								break;
+					        }
+			        case 4:  { pStmt= dBconn.conn.prepareStatement( 			// String data	
+						 		"INSERT INTO p_string_data VALUES(DEFAULT,?,?,?,NOW(),?)");
+						        pStmt.setInt(2, id);
+						        pStmt.setString(3, value);
+					   			pStmt.setInt(4, userID);
+							   break;
+					        }
+			        case 5: {  pStmt= dBconn.conn.prepareStatement( 			
+			        		 	"INSERT INTO p_string_data VALUES(DEFAULT,?,?,?,NOW(),?)");
+						        pStmt.setInt(2, id);
+						        pStmt.setString(3, value);
+					   			pStmt.setInt(4, userID);
+					   			break;
+						   }
+			        case 6: {  pStmt= dBconn.conn.prepareStatement( 			
+		        		 	"INSERT INTO p_string_data VALUES(DEFAULT,?,?,?,NOW(),?)");
+					        pStmt.setInt(2, id);
+					        pStmt.setString(3, value);
+				   			pStmt.setInt(4, userID);
+				   			break;
+					   }
+			        case 7: {  pStmt= dBconn.conn.prepareStatement( 			// date
+		        		 	"INSERT INTO p_timestamp_data VALUES(DEFAULT,?,?,?,NOW(),?)");
+					        pStmt.setInt(2, id);
+					        pStmt.setString(3, value);
+				   			pStmt.setInt(4, userID);
+				   			break;
+					   }
+			        case 8: {  pStmt= dBconn.conn.prepareStatement( 			// checkbox
+		        		 	"INSERT INTO p_integer_data VALUES(DEFAULT,?,?,?,NOW(),?)");
+					        pStmt.setInt(2, id);
+					        Integer iValue=0;
+					        if (value.equals("1")  || value.equalsIgnoreCase("true") || 
+					        		value.equalsIgnoreCase("yes")  || value.equalsIgnoreCase("ja")) {
+					        	iValue=1;
+					        }
+					        pStmt.setInt(2, id);
+					        pStmt.setInt(3, iValue);
+				   			pStmt.setInt(4, userID);
+				   			break;
+					   }
+			        case 9: {  pStmt= dBconn.conn.prepareStatement( 			// date
+		        		 	"INSERT INTO p_timestamp_data VALUES(DEFAULT,?,?,?,NOW(),?)");
+					        pStmt.setInt(2, id);
+					        pStmt.setString(3, value);
+				   			pStmt.setInt(4, userID);
+				   			break;
+					   }
+			        case 10: {  pStmt= dBconn.conn.prepareStatement( 			
+		        		 	"INSERT INTO p_string_data VALUES(DEFAULT,?,?,?,NOW(),?)");
+					        pStmt.setInt(2, id);
+					        pStmt.setString(3, value);
+				   			pStmt.setInt(4, userID);
+				   			break;
+					   }
+			        case 11: {  pStmt= dBconn.conn.prepareStatement( 			
+		        		 	"INSERT INTO p_string_data VALUES(DEFAULT,?,?,?,NOW(),?)");
+					        pStmt.setInt(2, id);
+					        pStmt.setString(3, value);
+				   			pStmt.setInt(4, userID);
+				   			break;
+					   }
+					}
+				}
+		        pStmt.setInt(1, processid);
+			   	System.out.println(pStmt.toString());
+				pStmt.executeUpdate();
+				pStmt.close();
+				dBconn.closeDB();
+		} catch (SQLException e) {
+			System.err.println("SaveProcessParameter: More Problems with SQL query");
+			e.printStackTrace();
+		} catch (JSONException e){
+			System.err.println("SaveProcessParameter: More Problems creating JSON");
+		} catch (Exception e) {
+			System.err.println("SaveProcessParameter: More Strange Problems");
+			e.printStackTrace();
+		}
+			
+		}
+		
 		
 		
 		public int createSample(int sampletypeID){	
@@ -177,6 +309,88 @@ public class ImportIntoDB extends HttpServlet {
 	
 		
 		
+		public int createProcess(int processTypeID){
+			
+			// some variables
+			int pnumber;
+			int processID=-1;
+		    PreparedStatement pStmt = null;
+		    
+		    try{
+		    	
+				// ask for current of processnumber
+			    pStmt= dBconn.conn.prepareStatement( 			
+							"SELECT max(p_number) FROM pnumbers WHERE processtype=? GROUP BY processtype");
+				pStmt.setInt(1, processTypeID);
+			    pnumber=dBconn.getSingleIntValue(pStmt);
+			   	pStmt.close();
+
+			    
+			    
+				// create entry in processes and returns the sample id
+				pStmt= dBconn.conn.prepareStatement( 			
+						 "INSERT INTO processes (processtypesid, lastchange, lastuser) "
+						+"VALUES (?, NOW(),?) RETURNING id");
+			   	pStmt.setInt(1, processTypeID);
+			   	pStmt.setInt(2, userID);
+			   	System.out.println(pStmt.toString());
+				processID= dBconn.getSingleIntValue(pStmt);
+				System.out.println("processID:"+processID);
+			   	pStmt.close();
+			   	
+			   	
+			   	
+			   	// write processnumber 
+			   	pStmt= dBconn.conn.prepareStatement("INSERT INTO p_integer_data VALUES(default, ?,"
+		    			+ " (SELECT id FROM P_Parameters WHERE definition=8 AND processtypeid=?), ?, NOW(),?)");
+			   	pStmt.setInt(1, processID);
+			   	pStmt.setInt(2, processTypeID);
+			   	pStmt.setInt(3, pnumber+1);
+			   	pStmt.setInt(4, userID);
+			   	pStmt.executeUpdate();
+			   	pStmt.close();
+				
+		    	
+				// set status to "ok" 
+			   	pStmt= dBconn.conn.prepareStatement("INSERT INTO p_integer_data VALUES(default, ?,"
+		    			+ " (SELECT id FROM P_Parameters WHERE definition=1 AND processtypeid=?), ?, NOW(),?)");
+			   	pStmt.setInt(1, processID);
+			   	pStmt.setInt(2, processTypeID);
+			   	pStmt.setInt(3, 1);
+			   	pStmt.setInt(4, userID);
+			   	pStmt.executeUpdate();
+			   	pStmt.close();
+				
+				
+				// find date parameter
+			   	pStmt= dBconn.conn.prepareStatement("SELECT id FROM p_parameters pp "
+		    			+ "WHERE (pp.definition=10 AND pp.processtypeid=?)");
+			   	pStmt.setInt(1, processTypeID);
+			   	JSONObject dateIDObj=dBconn.jsonObjectFromPreparedStmt(pStmt);
+			   	int dateID = dateIDObj.getInt("id");
+			   	pStmt.close();			   	
+			   	
+			   	// set date parameter to now
+			   	pStmt= dBconn.conn.prepareStatement("INSERT INTO p_timestamp_data VALUES(default,?,?,NOW(),?,NOW(),?)");
+			   	pStmt.setInt(1, processID);
+			   	pStmt.setInt(2, dateID);
+			   	pStmt.setInt(3, timeZone);
+			   	pStmt.setInt(4, userID);
+			   	pStmt.executeUpdate();
+			   	pStmt.close();
+			   	
+		    } catch (SQLException e) {
+				System.err.println("ImportIntoDB->createProcess: More Problems with SQL query");
+			} catch (JSONException e){
+				System.err.println("ImportIntoDB->createProcess: More Problems creating JSON");
+			} catch (Exception e) {
+				System.err.println("ImportIntoDB->createProcess: More Strange Problems");
+				e.printStackTrace();
+			}
+		   	return processID;
+		}
+		
+		
 		
 	// Main function
 		public void doPost(HttpServletRequest request, HttpServletResponse response) 
@@ -191,11 +405,14 @@ public class ImportIntoDB extends HttpServlet {
 			
 			PrintWriter out = response.getWriter();
 			String status = "ok";
+	    	int sampleID=0;
+	    	int processID=0;
 		   	int paramgrpID=0;
 	        
 			String in = request.getReader().readLine();
 			System.out.println("input:");
 			System.out.println(in);
+			String type;
 			JSONObject  jsonIn = null;
 			try {
 				jsonIn = new JSONObject(in);
@@ -205,20 +422,30 @@ public class ImportIntoDB extends HttpServlet {
 		    
 		    try {
 		    	parameter = jsonIn.getJSONArray("parameters");
-		    	String file = "/Users/thorse/Desktop/"+jsonIn.getString("file");
-		    	int sampletype=jsonIn.getInt("sampletype");
-		    	int sampleID=0;
-		    	
+		    	String file = "uploads/"+jsonIn.getString("file");
+		    	type = jsonIn.getString("type");
+		    	int sampletype=-1;
+		    	int processtype=-1;
+			   	int timeZone=jsonIn.getInt("timezone");
+
+		    	if (jsonIn.has("sampletype")){
+		    		sampletype=jsonIn.getInt("sampletype");
+		    	}
+		    	if (jsonIn.has("processtype")){
+		    		processtype=jsonIn.getInt("processtype");
+		    	}
+		    			    	
 		    	dBconn=new DBconnection();
 			    dBconn.startDB();	
 			    PreparedStatement pStmt = null;
 			    int stringKeyName=0;
-
+			    int pnumber=1;
+			    
 			    // create new datatype and parameters if necessary.
-			    if (sampletype==0){
+			    if (sampletype==0 || processtype==0){
 				    int stringKeyDesc=0; 
 				    int position=0;
-				    int otgroup=1;
+				    
 
 
 			    
@@ -246,45 +473,98 @@ public class ImportIntoDB extends HttpServlet {
 					 if (jsonIn.has("position")){
 						 position=jsonIn.getInt("position");
 					 }
-					 if (jsonIn.has("otgroup")){
-						 otgroup=jsonIn.getInt("ptgroup");
-					 }  
-					pStmt= dBconn.conn.prepareStatement( 			
-						"INSERT INTO objecttypes values(default,?,?,?,?,NOW(),?) RETURNING id");
-					pStmt.setInt(1, position);
-					pStmt.setInt(2, otgroup);
-				   	pStmt.setInt(3, stringKeyName);
-				   	pStmt.setNull(4,java.sql.Types.INTEGER);
-				   	pStmt.setInt(5, userID);
-				   	sampletype=dBconn.getSingleIntValue(pStmt);
-				   	
-				   	int paramGrpName=38;
-
-				   	// create a new parametergroup
-				   	if (jsonIn.has("paramgrp")){
-				   		JSONObject paramgrp=jsonIn.getJSONObject("paramgrp");
-						String [] paramgrps = JSONObject.getNames(paramgrp);
-						System.out.println("paramgrp0:"+paramgrps[0]);
-						System.out.println("key:"+paramgrp.getString(paramgrps[0]));
-						paramGrpName=dBconn.createNewStringKey(paramgrp.getString(paramgrps[0]));
-						for (int i=0; i<paramgrps.length; i++){
-							 dBconn.addString(paramGrpName,paramgrps[i],paramgrp.getString(paramgrps[i]));
+	
+					 
+			    
+			    
+				    if (sampletype==0){
+					    int otgroup=1;
+						if (jsonIn.has("otgroup")){
+							otgroup=jsonIn.getInt("otgroup");
+						}  
+						pStmt= dBconn.conn.prepareStatement( 			
+							"INSERT INTO objecttypes values(default,?,?,?,?,NOW(),?) RETURNING id");
+						pStmt.setInt(1, position);
+						pStmt.setInt(2, otgroup);
+					   	pStmt.setInt(3, stringKeyName);
+					   	pStmt.setNull(4,java.sql.Types.INTEGER);
+					   	pStmt.setInt(5, userID);
+					   	sampletype=dBconn.getSingleIntValue(pStmt);
+					   					   	
+					   	int paramGrpName=38;
+	
+					   	// create a new parametergroup
+					   	if (jsonIn.has("paramgrp")){
+					   		JSONObject paramgrp=jsonIn.getJSONObject("paramgrp");
+							String [] paramgrps = JSONObject.getNames(paramgrp);
+							System.out.println("paramgrp0:"+paramgrps[0]);
+							System.out.println("key:"+paramgrp.getString(paramgrps[0]));
+							paramGrpName=dBconn.createNewStringKey(paramgrp.getString(paramgrps[0]));
+							for (int i=0; i<paramgrps.length; i++){
+								 dBconn.addString(paramGrpName,paramgrps[i],paramgrp.getString(paramgrps[i]));
+							}
+						}else{
+							 System.out.println("no paramgrp exists");
 						}
-					}else{
-						 System.out.println("no paramgrp exists");
-					}
-				   	
-					pStmt= dBconn.conn.prepareStatement( 			
-						"INSERT INTO ot_parametergrps (ot_id,stringkey,pos,lastchange,lastuser) "
-						+"VALUES(?,?,?,NOW(),?) RETURNING id");
-					pStmt.setInt(1, sampletype);
-					pStmt.setInt(2, paramGrpName);
-				   	pStmt.setInt(3, 1);
-				   	pStmt.setInt(4,userID);
-				   	paramgrpID=dBconn.getSingleIntValue(pStmt);
-				   	pStmt.close();
-				   	
+					   	
+						pStmt= dBconn.conn.prepareStatement( 			
+							"INSERT INTO ot_parametergrps (ot_id,stringkey,pos,lastchange,lastuser) "
+							+"VALUES(?,?,?,NOW(),?) RETURNING id");
+						pStmt.setInt(1, sampletype);
+						pStmt.setInt(2, paramGrpName);
+					   	pStmt.setInt(3, 1);
+					   	pStmt.setInt(4,userID);
+					   	paramgrpID=dBconn.getSingleIntValue(pStmt);
+					   	pStmt.close();
+				    }
+				    
+				    
+				    
+				    if (processtype==0){
+			    		int ptgroup=1;
+				    	if (jsonIn.has("ptgroup")){
+							ptgroup=jsonIn.getInt("ptgroup");
+						}  
+						pStmt= dBconn.conn.prepareStatement( 			
+							"INSERT INTO processtypes (position, ptgroup, name, description, lastchange, lastuser ) "
+							+"VALUES (?,?,?,?,NOW(),?) RETURNING id");
+						pStmt.setInt(1, position);
+						pStmt.setInt(2, ptgroup);
+					   	pStmt.setInt(3, stringKeyName);
+					   	pStmt.setNull(4,java.sql.Types.INTEGER);
+					   	pStmt.setInt(5, userID);
+					   	sampletype=dBconn.getSingleIntValue(pStmt);
+
+					   	int paramGrpName=38;
+	
+					   	// create a new parametergroup
+					   	if (jsonIn.has("paramgrp")){
+					   		JSONObject paramgrp=jsonIn.getJSONObject("paramgrp");
+							String [] paramgrps = JSONObject.getNames(paramgrp);
+							System.out.println("paramgrp0:"+paramgrps[0]);
+							System.out.println("key:"+paramgrp.getString(paramgrps[0]));
+							paramGrpName=dBconn.createNewStringKey(paramgrp.getString(paramgrps[0]));
+							for (int i=0; i<paramgrps.length; i++){
+								 dBconn.addString(paramGrpName,paramgrps[i],paramgrp.getString(paramgrps[i]));
+							}
+						}else{
+							 System.out.println("no paramgrp exists");
+						}
+					   	
+						pStmt= dBconn.conn.prepareStatement( 			
+							"INSERT INTO p_parametergrps (ot_id,stringkey,pos,lastchange,lastuser) "
+							+"VALUES(?,?,?,NOW(),?) RETURNING id");
+						pStmt.setInt(1, sampletype);
+						pStmt.setInt(2, paramGrpName);
+					   	pStmt.setInt(3, 1);
+					   	pStmt.setInt(4,userID);
+					   	paramgrpID=dBconn.getSingleIntValue(pStmt);
+					   	pStmt.close();
+				    }
 			    }
+			    
+			    
+			    
 			    
 			    // read the file
 			    BufferedReader CSVFile = new BufferedReader(new FileReader(file));
@@ -293,8 +573,13 @@ public class ImportIntoDB extends HttpServlet {
 	            String[] headingsArray = dataRow.split(";");
 	            Boolean idField=true;
 	            int headingKey=0;
-	            for (int i=0; i<headingsArray.length;i++) {
+	            for (int i=0; i<headingsArray.length;i++) { // go through headings array.
             		int par=0;
+            		
+            		if (sampletype!=0 && processtype!=0){
+            			par=parameter.getInt(i);
+            		}
+	            	
 	            	if (sampletype==0){
 		            	if (parameter.getInt(i)>0){
 		            		headingKey=dBconn.createNewStringKey(headingsArray[i]);
@@ -314,32 +599,74 @@ public class ImportIntoDB extends HttpServlet {
 		            		pStmt.setInt(9,userID); // lastuser
 		            		System.out.println(pStmt.toString());
 		            		idField=false;
-		            		saveValue(headingsArray[i],parameter.getInt(i), sampleID);
+//		            		saveValueSample(headingsArray[i],parameter.getInt(i), sampleID);
 		            		par=dBconn.getSingleIntValue(pStmt);
 		            	}
-	            	}else{
-	            		par=parameter.getInt(i);
 	            	}
+	            	
+	            	if (processtype==0){
+		            	if (parameter.getInt(i)>0){
+		            		headingKey=dBconn.createNewStringKey(headingsArray[i]);
+		            		dBconn.addString(headingKey,"de", headingsArray[i]);
+		            	   	pStmt= dBconn.conn.prepareStatement( 			
+									"INSERT INTO p_parameters (processtypeid,parametergroup,compulsory,id_field,"
+						   			+"hidden,pos,definition,stringkeyname,lastchange,lastuser) "
+									+"VALUES(?,?,?,?,?,?,?,?,NOW(),?) RETURNING id");
+		            		pStmt.setInt(1,processtype); // processtypeid
+		            		pStmt.setInt(2,paramgrpID); // parametergroup
+		            		pStmt.setBoolean(3,false);  // compulsory
+		            		pStmt.setBoolean(4,idField);  // id-field	 
+		            		pStmt.setBoolean(5,false); // hidden
+		            		pStmt.setInt(6,i+1); // position
+		            		pStmt.setInt(7,parameter.getInt(i)); // definition
+		            		pStmt.setInt(8,headingKey); // stringkeyname
+		            		pStmt.setInt(9,userID); // lastuser
+		            		System.out.println(pStmt.toString());
+		            		idField=false;
+//		            		saveValueProcess(headingsArray[i],parameter.getInt(i), sampleID);
+		            		par=dBconn.getSingleIntValue(pStmt);
+		            	}
+	            	}      
 	            	parameter.put(i,par);
 	            	System.out.println("par: "+par);
-			    }
-		        
+	            }
 		        
 	            dataRow = CSVFile.readLine(); // Read next line of data.
 
 		        // The while checks to see if the data is null. If it is, we've hit
 		        //  the end of the file. If not, process the data.  
-		        while (dataRow != null){
-				    sampleID=createSample(sampletype);
-		            String[] dataArray = dataRow.split(";");
-		            for (int i=0; i<dataArray.length;i++) {
-		            	if (parameter.getInt(i)>0){
-		            		saveValue(dataArray[i],parameter.getInt(i), sampleID);
-		            	} 
+	        	if (type.equals("sample")){
+
+			        while (dataRow != null){
+			        	sampleID=createSample(sampletype);	        		
+			            String[] dataArray = dataRow.split(";");
+			            for (int i=0; i<dataArray.length;i++) {
+			            	if (parameter.getInt(i)>0){
+			            		saveValueSample(dataArray[i],parameter.getInt(i), sampleID);
+			            	} 
+					    }
+			            out.println(); // Print the data line.
+			            dataRow = CSVFile.readLine(); // Read next line of data.
 				    }
-		            out.println(); // Print the data line.
-		            dataRow = CSVFile.readLine(); // Read next line of data.
-			    }
+		        
+	        	}
+	        	if (type.equals("process")){
+	        		
+	        		while (dataRow != null){
+			        	sampleID=createProcess(processtype);	        		
+			            String[] dataArray = dataRow.split(";");
+			            for (int i=0; i<dataArray.length;i++) {
+			            	if (parameter.getInt(i)>0){
+			            		saveValueProcess(dataArray[i],parameter.getInt(i), sampleID);
+			            	} 
+					    }
+			            out.println(); // Print the data line.
+			            dataRow = CSVFile.readLine(); // Read next line of data.
+				    }
+	        		
+	        	}
+		        
+		        
 
 		        // Close the file once all data has been read.
 		        CSVFile.close();

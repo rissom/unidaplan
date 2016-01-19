@@ -31,13 +31,11 @@ public class ImportCSV extends HttpServlet {
 		   	int paramgrpID=0;
 	        
 			String in = request.getReader().readLine();
-			System.out.println("input:");
-			System.out.println(in);
 			JSONObject  jsonIn = null;
 			String file="";
 			try {
 				jsonIn = new JSONObject(in);
-		    	file = "/Users/thorse/Desktop/"+jsonIn.getString("file");
+		    	file = "uploads/"+jsonIn.getString("file");
 			} catch (JSONException e) {
 				System.err.println("UpdateSampleTypeData: Input is not valid JSON");
 			}

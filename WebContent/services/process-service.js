@@ -66,6 +66,30 @@ var processService = function (restfactory,$q,$translate,key2string) {
       
 	
 	
+	this.getProcessTypeParameters = function (processTypeID){
+    	var defered=$q.defer();
+		var promise = restfactory.GET('/all-process-type-params?processtypeid='+processTypeID);
+		promise.then(function(rest) {			// getting the parameters
+			var parameters = {parameters:rest.data.parameters,parametergrps:rest.data.parametergrps};
+			var strings = rest.data.strings;
+			angular.forEach(parameters.parameters,function(parameter){
+				parameter.namef = function(){
+					return key2string.key2string(parameter.name,strings);
+				}				
+			});
+			angular.forEach(parameters.parametergrps,function(grp){
+				grp.namef = function(){
+					return key2string.key2string(grp.stringkey,strings);
+				}
+			});
+			defered.resolve(parameters);
+		}, function () {
+			console.log("Error getting Parameters")
+		}); // promise.then
+	    return defered.promise;
+	}
+	
+	
 	this.pushProcess = function(process){
 		var i;
 		var found=false;

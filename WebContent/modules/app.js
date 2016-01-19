@@ -211,6 +211,10 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	        templateUrl: 'modules/import/import.html',
 		    controller: 'importController as importCtrl',
 	    	resolve:{
+                processTypes: 
+            	    function(avProcessTypeService){
+        	   	    	return avProcessTypeService.getProcessTypes();
+                	},
                 sampleTypes: 
             	    function(avSampleTypeService){
         	   	    	return avSampleTypeService.getSampleTypes();

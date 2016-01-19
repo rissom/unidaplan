@@ -37,84 +37,88 @@ import org.json.JSONObject;
 	    response.setCharacterEncoding("utf-8");
 	    
 	    
-	    UploadS3.uploadFileToS3();
-//	    // path to upload directory
-//	    final String path = "uploads";
-//	    
-//	    
-//	    // check if an upload folder exists, if not: create one.
-//	    File theDir = new File(path);
-//
-//		 // if the directory does not exist, create it
-//		 if (!theDir.exists()) {
-//		     System.out.println("creating upload directory");
-//		     boolean result = false;
-//	
-//		     try{
-//		         theDir.mkdir();
-//		         result = true;
-//		     } 
-//		     catch(SecurityException se){
-//		         System.out.println("Error creating Directory!");
-//		         se.printStackTrace();
-//		     }        
-//		     if(result) {   
-////		         System.out.println("DIR created");  
-//		     }
-//		 }
-//	    
-//	    // Create path components to save the file
-//	    final Part filePart = request.getPart("file");
-//	    final String fileName = getFileName(filePart);
-//
-//	    OutputStream out = null;
-//	    InputStream filecontent = null;
-//	    final PrintWriter writer = response.getWriter();
-//
-//	    try {
-//	    	File dings=new File(path + File.separator + fileName);
-//	        out = new FileOutputStream(dings);
-//	        filecontent = filePart.getInputStream();
-//
-//	        int read = 0;
-//	        final byte[] bytes = new byte[1024];
-//
-//	        while ((read = filecontent.read(bytes)) != -1) {
-//	            out.write(bytes, 0, read);
-//	        }
-//	        writer.println("New file " + fileName + " created at " + path);
-////	        LOGGER.log(Level.INFO, "File{0}being uploaded to {1}", 
-////	                new Object[]{fileName, path});
-//	    } catch (FileNotFoundException fne) {
-//	        writer.println("You either did not specify a file to upload or are "
-//	                + "trying to upload a file to a protected or nonexistent "
-//	                + "location.");
-//	        writer.println("<br/> ERROR: " + fne.getMessage());
-//
-////	        LOGGER.log(Level.SEVERE, "Problems during file upload. Error: {0}", 
-////	                new Object[]{fne.getMessage()});
-//	    } finally {
-//	        if (out != null) {
-//	            out.close();
-//	        }
-//	        if (filecontent != null) {
-//	            filecontent.close();
-//	        }
-//	        if (writer != null) {
-//	            writer.close();
-//	        }
-//	    }
-//	}	
-//	
-//	private String getFileName(final Part part) {
-//	    final String partHeader = part.getHeader("content-disposition");
-////	    LOGGER.log(Level.INFO, "Part Header = {0}", partHeader);
-//	    for (String content : part.getHeader("content-disposition").split(";")) {
-//	        if (content.trim().startsWith("filename")) {
-//	            return content.substring(
-//	                    content.indexOf('=') + 1).trim().replace("\"", "");
-//	        }
-//	    }
-//	    return null;
+//	    UploadS3.uploadFileToS3();
+	    
+	    
+	    // path to upload directory
+	    final String path = "uploads";
+	    
+	    
+	    // check if an upload folder exists, if not: create one.
+	    File theDir = new File(path);
+
+		 // if the directory does not exist, create it
+		 if (!theDir.exists()) {
+		     System.out.println("creating upload directory");
+		     boolean result = false;
+	
+		     try{
+		         theDir.mkdir();
+		         result = true;
+		     } 
+		     catch(SecurityException se){
+		         System.out.println("Error creating Directory!");
+		         se.printStackTrace();
+		     }        
+		     if(result) {   
+//		         System.out.println("DIR created");  
+		     }
+		 }
+	    
+	    // Create path components to save the file
+	    final Part filePart = request.getPart("file");
+	    final String fileName = getFileName(filePart);
+
+	    OutputStream out = null;
+	    InputStream filecontent = null;
+	    final PrintWriter writer = response.getWriter();
+
+	    try {
+	    	
+	    	
+	    	File dings=new File(path + File.separator + fileName);
+	        out = new FileOutputStream(dings);
+	        filecontent = filePart.getInputStream();
+
+	        int read = 0;
+	        final byte[] bytes = new byte[1024];
+
+	        while ((read = filecontent.read(bytes)) != -1) {
+	            out.write(bytes, 0, read);
+	        }
+	        writer.println("New file " + fileName + " created at " + path);
+//	        LOGGER.log(Level.INFO, "File{0}being uploaded to {1}", 
+//	                new Object[]{fileName, path});
+	    } catch (FileNotFoundException fne) {
+	        writer.println("You either did not specify a file to upload or are "
+	                + "trying to upload a file to a protected or nonexistent "
+	                + "location.");
+	        writer.println("<br/> ERROR: " + fne.getMessage());
+
+//	        LOGGER.log(Level.SEVERE, "Problems during file upload. Error: {0}", 
+//	                new Object[]{fne.getMessage()});
+	    } finally {
+	        if (out != null) {
+	            out.close();
+	        }
+	        if (filecontent != null) {
+	            filecontent.close();
+	        }
+	        if (writer != null) {
+	            writer.close();
+	        }
+	    }
+	}	
+	
+	private String getFileName(final Part part) {
+	    final String partHeader = part.getHeader("content-disposition");
+//	    LOGGER.log(Level.INFO, "Part Header = {0}", partHeader);
+	    for (String content : part.getHeader("content-disposition").split(";")) {
+	        if (content.trim().startsWith("filename")) {
+	            return content.substring(
+	                    content.indexOf('=') + 1).trim().replace("\"", "");
+	        }
+	    }
+	    return null;
 	}
 }
