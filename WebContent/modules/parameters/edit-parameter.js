@@ -28,9 +28,7 @@ function editParamController($scope,$state,$stateParams,$translate,parameterServ
           // @see https://github.com/RubaXa/Sortable/blob/master/ng-sortable.js#L18-L24
       }
   };
-  
-//  $scope.$watchCollection('possibleValues', function (newOrder,oldOrder){ $scope.possibleValues.map(function(pv){ console.log(pv.string)});});
-  
+    
   var thisController=this;
   
   this.lang1=$translate.instant(languages[0].name);
@@ -156,6 +154,34 @@ function editParamController($scope,$state,$stateParams,$translate,parameterServ
 	  }
   }
   
+  
+  $scope.dragControlListeners = {
+		    accept: function (sourceItemHandleScope, destSortableScope) {return true},
+  			//override to determine drag is allowed or not. default is true.
+		    itemMoved: function (event) {console.log ("order changed")
+			  	var neworder=[];
+		  	for (var i=0; i<$scope.possibleValues.length; i++)
+		  		neworder.push($scope.possibleValues[i].id);
+			var promise=parameterService.reorderPossibleValues($stateParams.parameterID,neworder);
+			//		promise.then(function(){reload();})
+    },
+		    orderChanged: function(event) {
+		    	  	var neworder=[];
+				  	for (var i=0; i<$scope.possibleValues.length; i++)
+				  		neworder.push($scope.possibleValues[i].id);
+					var promise=parameterService.reorderPossibleValues($stateParams.parameterID,neworder);
+					//		promise.then(function(){reload();})
+		    },
+		    allowDuplicates: false //optional param allows duplicates to be dropped.
+		};
+
+//	$scope.dragControlListeners1 = {
+//	        containment: '#board'//optional param.
+//	        allowDuplicates: true //optional param allows duplicates to be dropped.
+//	};
+		
+  
+//  $scope.$watchCollection('possibleValues', 
   
   
   this.showFormat = function(){

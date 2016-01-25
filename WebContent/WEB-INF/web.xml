@@ -783,6 +783,18 @@
     <url-pattern>/change-order-pt-parameters</url-pattern>
   </servlet-mapping>
   
+  
+  <servlet>
+    <description>ReorderPossibleValues</description>
+    <display-name>ReorderPossibleValues</display-name>
+    <servlet-name>ReorderPossibleValues</servlet-name>
+    <servlet-class>unidaplan.ReorderPossibleValues</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ReorderPossibleValues</servlet-name>
+    <url-pattern>/reorder-possible-values</url-pattern>
+  </servlet-mapping>
+  
    <servlet>
     <description>Searches</description>
     <display-name>Searches</display-name>

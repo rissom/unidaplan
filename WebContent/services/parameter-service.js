@@ -78,6 +78,11 @@ var parameterService = function (restfactory,$q,$translate,key2string) {
 	};
 
 	
+	this.reorderPossibleValues = function(parameterid,neworder){
+		return restfactory.PUT("reorder-possible-values",{parameterid:parameterid,neworder:neworder})
+	}
+	
+	
 	
 	this.updateParameter = function(param){
 		return restfactory.PUT("update-parameter",param);

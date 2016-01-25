@@ -115,8 +115,8 @@
 	<h4>{{'possible values'|translate}}</h4>
 	
 	<table id="table-container">
-	    <tbody data-ng-model="possibleValues" as-sortable>
-		    <tr ng-repeat="item in possibleValues" as-sortable-item style="padding: 7px; width:400px" >
+	    <tbody data-ng-model="possibleValues" data-as-sortable="dragControlListeners">
+		    <tr ng-repeat="item in possibleValues" as-sortable-item style="padding: 7px; white-space:nowrap" >
 		        <td as-sortable-item-handle>
 		         	<span ng-hide="item.edit" ng-dblclick="item.edit=true">
 		        	<span class="glyphicon glyphicon-menu-hamburger" >&nbsp;</span> 
