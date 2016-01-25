@@ -33,6 +33,28 @@ public class Unidatoolkit {
     }
     
     
+    public static void returnID(int id, String status, HttpServletResponse response) {
+	    response.setContentType("application/json");
+	    response.setCharacterEncoding("utf-8");
+	    PrintWriter out = null;
+		try {
+			out = response.getWriter();
+		} catch (IOException e) {
+			System.err.println("Error sending standard answer");
+			e.printStackTrace();
+		} 
+    	JSONObject answer=new JSONObject();
+        try {
+        	answer.put("id", id);
+			answer.put("status", status);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+        out.println(answer.toString());
+    }
+    
+    
+    
     
     public static void notFound(HttpServletResponse response) {
 	    PrintWriter out = null;

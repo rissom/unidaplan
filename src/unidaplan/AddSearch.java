@@ -1,6 +1,5 @@
 package unidaplan;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -23,8 +22,6 @@ import org.json.JSONObject;
 		String status="ok";
 		int searchID=0;
 	    request.setCharacterEncoding("utf-8");
-		response.setContentType("application/json");
-	    response.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
 	    JSONObject  jsonIn = null;
 	    
@@ -77,8 +74,6 @@ import org.json.JSONObject;
 	    
 
     // tell client the new id and that everything is fine
-    PrintWriter out = response.getWriter();
-    out.print("{\"id\":"+searchID+",");
-	out.println("\"status\":\""+status+"\"}");
+	Unidatoolkit.returnID(searchID, status, response);
 	}
 }	

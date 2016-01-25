@@ -3,7 +3,7 @@
 
 
 // Declare app level module which depends on filters, and services
-angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router'])
+angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router','as.sortable'])
 
 
 // Languages for this installation
@@ -137,12 +137,27 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
         })
         
         
+        
         .state('error', {
     		url: '/error',
     		template: "<h1>ERROR!!!</h1>"
     	})
         
+    	
+    	
+    	.state('editParameter', {
+        	url: '/edit-parameter/{parameterID:int}',
+	        templateUrl: 'modules/parameters/edit-parameter.html',
+	        controller:"editParamController as editParamCtrl",
+	        resolve:{
+		        parameters: 
+		        	function(parameterService){
+			   	    	return parameterService.getParameters();
+			   	    }
+				}
+        })
 
+        
         
         .state('editSTParams', {
         	url: '/editsampletypeparams/{paramGrpID:int}',

@@ -20,37 +20,37 @@ function parameterController($scope,$state,$stateParams,$translate,parameterServ
   this.dataTypes=["integer","float","measurement","string","long string","chooser","date","checkbox","timestamp","URL","somethingelse"];
   
   
+  
   this.newParameter=function(){
-	  this.editmode=true;
-  }
-  
-  
-  
-  this.addParameter=function(){
 	  var name={};
-	  name[languages[0].key]=this.newNameL1;
-	  name[languages[1].key]=this.newNameL2;
+	  name[languages[0].key]=$translate.instant('new Name');
+	  name[languages[1].key]='new Name';
 	  var unit={};
-	  unit[languages[0].key]=this.newUnitL1;
-	  unit[languages[1].key]=this.newUnitL2; 
+	  unit[languages[0].key]=$translate.instant('unit');
+	  unit[languages[1].key]='unit'; 
 	  var description={};
-	  description[languages[0].key]=this.newDescL1;
-	  description[languages[1].key]=this.newDescL2; 	  
+	  description[languages[0].key]=$translate.instant('description');
+	  description[languages[1].key]='description'; 	  
 
-	  var newParameter={"name":name,"description":description,"unit":unit};
-	  newParameter.datatype=thisController.newDataType;
-	  newParameter.maxdigits=thisController.newMaxDigits;
+	  var newParameter={name:name,description:description,unit:unit};
+	  newParameter.datatype='integer';
 	  
 	  var promise = parameterService.addParameter(newParameter);
 	  promise.then(function(){reload();},function(){console.log("error");})
   }
   
   
-  
-  this.deleteParameter = function(parameter){
-	  var promise = parameterService.deleteParameter(parameter.id);
-	  promise.then(function(){reload();},function(){console.log("error");});
+
+  this.performAction=function(parameter,action){
+	  if (action.action==="edit") {
+		  $state.go("editParameter",{parameterID:parameter.id})
+	  }
+	  if (action.action==="delete"  && !action.disabled) {
+		  var promise = parameterService.deleteParameter(parameter.id);
+		  promise.then(function(){reload();},function(){console.log("error");});
+	  }
   };
+  
   
 
   

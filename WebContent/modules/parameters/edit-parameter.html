@@ -1,0 +1,153 @@
+
+<button class="btn btn-default"
+		ui-sref="parameter">
+		&#x25c0;	{{'Back to parameters'|translate}}
+</button>
+
+
+<h3>
+	{{'Edit Parameter'|translate}}
+</h3>
+<!--  <form name="parameterForm">  -->
+
+<br/>
+<table class="table">
+<tr ng-dblclick="editParamCtrl.edit('NL1')">
+	<td>Name ({{editParamCtrl.lang1}}):</td>
+	<td>
+		<span ng-hide="editParamCtrl.editNL1">{{editParamCtrl.nameL1}}</span>
+		<input ng-show="editParamCtrl.editNL1" 
+			   ng-keyup="editParamCtrl.keyUp($event.keyCode,'NL1')"
+			   type="text"
+			   ng-model="editParamCtrl.newNameL1">
+	</td>
+</tr>
+<tr ng-dblclick="editParamCtrl.edit('NL2')">
+	<td>Name ({{editParamCtrl.lang2}}):</td>
+	<td>
+		<span ng-hide="editParamCtrl.editNL2">{{editParamCtrl.nameL2}}</span>
+		<input ng-show="editParamCtrl.editNL2" 
+			   ng-keyup="editParamCtrl.keyUp($event.keyCode,'NL2')"
+			   type="text"
+			   ng-model="editParamCtrl.newNameL2">
+	</td>
+</tr>
+<tr ng-dblclick="editParamCtrl.edit('DL1')">
+	<td>{{'Description'|translate}} ({{editParamCtrl.lang1}}):</td>
+	<td>
+		<span ng-hide="editParamCtrl.editDL1">{{editParamCtrl.descL1}}</span>
+		<input ng-show="editParamCtrl.editDL1" 
+			   ng-keyup="editParamCtrl.keyUp($event.keyCode,'DL1')"
+			   type="text"
+			   ng-model="editParamCtrl.newDescL1">
+	</td>
+</tr>
+<tr ng-dblclick="editParamCtrl.edit('DL2')">
+	<td>{{'Description'|translate}} ({{editParamCtrl.lang2}}):</td>
+	<td>
+		<span ng-hide="editParamCtrl.editDL2">{{editParamCtrl.descL2}}</span>
+		<input ng-show="editParamCtrl.editDL2" 
+			   ng-keyup="editParamCtrl.keyUp($event.keyCode,'DL2')"
+			   type="text"
+			   ng-model="editParamCtrl.newDescL2">
+	</td>
+</tr>
+<tr>
+	<td>{{'Datatype'|translate}}:</td>
+	<td>
+	<select class="input-sm"
+			ng-options="type as type for type in editParamCtrl.dataTypes"
+			ng-model="editParamCtrl.dataType">
+    </select>
+    <button 
+    	class="btn btn-default btn-sm"
+    	ng-show=editParamCtrl.dataTypeChanged()
+    	ng-click="editParamCtrl.update()">
+    	ok
+    </button>
+    </td>
+</tr>
+<tr ng-dblclick="editParamCtrl.edit('format')" ng-show="editParamCtrl.showFormat()">
+<td>{{'Format'|translate}}</td>
+	<td><span ng-hide="editParamCtrl.editFormat">{{editParamCtrl.format}}</span>
+		<input ng-show="editParamCtrl.editFormat" 
+			   ng-keyup="editParamCtrl.keyUp($event.keyCode,'Format')"
+			   type="text"
+			   ng-model="editParamCtrl.newFormat">
+	</td>
+</tr>
+<tr ng-dblclick="editParamCtrl.edit('regex')">
+<td>{{'Regular expression'|translate}}</td>
+	<td><span ng-hide="editParamCtrl.editRegex">{{editParamCtrl.regex}}</span>
+		<input ng-show="editParamCtrl.editRegex" 
+			   ng-keyup="editParamCtrl.keyUp($event.keyCode,'Regex')"
+			   type="text"
+			   ng-model="editParamCtrl.newRegex">
+	</td>
+</tr>
+<tr ng-dblclick="editParamCtrl.edit('min')" ng-show="editParamCtrl.showFormat()">
+<td>{{'Minimum'|translate}}</td>
+	<td><span ng-hide="editParamCtrl.editMin">{{editParamCtrl.min}}</span>
+		<input ng-show="editParamCtrl.editMin" 
+			   ng-keyup="editParamCtrl.keyUp($event.keyCode,'Min')"
+			   type="text"
+			   ng-model="editParamCtrl.newMin">
+	</td>
+</tr>
+<tr ng-dblclick="editParamCtrl.edit('max')" ng-show="editParamCtrl.showFormat()">
+<td>{{'Maximum'|translate}}</td>
+	<td><span ng-hide="editParamCtrl.editMax">{{editParamCtrl.regex}}</span>
+		<input ng-show="editParamCtrl.editMax" 
+			   ng-keyup="editParamCtrl.keyUp($event.keyCode,'Max')"
+			   type="text"
+			   ng-model="editParamCtrl.newMax">
+	</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+</table>
+
+
+
+<div ng-show="editParamCtrl.dataType=='chooser'">
+	<h4>{{'possible values'|translate}}</h4>
+	
+	<table id="table-container">
+	    <tbody data-ng-model="possibleValues" as-sortable>
+		    <tr ng-repeat="item in possibleValues" as-sortable-item style="padding: 7px; width:400px" >
+		        <td as-sortable-item-handle>
+		         	<span ng-hide="item.edit" ng-dblclick="item.edit=true">
+		        	<span class="glyphicon glyphicon-menu-hamburger" >&nbsp;</span> 
+		          	{{item.string}} &nbsp;
+		          	</span>
+		            <input ng-show="item.edit"
+		            	type="text"
+		            	ng-model="item.string"
+		            	ng-keyup="editParamCtrl.keyUpPValue(item,$event.keyCode)">
+		        </td>
+		        <td ng-click="editParamCtrl.deletePossibleValue(item)">
+		            <span  class="glyphicon glyphicon-remove"></span>
+		    	</td>
+		    </tr>
+	    </tbody>
+	</table>
+	<br/>
+	
+	<button type="button" 
+			class="btn btn-default" 
+			ng-click="editParamCtrl.addPossibleValue()" >
+		<b>+</b> {{'Add possible Value'|translate}}
+	</button>
+</div>
+
+
+<br/>
+<br />
+
+
+
+
+
+

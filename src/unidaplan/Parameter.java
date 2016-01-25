@@ -36,7 +36,7 @@ import org.json.JSONObject;
 	    try {  
 		    dBconn.startDB();
 			pstmt= dBconn.conn.prepareStatement( 	
-			"SELECT paramdef.id,stringkeyname,stringkeyunit,datatype,maxdigits,description, "
+			"SELECT paramdef.id,stringkeyname,stringkeyunit,datatype,format,regex,min,max,description, "
 			+"max((blabla.count)) IS NULL as deletable "
 			+"FROM paramdef "
 			+"LEFT JOIN "
@@ -72,6 +72,17 @@ import org.json.JSONObject;
 	      				double y=Double.parseDouble(tempObj.getString("value"));
 	      				tempObj.remove("value");
 	      				tempObj.put("value", y);
+			  		}
+			  		if (datatype==6){ // Chooser
+						pstmt= dBconn.conn.prepareStatement( 	
+							  "SELECT id,position,string "
+							 +"FROM possible_values "
+							 +"WHERE parameterid=? "
+							 +"ORDER BY position");
+						pstmt.setInt(1, tempObj.getInt("id"));
+						JSONArray possibleValues=dBconn.jsonArrayFromPreparedStmt(pstmt);
+						tempObj.put("possiblevalues", possibleValues);
+						pstmt.close();
 			  		}
 	      	  }
     	} catch (SQLException e) {

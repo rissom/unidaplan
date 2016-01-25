@@ -24,17 +24,19 @@ import org.json.JSONObject;
 		int dataType=0;
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
-	    String pattern="";
+	    int id=0;
 	    JSONObject  jsonIn = null;
-	    int maxdigits=0;
 	    
 	    try {
 			jsonIn = new JSONObject(in);
-			if (jsonIn.has("maxdigits") && !jsonIn.isNull("maxdigits")) {
-	  	  		maxdigits=jsonIn.getInt("maxdigits");
+			String dataTypeString= jsonIn.getString("datatype");
+			for (int i=0; i<Unidatoolkit.Datatypes.length; i++){
+				if (Unidatoolkit.Datatypes[i].equalsIgnoreCase(dataTypeString)){
+					dataType=i;
+				}
 			}
-			dataType= jsonIn.getInt("datatype");
 		} catch (JSONException e) {
+			e.printStackTrace();
 			System.err.println("AddParameter: Input is not valid JSON");
 		}
 	    
@@ -73,11 +75,7 @@ import org.json.JSONObject;
 					 }
 				 }
 			 }
-			 if (jsonIn.has("pattern")){
-				 pattern=jsonIn.getString("pattern");
-			 } else {
-				 pattern="";
-			 }
+
 			 if (jsonIn.has("description")){
 				 JSONObject description=jsonIn.getJSONObject("description");
 				 if (description.length()>0){
@@ -91,33 +89,50 @@ import org.json.JSONObject;
 				 }
 			 }
   
-			 PreparedStatement pstmt = null;
+			 PreparedStatement pStmt = null;
 
-			pstmt= dBconn.conn.prepareStatement( 			
-					"INSERT INTO paramdef (StringKeyName,StringKeyUnit,Datatype,maxdigits,description,pattern,lastChange,lastUser) "
-					+ "VALUES (?,?,?,?,?,?,NOW(),?)");
-		   	pstmt.setInt(1, stringKeyName);
+			pStmt= dBconn.conn.prepareStatement( 			
+					"INSERT INTO paramdef (StringKeyName,StringKeyUnit,Datatype,format,regex,min,max,description,lastChange,lastUser) "
+					+ "VALUES (?,?,?,?,?,?,?,?,NOW(),?) RETURNING id");
+		   	pStmt.setInt(1, stringKeyName);
 		   	if (stringKeyUnit>0){
-		   		pstmt.setInt(2, stringKeyUnit);
+		   		pStmt.setInt(2, stringKeyUnit);
 		   	}else{
-		   		pstmt.setNull(2, Types.INTEGER);
+		   		pStmt.setNull(2, Types.INTEGER);
 		   	}
-		   	pstmt.setInt(3, dataType);
-		   	pstmt.setInt(4, maxdigits);
-		   	pstmt.setInt(5, stringKeyDesc);
-		   	if (pattern!=""){
-		   		pstmt.setString(6, pattern);
+		   	pStmt.setInt(3, dataType);
+		   	if (jsonIn.has("format")){
+		   		pStmt.setString(4, jsonIn.getString("format"));
 		   	}else{
-		   		pstmt.setInt(6, java.sql.Types.VARCHAR);
+		   		pStmt.setNull(4, Types.VARCHAR);
 		   	}
-		   	pstmt.setInt(7, userID);
+		   	if (jsonIn.has("regex")){
+		   		pStmt.setString(5, jsonIn.getString("regex"));
+		   	}else{
+		   		pStmt.setNull(5, Types.VARCHAR);
+		   	}
+		   	if (jsonIn.has("min")){
+		   		pStmt.setDouble(6, jsonIn.getDouble("min"));
+		   	}else{
+		   		pStmt.setNull(6, Types.DOUBLE);
+		   	}
+		   	if (jsonIn.has("max")){
+		   		pStmt.setDouble(7, jsonIn.getDouble("max"));
+		   	}else{
+		   		pStmt.setNull(7, Types.DOUBLE);
+		   	}
+		   	pStmt.setInt(8, stringKeyDesc);
+		   	
+		   	pStmt.setInt(9, userID);
 			if (dataType>0 && dataType<11){
-			   	pstmt.executeUpdate();
+			   	id =  dBconn.getSingleIntValue(pStmt);
 			}else{
 				status="illegal datatype";
 			}
-			pstmt.close();
+			pStmt.close();
 			dBconn.closeDB();
+			
+			Unidatoolkit.returnID(id, status, response);
 
 		} catch (SQLException e) {
 			System.err.println("AddParameter: Problems with SQL query");
@@ -131,6 +146,7 @@ import org.json.JSONObject;
 			e.printStackTrace();
 		}					
     // tell client that everything is fine
-	Unidatoolkit.sendStandardAnswer(status, response);
+	   
+	;
 	}
 }	

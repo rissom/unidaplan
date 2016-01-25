@@ -146,6 +146,18 @@
     <servlet-name>UpdateExperimentParameter</servlet-name>
     <url-pattern>/update-experiment-parameter</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <description>Add a new possible value</description>
+    <display-name>AddPossibleValue</display-name>
+    <servlet-name>AddPossibleValue</servlet-name>
+    <servlet-class>unidaplan.AddPossibleValue</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddPossibleValue</servlet-name>
+    <url-pattern>/add-possible-value</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
     <description>Add a user</description>
     <display-name>AddUser</display-name>
@@ -156,6 +168,7 @@
     <servlet-name>AddUser</servlet-name>
     <url-pattern>/add-user</url-pattern>
   </servlet-mapping>
+  
   <servlet>
     <description>Get a list of users</description>
     <display-name>GetUsers</display-name>
@@ -353,6 +366,7 @@
     <servlet-name>DeleteSample</servlet-name>
     <url-pattern>/delete-sample</url-pattern>
   </servlet-mapping>
+  
   <servlet>
     <description>DeleteExperiment</description>
     <display-name>DeleteExperiment</display-name>
@@ -363,6 +377,18 @@
     <servlet-name>DeleteExperiment</servlet-name>
     <url-pattern>/delete-experiment</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <description>DeletePossibleValue</description>
+    <display-name>DeletePossibleValue</display-name>
+    <servlet-name>DeletePossibleValue</servlet-name>
+    <servlet-class>unidaplan.DeletePossibleValue</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeletePossibleValue</servlet-name>
+    <url-pattern>/delete-possible-value</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
     <description>DeleteSampleFromExperiment</description>
     <display-name>DeleteSampleFromExperiment</display-name>
@@ -769,6 +795,17 @@
   </servlet-mapping>
   
   <servlet>
+    <description>Change value for a Possible Value for chooser parameter type</description>
+    <display-name>UpdatePossibleValue</display-name>
+    <servlet-name>UpdatePossibleValue</servlet-name>
+    <servlet-class>unidaplan.UpdatePossibleValue</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdatePossibleValue</servlet-name>
+    <url-pattern>/update-possible-value</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
     <description>UpdatePTParamGrp</description>
     <display-name>UpdatePTParamGrp</display-name>
     <servlet-name>UpdatePTParamGrp</servlet-name>
@@ -931,6 +968,17 @@
   <servlet-mapping>
     <servlet-name>UpdateObjectOutputParamSearch</servlet-name>
     <url-pattern>/update-object-output-param-search</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>Update a Parameter</description>
+    <display-name>UpdateParameter</display-name>
+    <servlet-name>UpdateParameter</servlet-name>
+    <servlet-class>unidaplan.UpdateParameter</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateParameter</servlet-name>
+    <url-pattern>/update-parameter</url-pattern>
   </servlet-mapping>
   
   <servlet>

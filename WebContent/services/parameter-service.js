@@ -1,8 +1,32 @@
 (function(){
 'use strict';
 
-var parameterService = function (restfactory,$q,key2string) {
+var parameterService = function (restfactory,$q,$translate,key2string) {
 	// restfactory is a wrapper for $html.	
+	
+	
+	this.addPossibleValue = function (value, parameterID){
+		return restfactory.POST("add-possible-value",{value:value, parameterid:parameterID})
+	};
+
+	
+	
+	this.addParameter = function (parameter){
+		return restfactory.POST("add-parameter",parameter);
+	};
+	
+
+	
+	this.deleteParameter = function (id){
+		return restfactory.DELETE("delete-parameter?id="+id);
+	};
+	
+	
+	
+	this.deletePossibleValue = function(id){
+		return restfactory.DELETE("delete-possible-value?id="+id);
+//		console.log("possibleValueId: "+possibleValueId)
+	}
 	
 	
 	this.getParameters = function() {
@@ -19,6 +43,9 @@ var parameterService = function (restfactory,$q,key2string) {
 				parameter.namef=function(){
 					return key2string.key2string(parameter.stringkeyname,thisController.strings);
 				};
+				parameter.actions=[{action:"edit",name:$translate.instant("edit")},
+				  	    		    {action:"delete",name:$translate.instant("delete"),disabled:!parameter.deletable}
+				  				   ];
 				parameter.nameUnitf=function(){
 					var unit="";
 					if (parameter.stringkeyunit){
@@ -36,7 +63,8 @@ var parameterService = function (restfactory,$q,key2string) {
 					return key2string.key2string(parameter.stringkeyunit,thisController.strings);
 				};	
 				parameter.descLang=function(lang){
-					return key2string.key2stringWithLangStrict(parameter.description,thisController.strings,lang);
+					var ergebnis= key2string.key2stringWithLangStrict(parameter.description,thisController.strings,lang);
+					return ergebnis;
 				};
 				parameter.descf=function(){
 					return key2string.key2string(parameter.description,thisController.strings);
@@ -51,19 +79,19 @@ var parameterService = function (restfactory,$q,key2string) {
 
 	
 	
-	this.addParameter = function (parameter){
-		var promise=restfactory.POST("add-parameter",parameter);
-		return promise;
-	};
+	this.updateParameter = function(param){
+		return restfactory.PUT("update-parameter",param);
+	}
 	
-
 	
-	this.deleteParameter = function (id){
-		return restfactory.DELETE("delete-parameter?id="+id);
-	};
+	
+	this.updatePossibleValue = function(pvalueid,newValue){
+		return restfactory.PUT("update-possible-value",{id:pvalueid,newvalue:newValue});
+	}
+	
 };
 
 
-angular.module('unidaplan').service('parameterService', ['restfactory','$q','key2string',parameterService]);
+angular.module('unidaplan').service('parameterService', ['restfactory','$q','$translate','key2string',parameterService]);
 
 })();
