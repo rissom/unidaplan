@@ -121,8 +121,11 @@ import org.json.JSONObject;
 		   	}else{
 		   		pStmt.setNull(7, Types.DOUBLE);
 		   	}
-		   	pStmt.setInt(8, stringKeyDesc);
-		   	
+		   	if (jsonIn.has("description")){
+		   		pStmt.setInt(8, stringKeyDesc);	
+		   	}else{
+		   		pStmt.setNull(8,Types.INTEGER);
+		   	}
 		   	pStmt.setInt(9, userID);
 			if (dataType>0 && dataType<11){
 			   	id =  dBconn.getSingleIntValue(pStmt);

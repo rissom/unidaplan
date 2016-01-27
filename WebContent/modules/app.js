@@ -64,6 +64,19 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
         })
         
         
+        .state('editParameter', {
+	    	url: '/edit-parameter?:parameterID&:newParameter',
+	        templateUrl: 'modules/parameters/edit-parameter.html',
+	        controller:"editParamController as editParamCtrl",
+	        resolve:{
+		        parameters: 
+		        	function(parameterService){
+			   	    	return parameterService.getParameters();
+			   	    }
+				}
+        })
+
+        
         .state('editPtParamGrps', {
         	url: '/editprocesstype/{processTypeID:int}',
 	        templateUrl: 'modules/admin-processes/edit-pt-param-grps.html',
@@ -90,7 +103,6 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 			   	    }
 				}
         })
-        
         
                 
         .state('editSearch', {
@@ -144,20 +156,6 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
     	})
         
     	
-    	
-    	.state('editParameter', {
-        	url: '/edit-parameter/{parameterID:int}',
-	        templateUrl: 'modules/parameters/edit-parameter.html',
-	        controller:"editParamController as editParamCtrl",
-	        resolve:{
-		        parameters: 
-		        	function(parameterService){
-			   	    	return parameterService.getParameters();
-			   	    }
-				}
-        })
-
-        
         
         .state('editSTParams', {
         	url: '/editsampletypeparams/{paramGrpID:int}',

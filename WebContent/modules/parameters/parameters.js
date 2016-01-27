@@ -25,18 +25,22 @@ function parameterController($scope,$state,$stateParams,$translate,parameterServ
 	  var name={};
 	  name[languages[0].key]=$translate.instant('new Name');
 	  name[languages[1].key]='new Name';
-	  var unit={};
-	  unit[languages[0].key]=$translate.instant('unit');
-	  unit[languages[1].key]='unit'; 
-	  var description={};
-	  description[languages[0].key]=$translate.instant('description');
-	  description[languages[1].key]='description'; 	  
+//	  var unit={};
+//	  unit[languages[0].key]=$translate.instant('unit');
+//	  unit[languages[1].key]='unit'; 
+//	  var description={};
+//	  description[languages[0].key]=$translate.instant('description');
+//	  description[languages[1].key]='description'; 	  
 
-	  var newParameter={name:name,description:description,unit:unit};
+	  var newParameter={name:name} //,description:description,unit:unit};
 	  newParameter.datatype='integer';
 	  
 	  var promise = parameterService.addParameter(newParameter);
-	  promise.then(function(){reload();},function(){console.log("error");})
+	  promise.then(function(rest){
+		  console.log(rest.data.id)
+		  $state.go('editParameter',{parameterID:rest.data.id,newParameter:true});
+//		  reload();
+	  	},function(){console.log("error");})
   }
   
   

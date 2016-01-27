@@ -70,7 +70,8 @@ import org.json.JSONObject;
 			 }  
 	    PreparedStatement pStmt = null;
 			pStmt= dBconn.conn.prepareStatement( 			
-				"INSERT INTO objecttypes values(default,?,?,?,?,NOW(),?)");
+				"INSERT INTO objecttypes (position,otgrp,string_key,description,lastchange,lastuser) "
+				+"VALUES(?,?,?,?,NOW(),?)");
 			pStmt.setInt(1, position);
 			pStmt.setInt(2, otgroup);
 		   	pStmt.setInt(3, stringKeyName);

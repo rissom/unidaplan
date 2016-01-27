@@ -1,0 +1,12 @@
+<div>
+<span ng-hide="parameter.editing">{{parameter.value}}
+</span>
+<select 						   
+	ng-show="parameter.editing"
+    ng-model="chooserParamCtrl.newValue"
+    ng-blur="parameter.editing=false"
+    ng-options="item for item in parameter.possiblevalues"
+    ng-change="chooserParamCtrl.update()"
+    class="input-sm">
+</select>
+</div>

@@ -30,7 +30,7 @@ function editParamController($scope,$state,$stateParams,$translate,parameterServ
   };
     
   var thisController=this;
-  
+    
   this.lang1=$translate.instant(languages[0].name);
   
   this.lang2=$translate.instant(languages[1].name);
@@ -44,14 +44,24 @@ function editParamController($scope,$state,$stateParams,$translate,parameterServ
   this.originalDataType=parameters[index].datatype;
   
   this.dataType=parameters[index].datatype;
-    
+      
   this.descL1=parameters[index].descLang(this.lang1Key);
   
   this.descL2=parameters[index].descLang(this.lang2Key);
   
+  this.editNL1=$stateParams.newParameter==='true';
+    
   this.newDescL1=parameters[index].descLang(this.lang1Key);
   
   this.newDescL2=parameters[index].descLang(this.lang2Key);
+  
+  this.unitL1=parameters[index].unitLang(this.lang1Key);
+  
+  this.newUnitL1=parameters[index].unitLang(this.lang1Key);
+  
+  this.unitL2=parameters[index].unitLang(this.lang2Key);
+  
+  this.newUnitL2=parameters[index].unitLang(this.lang2Key);
   
   $scope.possibleValues=parameters[index].possiblevalues;
   
@@ -103,6 +113,28 @@ function editParamController($scope,$state,$stateParams,$translate,parameterServ
 	  promise.then(function(){reload();});
   };
   
+  this.cancelEdit = function(){
+	  thisController.newUnitL1=thisController.unitL1;
+	  thisController.newUnitL2=thisController.unitL2;
+	  thisController.newNameL1=thisController.nameL1;
+	  thisController.newNameL2=thisController.nameL2;
+	  thisController.newDescL1=thisController.descL1;
+	  thisController.newDescL2=thisController.descL2;
+	  thisController.newRegex=thisController.regex;
+	  thisController.newMin=thisController.min;
+	  thisController.newMax=thisController.max;
+	  thisController.editNL1=false;
+	  thisController.editNL2=false;
+	  thisController.editDL1=false;
+	  thisController.editDL2=false;
+	  thisController.editUL1=false;
+	  thisController.editUL2=false;
+	  thisController.editFormat=false;
+	  thisController.editMin=false;
+	  thisController.editMax=false;
+	  thisController.editRegex=false;
+  }
+  
   this.dataTypeChanged=function(){
 	  return thisController.dataType!=thisController.originalDataType;
   };
@@ -127,6 +159,8 @@ function editParamController($scope,$state,$stateParams,$translate,parameterServ
 	  thisController.editNL2	= (field=="NL2");
 	  thisController.editDL1 	= (field=="DL1");
 	  thisController.editDL2 	= (field=="DL2");
+	  thisController.editUL1 	= (field=="UL1");
+	  thisController.editUL2 	= (field=="UL2");
 	  thisController.editRegex 	= (field=="regex");
 	  thisController.editFormat = (field=="format");
 	  thisController.editMin 	= (field=="min");
@@ -134,13 +168,18 @@ function editParamController($scope,$state,$stateParams,$translate,parameterServ
   };
 	
   
+  this.hasUnit = function() {
+	  var a=['integer','measurement','float'].indexOf(thisController.dataType);
+	  return a>-1;
+  }
+  
+  
   this.keyUp = function(keyCode) {
-		 console.log ("halli");
 	if (keyCode===13) {				// Return key pressed
 		thisController.update();
 	}
 	if (keyCode===27) {		// Escape key pressed
-		parameter.editing=false;
+		thisController.cancelEdit();
 	}
   };
   
@@ -204,6 +243,7 @@ function editParamController($scope,$state,$stateParams,$translate,parameterServ
 		  var description={};
 		  description[thisController.lang1Key]=thisController.newDescL1;
 		  description[thisController.lang2Key]=thisController.newDescL2;
+
 		  var newParam={
 			name:name,
 			description:description,
@@ -214,6 +254,13 @@ function editParamController($scope,$state,$stateParams,$translate,parameterServ
 			datatype:thisController.dataType,
 			parameterid:$stateParams.parameterID
 		  }
+		  
+		  if (thisController.hasUnit()){
+			  var unit={};
+			  unit[thisController.lang1Key]=thisController.newUnitL1;
+			  unit[thisController.lang2Key]=thisController.newUnitL2;
+			  newParam.unit=unit;
+		  }
 		  var promise = parameterService.updateParameter(newParam);
 		  promise.then(function(){reload()});
   }
@@ -221,7 +268,7 @@ function editParamController($scope,$state,$stateParams,$translate,parameterServ
   var reload=function() {
   	var current = $state.current;
   	var params = angular.copy($stateParams);
-  	params.newSearch=false;
+  	params.newParameter=false;
   	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
   };
   

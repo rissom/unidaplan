@@ -57,6 +57,7 @@ var parameterService = function (restfactory,$q,$translate,key2string) {
 					return key2string.key2string(parameter.stringkeyname,thisController.strings)+unit;
 				};
 				parameter.unitLang=function(lang){
+					if (['integer','measurement','float'].indexOf(parameter.datatype)===-1) { return '-';}
 					return key2string.key2stringWithLangStrict(parameter.stringkeyunit,thisController.strings,lang);
 				};	
 				parameter.unitf=function(){

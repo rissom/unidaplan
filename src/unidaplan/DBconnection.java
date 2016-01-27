@@ -124,6 +124,38 @@ public class DBconnection  {
   
   
   
+  public JSONArray ArrayFromPreparedStmt(PreparedStatement pStmt) throws Exception{
+	  JSONArray result = null;
+	  ResultSet queryResult=null;
+	  	  try {
+		          if (pStmt==null) {
+			          System.err.println("DBconnection: prepared statement null! " );
+		          }
+		          queryResult = pStmt.executeQuery();
+          if (queryResult==null) {
+        	  System.err.println("DBconnection: statement result null! ");
+        	  result=new JSONArray();
+          } else {
+        	  result = new JSONArray();        
+              while (queryResult.next()) {
+                  result.put(queryResult.getObject(1));
+              }        	  
+        	  queryResult.close();
+          }     
+          pStmt.close();
+  	  } catch (SQLException e) {   // Exception for SQL database
+  		  System.err.println("DBconnection: No result, or problem with the database"); // please remove this!
+  		  e.printStackTrace();
+  		  System.err.println(pStmt.toString());  // please remove this!
+  	  } catch (Exception e) {
+  		  System.err.print("DBconnection: Some problem with database query. Error! ");
+	  	  e.printStackTrace();
+	  }
+	  return result;
+  }
+  
+  
+  
   	public JSONArray getDataTable(PreparedStatement pStmt) throws Exception{
   		ResultSet rs=null;
   		JSONArray jsArray = new JSONArray();	  

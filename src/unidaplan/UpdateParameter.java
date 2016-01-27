@@ -30,7 +30,6 @@ import org.json.JSONObject;
 	    
     
 	    try {
-	    	 	System.out.println(in);
 			  jsonIn = new JSONObject(in);
 		} catch (JSONException e) {
 			System.err.println("UpdateParameter: Input is not valid JSON");
@@ -39,6 +38,7 @@ import org.json.JSONObject;
 
 	    JSONObject newName=null; // Object contains the new names, language as keys
 	    JSONObject newDesc=null; // Object contains the new descriptions, language as keys
+	    JSONObject newUnit=null; // Object contains the new units, language as keys
 
 	    
 	    try {
@@ -141,7 +141,6 @@ import org.json.JSONObject;
 					pStmt.setInt(2,userID);
 					descriptionKey=pStmt.executeUpdate();
 				}
-		    	System.out.println(descriptionKey);
 
 				pStmt.close();
 				
@@ -161,7 +160,60 @@ import org.json.JSONObject;
 					pStmt.setString(2,descriptions[i]);
 					pStmt.setString(3,newDesc.getString(descriptions[i]));
 					pStmt.setInt(4,userID);
-			    	System.out.println(pStmt.toString());
+					pStmt.executeUpdate();
+					pStmt.close();
+				}
+			} catch (SQLException e) {
+				System.err.println("UpdateParameter: Problems with SQL query");
+				status="SQL error";
+			} catch (Exception e) {
+				System.err.println("UpdateParameter: some error occured");
+				status="misc error";
+			}
+		}
+		
+		
+		if (jsonIn.has("unit")){
+		    try{
+				newUnit=jsonIn.getJSONObject("unit");
+				String[] units=JSONObject.getNames(newUnit);
+
+				// find the stringkey
+				pStmt=dBconn.conn.prepareStatement(
+						"SELECT stringkeyunit FROM paramdef WHERE id=?");
+				pStmt.setInt(1,parameterID);
+				int unitKey=dBconn.getSingleIntValue(pStmt);
+				if (unitKey<1){
+					pStmt=dBconn.conn.prepareStatement(
+							"INSERT INTO string_key_table (description, lastchange, lastuser) VALUES (?,NOW(),?) RETURNING id");
+					pStmt.setString(1,"unit: "+newUnit.getString(units[0]));
+					pStmt.setInt(2,userID);
+					unitKey=dBconn.getSingleIntValue(pStmt);
+					pStmt=dBconn.conn.prepareStatement(
+							"UPDATE paramdef SET stringkeyunit=? WHERE id=?");
+					pStmt.setInt(1,unitKey);
+					pStmt.setInt(2,userID);
+					unitKey=pStmt.executeUpdate();
+				}
+
+				pStmt.close();
+				
+				// delete old entries in the same language
+				pStmt=dBconn.conn.prepareStatement(
+						"DELETE FROM stringtable WHERE string_key=?");
+				pStmt.setInt(1,unitKey);
+				pStmt.executeUpdate();
+				pStmt.close();
+				
+				
+				// create database entries for the new descriptions
+				for (int i=0; i<units.length; i++){
+					pStmt= dBconn.conn.prepareStatement( 			
+							 "INSERT INTO stringtable VALUES(default,?,?,?,NOW(),?)");
+					pStmt.setInt(1,unitKey);
+					pStmt.setString(2,units[i]);
+					pStmt.setString(3,newUnit.getString(units[i]));
+					pStmt.setInt(4,userID);
 					pStmt.executeUpdate();
 					pStmt.close();
 				}
@@ -197,7 +249,11 @@ import org.json.JSONObject;
 			try {
 				pStmt=dBconn.conn.prepareStatement(
 						"UPDATE paramdef SET min=? WHERE id=?");
-				pStmt.setString(1, jsonIn.getString("min"));
+				if (jsonIn.optString("min").equals("")){
+					pStmt.setNull(1, java.sql.Types.DOUBLE);
+				} else {
+					pStmt.setDouble(1, jsonIn.getDouble("min"));
+				}
 				pStmt.setInt(2,parameterID);				
 				pStmt.executeUpdate();
 				pStmt.close();	
@@ -207,6 +263,7 @@ import org.json.JSONObject;
 			}catch(JSONException e) {
 				System.err.println("UpdateParameter: JSON error reading min field");
 				status="JSON error, min field";
+				e.printStackTrace();
 			}
 		}
 
@@ -214,7 +271,11 @@ import org.json.JSONObject;
 			try {
 				pStmt=dBconn.conn.prepareStatement(
 						"UPDATE paramdef SET max=? WHERE id=?");
-				pStmt.setString(1, jsonIn.getString("max"));
+				if (jsonIn.optString("max").equals("")){
+					pStmt.setNull(1, java.sql.Types.DOUBLE);
+				} else {
+					pStmt.setDouble(1, jsonIn.getDouble("max"));
+				}	
 				pStmt.setInt(2,parameterID);				
 				pStmt.executeUpdate();
 				pStmt.close();	

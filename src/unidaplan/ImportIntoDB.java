@@ -14,6 +14,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 
 
 public class ImportIntoDB extends HttpServlet {
@@ -33,7 +38,7 @@ public class ImportIntoDB extends HttpServlet {
 						+"WHERE otp.id=?");
 			   	pStmt.setInt(1, id);
 			   	type=dBconn.getSingleIntValue(pStmt);
-			   	System.out.println(pStmt.toString());
+//			   	System.out.println(pStmt.toString());
 				pStmt.close();				
 		
 				// differentiate according to type
@@ -132,12 +137,11 @@ public class ImportIntoDB extends HttpServlet {
 				   			break;
 					   }
 					}
+			        pStmt.setInt(1, sampleid);
+					pStmt.executeUpdate();
+					pStmt.close();
 				}
-		        pStmt.setInt(1, sampleid);
-			   	System.out.println(pStmt.toString());
-				pStmt.executeUpdate();
-				pStmt.close();
-				dBconn.closeDB();
+				
 		} catch (SQLException e) {
 			System.err.println("SaveSampleParameter: More Problems with SQL query");
 			e.printStackTrace();
@@ -162,7 +166,7 @@ public class ImportIntoDB extends HttpServlet {
 						+"WHERE pp.id=?");
 			   	pStmt.setInt(1, id);
 			   	type=dBconn.getSingleIntValue(pStmt);
-			   	System.out.println(pStmt.toString());
+//			   	System.out.println(pStmt.toString());
 				pStmt.close();				
 		
 				// differentiate according to type
@@ -263,10 +267,8 @@ public class ImportIntoDB extends HttpServlet {
 					}
 				}
 		        pStmt.setInt(1, processid);
-			   	System.out.println(pStmt.toString());
 				pStmt.executeUpdate();
 				pStmt.close();
-				dBconn.closeDB();
 		} catch (SQLException e) {
 			System.err.println("SaveProcessParameter: More Problems with SQL query");
 			e.printStackTrace();
@@ -292,9 +294,9 @@ public class ImportIntoDB extends HttpServlet {
 		   	pStmt.setInt(1, sampletypeID);
 		   	pStmt.setInt(2, userID);
 		   	pStmt.setInt(3, userID);
-		   	System.out.println(pStmt.toString());
+//		   	System.out.println(pStmt.toString());
 			sampleID= dBconn.getSingleIntValue(pStmt);
-			System.out.println("sampleID:"+sampleID);
+//			System.out.println("sampleID:"+sampleID);
 		   	pStmt.close();
 		    } catch (SQLException e) {
 				System.err.println("SaveSampleParameter: More Problems with SQL query");
@@ -333,9 +335,9 @@ public class ImportIntoDB extends HttpServlet {
 						+"VALUES (?, NOW(),?) RETURNING id");
 			   	pStmt.setInt(1, processTypeID);
 			   	pStmt.setInt(2, userID);
-			   	System.out.println(pStmt.toString());
+//			   	System.out.println(pStmt.toString());
 				processID= dBconn.getSingleIntValue(pStmt);
-				System.out.println("processID:"+processID);
+//				System.out.println("processID:"+processID);
 			   	pStmt.close();
 			   	
 			   	
@@ -410,8 +412,8 @@ public class ImportIntoDB extends HttpServlet {
 		   	int paramgrpID=0;
 	        
 			String in = request.getReader().readLine();
-			System.out.println("input:");
-			System.out.println(in);
+//			System.out.println("input:");
+//			System.out.println(in);
 			String type;
 			JSONObject  jsonIn = null;
 			try {
@@ -453,8 +455,8 @@ public class ImportIntoDB extends HttpServlet {
 					if (jsonIn.has("name")){
 						 JSONObject name=jsonIn.getJSONObject("name");
 						 String [] names = JSONObject.getNames(name);
-						 System.out.println("names0:"+names[0]);
-						 System.out.println("key:"+name.getString(names[0]));
+//						 System.out.println("names0:"+names[0]);
+//						 System.out.println("key:"+name.getString(names[0]));
 						 stringKeyName=dBconn.createNewStringKey(name.getString(names[0]));
 						 for (int i=0; i<names.length; i++){
 							 dBconn.addString(stringKeyName,names[i],name.getString(names[i]));
@@ -497,8 +499,8 @@ public class ImportIntoDB extends HttpServlet {
 					   	if (jsonIn.has("paramgrp")){
 					   		JSONObject paramgrp=jsonIn.getJSONObject("paramgrp");
 							String [] paramgrps = JSONObject.getNames(paramgrp);
-							System.out.println("paramgrp0:"+paramgrps[0]);
-							System.out.println("key:"+paramgrp.getString(paramgrps[0]));
+//							System.out.println("paramgrp0:"+paramgrps[0]);
+//							System.out.println("key:"+paramgrp.getString(paramgrps[0]));
 							paramGrpName=dBconn.createNewStringKey(paramgrp.getString(paramgrps[0]));
 							for (int i=0; i<paramgrps.length; i++){
 								 dBconn.addString(paramGrpName,paramgrps[i],paramgrp.getString(paramgrps[i]));
@@ -541,8 +543,8 @@ public class ImportIntoDB extends HttpServlet {
 					   	if (jsonIn.has("paramgrp")){
 					   		JSONObject paramgrp=jsonIn.getJSONObject("paramgrp");
 							String [] paramgrps = JSONObject.getNames(paramgrp);
-							System.out.println("paramgrp0:"+paramgrps[0]);
-							System.out.println("key:"+paramgrp.getString(paramgrps[0]));
+//							System.out.println("paramgrp0:"+paramgrps[0]);
+//							System.out.println("key:"+paramgrp.getString(paramgrps[0]));
 							paramGrpName=dBconn.createNewStringKey(paramgrp.getString(paramgrps[0]));
 							for (int i=0; i<paramgrps.length; i++){
 								 dBconn.addString(paramGrpName,paramgrps[i],paramgrp.getString(paramgrps[i]));
@@ -597,7 +599,7 @@ public class ImportIntoDB extends HttpServlet {
 		            		pStmt.setInt(7,parameter.getInt(i)); // definition
 		            		pStmt.setInt(8,headingKey); // stringkeyname
 		            		pStmt.setInt(9,userID); // lastuser
-		            		System.out.println(pStmt.toString());
+//		            		System.out.println(pStmt.toString());
 		            		idField=false;
 //		            		saveValueSample(headingsArray[i],parameter.getInt(i), sampleID);
 		            		par=dBconn.getSingleIntValue(pStmt);
@@ -621,14 +623,14 @@ public class ImportIntoDB extends HttpServlet {
 		            		pStmt.setInt(7,parameter.getInt(i)); // definition
 		            		pStmt.setInt(8,headingKey); // stringkeyname
 		            		pStmt.setInt(9,userID); // lastuser
-		            		System.out.println(pStmt.toString());
+//		            		System.out.println(pStmt.toString());
 		            		idField=false;
 //		            		saveValueProcess(headingsArray[i],parameter.getInt(i), sampleID);
 		            		par=dBconn.getSingleIntValue(pStmt);
 		            	}
 	            	}      
 	            	parameter.put(i,par);
-	            	System.out.println("par: "+par);
+//	            	System.out.println("par: "+par);
 	            }
 		        
 	            dataRow = CSVFile.readLine(); // Read next line of data.
@@ -670,7 +672,24 @@ public class ImportIntoDB extends HttpServlet {
 
 		        // Close the file once all data has been read.
 		        CSVFile.close();
-	
+		        
+		        
+		        
+		        // Delete the file
+		        Path path=FileSystems.getDefault().getPath(file);
+		        try {
+		            Files.delete(path);
+		        } catch (NoSuchFileException x) {
+		            System.err.format("%s: no such" + " file or directory%n", path);
+		        } catch (DirectoryNotEmptyException x) {
+		            System.err.format("%s not empty%n", path);
+		        } catch (IOException x) {
+		            // File permission problems are caught here.
+		            System.err.println(x);
+		        }
+		        
+				dBconn.closeDB();
+
 		        // End the printout with a blank line.
 		    } catch (Exception e) {
 				// TODO Auto-generated catch block

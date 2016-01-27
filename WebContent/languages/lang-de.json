@@ -40,6 +40,7 @@
 "Available Samples":"Verfügbare Proben",
 "Back to parameters" : "Zurück zu Parametern",
 "Base Parameters": "Basisparameter",
+"block" : "sperren",
 "Can be used by": "Kann benutzt werden von",
 "Cancel" : "Abbrechen",
 "checkbox" : "Häckchen",
@@ -132,6 +133,7 @@
 "My Searches" : "Meine Suchen",
 "new datatype" : "Neuer Datentyp",
 "New Experiment" : "Neues Experiment",
+"new Name" : "Neuer Name",
 "New Object" : "Neues Objekt",
 "New Process" : "Neuer Prozess",
 "New Property" : "Neue Eigenschaft",
@@ -184,6 +186,11 @@
 "Replace sample" : "Probe ersetzen",
 "regular expression" : "regulärer Ausdruck",
 "Regular expression" : "Regulärer Ausdruck",
+<<<<<<< HEAD
+=======
+"Replace object" : "Objekt ersetzen",
+"resend token" : "Token erneut versenden",
+>>>>>>> d41e52b... new State for editing of parameters. Editing of possible Values to
 "result of search" : "Suchergebnis",
 "role" : "Rolle",
 "running" : "läuft",
@@ -233,6 +240,8 @@
 "type" : "Typ",
 "Type" : "Typ",
 "unit" : "Einheit",
+"Unit" : "Einheit",
+"unblock" : "wieder freigeben",
 "unknown user or wrong password" : "unbekannter Benutzer oder falsches Passwort",
 "upload" : "hochladen",
 "User" : "Benutzer",

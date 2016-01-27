@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-function userController(users,userService) {
+function userController(users,userService,$translate) {
 	
 	this.users =  users;
 	
@@ -29,15 +29,15 @@ function userController(users,userService) {
 	
 	this.getActions = function(user){
 		var actions=[];
-		actions.push("edit");
+		actions.push($translate.instant("edit"));
 		if (user.blocked) {
-			actions.push("unblock");
+			actions.push($translate.instant("unblock"));
 		}else{
-			actions.push("block");
+			actions.push($translate.instant("block"));
 		}
-		actions.push("resend token");
+		actions.push($translate.instant("resend token"));
 		if (user.deletable){
-			actions.push("delete");
+			actions.push($translate.instant("delete"));
 		}
 		return actions;
 	};
@@ -107,7 +107,7 @@ function userController(users,userService) {
 }
   
         
-angular.module('unidaplan').controller('userController',['users','userService',userController]);
+angular.module('unidaplan').controller('userController',['users','userService','$translate',userController]);
 
 angular.module('unidaplan').directive('username', function() {
 	return {

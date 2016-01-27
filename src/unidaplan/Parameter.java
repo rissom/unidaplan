@@ -54,9 +54,13 @@ import org.json.JSONObject;
 			  		if (tempObj.has("stringkeyname")){
 			  			stringkeys.add(Integer.toString(tempObj.getInt("stringkeyname")));
 			  		}
-			  		if (tempObj.has("stringkeyunit")){
-			  			stringkeys.add(Integer.toString(tempObj.getInt("stringkeyunit")));
-			  		}
+			  		
+		           	
+//		           			stringkeys.add(Integer.toString(processTypeGrps.getJSONObject(j).getInt("name")));
+//		           			
+//		           			tObj.remove("datatype");
+//		           			tObj.put("datatype",Unidatoolkit.Datatypes[datatype]);
+		           			
 			  		if (tempObj.has("description")){
 			  			stringkeys.add(Integer.toString(tempObj.getInt("description")));
 			  		}
@@ -73,6 +77,13 @@ import org.json.JSONObject;
 	      				tempObj.remove("value");
 	      				tempObj.put("value", y);
 			  		}
+			  		if (datatype<4){
+	           			if (tempObj.has("stringkeyunit")){
+	           				stringkeys.add(Integer.toString(tempObj.getInt("stringkeyunit")));
+	           			}
+			  		}else{
+	           			tempObj.remove("stringkeyunit");
+           			}
 			  		if (datatype==6){ // Chooser
 						pstmt= dBconn.conn.prepareStatement( 	
 							  "SELECT id,position,string "

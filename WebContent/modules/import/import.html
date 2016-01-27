@@ -126,7 +126,7 @@
 			<td nowrap class=importtable ng-repeat="col in importCtrl.columns">
 				<select ng-init="col.parameter=0"
 					ng-model="col.parameter"
-					ng-options="param.id as param.namef() for param in importCtrl.parameters.parameters"
+					ng-options="param.id as param.namef() for param in importCtrl.parameters.parameters | orderBy:['parametergroup','pos']"
 					class="input-sm">
 				</select>
 			</td>

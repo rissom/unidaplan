@@ -80,7 +80,7 @@ public class SampleTypeParams extends HttpServlet {
 	 		// check if the parameter can be deleted. (No, if corresponding data exists).
 	           	pStmt = dBconn.conn.prepareStatement(
 	     		  	   "SELECT ot_parameters.id, compulsory, formula, hidden, pos, definition, ot_parameters.stringkeyname as name, "
-	     		  	  + "(blabla.count) IS NULL as deletable, stringkeyunit " 
+	     		  	  + "(blabla.count) IS NULL as deletable, stringkeyunit, paramdef.datatype " 
 	     		  	  +"FROM ot_parameters " 
 	     		  	  +"JOIN paramdef ON (definition=paramdef.id)"
 	     		  	  +"LEFT JOIN "
@@ -100,10 +100,18 @@ public class SampleTypeParams extends HttpServlet {
 				processTypeGrps=dBconn.jsonArrayFromPreparedStmt(pStmt); // get ResultSet from the database using the query
 				if (processTypeGrps.length()>0) {
 	           		for (int j=0; j<processTypeGrps.length();j++) {
+	           			JSONObject tObj=processTypeGrps.getJSONObject(j);
+	           			int datatype=tObj.getInt("datatype");
 	           			stringkeys.add(Integer.toString(processTypeGrps.getJSONObject(j).getInt("name")));
-	           			if (processTypeGrps.getJSONObject(j).has("stringkeyunit")){
-	           				stringkeys.add(Integer.toString(processTypeGrps.getJSONObject(j).getInt("stringkeyunit")));
+	           			if (datatype<4){
+		           			if (tObj.has("stringkeyunit")){
+		           				stringkeys.add(Integer.toString(tObj.getInt("stringkeyunit")));
+		           			}
+	           			} else {
+	           				tObj.remove("stringkeyunit");
 	           			}
+	           			tObj.remove("datatype");
+	           			tObj.put("datatype",Unidatoolkit.Datatypes[datatype]);
 	           		}
 	           	}		
  			} else {

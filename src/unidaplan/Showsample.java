@@ -98,7 +98,7 @@ public class Showsample extends HttpServlet {
 		   "SELECT ot_parameters.id, parametergroup, compulsory, ot_parameters.pos, "
 		   +"ot_parameters.stringkeyname,  pid, value, ot_parametergrps.id AS pgrpid, "
 		   +" ot_parametergrps.stringkey as parametergrp_key, st.description, paramdef.datatype, " 
-		   +" ot_parameters.id_field, paramdef.maxdigits "
+		   +" ot_parameters.id_field, paramdef.format "
 		   +"FROM ot_parameters "
 		   +"JOIN ot_parametergrps ON (ot_parameters.Parametergroup=ot_parametergrps.ID) " 
 		   +"JOIN paramdef ON (paramdef.id=ot_parameters.definition) "
@@ -143,9 +143,10 @@ public class Showsample extends HttpServlet {
 		//get the parameters
 		pstmt= dBconn.conn.prepareStatement( 	 
 		   "SELECT ot_parameters.id, parametergroup, compulsory, ot_parameters.pos, "
-		   +"ot_parameters.stringkeyname,  pid, value, ot_parametergrps.id AS pgrpid, "
+		   +" ot_parameters.stringkeyname,  pid, value, ot_parametergrps.id AS pgrpid, "
 		   +" ot_parametergrps.stringkey as parametergrp_key, st.description, paramdef.datatype, " 
-		   +" ot_parameters.id_field, paramdef.maxdigits, paramdef.stringkeyunit AS unit "
+		   +" ot_parameters.id_field, paramdef.format, paramdef.stringkeyunit AS unit, "
+		   +" ot_parameters.definition "
 		   +"FROM ot_parameters "
 		   +"JOIN ot_parametergrps ON (ot_parameters.Parametergroup=ot_parametergrps.ID) " 
 		   +"JOIN paramdef ON (paramdef.id=ot_parameters.definition) "
@@ -184,6 +185,19 @@ public class Showsample extends HttpServlet {
 					      				tParam.remove("value");
 					      				tParam.put("value", y);
 				      				}
+			      		if (datatype==6 && tParam.has("value")) {	// chooser 
+			      			pstmt= dBconn.conn.prepareStatement(
+			      					"SELECT string FROM possible_values "
+			      					+"WHERE parameterid=? ORDER BY position");
+			      			pstmt.setInt(1, tParam.getInt("definition"));
+			      			JSONArray pvalues=dBconn.ArrayFromPreparedStmt(pstmt);
+			      			tParam.put("possiblevalues", pvalues);
+			      			pstmt.close();
+	      				}
+			      		if (datatype>3 && tParam.has("unit")) {	 
+		      				tParam.remove("unit");
+	      				}
+	      				tParam.remove("definition");
 					    prmgrpprms.put(tParam);
 		      		}
 		      	}
