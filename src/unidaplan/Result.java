@@ -212,7 +212,8 @@ import org.json.JSONObject;
 				//create headings
 				pStmt= dBconn.conn.prepareStatement(
 						"SELECT ot_parameters.id,ot_parameters.stringkeyname, "
-						+"paramdef.stringkeyunit FROM searches "
+						+"paramdef.stringkeyunit, paramdef.datatype "
+						+"FROM searches "
 						+"JOIN osearchoutput ON osearchoutput.search = searches.id "
 						+"JOIN ot_parameters ON ot_parameters.id=otparameter "
 						+"JOIN paramdef ON ot_parameters.definition=paramdef.id "
@@ -226,9 +227,13 @@ import org.json.JSONObject;
 						if (heading.has("stringkeyname")){
 							stringkeys.add(Integer.toString(heading.getInt("stringkeyname")));
 						}
-						if (heading.has("stringkeyunit")){
+						if (heading.has("stringkeyunit") && heading.getInt("datatype")<4){
 							stringkeys.add(Integer.toString(heading.getInt("stringkeyunit")));
 						}
+						if (heading.has("stringkeyunit") && heading.getInt("datatype")>3){
+							heading.remove("stringkeyunit");
+						}
+						heading.remove("datatype");
 					}
 				}
 				pStmt.close();

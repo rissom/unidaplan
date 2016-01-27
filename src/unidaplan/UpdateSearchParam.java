@@ -27,14 +27,12 @@ import org.json.JSONObject;
 	    JSONObject jsonIn = null;	
 	    int searchID = -1;
 	    int type = -1;
-	    JSONArray otparameter = null;
+	    JSONArray parameter = null;
 	    
     
 	    try {
 			 jsonIn = new JSONObject(in);
-			 System.out.println("jsonIn:"+jsonIn.toString());
 	         searchID=jsonIn.getInt("searchid");
-			 otparameter=jsonIn.getJSONArray("pparameter");
 		} catch (JSONException e) {
 			System.err.println("UpdateSearchParam: Error parsing ID-Field or comment");
 			response.setStatus(404);
@@ -59,24 +57,26 @@ import org.json.JSONObject;
 			
 			switch (type){
 				case 1:   //Object scearch
+						  parameter=jsonIn.getJSONArray("otparameter");
 						  query = "INSERT INTO searchobject (search,otparameter,lastchange,lastuser) "
 								   +"VALUES (?,?,NOW(),?)";
 						  break;
 				case 2:   // Process search
+						  parameter=jsonIn.getJSONArray("pparameter");
 						  query = "INSERT INTO searchprocess (search,pparameter,lastchange,lastuser) "
 							   +"VALUES (?,?,NOW(),?)";
 						  break;
 				default : // samplespecific process parameter
-					query = "INSERT INTO searchpo (search,poparameter,lastchange,lastuser) "
+					 	  parameter=jsonIn.getJSONArray("poparameter");
+					 	  query = "INSERT INTO searchpo (search,poparameter,lastchange,lastuser) "
 							   +"VALUES (?,?,NOW(),?)";
 						  break;
 			}		
 			
 			pStmt= dBconn.conn.prepareStatement(query);
-			
-			for (int i=0; i<otparameter.length();i++){
+			for (int i=0; i<parameter.length();i++){
 				pStmt.setInt(1, searchID);
-				pStmt.setInt(2, otparameter.getInt(i));
+				pStmt.setInt(2, parameter.getInt(i));
 				pStmt.setInt(3, userID);
 				pStmt.addBatch();
 			}
