@@ -59,18 +59,18 @@ public class SamplesByName extends HttpServlet {
 		 	DBconn.startDB();
 		 	JSONArray typeArray=jsonIn.getJSONArray("sampletypes");
 		 	if (typeArray.length()>0){
-		 		String query="SELECT  samplenames.id AS sampleid, samplenames.name, samplenames.typeid \n"
-		    		   		+"FROM samplenames \n" 
-		    		   		+"WHERE samplenames.name LIKE '%"+name+"%' AND "
+		 		String query="SELECT  samplenames.id AS sampleid, samplenames.name, samplenames.typeid "
+		    		   		+"FROM samplenames " 
+		    		   		+"WHERE UPPER(samplenames.name) LIKE UPPER('%"+name+"%') AND "
 		    		   		+"samplenames.typeID = ANY ('{";
 		 		String sep="";
 		 		for (int i=0; i<typeArray.length(); i++){
 		    	   query += sep+typeArray.getInt(i);
 		    	   sep=",";
 		 		}
-		 		query+= "}'::int[]) \n"
-		    		   	+"ORDER BY samplenames.name \n" 
-		    		   	+"LIMIT 20 \n";
+		 		query+= "}'::int[]) "
+		    		   	+"ORDER BY samplenames.name " 
+		    		   	+"LIMIT 20 ";
 		 		samplelist=DBconn.jsonfromquery(query); 
 		 	}
 		} catch (SQLException  eS) {
