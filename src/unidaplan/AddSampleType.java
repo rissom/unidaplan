@@ -39,6 +39,7 @@ import org.json.JSONObject;
 	    int position=0;
 	    int otgroup=1;
 
+		 System.out.println("jsonin: "+jsonIn.toString());
 
 	    
 	    // generate strings for the name and the unit
@@ -57,10 +58,12 @@ import org.json.JSONObject;
 			 if (jsonIn.has("description")){
 				 JSONObject description=jsonIn.getJSONObject("description");
 				 String [] descriptions = JSONObject.getNames(description);
-				 stringKeyDesc=dBconn.createNewStringKey(description.getString(descriptions[0]));
-				 for (int i=0; i<descriptions.length; i++){
-					 dBconn.addString(stringKeyDesc,descriptions[i],description.getString(descriptions[i]));
-				 }	 
+				 if (descriptions.length>0){
+					 stringKeyDesc=dBconn.createNewStringKey(description.getString(descriptions[0]));
+					 for (int i=0; i<descriptions.length; i++){
+						 dBconn.addString(stringKeyDesc,descriptions[i],description.getString(descriptions[i]));
+					 }	 
+				 }
 			 }
 			 if (jsonIn.has("position")){
 				 position=jsonIn.getInt("position");
