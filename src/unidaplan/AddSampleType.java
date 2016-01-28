@@ -3,10 +3,14 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
+import javafx.animation.KeyValue.Type;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -39,8 +43,6 @@ import org.json.JSONObject;
 	    int position=0;
 	    int otgroup=1;
 
-		 System.out.println("jsonin: "+jsonIn.toString());
-
 	    
 	    // generate strings for the name and the unit
 	    try {	
@@ -57,8 +59,8 @@ import org.json.JSONObject;
 			 }
 			 if (jsonIn.has("description")){
 				 JSONObject description=jsonIn.getJSONObject("description");
-				 String [] descriptions = JSONObject.getNames(description);
-				 if (descriptions.length>0){
+				 String[] descriptions = JSONObject.getNames(description);
+				 if (descriptions!=null && descriptions.length>0){
 					 stringKeyDesc=dBconn.createNewStringKey(description.getString(descriptions[0]));
 					 for (int i=0; i<descriptions.length; i++){
 						 dBconn.addString(stringKeyDesc,descriptions[i],description.getString(descriptions[i]));
@@ -78,7 +80,11 @@ import org.json.JSONObject;
 			pStmt.setInt(1, position);
 			pStmt.setInt(2, otgroup);
 		   	pStmt.setInt(3, stringKeyName);
-		   	pStmt.setInt(4, stringKeyDesc);
+		   	if (stringKeyDesc>0){
+			   	pStmt.setInt(4, stringKeyDesc);
+		   	}else{
+		   		pStmt.setNull(4, java.sql.Types.INTEGER);
+		   	}
 		   	pStmt.setInt(5, userID);
 		   	pStmt.executeUpdate();
 		} catch (SQLException e) {

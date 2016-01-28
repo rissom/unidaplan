@@ -118,10 +118,10 @@ function sampleController(sample,$state,$stateParams,$modal,$filter,types,sample
 			parameter.value=newValue;
 			var res;
 			  if (parameter.pid) {
-				res = sampleService.updateSampleParameter(parameter);
-				res.then(function(data, status, headers, config) {
+				res = sampleService.saveParameter(sample.id,parameter);
+				res.then(function() {
 						},
-						function(data, status, headers, config) {
+						function() {
 							parameter.value=oldValue;
 							console.log('error');
 							console.log(data);

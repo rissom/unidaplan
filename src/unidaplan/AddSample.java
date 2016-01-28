@@ -66,7 +66,7 @@ import org.json.JSONObject;
 		try{
 		// find the current maximum of sample name parameters
 		pStmt= dBconn.conn.prepareStatement( 	
-		"SELECT id FROM samplenames WHERE typeid=? ORDER BY name DESC LIMIT 1");
+		"SELECT id FROM samplenames WHERE typeid=? ORDER BY UPPER(name) DESC LIMIT 1");
 	   	pStmt.setInt(1, sampletypeID);
 	   	JSONObject answer=dBconn.jsonObjectFromPreparedStmt(pStmt);
 	   	int lastSampleID=0;
@@ -75,29 +75,73 @@ import org.json.JSONObject;
 	   	} 
 		pStmt.close();
 		
-		// Liste mit Titelparametern
+		// List of titleparameters of type Integer:
 		pStmt= dBconn.conn.prepareStatement( 	
 		"SELECT ot_parameters.id,idata.value FROM ot_parameters " 
 		+"JOIN o_integer_data idata ON idata.ot_parameter_id=ot_parameters.id "
 		+"WHERE ID_Field=true AND idata.objectid=? ORDER BY pos DESC");
 	   	pStmt.setInt(1, lastSampleID);
-	   	JSONArray lastTitleParameters=dBconn.jsonArrayFromPreparedStmt(pStmt);
+	   	JSONArray lastTitleIntParameters=dBconn.jsonArrayFromPreparedStmt(pStmt);
 		pStmt.close();
-				
+		Boolean intParameterExists=false;
+		
+		// check if there is any
+		if (lastTitleIntParameters.length()>0){
+		
 	   	
-		// Titelparameter schreiben
-		int increment=1;
-        for (int i=0; i<lastTitleParameters.length();i++){   
-        	JSONObject parameter=(JSONObject) lastTitleParameters.get(i);
-//        	System.out.println(((JSONObject)lastTitleParameters.get(i)).toString());
-        	pStmt= dBconn.conn.prepareStatement("INSERT INTO o_integer_data values(default, ?, ?, ?, NOW());");
+			// copy old integer parameters and increase last integer parameter
+			intParameterExists=true;
+			int increment=1;
+	        for (int i=0; i<lastTitleIntParameters.length();i++){   
+	        	JSONObject parameter=(JSONObject) lastTitleIntParameters.get(i);
+	//        	System.out.println(((JSONObject)lastTitleParameters.get(i)).toString());
+	        	pStmt= dBconn.conn.prepareStatement("INSERT INTO o_integer_data values(default, ?, ?, ?, NOW());");
+	        	pStmt.setInt(1, id);
+	        	pStmt.setInt(2, parameter.getInt("id"));
+	        	pStmt.setInt(3, parameter.getInt("value")+increment);
+	        	pStmt.executeUpdate();
+	        	pStmt.close();
+	        	increment=0;
+	        }
+        
+		} 
+		
+		// List of titleparameters of type String:
+		pStmt= dBconn.conn.prepareStatement( 	
+		"SELECT ot_parameters.id,sdata.value FROM ot_parameters " 
+		+"JOIN o_string_data sdata ON sdata.ot_parameter_id=ot_parameters.id "
+		+"WHERE ID_Field=true AND sdata.objectid=? ORDER BY pos DESC");
+	   	pStmt.setInt(1, lastSampleID);
+	   	JSONArray lastTitleStrParameters=dBconn.jsonArrayFromPreparedStmt(pStmt);
+		pStmt.close();
+		
+		
+		// copy old string parameters and increase replace the last string parameter
+        for (int i=0; i<lastTitleStrParameters.length();i++){   
+        	JSONObject parameter=(JSONObject) lastTitleStrParameters.get(i);
+        	pStmt= dBconn.conn.prepareStatement(
+        			"INSERT INTO o_string_data (objectid,ot_parameter_id,value,lastchange,lastuser)"
+        			+ " VALUES(?,?,?,NOW(),?);");
         	pStmt.setInt(1, id);
         	pStmt.setInt(2, parameter.getInt("id"));
-        	pStmt.setInt(3, parameter.getInt("value")+increment);
+        	String value="";
+        	System.out.println("intParameterExists: "+intParameterExists);
+        	System.out.println("i: "+i);
+        	System.out.println("lastTitleStrParameters.length: "+lastTitleStrParameters.length());
+        	if (!intParameterExists && i+1==lastTitleStrParameters.length()){
+        		value="new";
+        	}else{
+        		value=parameter.getString("value");
+        	}
+        	pStmt.setString(3, value);
+        	pStmt.setInt(4, userID);
         	pStmt.executeUpdate();
         	pStmt.close();
-        	increment=0;
         }
+		        
+		
+		
+        
 		dBconn.closeDB();
 		
 		

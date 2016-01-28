@@ -114,6 +114,7 @@ import org.json.JSONObject;
 				status="SQL error";
 			} catch (Exception e) {
 				System.err.println("UpdateParameter: some error occured");
+				e.printStackTrace();
 				status="misc error";
 			}
 		}
@@ -132,14 +133,18 @@ import org.json.JSONObject;
 				if (descriptionKey<1){
 					pStmt=dBconn.conn.prepareStatement(
 							"INSERT INTO string_key_table (description, lastchange, lastuser) VALUES (?,NOW(),?) RETURNING id");
-					pStmt.setString(1,newDesc.getString(descriptions[0]));
+					if (newDesc.getString(descriptions[0]).equals("")){
+						pStmt.setString(1,newDesc.getString(descriptions[1]));
+					}else{
+						pStmt.setString(1,newDesc.getString(descriptions[0]));
+					}
 					pStmt.setInt(2,userID);
 					descriptionKey=dBconn.getSingleIntValue(pStmt);
 					pStmt=dBconn.conn.prepareStatement(
 							"UPDATE paramdef SET description=? WHERE id=?");
 					pStmt.setInt(1,descriptionKey);
-					pStmt.setInt(2,userID);
-					descriptionKey=pStmt.executeUpdate();
+					pStmt.setInt(2,parameterID);
+					pStmt.executeUpdate();
 				}
 
 				pStmt.close();
@@ -155,7 +160,8 @@ import org.json.JSONObject;
 				// create database entries for the new descriptions
 				for (int i=0; i<descriptions.length; i++){
 					pStmt= dBconn.conn.prepareStatement( 			
-							 "INSERT INTO stringtable VALUES(default,?,?,?,NOW(),?)");
+							 "INSERT INTO stringtable (string_key,language,value,lastchange,lastuser) "
+							+"VALUES (?,?,?,NOW(),?)");
 					pStmt.setInt(1,descriptionKey);
 					pStmt.setString(2,descriptions[i]);
 					pStmt.setString(3,newDesc.getString(descriptions[i]));
@@ -168,6 +174,7 @@ import org.json.JSONObject;
 				status="SQL error";
 			} catch (Exception e) {
 				System.err.println("UpdateParameter: some error occured");
+				e.printStackTrace();
 				status="misc error";
 			}
 		}
@@ -192,8 +199,8 @@ import org.json.JSONObject;
 					pStmt=dBconn.conn.prepareStatement(
 							"UPDATE paramdef SET stringkeyunit=? WHERE id=?");
 					pStmt.setInt(1,unitKey);
-					pStmt.setInt(2,userID);
-					unitKey=pStmt.executeUpdate();
+					pStmt.setInt(2,parameterID);
+					pStmt.executeUpdate();
 				}
 
 				pStmt.close();
@@ -206,10 +213,11 @@ import org.json.JSONObject;
 				pStmt.close();
 				
 				
-				// create database entries for the new descriptions
+				// create database entries for the new units
 				for (int i=0; i<units.length; i++){
 					pStmt= dBconn.conn.prepareStatement( 			
-							 "INSERT INTO stringtable VALUES(default,?,?,?,NOW(),?)");
+							 "INSERT INTO stringtable (string_key,language,value,lastchange,lastuser) "
+							+"VALUES (?,?,?,NOW(),?)");
 					pStmt.setInt(1,unitKey);
 					pStmt.setString(2,units[i]);
 					pStmt.setString(3,newUnit.getString(units[i]));
@@ -222,6 +230,7 @@ import org.json.JSONObject;
 				status="SQL error";
 			} catch (Exception e) {
 				System.err.println("UpdateParameter: some error occured");
+				e.printStackTrace();
 				status="misc error";
 			}
 		}
@@ -292,7 +301,7 @@ import org.json.JSONObject;
 			try {
 				pStmt=dBconn.conn.prepareStatement(
 						"UPDATE paramdef SET format=? WHERE id=?");
-				pStmt.setString(1, jsonIn.getString("max"));
+				pStmt.setString(1, jsonIn.getString("format"));
 				pStmt.setInt(2,parameterID);				
 				pStmt.executeUpdate();
 				pStmt.close();	

@@ -374,11 +374,11 @@ public class Showsample extends HttpServlet {
 		// find the previous sample
 		try{
 		    pstmt=  dBconn.conn.prepareStatement( 	
-    		"SELECT  samplenames.id, samplenames.name, samplenames.typeid \n"
-			+"FROM samplenames \n"
-			+"WHERE ((samplenames.name < (SELECT samplenames.name FROM samplenames WHERE samplenames.id=?)) \n"
-			+"AND samplenames.typeid=(SELECT samplenames.typeid FROM samplenames WHERE samplenames.id=?)) \n"
-			+"ORDER BY samplenames.name DESC \n"
+    		"SELECT  samplenames.id, samplenames.name, samplenames.typeid "
+			+"FROM samplenames "
+			+"WHERE ((UPPER(samplenames.name) < UPPER((SELECT samplenames.name FROM samplenames WHERE samplenames.id=?))) "
+			+"AND samplenames.typeid=(SELECT samplenames.typeid FROM samplenames WHERE samplenames.id=?)) "
+			+"ORDER BY UPPER(samplenames.name) DESC "
 			+"LIMIT 1");
 			pstmt.setInt(1,objID);
 			pstmt.setInt(2,objID);
@@ -397,12 +397,12 @@ public class Showsample extends HttpServlet {
 		// find next sample	
 		try{
 		    pstmt=  dBconn.conn.prepareStatement( 	
-    		"SELECT  samplenames.id, samplenames.name, samplenames.typeid \n"
-			+"FROM samplenames \n"
-			+"WHERE ((samplenames.name > (SELECT samplenames.name FROM samplenames WHERE samplenames.id=?)) \n"
-			+"AND samplenames.typeid=(SELECT samplenames.typeid FROM samplenames WHERE samplenames.id=?)) \n"
-			+"ORDER BY samplenames.name \n"	
-    		+"LIMIT 1 \n");
+    		"SELECT  samplenames.id, samplenames.name, samplenames.typeid "
+			+"FROM samplenames "
+			+"WHERE ((UPPER(samplenames.name) > UPPER((SELECT samplenames.name FROM samplenames WHERE samplenames.id=?))) "
+			+"AND samplenames.typeid=(SELECT samplenames.typeid FROM samplenames WHERE samplenames.id=?)) "
+			+"ORDER BY UPPER(samplenames.name) "	
+    		+"LIMIT 1 ");
 			pstmt.setInt(1,objID);
 			pstmt.setInt(2,objID); 
 			table= dBconn.jsonArrayFromPreparedStmt(pstmt);

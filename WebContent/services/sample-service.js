@@ -11,6 +11,42 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 
 	
 	
+	this.addAncestors= function(sampleID,ancestors){
+		return restfactory.POST('add-ancestors',{"sampleid":sampleID,"ancestors":ancestors});
+	};
+	
+	
+	
+	this.addChildren= function(sampleID,children){
+		return restfactory.POST('add-children',{"sampleid":sampleID,"children":children});
+	};
+	
+	
+	
+	this.addSampleType = function(newSampleType){
+		return restfactory.POST("add-sample-type",newSampleType); 
+	};
+	
+
+	
+	// delete a sample (also from recent samples)
+	this.deleteSample = function(id){
+		for (var i=0;i<this.recentSamples.length;i++){
+			if (this.recentSamples[i].id==id){
+				this.recentSamples.splice(i,1);
+			}
+		}
+		return restfactory.DELETE("delete-sample?id="+id);
+	};
+	
+	
+	
+	this.getSamplesByName = function (name,details){
+		return restfactory.POST('/samples_by_name?name='+name,details);
+	};
+	
+	
+	
 	this.getSampleTypeParameters = function (sampleTypeID){
     	var defered=$q.defer();
 		var promise = restfactory.GET('/all-sample-type-params?sampletypeid='+sampleTypeID);
@@ -33,6 +69,12 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 		}); // promise.then
 	    return defered.promise;
 	}
+	
+	
+	
+	this.deleteSampleType=function(id){
+		return restfactory.DELETE("delete-sample-type?id="+id);
+	};
 
 	
 	
@@ -97,52 +139,6 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 	};
 	
 	
-	this.addAncestors= function(sampleID,ancestors){
-		return restfactory.POST('add-ancestors',{"sampleid":sampleID,"ancestors":ancestors});
-	};
-	
-	
-	
-	this.addChildren= function(sampleID,children){
-		return restfactory.POST('add-children',{"sampleid":sampleID,"children":children});
-	};
-	
-	
-	
-	// delete a sample (also from recent samples)
-	this.deleteSample = function(id){
-		for (var i=0;i<this.recentSamples.length;i++){
-			if (this.recentSamples[i].id==id){
-				this.recentSamples.splice(i,1);
-			}
-		}
-		return restfactory.DELETE("delete-sample?id="+id);
-	};
-	
-	
-	
-	this.getSamplesByName = function (name,details){
-		return restfactory.POST('/samples_by_name?name='+name,details);
-	};
-	
-	
-	
-	this.saveParameter = function(sampleid,parameter) {
-		var json={sampleid:sampleid, parameterid:parameter.id, value:parameter.value};
-		if ("date" in parameter) {
-			json.date=parameter.date;
-			json.tz=parameter.tz;
-		}
-		if ("time" in parameter) {
-			json.time=parameter.time;
-		}
-		if ("error" in parameter) {
-			json.error=parameter.error;
-		} 
-		return restfactory.POST('save-sample-parameter',json);
-	};
-
-	
 	
 	this.pushSample = function(sample){
 		var i;
@@ -161,17 +157,22 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 	};
 	
 	
-	
-	this.addSampleType = function(newSampleType){
-		return restfactory.POST("add-sample-type",newSampleType); 
-	};
-	
-	
-	
-	this.deleteSampleType=function(id){
-		return restfactory.DELETE("delete-sample-type?id="+id);
-	};
 
+	this.saveParameter = function(sampleid,parameter) {
+		var json={sampleid:sampleid, parameterid:parameter.id, value:parameter.value};
+		if ("date" in parameter) {
+			json.date=parameter.date;
+			json.tz=parameter.tz;
+		}
+		if ("time" in parameter) {
+			json.time=parameter.time;
+		}
+		if ("error" in parameter) {
+			json.error=parameter.error;
+		} 
+		return restfactory.POST('save-sample-parameter',json);
+	};
+	
 };
 
 
