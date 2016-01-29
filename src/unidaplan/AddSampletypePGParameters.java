@@ -54,16 +54,15 @@ import org.json.JSONObject;
 		    dBconn.startDB();	
 			for (int i=0; i<ids.length();i++){
 				pStmt= dBconn.conn.prepareStatement( 			
-						 "INSERT INTO ot_parameters (objecttypesID,parametergroup,compulsory,id_field,hidden,pos,definition,stringkeyname,lastuser)"
-						 + " VALUES((SELECT ot_id FROM ot_parametergrps WHERE ot_parametergrps.id=?),?,False,False,False,"
-						 + "(SELECT COALESCE ((SELECT max(p2.pos)+1 FROM ot_parameters p2 WHERE p2.parametergroup=?),1)),"
-						 + "?,(SELECT stringkeyname FROM paramdef WHERE paramdef.id=?),?)");
+						 "INSERT INTO ot_parameters (objecttypesID,parametergroup,compulsory,id_field,hidden,pos,definition,lastuser) "
+						 + " VALUES((SELECT ot_id FROM ot_parametergrps WHERE ot_parametergrps.id=?),?,False,False,False, "
+						 + "(SELECT COALESCE ((SELECT max(p2.pos)+1 FROM ot_parameters p2 WHERE p2.parametergroup=?),1)), "
+						 + "?,?)");
 			   	pStmt.setInt(1, parameterGrpID);
 			   	pStmt.setInt(2, parameterGrpID);
 			   	pStmt.setInt(3, parameterGrpID);
 			   	pStmt.setInt(4, ids.getInt(i));
-			   	pStmt.setInt(5, ids.getInt(i));
-			   	pStmt.setInt(6, userID);
+			   	pStmt.setInt(5, userID);
 //				pStmt.addBatch();  // Does not work. I don't know why.
 				pStmt.executeUpdate();
 			}

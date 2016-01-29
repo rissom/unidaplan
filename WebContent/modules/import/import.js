@@ -10,45 +10,23 @@ function importController(languages,parameters,restfactory,$translate,$scope,$st
 	this.languages=languages;
 
 	this.table = [];
-	
-	var dummytype={id:0, namef:function(){
-			return "<"+$translate.instant('new datatype')+">" 
-		}};
 		
 	this.sampleTypes = sampleTypes;
 	
 	this.processTypes = processTypes;
-	
-	this.lang1=$translate.instant(languages[0].name);
-	
-	this.lang2=$translate.instant(languages[1].name);
-	
-	this.newPGrpNameL1 = "Daten";
-	
-	this.newPGrpNameL2 = "data"
-	
-	this.sampleTypes.unshift(dummytype);
-	
-	this.processTypes.unshift(dummytype);
 	
 	this.activeSampleType = 0;
 	
 	this.activeProcessType = 0;
 	
 	this.parameters={};
-	
-	this.newSampleTypeName="new Sample Type";
-	
+		
 	this.types=[{index:"sample",label:$translate.instant("sample")},{
 		index:"process",label:$translate.instant("process")}];
 	
 	this.type=this.types[0].index;
 	
-	this.parameters.parameters = parameters;
-	
-	thisController.parameters.parameters.unshift(
-			{id:0,namef:function(){return "<"+$translate.instant("don't import")+">";}}
-		);
+//	this.parameters.parameters = parameters;
 	
 	
 

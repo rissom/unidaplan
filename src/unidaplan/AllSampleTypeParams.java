@@ -86,8 +86,9 @@ public class AllSampleTypeParams extends HttpServlet {
    			
    			// get the parameters
            	pStmt = dBconn.conn.prepareStatement(
-     		  	   "SELECT ot_parameters.id, compulsory, formula, hidden, pos, definition, ot_parameters.stringkeyname as name, "
-     		  	  + "stringkeyunit, parametergroup " 
+     		  	   "SELECT ot_parameters.id, compulsory, formula, hidden, pos, definition, "
+           		  +"  COALESCE (ot_parameters.stringkeyname,paramdef.stringkeyname) AS name, "
+     		  	  +"  stringkeyunit, parametergroup " 
      		  	  +"FROM ot_parameters " 
      		  	  +"JOIN paramdef ON (definition=paramdef.id)"
 				  +"WHERE objecttypesid=?"); // status, processnumber and date cannot be edited

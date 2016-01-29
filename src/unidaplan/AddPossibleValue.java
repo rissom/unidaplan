@@ -47,7 +47,7 @@ import org.json.JSONObject;
 			pstmt= DBconn.conn.prepareStatement( 			
 					 "INSERT INTO possible_values (parameterid, position, string, lastchange, lastuser) "
 					+"VALUES(?,"
-					+ "(SELECT max(position)+1 FROM possible_values b WHERE b.parameterid=? ) "
+					+ "(SELECT COALESCE (MAX(position)+1,1) FROM possible_values b WHERE b.parameterid=? ) "
 					+ ",?,NOW(),?)");
 			pstmt.setInt(1, parameterID);
 			pstmt.setInt(2, parameterID);

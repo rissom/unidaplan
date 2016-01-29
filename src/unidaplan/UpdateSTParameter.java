@@ -66,8 +66,17 @@ import org.json.JSONObject;
 				pStmt.setInt(1,parameterID);
 				int stringKey=dBconn.getSingleIntValue(pStmt);
 				pStmt.close();
-				
+				if (stringKey<1)
+				{
+					stringKey=dBconn.createNewStringKey(value);
+					pStmt=dBconn.conn.prepareStatement(
+							"UPDATE ot_parameters SET stringkeyname = ? WHERE id=?");
+					pStmt.setInt(1,stringKey);
+					pStmt.setInt(2,parameterID);
+					pStmt.executeUpdate();
+				}
 				dBconn.addString(stringKey, language, value);
+
 				
 			} catch (SQLException e) {
 				System.err.println("UpdateSTParameter: Problems with SQL query");

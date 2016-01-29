@@ -95,26 +95,26 @@ public class Showsample extends HttpServlet {
 	//get the title parameters
 	try {
 		pstmt= dBconn.conn.prepareStatement( 	 
-		   "SELECT ot_parameters.id, parametergroup, compulsory, ot_parameters.pos, "
-		   +"ot_parameters.stringkeyname,  pid, value, ot_parametergrps.id AS pgrpid, "
-		   +" ot_parametergrps.stringkey as parametergrp_key, st.description, paramdef.datatype, " 
-		   +" ot_parameters.id_field, paramdef.format "
-		   +"FROM ot_parameters "
-		   +"JOIN ot_parametergrps ON (ot_parameters.Parametergroup=ot_parametergrps.ID) " 
-		   +"JOIN paramdef ON (paramdef.id=ot_parameters.definition) "
-		   +"LEFT JOIN acc_sample_parameters a ON "
-		   +"(a.objectid=? AND a.id=ot_parameters.id ) "
-		   +"JOIN String_key_table st ON st.id=ot_parameters.stringkeyname "
-		   +"WHERE (ot_parameters.objecttypesID=? AND ot_parameters.id_field=true) " 
-		   +"ORDER BY pos");
+//		   "SELECT ot_parameters.id, parametergroup, compulsory, ot_parameters.pos, "
+//		   +"ot_parameters.stringkeyname,  pid, value, ot_parametergrps.id AS pgrpid, "
+//		   +" ot_parametergrps.stringkey as parametergrp_key, st.description, paramdef.datatype, " 
+//		   +" ot_parameters.id_field, paramdef.format "
+//		   +"FROM ot_parameters "
+//		   +"JOIN ot_parametergrps ON (ot_parameters.Parametergroup=ot_parametergrps.ID) " 
+//		   +"JOIN paramdef ON (paramdef.id=ot_parameters.definition) "
+//		   +"LEFT JOIN acc_sample_parameters a ON "
+//		   +"(a.objectid=? AND a.id=ot_parameters.id ) "
+//		   +"JOIN String_key_table st ON st.id=ot_parameters.stringkeyname "
+//		   +"WHERE (ot_parameters.objecttypesID=? AND ot_parameters.id_field=true) " 
+//		   +"ORDER BY pos");
+		   "SELECT * FROM acc_sample_parameters WHERE id_field=true AND objectid=?");		
 		pstmt.setInt(1,objID);
-		pstmt.setInt(2,typeid);
 		JSONArray titleparameters=dBconn.jsonArrayFromPreparedStmt(pstmt);
 		if (titleparameters.length()>0) {
 			jsSample.put("titleparameters",titleparameters);
 	      	for (int i=0; i<titleparameters.length();i++) {
 	      		JSONObject tempObj=(JSONObject) titleparameters.get(i);
-	      		stringkeys.add(Integer.toString(tempObj.getInt("stringkeyname")));
+	      		stringkeys.add(Integer.toString(tempObj.getInt("name_key")));
 	      	}
 		}
 	} catch (SQLException e) {
@@ -141,22 +141,24 @@ public class Showsample extends HttpServlet {
 		
 		
 		//get the parameters
-		pstmt= dBconn.conn.prepareStatement( 	 
-		   "SELECT ot_parameters.id, parametergroup, compulsory, ot_parameters.pos, "
-		   +" ot_parameters.stringkeyname,  pid, value, ot_parametergrps.id AS pgrpid, "
-		   +" ot_parametergrps.stringkey as parametergrp_key, st.description, paramdef.datatype, " 
-		   +" ot_parameters.id_field, paramdef.format, paramdef.stringkeyunit AS unit, "
-		   +" ot_parameters.definition "
-		   +"FROM ot_parameters "
-		   +"JOIN ot_parametergrps ON (ot_parameters.Parametergroup=ot_parametergrps.ID) " 
-		   +"JOIN paramdef ON (paramdef.id=ot_parameters.definition) "
-		   +"LEFT JOIN acc_sample_parameters a ON "
-		   +"(a.objectid=? AND a.id=ot_parameters.id AND hidden=FALSE) "
-		   +"JOIN String_key_table st ON st.id=ot_parameters.stringkeyname "
-		   +"WHERE (ot_parameters.objecttypesID=? AND ot_parameters.id_field=false) " 
-		   +"ORDER BY pos");
+		pstmt= dBconn.conn.prepareStatement( "SELECT * FROM acc_sample_parameters WHERE objectid=?");
+				
+				
+//		   "SELECT ot_parameters.id, parametergroup, compulsory, ot_parameters.pos, "
+//		   +" ot_parameters.stringkeyname,  pid, value, ot_parametergrps.id AS pgrpid, "
+//		   +" ot_parametergrps.stringkey as parametergrp_key, st.description, paramdef.datatype, " 
+//		   +" ot_parameters.id_field, paramdef.format, paramdef.stringkeyunit AS unit, "
+//		   +" ot_parameters.definition "
+//		   +"FROM ot_parameters "
+//		   +"JOIN ot_parametergrps ON (ot_parameters.Parametergroup=ot_parametergrps.ID) " 
+//		   +"JOIN paramdef ON (paramdef.id=ot_parameters.definition) "
+//		   +"LEFT JOIN acc_sample_parameters a ON "
+//		   +"(a.objectid=? AND a.id=ot_parameters.id AND hidden=FALSE) "
+//		   +"JOIN String_key_table st ON st.id=ot_parameters.stringkeyname "
+//		   +"WHERE (ot_parameters.objecttypesID=? AND ot_parameters.id_field=false) " 
+//		   +"ORDER BY pos");
 		pstmt.setInt(1,objID);
-		pstmt.setInt(2,typeid);
+//		pstmt.setInt(2,typeid);
 		JSONArray parameters=dBconn.jsonArrayFromPreparedStmt(pstmt);
 		if (parameters.length()>0 && parametergrps.length()>0) {
 			for (int j=0;j<parametergrps.length();j++){
@@ -166,9 +168,9 @@ public class Showsample extends HttpServlet {
 		      	for (int i=0; i<parameters.length();i++) {
 		      		JSONObject tParam=(JSONObject) parameters.get(i);
 
-		      		stringkeys.add(Integer.toString(tParam.getInt("stringkeyname")));
-		      		if (tParam.has("parametergroup")&&
-		      			tParam.getInt("parametergroup")==prmgrp.getInt("parametergroup")){		      			
+		      		stringkeys.add(Integer.toString(tParam.getInt("name_key")));
+		      		if (tParam.has("parametergrp_id")&&
+		      			tParam.getInt("parametergrp_id")==prmgrp.getInt("parametergroup")){		      			
 			      		if (tParam.has("unit")){ 
 			      			stringkeys.add(Integer.toString(tParam.getInt("unit")));
 			      		}

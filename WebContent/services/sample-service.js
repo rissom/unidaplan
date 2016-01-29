@@ -98,7 +98,7 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 				};
 				angular.forEach(paramgrp.parameter, function(parameter) {
 					parameter.namef=function(){
-						return key2string.key2string(parameter.stringkeyname,strings);
+						return key2string.key2string(parameter.name_key,strings);
 					};
 					if (parameter.parametergroup){
 						parameter.grpnamef=function(){
@@ -107,7 +107,7 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 					}
 					if (parameter.unit){
 						parameter.unitf=function(){
-							return key2string.key2string(parameter.unit,strings); 
+							return key2string.key2string(parameter.unit_key,strings); 
 						};
 					}
 					if (parameter.datatype==="date" || parameter.datatype==="timestamp"){			

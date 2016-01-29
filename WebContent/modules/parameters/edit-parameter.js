@@ -55,13 +55,17 @@ function editParamController($scope,$state,$stateParams,$translate,parameterServ
   
   this.newDescL2=parameters[index].descLang(this.lang2Key);
   
-  this.unitL1=parameters[index].unitLang(this.lang1Key);
-  
-  this.newUnitL1=parameters[index].unitLang(this.lang1Key);
-  
-  this.unitL2=parameters[index].unitLang(this.lang2Key);
-  
-  this.newUnitL2=parameters[index].unitLang(this.lang2Key);
+  if (parameters[index].stringkeyunit){
+	  this.unitL1=parameters[index].unitLang(this.lang1Key);
+	  this.newUnitL1=parameters[index].unitLang(this.lang1Key);
+	  this.unitL2=parameters[index].unitLang(this.lang2Key);
+	  this.newUnitL2=parameters[index].unitLang(this.lang2Key);
+  } else {
+	  this.unitL1="";
+	  this.newUnitL1="";
+	  this.unitL2="";
+	  this.newUnitL2="";
+  }	
   
   $scope.possibleValues=parameters[index].possiblevalues;
   
@@ -255,10 +259,15 @@ function editParamController($scope,$state,$stateParams,$translate,parameterServ
 			parameterid:$stateParams.parameterID
 		  }
 		  
-		  if (thisController.hasUnit()){
-			  var unit={};
+		  var unit={};
+		  if (thisController.newUnitL1 && thisController.newUnitL1!=""){
 			  unit[thisController.lang1Key]=thisController.newUnitL1;
+		  }
+		  if (thisController.newUnitL2 && thisController.newUnitL2!=""){
 			  unit[thisController.lang2Key]=thisController.newUnitL2;
+		  }
+		  		  
+		  if (thisController.hasUnit() && Object.keys(unit).length>0){
 			  newParam.unit=unit;
 		  }
 		  var promise = parameterService.updateParameter(newParam);
