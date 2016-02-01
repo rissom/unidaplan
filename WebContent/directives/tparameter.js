@@ -18,10 +18,10 @@ var tparameter = function() {
 		scope:{
 			parameter:'='
 		},
-		controller: function(){}
-
+		controller: function(){},
+		controllerAs: 'uparameterCtrl'
 	};
-	controllerAs: 'uparameterCtrl'
+	
 };
     
         
