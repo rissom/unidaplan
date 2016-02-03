@@ -107,7 +107,11 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 					}
 					if (parameter.unit){
 						parameter.unitf=function(){
-							return key2string.key2string(parameter.unit_key,strings); 
+							var unit="";
+							if (parameter.value!="" && parameter.value!=null){
+								unit=key2string.key2string(parameter.unit,strings);
+							}
+							return unit; 
 						};
 					}
 					if (parameter.datatype==="date" || parameter.datatype==="timestamp"){			
