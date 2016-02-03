@@ -15,10 +15,12 @@ function resultController(restfactory,result,$state,$translate,$stateParams,avSa
 		return avSampleTypeService.getType({typeid:type},types);
 	};
 
+	
   
 	this.getProcessType = function(type){
 		return avProcessTypeService.getProcessType ({typeid:type},pTypes);
 	};
+	
 	
 	
     this.saveCSV = function(){   	
@@ -57,6 +59,7 @@ function resultController(restfactory,result,$state,$translate,$stateParams,avSa
 					line+=col;
 				}
 			});
+// 			code in result.html: 
 //			<td ng-repeat="col in row.rowdata track by $index">
 //			 	<tparameter parameter="col"></tparameter>
         	line+="\n";
@@ -66,37 +69,20 @@ function resultController(restfactory,result,$state,$translate,$stateParams,avSa
     	var b=new Blob(csvData,{encoding:"UTF-8",type : 'text/csv;charset=UTF-8'});
     	var a = document.createElement('a');
     	a.href = window.URL.createObjectURL(b);
-        a.download = "searchresult.csv";  // Set to whatever file name you want
+    	console.log(window.URL.createObjectURL(b))
+        a.download = "searchresult.csv"; 
+    	// Set to whatever file name you want
         // Now just click the link you created
         // Note that you may have to append the a element to the body somewhere
         // for this to work in Firefox
-    	a.click();    	
+    	if(navigator.userAgent.indexOf("Firefox") != -1 ) 
+        {
+    		  document.body.insertBefore(a,document.body.childNodes[0]);
+        }
+    	a.click();
+    	
     };
     	
-    	
-//    	var params = angular.copy($stateParams);
-//    	params.output="csv";   	
-//		var xhr = new XMLHttpRequest();
-//		xhr.addEventListener('load', function(event) {
-//			thisController.importStuff();
-//		});
-		
-//		xhr.open("POST", 'result'); // xhr.open("POST", 'upload-file',true); ???
-		
-		// formdata
-//		var formData = new FormData();
-//		console.log (formData);
-//		formData.append('searchid',$stateParams.searchParams.searchid);
-//		formData.append('output','csv');
-//		formData.append('parameters',$stateParams.searchParams.parameters);
-//		xhr.send(formData);
-	
-	
-//    var reload=function() {
-//    	var current = $state.current;
-//    	var params = angular.copy($stateParams);
-//    	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
-//    };
 }  
 
 
