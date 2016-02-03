@@ -205,7 +205,15 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
         .state('groups', {
 	    	url: '/admin/groups',
 	        templateUrl: 'modules/groups/groups.html',
-	        controller: 'groupController as groupCtrl'
+	        controller: 'groupController as groupCtrl',
+	        resolve: {
+	        	groups : function(userService){
+	        		return userService.getGroups()
+	        	},
+	        	users : function(userService){
+	        		return userService.getUsers();
+	        	}
+	        }
         })
         
             
