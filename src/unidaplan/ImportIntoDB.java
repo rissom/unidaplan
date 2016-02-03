@@ -655,11 +655,11 @@ public class ImportIntoDB extends HttpServlet {
 	        	if (type.equals("process")){
 	        		
 	        		while (dataRow != null){
-			        	sampleID=createProcess(processtype);	        		
+			        	processID=createProcess(processtype);	        		
 			            String[] dataArray = dataRow.split(";");
 			            for (int i=0; i<dataArray.length;i++) {
 			            	if (parameter.getInt(i)>0){
-			            		saveValueProcess(dataArray[i],parameter.getInt(i), sampleID);
+			            		saveValueProcess(dataArray[i],parameter.getInt(i), processID);
 			            	} 
 					    }
 			            out.println(); // Print the data line.
