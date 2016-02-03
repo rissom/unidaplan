@@ -24,8 +24,8 @@ import org.json.JSONException;
 	    response.setContentType("application/json");
 	    request.setCharacterEncoding("utf-8");
 	    response.setCharacterEncoding("utf-8");
-	    Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
+//	    Authentificator authentificator = new Authentificator();
+//		int userID=authentificator.GetUserID(request,response);
 	    PrintWriter out = response.getWriter();
 	 	DBconnection DBconn=new DBconnection();
 	    try {  

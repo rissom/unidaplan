@@ -4,7 +4,7 @@
 function menuf(searchService,restfactory,$translate,$rootScope,$state) {
 
 	var thisController=this;
-	
+		
 	this.navCollapsed=true;
 	
 //	this.status = {
@@ -23,6 +23,25 @@ function menuf(searchService,restfactory,$translate,$rootScope,$state) {
 		  }
 	};
 	
+	
+	// init function: reads the username from local Browser storage.
+	if (thisController.checkLocalStorageSupport()) {
+		
+		var username=window.localStorage.getItem("username");
+		if (username){
+			$rootScope.username=username;
+		}else{
+			$rootScope.username=$translate.instant("user");
+		}
+		
+		var admin=window.localStorage.getItem("admin");
+		if (admin){
+			$rootScope.admin=admin;
+		}else{
+			$rootScope.admin=false;
+		}
+		
+	};
 	
 	
 	this.language = function(){

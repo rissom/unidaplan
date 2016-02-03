@@ -109,6 +109,36 @@ public class Unidatoolkit {
 		}
     	return newKey;
     }
+    
+    
 
+    public static Boolean isMemberOfGroup (int userID, int groupID, DBconnection dBconn){
+    	Boolean answer=false;
+    	try {		
+    		
+    		if (userID>0) {
+    			
+		    	// check if user is member of group
+        		PreparedStatement pStmt = null;
+				pStmt = dBconn.conn.prepareStatement(	
+			       	"SELECT count(userid)>0 FROM groupmemberships WHERE groupID=? AND userid=?");
+				pStmt.setInt(1,groupID);
+				pStmt.setInt(2,userID);
+				answer = dBconn.getSingleBooleanValue(pStmt);
+				pStmt.close();
+				
+    		} else{
+    			System.err.println("Unidatoolkit:isMemberOfGroup: No userid given.");
+    		}
+			
+		} catch (SQLException e) {
+			System.err.println("SQL-Error copying Strings");
+			e.printStackTrace();
+		} catch (Exception e) {
+			System.err.println("Misc error copying Strings");
+			e.printStackTrace();
+		}
+    	return answer;
+    }
 
 }

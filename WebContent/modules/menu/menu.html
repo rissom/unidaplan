@@ -7,7 +7,7 @@
 			<span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span>
 			<span class="icon-bar"></span> <span class="icon-bar"></span>
 		</button>
-		<a class="navbar-brand" href="http://www.isapotsdam.de">Isa Potsdam</a>
+		<a class="navbar-brand" ui-sref="sampleChoser">Isa Potsdam</a>
 	</div>
 	<div class="collapse navbar-collapse" collapse="menuCtrl.navCollapsed">
 		<ul class="nav navbar-nav">
@@ -58,7 +58,7 @@
 					<li><a ui-sref="openSearch"> {{'Show Searches'|translate}} </a></li>
 				</ul>
 			</li>
-			<li class="dropdown" dropdown="">
+			<li ng-show="$root.admin" class="dropdown" dropdown="">
 				<a href="#" class="dropdown-toggle" dropdown-toggle="" ng-disabled="disabled">
 					{{'Administration'|translate}} 
 				</a>
@@ -74,7 +74,12 @@
 			</li>
 			<li class="dropdown" dropdown="">
 				<a href="#" class="dropdown-toggle" dropdown-toggle="" ng-disabled="disabled">
+					<span ng-hide="$root.username">
 					{{'User'|translate}} 
+					</span>
+					<span>
+					{{$root.username}} 
+					</span>
 				</a>
 				<ul class="dropdown-menu" role="menu">
 					<li><a ng-click="menuCtrl.setLanguage('en')">EN</a></li>

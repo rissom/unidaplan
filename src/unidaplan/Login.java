@@ -42,14 +42,19 @@ public class Login extends HttpServlet {
 //		 e1.printStackTrace();
 	  }
 	  try{    
- 	DBconnection DBconn=new DBconnection();
-    DBconn.startDB();
+ 	DBconnection dBconn=new DBconnection();
+    dBconn.startDB();
     try {  
-		pstmt= DBconn.conn.prepareStatement( 	
-		"SELECT pw_hash, id FROM users WHERE username=?");
+		pstmt= dBconn.conn.prepareStatement( 	
+		"SELECT pw_hash, users.id, fullname, "
+		+ "groupmemberships.groupid AS admin "
+		+ "FROM users " 
+		+ "LEFT JOIN groupmemberships ON (groupid=1 AND userid=users.id) "
+		+ "WHERE username=?");
 		pstmt.setString(1,user);
-		hashjs=DBconn.jsonObjectFromPreparedStmt(pstmt);
+		hashjs=dBconn.jsonObjectFromPreparedStmt(pstmt);
 		pstmt.close();
+		
     }catch (SQLException e) {
 		System.err.println("Login: Problems with SQL query1");
 	}try{
@@ -58,13 +63,19 @@ public class Login extends HttpServlet {
 		String hash= hashjs.getString("pw_hash");
 		int id = hashjs.getInt("id");
 		if (PasswordHash.validatePassword(pw,hash)){
-			out.println("{\"status\":\"Password correct\"}");
+			JSONObject answer=new JSONObject();
+			answer.put("status","Password correct");
+			answer.put("fullname",hashjs.getString("fullname"));
+			if (hashjs.has("admin")){
+				answer.put("admin",true);
+			}
+			out.println(answer.toString());
 		session.setAttribute("userID",id);
 		}else{
 			response.setStatus(401);
 			out.println("{\"status\":\"Password incorrect\"}");
 		}
-		DBconn.closeDB();
+		dBconn.closeDB();
 		
 	} catch (NoSuchAlgorithmException | InvalidKeySpecException e1) {
 		// TODO Auto-generated catch block
@@ -75,6 +86,7 @@ public class Login extends HttpServlet {
 		response.setStatus(401);
 	} catch (JSONException e) {
 		System.err.println("Login: User not found or JSON error");
+		e.printStackTrace();
 		response.setStatus(401);
 	} catch (Exception e2) {
 		System.err.println("Login: Strange Problem while trying to log in");

@@ -5,7 +5,7 @@
     <welcome-file>index.html</welcome-file>
   </welcome-file-list>
   <session-config>
-    <session-timeout>10</session-timeout>
+    <session-timeout>1440</session-timeout>
   </session-config>
   <servlet>
     <description>shows data for a sample</description>
@@ -148,6 +148,17 @@
   </servlet-mapping>
   
   <servlet>
+    <description>Add a new group</description>
+    <display-name>AddGroup</display-name>
+    <servlet-name>AddGroup</servlet-name>
+    <servlet-class>unidaplan.AddGroup</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddGroup</servlet-name>
+    <url-pattern>/add-group</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
     <description>Add a new possible value</description>
     <display-name>AddPossibleValue</display-name>
     <servlet-name>AddPossibleValue</servlet-name>
@@ -169,6 +180,28 @@
     <url-pattern>/add-user</url-pattern>
   </servlet-mapping>
   
+    <servlet>
+    <description>AssignGroupMembers</description>
+    <display-name>AssignGroupMembers</display-name>
+    <servlet-name>AssignGroupMembers</servlet-name>
+    <servlet-class>unidaplan.AssignGroupMembers</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AssignGroupMembers</servlet-name>
+    <url-pattern>/assign-group-members</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>Delete a group</description>
+    <display-name>DeleteGroup</display-name>
+    <servlet-name>DeleteGroup</servlet-name>
+    <servlet-class>unidaplan.DeleteGroup</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeleteGroup</servlet-name>
+    <url-pattern>/delete-group</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
     <description>Get a list of users</description>
     <display-name>GetUsers</display-name>
@@ -179,6 +212,18 @@
     <servlet-name>GetUsers</servlet-name>
     <url-pattern>/get-users</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <description>Get the user groups (only admins)</description>
+    <display-name>GetGroups</display-name>
+    <servlet-name>GetGroups</servlet-name>
+    <servlet-class>unidaplan.GetGroups</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GetGroups</servlet-name>
+    <url-pattern>/get-groups</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
     <description>Get a single user</description>
     <display-name>GetUser</display-name>
@@ -189,7 +234,6 @@
     <servlet-name>GetUser</servlet-name>
     <url-pattern>/get-user</url-pattern>
   </servlet-mapping>
-  
   
    <servlet>
     <description>Delete Search Parameter</description>
@@ -916,7 +960,7 @@
     <url-pattern>/sample-type-params</url-pattern>
   </servlet-mapping>
   
-    <servlet>
+  <servlet>
     <description>AddSampletypePGParameters</description>
     <display-name>AddSampletypePGParameters</display-name>
     <servlet-name>AddSampletypePGParameters</servlet-name>
@@ -925,6 +969,17 @@
   <servlet-mapping>
     <servlet-name>AddSampletypePGParameters</servlet-name>
     <url-pattern>/add-st-pg-parameters</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>UpdateGroupName</description>
+    <display-name>UpdateGroupName</display-name>
+    <servlet-name>UpdateGroupName</servlet-name>
+    <servlet-class>unidaplan.UpdateGroupName</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateGroupName</servlet-name>
+    <url-pattern>/update-group-name</url-pattern>
   </servlet-mapping>
   
   <servlet>
