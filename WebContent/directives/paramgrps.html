@@ -1,4 +1,4 @@
-<div ng-repeat="paramgrp in parametergrps">
+<div ng-repeat="paramgrp in parametergrps | orderBy: 'pos'">
 	<h5 >{{paramgrp.grpnamef()}}</h5>
 		<paramfield 
 			parameters="paramgrp.parameter"
