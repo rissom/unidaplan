@@ -3,21 +3,28 @@
 </h3>
 <table class="table">
 	<thead class=parametertablehead>
-		<tr><td><b>ID</b></td><td><b>Name</b></td><td><b>{{'Members'|translate}}</b></td>
+		<tr><td><b>Name</b></td><td><b>{{'Members'|translate}}</b></td>
 			<td><b>{{'Delete Group'|translate}}</b></td></tr>
 	</thead>	
 	<tbody>
-		<tr ng-repeat="group in groupCtrl.groups">
-			<td>
-				{{group.id}}
+		<tr ng-repeat="group in groupCtrl.groups | orderBy: 'id'">
+			<td ng-dblclick="group.edit=true">
+				<span ng-hide="group.edit">{{group.name}}
+				</span>
+				<input ng-show="group.edit" 
+			   ng-keyup="groupCtrl.keyUp($event.keyCode,group)"
+			   ng-blur="groupCtrl.refuse()"
+			   type="text"
+			   ng-model="group.newName"
+			   autofocus>
 			</td>
-			<td>
-				{{group.name}}
-			</td>
-			<td>
+			<td> 
+				<div ng-repeat="user in groupCtrl.users | filter:groupCtrl.isMemberOf(group) " >
+					{{user.fullname}}
+				</div>
   				<button type="button"
 						class="btn btn-default btn-xs" 
-						ng-click="groupCtrl.addMembers(group)">
+						ng-click="groupCtrl.openDialog(group)">
 						<b>+/-</b>
 				</button>
 			</td>
@@ -25,17 +32,17 @@
 				<button type="button"
 						class="btn btn-default btn-xs" 
 						ng-click="groupCtrl.deleteGroup(group)"
-						ng-show="group.deletable" >
+						ng-show="group.id!=1" >
 					<span class="glyphicon glyphicon-remove"></span>
 				</button>
 			</td>
 		</tr>  <!-- ends ng-repeat -->
-		<tr><td></td><td></td><td></td><td></td></tr>
+		<tr><td></td><td></td><td></td></tr>
 	</tbody>
 </table>
 	<button type="button"
 			class="btn btn-default"
-			ng-click="" >
+			ng-click="groupCtrl.addGroup()" >
 		+  {{'Add Group'|translate}}
 	</button>
 

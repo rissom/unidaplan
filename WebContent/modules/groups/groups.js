@@ -1,62 +1,138 @@
 (function(){
 'use strict';
 
-function groupController(restfactory,$translate,$scope) {
+function groupController($modal,$translate,$scope,$state,$stateParams,groups,users,userService) {
 	
-	this.groups =  [{"id":1,"name":"Microscopy Group"},
-	                {"id":2,"name":"X-Ray Diffraction Group"},
-	                {"id":3,"name":"Solar Energy Groups","deletable":true}];			
+	this.groups = groups;
+	
+	this.users = users;
 
 	this.strings = [];
-			
-	this.loadData = function() {
-		var promise = restfactory.GET("get-groups.json"),
-		 	userCtrl=this;
-		
-		
-	    promise.then(function(rest) {
-	    	userCtrl.users = rest.data;
-	    }, function(rest) {
-	    	console.log("ERROR");
-	    });
-	};
 	
-	var thisUserCtrl = this;
-	$scope.$on('language changed', function(event, args) {
-//		thisUserCtrl.translate(args.language);
-	});
+	var thisController=this;
 	
-	this.deleteUser = function(user) {
-		var promise = restfactory.GET("delete-group?id="+group.id);
+	
+	
+	this.isMemberOf = function(group){
+		return function( user ) {
+			return (group.members.indexOf(user.id)>-1)
+		  };
+	}
+	
+	
+
+	this.addGroup = function(group) {
+		var promise = userService.addGroup();
 	    promise.then(function(rest) {
-	    	console.log("group deleted")
+	    	reload();
 	    }, function(rest) {
 	    	console.log("ERROR");
 	    });
 	}
 	
 	
-//	this.getRole = function(user) {
-//		if (user.role==undefined){
-//			return "horst";		
-//		}else{
-//			return this.roles[user.role];
-//		}
-//	};
-//	
+	this.assignUsers = function(group,users){
+		var userList=[];
+		users.map(function(user){userList.push(user.id)});
+		console.log("userList:"+userList)
+//		console.log ("assigning Users: ",userList," to group: ", group.id);
+		var promise = userService.assignGroupMembers(group.id,userList);
+	    promise.then(function(rest) {
+	    	reload();
+	    }, function(rest) {
+	    	console.log("ERROR");
+	    });
+	}
 	
 	
-//	this.translate = function(lang) {
-//		if (lang=='en') {
-//			this.roles=["Admins","Technicians","Scientist"];
-//		}else{
-//			this.roles=["Administrator","Techniker","Wissenschaftler"];
-//		}
-//	};
+	
+	this.deleteGroup = function(group) {
+		var promise = userService.deleteGroup(group);
+	    promise.then(function(rest) {
+	    	reload();
+	    }, function(rest) {
+	    	console.log("ERROR");
+	    });
+	}
+	
+	
+	
+	this.keyUp = function(keyCode,group) {
+		if (keyCode===13) {				// Return key pressed
+			var promise=userService.updateGroupName(group);	
+			promise.then(function(){
+				reload();
+			},function(){
+				console.log("error");
+			});
+		}
+		if (keyCode===27) {		// Escape key pressed
+			group.newName=group.name;
+			thisController.editmode=false;
+		}
+	};
+	
+	
+	
+	this.openDialog = function (group) {				
+	    var modalInstance = $modal.open({
+		    animation: false,
+		    templateUrl: 'modules/modal-user-choser/modal-user-choser.html',
+		    controller: 'modalUserChoser as mUserChoserCtrl',
+		    size: 'lg',
+		    resolve: {
+		    	users 		: function() { return users; },
+		    	chosenUsers : function() { 
+		    						var cUsers=[]; 
+		    						if (group.members){
+		    							cUsers=group.members;
+		    						}
+	    							return users.filter(function(testUser){return group.members.indexOf(testUser.id)>-1});
+		    				  },
+		        groups      : function() { 
+		        				var tgroups = groups.filter(function(testGroup){return testGroup!=group});
+		        				tgroups.unshift({name:'<'+$translate.instant("all groups")+'>', id:0});
+		        				return tgroups;
+		        			  },
+		        except		: function() {
+//		        				var eSamples2=eSamples.slice(0);
+//		        				eSamples2.push({sampleid:sample.id,typeid:sample.typeid,name:sample.name});
+//		        				return eSamples2;
+		        				return [];
+		        				},
+		        mode		: function() { return "multiple";},
+		        buttonLabel	: function() { return $translate.instant('assign to group'); }
+		    }		        
+		});
+	    
+	  	modalInstance.result.then(function (result) {  // get the new Userlist + Info if it is changed from Modal. 
+			if (result.changed==true){
+				thisController.assignUsers(group,result.chosen);
+			}
+	    }, function () {
+	        console.log('Strange Error: Modal dismissed at: ' + new Date());
+	    });
+	};
 
+	
+	
+	this.refuse = function(group) { // is called when editing of groupname is cancelled
+		group.newName=group.name;
+		thisController.editmode=false;
+	}
+	
+	
+
+	var reload=function() { // reload this pages data
+    	var current = $state.current;
+    	var params = angular.copy($stateParams);
+    	params.newSearch=false;
+    	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
+    };
+	
 };
     
         
-angular.module('unidaplan').controller('groupController',['restfactory','$translate','$scope',groupController]);
+angular.module('unidaplan').controller('groupController',['$modal','$translate','$scope','$state','$stateParams','groups','users','userService',groupController]);
 
 })();

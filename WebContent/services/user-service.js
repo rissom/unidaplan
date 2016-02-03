@@ -5,6 +5,53 @@ var userService = function(restfactory,$q){
 
 	var thisController=this;
 	
+	
+	
+	this.addGroup = function (group){
+		return restfactory.POST("add-group");
+	}
+	
+	
+	this.assignGroupMembers = function (groupid,userList){ // Assign Users to a group
+//		console.log ("chosen Users: ",userList);
+		return restfactory.PUT("assign-group-members",{id:groupid,members:userList});
+	}
+	
+	
+	this.deleteGroup = function (group){
+		return restfactory.DELETE("delete-group?id="+group.id);
+	}
+	
+	
+	
+	// delete user
+	this.deleteUser = function(user) {
+		return restfactory.DELETE("delete-user?id="+user.id);
+	};
+	
+	
+	
+	this.getGroups = function(){
+		var defered=$q.defer();
+	    var groups;
+		var promise =  restfactory.GET("get-groups");
+		promise.then(
+			function(rest) {
+				groups = rest.data;
+				angular.forEach(groups,function(grp){
+					grp.newName=grp.name;
+				});
+				defered.resolve(groups);
+			},function(rest) {
+			   	console.log("ERROR",rest);
+			   	defered.reject(rest);
+			}
+			);
+		return defered.promise;
+	}
+	
+	
+	
 	// return multiple users
 	this.getUsers = function() {
 	    var defered=$q.defer();
@@ -76,19 +123,17 @@ var userService = function(restfactory,$q){
 		return defered.promise;
 	};
 	
-	
-	
-	// delete user
-	this.deleteUser = function(user) {
-		return restfactory.DELETE("delete-user?id="+user.id);
-	};
-	
-	
+		
 	
 	// resend token
 	this.resendToken = function(user) {
 		return restfactory.PUT("resend-token?id="+user.id);
 	};
+	
+	
+	this.updateGroupName = function (group){
+		return restfactory.PUT("update-group-name",{id:group.id, name:group.newName})
+	}
 	
 };
 
