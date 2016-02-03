@@ -22,11 +22,13 @@ import org.json.JSONObject;
 public class DBconnection  {
 	Connection conn = null;
 	
+//	 local DB
 	static Boolean localDB = true;
-	static String dbURL2 = "jdbc:postgresql://localhost/thorse";
+	static String dbURL2 = "jdbc:postgresql://127.0.0.1/thorse";
 	static String user = "thorse";
 	static String pass = "jame765!";
 
+//	// remote DB
 //	static Boolean localDB = false;
 //	static String dbURL2 = "jdbc:postgresql://isadb.czghuuewemph.eu-west-1.rds.amazonaws.com/isaheat";
 //	static String user = "thorse";
@@ -43,6 +45,7 @@ public class DBconnection  {
 		Class.forName(DEFAULT_DRIVER);
 		conn = DriverManager.getConnection(dbURL2, user, pass);
 	} catch (SQLException e) {
+		e.printStackTrace();
 		System.err.println("DBconnection: Error connecting to database! Is PostgreSQL running?");
 		throw new Exception();
 	} catch (ClassNotFoundException e) {
@@ -322,6 +325,42 @@ public class DBconnection  {
 		return strings;
   	}
   
+  	
+  	
+  	 public Boolean getSingleBooleanValue(PreparedStatement pStmt) throws Exception{
+  		  Boolean result = false;
+  		  ResultSet queryResult=null;
+  		  	  try{
+  		          if (pStmt==null) {
+  			          System.err.println("DBconnection: prepared statement null! " );
+  		          } else {
+  		        	  queryResult = pStmt.executeQuery(); 
+  		          }
+  		          if (queryResult==null) {
+  		        	  System.err.println("DBconnection: statement result null! ");
+  		          } else {
+  		        	  if ( queryResult.next() ){
+  			                  result=queryResult.getBoolean(1);
+  			              }
+  		        	  else {
+//  		        		  it is perfectly normal to not have a result...
+//  		        		  System.out.println("DBconnection: No result!");
+  		        	  }
+  		          }
+  		          queryResult.close();
+  		          pStmt.close();
+  		  	  } catch (SQLException e) {   // Exception for SQL database
+  		  		  System.err.println("DBconnection: No result, or problem with the database");
+  		  		  System.err.println(pStmt.toString());
+  		  		  e.printStackTrace();
+  		  		  result=false;
+  		  	  } catch (Exception e) {
+  		  		  System.err.println("DBconnection: Some problem with database query. Error! ");
+//  		  		  e.printStackTrace();
+  			  }
+  	      return result;
+  	      }
+  	  
   
   
   public int getSingleIntValue(PreparedStatement pStmt) throws Exception{
