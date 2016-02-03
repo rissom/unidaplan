@@ -25,55 +25,55 @@ import org.json.JSONObject;
 		  
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
-		userID=userID+1;
-		userID=userID-1;
+		if (userID>0){
 
-		request.setCharacterEncoding("utf-8");
-	    response.setContentType("application/json");
-	    response.setCharacterEncoding("utf-8");
-	    PrintWriter out = response.getWriter();
-	        
-	    PreparedStatement pstmt = null;		// Declare variables
-		JSONArray sampletypes = null;
-	    
-	    DBconnection DBconn=new DBconnection();   // New connection to the database
-	    
-	 	ArrayList<String> stringkeys = new ArrayList<String>(); 
-
-	 	try {	
-		    DBconn.startDB();
-	 		pstmt= DBconn.conn.prepareStatement(
-	 			"SELECT ot.id,ot.string_key,ot.description, count(otg.id) "
-	 			+"FROM objecttypes ot "
-	 			+"LEFT JOIN ot_parametergrps otg ON otg.ot_id=ot.id "
-	 			+"GROUP BY ot.id");
-		    sampletypes=DBconn.jsonArrayFromPreparedStmt(pstmt); // get ResultSet from the database using the query
-
-	 		  if (sampletypes.length()>0) {
-	           	  for (int i=0; i<sampletypes.length();i++) {
-	           		  JSONObject dings=sampletypes.getJSONObject(i);
-	           		  if (dings.getInt("count")==0) dings.put("deletable",true);
-	           		  dings.remove("count");
-	           		  stringkeys.add(Integer.toString(dings.getInt("string_key")));
-	           		  if (dings.has("description")){
-	           			  stringkeys.add(Integer.toString(dings.getInt("description")));
-	           		  }
-	           	  }
-		          JSONObject answer=new JSONObject();
-		          answer.put("sampletypes", sampletypes);
-		          answer.put("strings", DBconn.getStrings(stringkeys));
-		          out.println(answer.toString());
-	  	        }
-	  	        else {					
-	  	    	  out.println("[]");			// return empty array
-	  	        }       
-		} catch (SQLException e) {
-			System.err.println("Sampletypes: Problems with SQL query for sample name");
-		} catch (JSONException e) {
-			System.err.println("Sampletypes: JSON Problem while getting sample name");
-		} catch (Exception e2) {
-			System.err.println("Sampletypes: Strange Problem while getting sample name");
-		}   
-		DBconn.closeDB();
+			request.setCharacterEncoding("utf-8");
+		    response.setContentType("application/json");
+		    response.setCharacterEncoding("utf-8");
+		    PrintWriter out = response.getWriter();
+		        
+		    PreparedStatement pstmt = null;		// Declare variables
+			JSONArray sampletypes = null;
+		    
+		    DBconnection DBconn=new DBconnection();   // New connection to the database
+		    
+		 	ArrayList<String> stringkeys = new ArrayList<String>(); 
+	
+		 	try {	
+			    DBconn.startDB();
+		 		pstmt= DBconn.conn.prepareStatement(
+		 			"SELECT ot.id,ot.string_key,ot.description, count(otg.id) "
+		 			+"FROM objecttypes ot "
+		 			+"LEFT JOIN ot_parametergrps otg ON otg.ot_id=ot.id "
+		 			+"GROUP BY ot.id");
+			    sampletypes=DBconn.jsonArrayFromPreparedStmt(pstmt); // get ResultSet from the database using the query
+	
+		 		  if (sampletypes.length()>0) {
+		           	  for (int i=0; i<sampletypes.length();i++) {
+		           		  JSONObject dings=sampletypes.getJSONObject(i);
+		           		  if (dings.getInt("count")==0) dings.put("deletable",true);
+		           		  dings.remove("count");
+		           		  stringkeys.add(Integer.toString(dings.getInt("string_key")));
+		           		  if (dings.has("description")){
+		           			  stringkeys.add(Integer.toString(dings.getInt("description")));
+		           		  }
+		           	  }
+			          JSONObject answer=new JSONObject();
+			          answer.put("sampletypes", sampletypes);
+			          answer.put("strings", DBconn.getStrings(stringkeys));
+			          out.println(answer.toString());
+		  	        }
+		  	        else {					
+		  	    	  out.println("[]");			// return empty array
+		  	        }       
+			} catch (SQLException e) {
+				System.err.println("Sampletypes: Problems with SQL query for sample name");
+			} catch (JSONException e) {
+				System.err.println("Sampletypes: JSON Problem while getting sample name");
+			} catch (Exception e2) {
+				System.err.println("Sampletypes: Strange Problem while getting sample name");
+			}   
+			DBconn.closeDB();
+		}
 	}
 }	
