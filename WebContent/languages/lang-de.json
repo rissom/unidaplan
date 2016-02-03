@@ -186,11 +186,8 @@
 "Replace sample" : "Probe ersetzen",
 "regular expression" : "regulärer Ausdruck",
 "Regular expression" : "Regulärer Ausdruck",
-<<<<<<< HEAD
-=======
 "Replace object" : "Objekt ersetzen",
 "resend token" : "Token erneut versenden",
->>>>>>> d41e52b... new State for editing of parameters. Editing of possible Values to
 "result of search" : "Suchergebnis",
 "role" : "Rolle",
 "running" : "läuft",
