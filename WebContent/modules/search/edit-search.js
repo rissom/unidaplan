@@ -16,8 +16,8 @@ function editSearchController(restfactory,$state,$stateParams,$translate,$modal,
 	
 	this.processType = ptypes.filter(function(sType){return sType.id==searchData.defaultprocess})[0]
 				
-	this.searchTypes = [{id:1,name:$translate.instant('Sample')},
-	{id:2,name:$translate.instant('Process')},
+	this.searchTypes = [{id:1,name:$translate.instant('Object')},
+	{id:2,name:$translate.instant('Property')},
 	{id:3,name:$translate.instant('object specific processparameters')}];
 	
 	this.searchType=searchData.type;
@@ -166,17 +166,7 @@ function editSearchController(restfactory,$state,$stateParams,$translate,$modal,
 		);
     };
     
-    
-    this.deleteOutParameter = function(parameter){
-		var oparameters=[];
-		for (var i=0; i<searchData.output.length;i++){ 
-			if (searchData.output[i].id!=parameter.id){
-				oparameters.push(searchData.output[i].id);
-			}
-		}
-		var promise=searchService.updateSearchOutput(thisController.search.id,oparameters);
-		promise.then(function(){reload();});		
-    }
+
 	
 	this.addSearch = function() {
 		// searchService.saveSearch
@@ -231,6 +221,25 @@ function editSearchController(restfactory,$state,$stateParams,$translate,$modal,
 		});
 	};
 	
+	
+	
+	this.changeType = function(){
+		console.log(thisController.searchType);
+	};
+	
+	
+    
+    this.deleteOutParameter = function(parameter){
+		var oparameters=[];
+		for (var i=0; i<searchData.output.length;i++){ 
+			if (searchData.output[i].id!=parameter.id){
+				oparameters.push(searchData.output[i].id);
+			}
+		}
+		var promise=searchService.updateSearchOutput(thisController.search.id,oparameters);
+		promise.then(function(){reload();});		
+    }
+    
 	
 	
 	this.deleteParameter = function (parameter) {

@@ -24,6 +24,7 @@ import org.json.JSONObject;
 	      throws ServletException, IOException {
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
+		if (userID>0) {
 		JSONArray parameters = null;
 		JSONArray sResults = null;
 		JSONArray samplenames = null;
@@ -93,7 +94,8 @@ import org.json.JSONObject;
 			switch (type){
 				case 1:   // sample search
 					query = "SELECT otparameter AS pid, comparison, value, "
-					  		 +"ot_parameters.stringkeyname,ot_parameters.stringkeyname,paramdef.datatype "
+					  		 +"COALESCE(ot_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname, "
+							 +"paramdef.datatype "
 							 +"FROM searchobject "
 							 +"JOIN ot_parameters ON (ot_parameters.id=otparameter) "
 							 +"JOIN paramdef ON (paramdef.id=ot_parameters.definition) "
@@ -211,8 +213,10 @@ import org.json.JSONObject;
 				
 				//create headings
 				pStmt= dBconn.conn.prepareStatement(
-						"SELECT ot_parameters.id,ot_parameters.stringkeyname, "
-						+"paramdef.stringkeyunit, paramdef.datatype "
+						"SELECT ot_parameters.id,"
+						+"COALESCE (ot_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname, "
+						+"paramdef.stringkeyunit, "
+						+"paramdef.datatype "
 						+"FROM searches "
 						+"JOIN osearchoutput ON osearchoutput.search = searches.id "
 						+"JOIN ot_parameters ON ot_parameters.id=otparameter "
@@ -383,4 +387,4 @@ import org.json.JSONObject;
     		response.setStatus(404);
     		e2.printStackTrace();
     	} }
-	}}	
+	}}	}

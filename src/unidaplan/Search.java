@@ -65,7 +65,8 @@ import org.json.JSONObject;
 			switch (type){
 			case 1:   // sample search
 				query = "SELECT searchobject.id, otparameter AS pid, comparison, value, "
-				  		 +"ot_parameters.stringkeyname,ot_parameters.objecttypesid AS typeid,paramdef.stringkeyunit,paramdef.datatype "
+				  		 +"COALESCE (ot_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname, "
+				  		 +"ot_parameters.objecttypesid AS typeid,paramdef.stringkeyunit,paramdef.datatype "
 						 +"FROM searchobject "
 						 +"JOIN ot_parameters ON (ot_parameters.id=otparameter) "
 						 +"JOIN paramdef ON (paramdef.id=ot_parameters.definition) "
@@ -112,13 +113,15 @@ import org.json.JSONObject;
 			// get the outputparameters according to searchtype
 			switch (search.getInt("type")){
 				case 1:   //Object scearch
-						  query = "SELECT ot_parameters.id, ot_parameters.stringkeyname,paramdef.datatype "
+						  query = "SELECT ot_parameters.id, "
+						  		 +"COALESCE (ot_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname, "
+						  		 +"paramdef.datatype "
 								 +"FROM osearchoutput "
 								 +"JOIN ot_parameters ON (ot_parameters.id=otparameter) "
 								 +"JOIN paramdef ON (paramdef.id=ot_parameters.definition) "
 								 +"WHERE search=?";
 						  break;
-				case 2:   //Process search (nicht getestet)
+				case 2:   //Process search
 					  query = "SELECT p_parameters.id, p_parameters.stringkeyname,paramdef.datatype "
 								 +"FROM psearchoutput "
 								 +"JOIN p_parameters ON (p_parameters.id=pparameter) "
@@ -134,10 +137,11 @@ import org.json.JSONObject;
 			}
 			pStmt= dBconn.conn.prepareStatement(query);
 			pStmt.setInt(1,id);
+//			System.out.println(pStmt.toString());
 			output = dBconn.jsonArrayFromPreparedStmt(pStmt);
 			pStmt.close();
 			for (int i=0; i<output.length();i++){
-				stringkeys.add(Integer.toString(output.getJSONObject(i).getInt("stringkeyname")));			
+				stringkeys.add(Integer.toString(output.getJSONObject(i).getInt("stringkeyname")));	
 			}
 		
 			
@@ -148,6 +152,7 @@ import org.json.JSONObject;
 			status="SQL Problem while getting experiment";
     	} catch (JSONException e) {
 			System.err.println("Search: JSON Problem while getting experiment");
+			e.printStackTrace();
     		response.setStatus(404);
 			status="JSON Problem while getting experiment";
     	} catch (Exception e2) {

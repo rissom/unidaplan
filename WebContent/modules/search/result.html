@@ -24,7 +24,7 @@
 	<thead class=parametertablehead>
 		<tr>
 			<td ng-show="resultCtrl.result.type==1"> {{'object'|translate}} </td>
-			<td ng-show="resultCtrl.result.type==2"> {{'process'|translate}} </td>
+			<td ng-show="resultCtrl.result.type==2"> {{'property'|translate}} </td>
 			<td ng-repeat="col in resultCtrl.result.headings">
 			 	{{col.namef()}} {{col.unitf()?'(':''}}{{col.unitf()}}{{col.unitf()?')':''}}
 			</td>
