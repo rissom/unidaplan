@@ -1,5 +1,9 @@
 {
 "action" : "bearbeiten",
+<<<<<<< HEAD
+=======
+"All of the following" : "Alle der Folgenden",
+>>>>>>> 2906ea8... language stuff new. Before was deleted?
 "all processtypes" : "alle Prozesstypen",
 "all parametergroups" : "alle Parametergruppen",
 "Processtypes" : "Prozesstypen",
@@ -20,8 +24,15 @@
 "Add Sampletype" : "Probentyp hinzufügen",
 "Add User" : "Benutzer hinzufügen",
 "Add/Remove samples" : "Proben hinzufügen/entfernen",
+<<<<<<< HEAD
 "Adjust parameters" : "Parameter anpassen",
 "administration": "Administration",	
+=======
+"Add/Remove objects" : "Objekte hinzufügen/entfernen",
+"Adjust parameters" : "Parameter anpassen",
+"administration": "Administration",	
+"all groups" : "Alle Gruppen",
+>>>>>>> 2906ea8... language stuff new. Before was deleted?
 "all processes" : "allen Prozessen",
 "all samples" : "allen Proben",
 "all types" : "Alle Typen",
@@ -31,6 +42,10 @@
 "and" : "und",
 "as well as" : "So wie",
 "Assign Parameters" : "Parameter zuweisen",
+<<<<<<< HEAD
+=======
+"assign to group" : "Gruppe zuweisen",
+>>>>>>> 2906ea8... language stuff new. Before was deleted?
 "assign to process" : "Mit Prozess verbinden",
 "Assign to process" : "Mit Prozess verbinden",
 "assign to sample" : "Zuweisen",
@@ -39,6 +54,10 @@
 "Available sample types" : "Mögliche Probentypen",
 "Available Samples":"Verfügbare Proben",
 "Back to parameters" : "Zurück zu Parametern",
+<<<<<<< HEAD
+=======
+"Back to searches" : "Zurück zu den Suchen",
+>>>>>>> 2906ea8... language stuff new. Before was deleted?
 "Base Parameters": "Basisparameter",
 "block" : "sperren",
 "Can be used by": "Kann benutzt werden von",
@@ -63,6 +82,10 @@
 "delete" : "löschen",
 "Delete Experiment" : "Experiment löschen",
 "Delete Group" : "Gruppe löschen",
+<<<<<<< HEAD
+=======
+"Delete Object" : "Objekt löschen",
+>>>>>>> 2906ea8... language stuff new. Before was deleted?
 "Delete Process" : "Prozess löschen",
 "Delete Sample" : "Probe löschen",
 "delete sample": "Probe löschen",
@@ -143,9 +166,17 @@
 "No." : "Nr.",
 "no." : "Nr.",
 "object" : "Objekt",
+<<<<<<< HEAD
 "object specific processparameters" : "Objektspezifische Zusatzparameter",
 "Objects" : "Objekte",
 "one of the" : "eine der",
+=======
+"Object" : "Objekt",
+"object specific processparameters" : "Objektspezifische Zusatzparameter",
+"Objects" : "Objekte",
+"one of the" : "eine der",
+"One of the following" : "Eine der Folgenden",
+>>>>>>> 2906ea8... language stuff new. Before was deleted?
 "only me" : "nur ich", 
 "Open Experiments" : "Experimente öffnen",
 "Originates from" : "Stammt ab von",
@@ -162,6 +193,11 @@
 "previous" : "vorherige",
 "process" : "Prozess",
 "Process" : "Prozess",
+<<<<<<< HEAD
+=======
+"property" : "Eigenschaft",
+"Property" : "Eigenschaft",
+>>>>>>> 2906ea8... language stuff new. Before was deleted?
 "processes" : "Prozesse",
 "Processes" : "Prozesse",
 "processtype" : "Prozesstyp",
@@ -182,8 +218,11 @@
 "Recently viewed objects" : "Zuletzt angesehene Objekte",
 "Recently viewed Samples" : "Zuletzt angesehene Proben",
 "recipe" : "Rezept",
+<<<<<<< HEAD
 "Replace object" : "Objekt ersetzen",
 "Replace sample" : "Probe ersetzen",
+=======
+>>>>>>> 2906ea8... language stuff new. Before was deleted?
 "regular expression" : "regulärer Ausdruck",
 "Regular expression" : "Regulärer Ausdruck",
 "Replace object" : "Objekt ersetzen",
@@ -198,6 +237,10 @@
 "Samples in process" : "Proben im Prozess",
 "Samples" : "Proben",
 "sampletype" : "Probentyp",
+<<<<<<< HEAD
+=======
+"select file" : "Datei auswählen",
+>>>>>>> 2906ea8... language stuff new. Before was deleted?
 "objecttype" : "Objekttyp",
 "Sampletypes" : "Probentypen",
 "Sat" : "Sa",
