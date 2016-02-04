@@ -79,7 +79,7 @@ public class SampleTypeParams extends HttpServlet {
 	 		 	
 	 		// check if the parameter can be deleted. (No, if corresponding data exists).
 	           	pStmt = dBconn.conn.prepareStatement(
-	     		  	   "SELECT ot_parameters.id, compulsory, formula, hidden, pos, definition, "
+	     		  	   "SELECT ot_parameters.id, compulsory, id_field, formula, hidden, pos, definition, "
 	           		  +"  COALESCE(ot_parameters.stringkeyname,paramdef.stringkeyname) as name, "
 	     		  	  +"  (blabla.count) IS NULL as deletable, stringkeyunit, paramdef.datatype " 
 	     		  	  +"FROM ot_parameters " 

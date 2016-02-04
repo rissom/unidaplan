@@ -144,6 +144,29 @@ import org.json.JSONObject;
 				e.printStackTrace();
 			}
 		}
+		
+		if (jsonIn.has("id_field")){
+			try {
+			    dBconn.startDB();	   
+				Boolean idField=jsonIn.getBoolean("id_field");
+				pStmt=dBconn.conn.prepareStatement(
+						"UPDATE ot_parameters SET (id_field,lastchange,lastuser)=(?,NOW(),?) WHERE id=?");
+				pStmt.setBoolean(1, idField);
+				pStmt.setInt(2,userID);
+				pStmt.setInt(3,parameterID);				
+				pStmt.executeUpdate();
+				pStmt.close();	
+			} catch (SQLException e){
+				System.err.println("UpdateSTParameter: SQL error reading id_field");
+				status="SQL error, id_field";
+			}catch(JSONException e) {
+				System.err.println("UpdateSTParameter: JSON error reading id_field");
+				status="JSON error, id_field";
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
 
 			dBconn.closeDB();
 

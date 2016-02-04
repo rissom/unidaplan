@@ -95,7 +95,6 @@ function editSTParamsController($state,$modal,$stateParams,$translate,
   		var tempParameter={ 
   			parameterid : parameter.id,
 			compulsory : parameter.compulsory};
-  		console.log(tempParameter);
   		var promise= avSampleTypeService.updateParameter(tempParameter);
   		promise.then(function(){
   			reload();
@@ -104,7 +103,17 @@ function editSTParamsController($state,$modal,$stateParams,$translate,
   		});
   	};
   
-  
+	this.setIDField=function(parameter){
+  		var tempParameter={ 
+  			parameterid : parameter.id,
+			id_field : parameter.id_field};
+  		var promise= avSampleTypeService.updateParameter(tempParameter);
+  		promise.then(function(){
+  			reload();
+  		},function(){
+  			console.log("error");
+  		});
+  	};
   
 	this.submitParameter=function(){
 		this.editmode=false;
