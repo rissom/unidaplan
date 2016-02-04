@@ -45,7 +45,7 @@ ng-class="{'1':'ok','2':'att','3':'failed'}[processCtrl.process.status]" >&nbsp;
 <br />
 	<table>
 		<tr>
-			<td align="center">
+			<td width="300" align="center">
 				<span ng-show="processCtrl.process.previous">&#x25c0; {{'previous'|translate}}<br />
 					<button class="btn btn-default"
 							ui-sref="process({processID:processCtrl.process.previous.id})">
@@ -53,7 +53,7 @@ ng-class="{'1':'ok','2':'att','3':'failed'}[processCtrl.process.status]" >&nbsp;
 					</button>
 				</span>
 			</td>
-			<td>&nbsp;<br /> &nbsp;
+			<td width="300" >&nbsp;<br /> &nbsp;
 				<button type="button" 
 						class="btn btn-danger"
 						ng-class="{'disabled':!processCtrl.deletable}"
@@ -62,7 +62,7 @@ ng-class="{'1':'ok','2':'att','3':'failed'}[processCtrl.process.status]" >&nbsp;
 					{{'Delete Process'|translate}}
 				</button>&nbsp;
 			</td>
-			<td align="center">
+			<td width="300"  align="center">
 				<span ng-show="processCtrl.process.next"> &nbsp;
 					{{'next'|translate}} &nbsp; &#9654; &nbsp; <br />
 					<button class="btn btn-default" 

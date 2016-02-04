@@ -126,7 +126,7 @@
 
 	    <table class="text-center">
 		    <tr>
-			    <td>
+			    <td width="300">
 					<span ng-show="sampleCtrl.previous">&#x25c0; {{'previous'|translate}} <br /> 
 					<button class="btn btn-default" ui-sref="sample({sampleID:sampleCtrl.previous.id})">
 							{{sampleCtrl.previous?sampleCtrl.getType(sampleCtrl.previous):''}} {{sampleCtrl.previous.name}}
@@ -134,7 +134,7 @@
 					&nbsp;	
 					</span>		
 				</td>
-				<td>		
+				<td width="300">		
 				&nbsp;
 				<br />
 					<button type="button" class="btn btn-danger"
@@ -144,7 +144,7 @@
 							{{'Delete Object'|translate}}
 					</button> 	
 				</td>
-				<td>		
+				<td width="300">		
 					<span ng-show="sampleCtrl.next"> &nbsp; {{'next'|translate}} &nbsp; &#9654;<br />
 						&nbsp;
 						<button class="btn btn-default" ui-sref="sample({sampleID:sampleCtrl.next.id})">
