@@ -242,7 +242,60 @@ public class DBconnection  {
 	  pStmt=conn.prepareStatement("INSERT INTO string_key_table VALUES (default,?,NOW()) RETURNING id");
 	  pStmt.setString(1, input);
 	  int id=getSingleIntValue(pStmt);
+	  pStmt.close();
 	  return id;
+  }
+  
+  
+  
+  public int copyStringKey(int key,int userID) throws Exception{
+	  PreparedStatement pStmt= null;
+	  pStmt=conn.prepareStatement(
+			  "INSERT INTO string_key_table (description,lastchange,lastuser) "
+			  +"(SELECT description,NOW(),? FROM string_key_table WHERE id=?) "
+			  +"RETURNING id");
+	  pStmt.setInt(1,userID);
+	  pStmt.setInt(2,key);
+	  int newKey=getSingleIntValue(pStmt);
+	  pStmt.close();
+	  
+	  // copy the corresponding stringtable-entries 
+	  pStmt=conn.prepareStatement(
+			  "INSERT INTO stringtable (string_key,language,value,lastchange,lastuser) "
+	  		  + "  (SELECT ?, language, value, NOW(), ? "
+	  		  + "  FROM stringtable WHERE string_key=?)");
+	  pStmt.setInt(1,newKey);
+	  pStmt.setInt(2,userID);
+	  pStmt.setInt(3,key);
+	  pStmt.executeUpdate();
+	  pStmt.close();
+	  return newKey;
+  }
+  
+  
+  
+  public int copyStringKey(int key,int userID,String description) throws Exception{
+	  PreparedStatement pStmt= null;
+	  pStmt=conn.prepareStatement(
+			  "INSERT INTO string_key_table (description,lastchange,lastuser) "
+			  +"VALUES (?,NOW(),?) "
+			  +"RETURNING id");
+	  pStmt.setString(1,description);
+	  pStmt.setInt(2,userID);
+	  int newKey=getSingleIntValue(pStmt);
+	  pStmt.close();
+	  
+	  // copy the corresponding stringtable-entries 
+	  pStmt=conn.prepareStatement(
+			  "INSERT INTO stringtable (string_key,language,value,lastchange,lastuser) "
+	  		  + "  (SELECT ?, language, value, NOW(), ? "
+	  		  + "  FROM stringtable WHERE string_key=?)");
+	  pStmt.setInt(1,newKey);
+	  pStmt.setInt(2,userID);
+	  pStmt.setInt(3,key);
+	  pStmt.executeUpdate();
+	  pStmt.close();
+	  return newKey;
   }
   
   

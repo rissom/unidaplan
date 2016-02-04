@@ -59,6 +59,7 @@ import org.json.JSONObject;
 			}
 
 			try {
+				Boolean newKey=false;
 			    dBconn.startDB();	   
 				// find the stringkey
 				pStmt=dBconn.conn.prepareStatement(
@@ -68,7 +69,13 @@ import org.json.JSONObject;
 				pStmt.close();
 				if (stringKey<1)
 				{
-					stringKey=dBconn.createNewStringKey(value);
+					newKey=true;
+					pStmt=dBconn.conn.prepareStatement(
+							"SELECT stringkeyname FROM paramdef WHERE id="
+							+ "(SELECT definition FROM ot_parameters WHERE id=?)");
+					pStmt.setInt(1,parameterID);
+					int key=dBconn.getSingleIntValue(pStmt);
+					stringKey=dBconn.copyStringKey(key,userID,value); // new Stringkey with value as description, old entries are copyied
 					pStmt=dBconn.conn.prepareStatement(
 							"UPDATE ot_parameters SET stringkeyname = ? WHERE id=?");
 					pStmt.setInt(1,stringKey);
@@ -80,6 +87,7 @@ import org.json.JSONObject;
 				
 			} catch (SQLException e) {
 				System.err.println("UpdateSTParameter: Problems with SQL query");
+				e.printStackTrace();
 				status="SQL error";
 			} catch (Exception e) {
 				System.err.println("UpdateSTParameter: some error occured");
