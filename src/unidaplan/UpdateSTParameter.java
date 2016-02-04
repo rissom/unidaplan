@@ -94,7 +94,7 @@ import org.json.JSONObject;
 			    dBconn.startDB();	   
 				Boolean compulsory=jsonIn.getBoolean("compulsory");
 				pStmt=dBconn.conn.prepareStatement(
-						"UPDATE ot_parameters SET (compulsory,lastuser)=(?,?) WHERE id=?");
+						"UPDATE ot_parameters SET (compulsory,lastchange,lastuser)=(?,NOW(),?) WHERE id=?");
 				pStmt.setBoolean(1, compulsory);
 				pStmt.setInt(2,userID);
 				pStmt.setInt(3,parameterID);				
@@ -117,11 +117,11 @@ import org.json.JSONObject;
 		if (jsonIn.has("hidden")){
 			try {
 			    dBconn.startDB();	   
-				boolean hidden=jsonIn.getBoolean("hidden");
+				Boolean hidden=jsonIn.getBoolean("hidden");
 				pStmt=dBconn.conn.prepareStatement(
-						"UPDATE ot_parameters SET (hidden,lastuser)=(?,?) WHERE id=?");
+						"UPDATE ot_parameters SET (hidden,lastchange,lastuser)=(?,NOW(),?) WHERE id=?");
 				pStmt.setBoolean(1, hidden);
-				pStmt.setInt(3,userID);
+				pStmt.setInt(2,userID);
 				pStmt.setInt(3,parameterID);
 				pStmt.executeUpdate();
 				pStmt.close();	

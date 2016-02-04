@@ -192,7 +192,6 @@ function editSTParamsController($state,$modal,$stateParams,$translate,
   
     this.keyUpParameter = function(keyCode,parameter) {
 		if (keyCode===13) {				// Return key pressed
-			console.log("Return pressed");
 			thisController.submitParameter();
 		}
 		if (keyCode===27) {		// Escape key pressed

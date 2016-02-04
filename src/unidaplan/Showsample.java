@@ -150,7 +150,7 @@ public class Showsample extends HttpServlet {
 			  +"JOIN paramdef ON (paramdef.id=op.definition) "
 			  +"LEFT JOIN acc_sample_parameters a ON "
 			  +"(a.objectid=? AND a.id=op.id AND hidden=FALSE) "
-			  +"WHERE (op.objecttypesID=? AND op.id_field=false)");
+			  +"WHERE (op.objecttypesID=? AND op.id_field=false AND op.hidden=false)");
 			pstmt.setInt(1,objID);
 			pstmt.setInt(2,typeid);
 //			System.out.println("pstmt: "+pstmt.toString());
