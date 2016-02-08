@@ -138,7 +138,9 @@ function editSTParamsController($state,$modal,$stateParams,$translate,
   	this.performAction=function(parameter,action){
   		// actions are defined in av-sampletype-service.getSTypeParams
   		if (action.action==="edit"  && !action.disabled){
-  			console.log("not implemented yet");
+  			console.log('going crazy')
+  			console.log('parameter',parameter)
+  			$state.go('editSingleSTParameter',{parameterID:parameter.id});
   		}
   		if (action.action==="delete" && !action.disabled) {
   			var promise = avSampleTypeService.deleteSTParameter(parameter.id);

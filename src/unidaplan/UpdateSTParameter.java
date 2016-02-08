@@ -59,7 +59,6 @@ import org.json.JSONObject;
 			}
 
 			try {
-				Boolean newKey=false;
 			    dBconn.startDB();	   
 				// find the stringkey
 				pStmt=dBconn.conn.prepareStatement(
@@ -69,7 +68,6 @@ import org.json.JSONObject;
 				pStmt.close();
 				if (stringKey<1)
 				{
-					newKey=true;
 					pStmt=dBconn.conn.prepareStatement(
 							"SELECT stringkeyname FROM paramdef WHERE id="
 							+ "(SELECT definition FROM ot_parameters WHERE id=?)");
@@ -78,6 +76,52 @@ import org.json.JSONObject;
 					stringKey=dBconn.copyStringKey(key,userID,value); // new Stringkey with value as description, old entries are copyied
 					pStmt=dBconn.conn.prepareStatement(
 							"UPDATE ot_parameters SET stringkeyname = ? WHERE id=?");
+					pStmt.setInt(1,stringKey);
+					pStmt.setInt(2,parameterID);
+					pStmt.executeUpdate();
+				}
+				dBconn.addString(stringKey, language, value);
+
+				
+			} catch (SQLException e) {
+				System.err.println("UpdateSTParameter: Problems with SQL query");
+				e.printStackTrace();
+				status="SQL error";
+			} catch (Exception e) {
+				System.err.println("UpdateSTParameter: some error occured");
+				status="misc error";
+			}
+		}
+		
+		
+		if (jsonIn.has("description")){
+		    try{
+				 newName=jsonIn.getJSONObject("description");
+				 language=JSONObject.getNames(newName)[0];
+				 value=newName.getString(language);
+			} catch (JSONException e) {
+				System.err.println("UpdateSTParameter: Error parsing ID-Field or comment");
+				response.setStatus(404);
+			}
+
+			try {
+			    dBconn.startDB();	   
+				// find the stringkey
+				pStmt=dBconn.conn.prepareStatement(
+						"SELECT description FROM ot_parameters WHERE id=?");
+				pStmt.setInt(1,parameterID);
+				int stringKey=dBconn.getSingleIntValue(pStmt);
+				pStmt.close();
+				if (stringKey<1)
+				{
+					pStmt=dBconn.conn.prepareStatement(
+							"SELECT description FROM paramdef WHERE id="
+							+ "(SELECT definition FROM ot_parameters WHERE id=?)");
+					pStmt.setInt(1,parameterID);
+					int key=dBconn.getSingleIntValue(pStmt);
+					stringKey=dBconn.copyStringKey(key,userID,value); // new Stringkey with value as description, old entries are copyied
+					pStmt=dBconn.conn.prepareStatement(
+							"UPDATE ot_parameters SET description = ? WHERE id=?");
 					pStmt.setInt(1,stringKey);
 					pStmt.setInt(2,parameterID);
 					pStmt.executeUpdate();
@@ -145,6 +189,8 @@ import org.json.JSONObject;
 			}
 		}
 		
+		
+		
 		if (jsonIn.has("id_field")){
 			try {
 			    dBconn.startDB();	   
@@ -167,8 +213,7 @@ import org.json.JSONObject;
 			}
 		}
 		
-
-			dBconn.closeDB();
+		dBconn.closeDB();
 
 	    // tell client that everything is fine
 	    Unidatoolkit.sendStandardAnswer(status,response);

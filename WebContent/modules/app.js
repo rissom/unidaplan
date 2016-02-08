@@ -142,7 +142,8 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 	        templateUrl: 'modules/admin-samples/edit-sample-param-grps.html',
 	        controller:"editSampleParamGrpsController as editSampleParamGrpsCtrl",
 	        resolve:{
-	        	sampleType: function(avSampleTypeService,$stateParams){
+	        	sampleType: 
+	        		function(avSampleTypeService,$stateParams){
         	   	    	return avSampleTypeService.getSampleTypeParamGrps($stateParams.sampleTypeID);
         	   	    }
 			}
@@ -150,12 +151,19 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
         
         
         
-        .state('error', {
-    		url: '/error',
-    		template: "<h1>ERROR!!!</h1>"
-    	})
+        .state('editSingleSTParameter', {
+	    	url: '/edit-single-st-parameter/{parameterID:int}',
+	        templateUrl: 'modules/admin-samples/edit-single-st-parameter.html',
+	        controller:"editSingleSTParameterController as editSingleSTParameterCtrl",
+	        resolve:{
+	        	parameter: 
+	        		function(avSampleTypeService,$stateParams){
+    	   	    		return avSampleTypeService.getSingleSTypeParameter($stateParams.parameterID);
+    	   	    	}
+			}
+        })
+
         
-    	
         
         .state('editSTParams', {
         	url: '/editsampletypeparams/{paramGrpID:int}',
@@ -172,6 +180,14 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 				}
         })
 
+        
+              
+        .state('error', {
+    		url: '/error',
+    		template: "<h1>ERROR!!!</h1>"
+    	})
+        
+    	
         
         .state('experiment', {
 	    	url: '/experiment?:experimentID&:editmode',

@@ -87,7 +87,6 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	
 	this.getSampleTypes = function() {
         var defered=$q.defer();
-    	var thisController=this;
     	var promise = restfactory.GET("sampletypes");
     	promise.then(function(rest) {
 	    	thisController.sampleTypes = rest.data.sampletypes;
@@ -122,7 +121,46 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 		return defered.promise;
 	};
 	
+	
+	
+	this.getSingleSTypeParameter = function(parameterID) {
+        var defered=$q.defer();
+    	var promise = restfactory.GET("single-st-parameter?parameterid="+parameterID);
+    	promise.then(function(rest) {
+	    	var parameter = rest.data;
+	    	var strings = rest.data.strings;
+	    	
+	    	parameter.pgnamef=function(){
+				return (key2string.key2string(parameter.parametergroupname,strings));
+			};
+	    	parameter.sampletypenamef=function(){
+				return (key2string.key2string(parameter.sampletypename,strings));
+			};
+		    parameter.namef=function(){
+					return (key2string.key2string(parameter.name,strings));
+				};
+			parameter.nameLang=function(lang){
+					return (key2string.key2stringWithLangStrict(parameter.name,strings,lang));
+				};
+			parameter.descf=function(){
+					return (key2string.key2string(parameter.description,strings));
+				};
+			parameter.descLang=function(lang){
+					return (key2string.key2stringWithLangStrict(parameter.description,strings,lang));
+				};
+//			if (parameter.stringkeyunit){
+				parameter.unitLang=function(lang){
+					return (key2string.key2stringWithLangStrict(parameter.stringkeyunit,strings,lang));
+				};
+//			}
+	        defered.resolve(parameter);
+    	}, function(rest) {
+    		console.log("Error loading sampletypes");
+    	});
+		return defered.promise;
+	};
 	     
+	
 	
 	this.getSTypeParams = function(paramGrpID){
 		var defered=$q.defer();
@@ -158,8 +196,6 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
     					);
 	    			});
 	    		}
-	    		
-	    		                   
 	         });
 	         
 	    	defered.resolve(thisController.paramGrp);  	
@@ -226,7 +262,6 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	this.moveParameterToGrp = function(parameter,destination){
 		return restfactory.PUT('move-parameter-to-grp',{parameterid:parameter,destination:destination});
 	}
-
 	
 	
 	this.updateSampleTypeData=function(sampletypeID,field,value,lang){

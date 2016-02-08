@@ -716,6 +716,17 @@
   </servlet-mapping>
   
   <servlet>
+    <description>gives data for one sample parameter definition</description>
+    <display-name>SingleSTParameter</display-name>
+    <servlet-name>SingleSTParameter</servlet-name>
+    <servlet-class>unidaplan.SingleSTParameter</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SingleSTParameter</servlet-name>
+    <url-pattern>/single-st-parameter</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
     <description>UpdateSearchOutput</description>
     <display-name>UpdateSearchOutput</display-name>
     <servlet-name>UpdateSearchOutput</servlet-name>

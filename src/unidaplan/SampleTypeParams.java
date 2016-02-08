@@ -83,7 +83,7 @@ public class SampleTypeParams extends HttpServlet {
 	           		  +"  COALESCE(ot_parameters.stringkeyname,paramdef.stringkeyname) as name, "
 	     		  	  +"  (blabla.count) IS NULL as deletable, stringkeyunit, paramdef.datatype " 
 	     		  	  +"FROM ot_parameters " 
-	     		  	  +"JOIN paramdef ON (definition=paramdef.id)"
+	     		  	  +"JOIN paramdef ON (definition=paramdef.id) "
 	     		  	  +"LEFT JOIN "
 				  	  +"( "
 					  +"  SELECT count(a.id),ot_parameter_id FROM o_integer_data a GROUP BY ot_parameter_id "
