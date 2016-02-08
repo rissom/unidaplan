@@ -52,15 +52,17 @@ public class SampleTypeParams extends HttpServlet {
 	    try{
 		 	dBconn.startDB();
  			pStmt = dBconn.conn.prepareStatement(	
-			   "SELECT id,ot_id AS sampletype,stringkey AS name "
+			   "SELECT ot_parametergrps.id,ot_id AS sampletype,ot_parametergrps.stringkey AS name, "
+   		  	  +" objecttypes.string_key AS sampletypename "
 			  +"FROM ot_parametergrps "
+   		  	  +"LEFT JOIN objecttypes ON (ot_parametergrps.ot_id=objecttypes.id) "					   
 			  +"WHERE ot_parametergrps.id=?");
 	 		pStmt.setInt(1, paramgroupid);
  			paramGrp=dBconn.jsonObjectFromPreparedStmt(pStmt); // get ResultSet from the database using the query
  			pStmt.close();
  			if (paramGrp.length()>0){
 	 		 	stringkeys.add(Integer.toString(paramGrp.getInt("name"))); 
-	 		 	
+	 		 	stringkeys.add(Integer.toString(paramGrp.getInt("sampletypename")));
 	 		 	// get siblings
 	 		 	pStmt = dBconn.conn.prepareStatement(	
 	 				   "SELECT otp.id,stringkey AS name "
@@ -81,7 +83,7 @@ public class SampleTypeParams extends HttpServlet {
 	           	pStmt = dBconn.conn.prepareStatement(
 	     		  	   "SELECT ot_parameters.id, compulsory, id_field, formula, hidden, pos, definition, "
 	           		  +"  COALESCE(ot_parameters.stringkeyname,paramdef.stringkeyname) as name, "
-	     		  	  +"  (blabla.count) IS NULL as deletable, stringkeyunit, paramdef.datatype " 
+	     		  	  +"  (blabla.count) IS NULL as deletable, stringkeyunit, paramdef.datatype "
 	     		  	  +"FROM ot_parameters " 
 	     		  	  +"JOIN paramdef ON (definition=paramdef.id) "
 	     		  	  +"LEFT JOIN "

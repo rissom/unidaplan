@@ -16,6 +16,8 @@ function editSTParamsController($state,$modal,$stateParams,$translate,
     this.strings=parameterGrp.strings;
   
     this.sampletype=parameterGrp.sampletype;
+    
+    this.sampletypenamef = parameterGrp.sampletypenamef;
   
     this.languages=languages;
   

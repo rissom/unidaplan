@@ -167,9 +167,12 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	    var promise = restfactory.GET("sample-type-params?paramgrpid="+paramGrpID);
 	    promise.then(function(rest) {
 	    	thisController.paramGrp = rest.data;
-	    	thisController.paramGrp.nameLang=function(lang){
+	    	thisController.paramGrp.nameLang = function(lang){
     			return (key2string.key2stringWithLangStrict(thisController.paramGrp.name,thisController.paramGrp.strings,lang));
 	    	};
+	    	thisController.paramGrp.sampletypenamef = function(){
+				return (key2string.key2string(thisController.paramGrp.sampletypename,thisController.paramGrp.strings));
+			};
 	    	angular.forEach(thisController.paramGrp.parameters,function(parameter) {
 	    		parameter.namef=function(){
 	    			return (key2string.key2string(parameter.name,thisController.paramGrp.strings));
