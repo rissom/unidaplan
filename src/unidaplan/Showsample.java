@@ -153,7 +153,7 @@ public class Showsample extends HttpServlet {
 			  +"WHERE (op.objecttypesID=? AND op.id_field=false AND op.hidden=false)");
 			pstmt.setInt(1,objID);
 			pstmt.setInt(2,typeid);
-//			System.out.println("pstmt: "+pstmt.toString());
+//			System.err.println("pstmt: "+pstmt.toString());
 			JSONArray parameters=dBconn.jsonArrayFromPreparedStmt(pstmt);
 			if (parameters.length()>0 && parametergrps!=null && parametergrps.length()>0) {
 				for (int j=0;j<parametergrps.length();j++){
