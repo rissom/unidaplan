@@ -224,7 +224,7 @@ function editSearchController(restfactory,$state,$stateParams,$translate,$modal,
 	
 	
 	this.changeType = function(){
-		console.log(thisController.searchType);
+		searchService.updateSearchType(thisController.search.id,thisController.searchType);
 	};
 	
 	

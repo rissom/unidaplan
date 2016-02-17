@@ -67,6 +67,7 @@ import org.json.JSONObject;
 							   +"VALUES (?,?,NOW(),?)";
 						  break;
 				default : // samplespecific process parameter
+						  System.out.println("hallo");
 					 	  parameter=jsonIn.getJSONArray("poparameter");
 					 	  query = "INSERT INTO searchpo (search,poparameter,lastchange,lastuser) "
 							   +"VALUES (?,?,NOW(),?)";
@@ -88,6 +89,7 @@ import org.json.JSONObject;
 			status="SQL error";
 		} catch (Exception e) {
 			System.err.println("UpdateSearchParam: some error occured");
+			e.printStackTrace();
 			status="misc error";
 		}
 		

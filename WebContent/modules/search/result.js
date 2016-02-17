@@ -23,10 +23,49 @@ function resultController(restfactory,result,$state,$translate,$stateParams,avSa
 	
 	
 	
+	this.processArray = function(){
+		
+		//create empty array with length of sampledata
+		var emptySampleData=[];
+		for (var i=0; i<result.samples[0].sampledata.length+1;i++){
+			emptySampleData.push("");
+		}
+		
+		// create a 2 dimensional array for HTML-Table 
+		var processedArray=[];
+		var line=0;
+		for (var i=0; i<result.samples.length; i++){
+			var sample=result.samples[i];
+			processedArray.push(result.samples[i].sampledata);
+			processedArray[line].unshift({
+				id:sample.sampleid,
+				name:sample.samplename,
+				type: sample.sampletype
+				}
+			);
+			for (var j=0; j<result.samples[i].processes.length;j++){
+				if (j>0) {
+					processedArray.push(emptySampleData);
+				}
+				processedArray[line]=processedArray[line].concat(result.samples[i].processes[j].processdata); // concat processdata
+				line++;
+			}
+		}
+		return processedArray;
+	}
+	
+	
+	
+	if (result.type==4){
+		this.processedArray=this.processArray();
+	}
+	
+	
+	
     this.saveCSV = function(){   	
     	var csvData=[];
     	var line="";
-    	if (result.type==1) {
+    	if (result.type==1 || result.type==4) {
 			line+="Objekt;";
 		}
 		if (result.type==2) {
@@ -43,28 +82,51 @@ function resultController(restfactory,result,$state,$translate,$stateParams,avSa
     	});
     	line+="\n";
     	csvData.push(line);
+    	
+    	if (result.type<4){
   
-    	angular.forEach (result.data,function(row){
+	    	angular.forEach (result.data,function(row){
+	    		line="";
+	    		if (result.type==1) {
+	    			line+=thisController.getType(row.type);
+	    		}
+	    		if (result.type==2) {
+	    			line+=thisController.getProcessType(row.type);
+	    		}
+				line+=row.name;
+				angular.forEach(row.rowdata, function(col){
+					line+=";"
+					if (col!=null){
+						line+=col;
+					}
+				});
+	// 			code in result.html: 
+	//			<td ng-repeat="col in row.rowdata track by $index">
+	//			 	<tparameter parameter="col"></tparameter>
+	        	line+="\n";
+	    		csvData.push(line)
+	    	});
+    	} else{
     		line="";
-    		if (result.type==1) {
-    			line+=thisController.getType(row.type);
+    		var lastObjectName;
+    		console.log("processed Array Length: "+thisController.processedArray.length);
+    		for (var i=0;i<thisController.processedArray.length;i++){
+    			if (thisController.processedArray[i][0].name){
+    				line=thisController.processedArray[i][0].name+";";
+    				lastObjectName=thisController.processedArray[i][0].name;
+    			} else{
+    				line=lastObjectName;
+    			}
+    			for (var j=1;j<thisController.processedArray[i].length;j++){
+    				if (thisController.processedArray[i][j]){
+    					line+=thisController.processedArray[i][j];
+    				}
+    				line+=";";
+    			}
+    			line+="\n";
+    			csvData.push(line);
     		}
-    		if (result.type==2) {
-    			line+=thisController.getProcessType(row.type);
-    		}
-			line+=row.name;
-			angular.forEach(row.rowdata, function(col){
-				line+=";"
-				if (col!=null){
-					line+=col;
-				}
-			});
-// 			code in result.html: 
-//			<td ng-repeat="col in row.rowdata track by $index">
-//			 	<tparameter parameter="col"></tparameter>
-        	line+="\n";
-    		csvData.push(line)
-    	});
+    	}
     	
     	var b=new Blob(csvData,{encoding:"UTF-8",type : 'text/csv;charset=UTF-8'});
     	var a = document.createElement('a');

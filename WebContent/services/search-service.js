@@ -123,23 +123,39 @@ var searchService = function (restfactory,$q,$translate,key2string,languages) {
 		var defered=$q.defer();
 		var promise = restfactory.GET("search?id="+searchID);
 		promise.then(function(rest) {
-		  	thisController.search = rest.data.search;
+		  	var search = rest.data.search;
 		  	var strings = rest.data.strings;
-	  		thisController.search.namef=function(){
-	  			return key2string.key2string(thisController.search.name,strings);
+	  		search.namef=function(){
+	  			return key2string.key2string(search.name,strings);
 	  		};
-	  		thisController.search.nameL1=
-	  			key2string.key2stringWithLangStrict(thisController.search.name,
+	  		search.nameL1=
+	  			key2string.key2stringWithLangStrict(search.name,
 	  			strings,languages[0].key);
-		  	thisController.search.nameL2=
-		  		key2string.key2stringWithLangStrict(thisController.search.name,
+		  	search.nameL2=
+		  		key2string.key2stringWithLangStrict(search.name,
 		  		languages[1].key);
-		  	angular.forEach (thisController.search.parameter,function(parameter){
-		  		parameter.fname=function(){
-		  			return key2string.key2string(parameter.stringkeyname,strings);
-		  		}
-		  	});
-			defered.resolve(thisController.search);
+		  	if (search.sparameters){
+			  	angular.forEach (search.sparameters,function(parameter){
+			  		parameter.namef=function(){
+			  			return key2string.key2string(parameter.stringkeyname,strings);
+			  		}
+			  	});
+		  	}
+		  	if (search.pparameters){
+			  	angular.forEach (search.pparameters,function(parameter){
+			  		parameter.namef=function(){
+			  			return key2string.key2string(parameter.stringkeyname,strings);
+			  		}
+			  	});
+		  	}
+		  	if (search.poparameters){
+			  	angular.forEach (search.poparameters,function(parameter){
+			  		parameter.fname=function(){
+			  			return key2string.key2string(parameter.stringkeyname,strings);
+			  		}
+			  	});
+		  	}
+			defered.resolve(search);
 		});
        return defered.promise;
 	};
@@ -202,21 +218,43 @@ var searchService = function (restfactory,$q,$translate,key2string,languages) {
 	
 	this.startSearch = function (searchparameters){
 		var defered=$q.defer();
-		var promise = restfactory.POST("result",searchparameters);
-		promise.then(function(rest) {
-			thisController.result = rest.data;
-			angular.forEach(thisController.result.headings,function(heading){
-				heading.namef=function(){
-					return key2string.key2string(heading.stringkeyname,rest.data.strings);
-				}
-				if (heading.stringkeyunit){
-					heading.unitf=function(){
-						return key2string.key2string(heading.stringkeyunit,rest.data.strings);
+		if (searchparameters.searchtype<4){
+			var promise = restfactory.POST("result",searchparameters);
+			promise.then(function(rest) {
+				var result = rest.data;
+				var strings = rest.data.strings;
+				angular.forEach(result.headings,function(heading){
+					heading.namef=function(){
+						return key2string.key2string(heading.stringkeyname,strings);
 					}
-				}
+					if (heading.stringkeyunit){
+						heading.unitf=function(){
+							return key2string.key2string(heading.stringkeyunit,strings);
+						}
+					}
+				});
+				defered.resolve(result);
 			});
-			defered.resolve(thisController.result);
-		});
+		} else {
+			var promise = restfactory.POST("result-type4",searchparameters);
+			promise.then(function(rest) {
+				var result = rest.data;
+				var strings = rest.data.strings;
+				angular.forEach(result.headings,function(heading){
+					heading.namef=function(){
+						return key2string.key2string(heading.stringkeyname,strings);
+					}
+					if (heading.stringkeyunit){
+						heading.unitf=function(){
+							return key2string.key2string(heading.stringkeyunit,strings);
+						}
+					}
+				});
+				delete result.strings;
+				defered.resolve(result);
+			});
+		}
+		
 	    return defered.promise;
 	}
 	
@@ -257,6 +295,13 @@ var searchService = function (restfactory,$q,$translate,key2string,languages) {
 		var promise = restfactory.PUT("update-search-name",{searchID:searchID,newname:name,language:language});
 		return promise;
 	};
+	
+	
+	
+	this.updateSearchType = function(id,searchType){
+		var promise = restfactory.PUT("update-search-type",{searchid:id,type:searchType});
+		return promise;
+	} ;
 };
 
 

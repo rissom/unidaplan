@@ -8,7 +8,11 @@ function searchController(restfactory,$state,$stateParams,$translate,
 															
 	this.languages = languages;
 	
-	this.parameters = search.parameter;
+	this.parameters = search.parameters;
+	
+	this.sparameters = search.sparameters;
+	
+	this.pparameters = search.pparameters;
 	
 	var allComparators = [{index:1,label:"<"},{index:2,label:">"},{index:3,label:"="},{index:4,label:"not"},{index:5,label:$translate.instant("contains")}];
 	
@@ -45,15 +49,17 @@ function searchController(restfactory,$state,$stateParams,$translate,
 	this.lang2key = $translate.instant(languages[1].key);
 	 	  
 	this.editFieldNL2 = false;
-	
-	this.searchType=1;
-	
+		
 	var types=[$translate.instant('all samples'),$translate.instant('all processes'),$translate.instant('all samples in a specific process')];
 	
 	var modeAnd=$translate.instant('all of the following');
 	
 	var modeOr=$translate.instant('one of the');
 
+
+	this.mode = function() {
+		return search.operation ? modeAnd : modeOr;
+	}
 	
 	
 	this.keyUp = function(keyCode,newValue,parameter) {
@@ -64,24 +70,24 @@ function searchController(restfactory,$state,$stateParams,$translate,
 	
 	
 	
-	this.keyUp = function(keyCode,name,language) {
-		if (keyCode===13) {				// Return key pressed
-			var promise=searchService.updateSearchName(search.id,name, language);	
-			promise.then(function(){
-				reload();
-			},function(){
-				console.log("error");
-			});
-		}
-		if (keyCode===27) {		// Escape key pressed
-			  thisController.editmode=false;
-		}
-	};
+//	this.keyUp = function(keyCode,name,language) {
+//		if (keyCode===13) {				// Return key pressed
+//			var promise=searchService.updateSearchName(search.id,name, language);	
+//			promise.then(function(){
+//				reload();
+//			},function(){
+//				console.log("error");
+//			});
+//		}
+//		if (keyCode===27) {		// Escape key pressed
+//			  thisController.editmode=false;
+//		}
+//	};
 	
 	
-	this.getSampleType = function(id) {
-		return sampleService.loadSample(sampleID)
-	};
+//	this.getSampleType = function(id) {
+//		return sampleService.loadSample(sampleID)
+//	};
   
     
     
@@ -93,13 +99,38 @@ function searchController(restfactory,$state,$stateParams,$translate,
     };
     
     
+    
 	this.startSearch = function() {
-		var searchParams = {
-				searchid:thisController.search.id,
-				parameters:thisController.parameters
-		};
-		$state.go("result",{searchParams:searchParams});
-//		return searchService.startSearch({searchid:thisController.search.id,parameters:thisController.parameters});
+		var searchParams = { searchid:thisController.search.id, 
+							 searchtype: search.type 
+						   };
+		
+		switch (search.type){
+		
+			case 1:
+				searchParams.parameters=thisController.sparameters;
+				$state.go("result",{searchParams:searchParams});
+				break;
+				
+			case 2:
+				searchParams.parameters=thisController.pparameters;
+				$state.go("result",{searchParams:searchParams});
+				break;
+				
+			case 3:
+				searchParams.parameters=thisController.poparameters;
+				$state.go("result",{searchParams:searchParams});
+				break;
+			
+			case 4:
+				searchParams.pparameters=thisController.pparameters;
+				searchParams.sparameters=thisController.sparameters;
+				$state.go("result",{searchParams:searchParams});
+				break;
+				
+			default: console.log("Error! Unknown search type");
+		}
+		
 	};
 	
 	
@@ -109,10 +140,6 @@ function searchController(restfactory,$state,$stateParams,$translate,
 	}
 	
 	
-	
-	this.mode = function() {
-		return search.operation ? modeAnd : modeOr;
-	}
 }  
 
 

@@ -850,6 +850,17 @@
     <url-pattern>/reorder-possible-values</url-pattern>
   </servlet-mapping>
   
+    <servlet>
+    <description>Returns data for searches of type 4 (sample+process)</description>
+    <display-name>ResultType4</display-name>
+    <servlet-name>ResultType4</servlet-name>
+    <servlet-class>unidaplan.ResultType4</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ResultType4</servlet-name>
+    <url-pattern>/result-type4</url-pattern>
+  </servlet-mapping>
+  
    <servlet>
     <description>Searches</description>
     <display-name>Searches</display-name>
@@ -892,6 +903,17 @@
   <servlet-mapping>
     <servlet-name>UpdatePTParameter</servlet-name>
     <url-pattern>/update-pt-parameter</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>UpdateSearchType</description>
+    <display-name>UpdateSearchType</display-name>
+    <servlet-name>UpdateSearchType</servlet-name>
+    <servlet-class>unidaplan.UpdateSearchType</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateSearchType</servlet-name>
+    <url-pattern>/update-search-type</url-pattern>
   </servlet-mapping>
 
    <servlet>

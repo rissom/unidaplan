@@ -410,7 +410,6 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 	        	   	    },
         	   	result:
         	   		function(searchService,$stateParams){
-        	   			console.log($stateParams)
         	   			if ($stateParams.searchParams){
         	   				return searchService.startSearch($stateParams.searchParams);
         	   			} else {
@@ -419,7 +418,9 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
         	   		}
 	        }
         })
-    	
+        
+        
+        
         
     	.state('sampleChoser', {
 	        url: '/sample',

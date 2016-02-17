@@ -68,7 +68,7 @@ import org.json.JSONObject;
 	    	}
 	    	inParams = jsonIn.getJSONArray("parameters");
 	    } catch (JSONException e) {
-			System.err.println("Search: searchid is missing");
+			System.err.println("Result: input parameters missing");
     		response.setStatus(404);
 			status="searchid is missing";
 		}}
@@ -113,7 +113,7 @@ import org.json.JSONObject;
 					String[] pptables= {"p_integer_data","p_float_data","p_measurement_data","p_string_data","p_timestamp_data"};
 					ptables = pptables; // Warum kann man keine Arraykonstanten definieren???
 					break;
-				default : // sample specific processparameter
+				case 3:   // sample specific processparameter
 					query = "SELECT poparameter AS pid, poparameter, comparison, value, "
 					 		 +"po_parameters.stringkeyname,po_parameters.stringkeyname,paramdef.datatype "
 							 +"FROM searchpo "

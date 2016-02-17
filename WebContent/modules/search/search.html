@@ -10,6 +10,7 @@
 {{'searching for'|translate}} {{searchCtrl.type()}} {{'with'|translate}} {{searchCtrl.mode()}} {{'following properties'|translate}}:
 <br/><br/><br/>
 
+
 <table class="table">
 	<thead class=parametertablehead>
 		<tr>
@@ -24,12 +25,27 @@
 			</td>
 		</tr>
 	</thead>
-	<tr  ng-repeat="parameter in searchCtrl.parameters">
+	<tr  ng-repeat="parameter in searchCtrl.sparameters">
 		<td>
-			<div>{{parameter.fname()}}</div>
+			<div>{{parameter.namef()}}</div>
 		</td>
 		<td>
-			<select class="form-control input-sm" 
+			<select class="form-control input-sm"
+				style="width:78px;"	
+				ng-model="parameter.comparison"
+				ng-options="comparator.index as comparator.label for comparator in searchCtrl.comparators[parameter.datatype]"> 
+			</select>
+		</td>
+		<td>
+			<input ng-model="parameter.value">
+		</td>
+	</tr>
+	<tr  ng-repeat="parameter in searchCtrl.pparameters">
+		<td>
+			<div>{{parameter.namef()}}</div>
+		</td>
+		<td>
+			<select class="form-control input-sm"
 				style="width:78px;"	
 				ng-model="parameter.comparison"
 				ng-options="comparator.index as comparator.label for comparator in searchCtrl.comparators[parameter.datatype]"> 

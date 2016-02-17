@@ -66,6 +66,18 @@
 <br/>
 <h4>{{'Search Criteria'|translate}}</h4>
 <div class="col-xs-6">
+{{'mode'|translate}}:
+	<select
+	    class="form-control" 
+		style="width:300px;"
+		ng-model="editSearchCtrl.mode"
+		ng-change="editSearchCtrl.changeMode()"
+		ng-options="mode.mode as mode.name for mode in editSearchCtrl.modes">
+	</select>
+</div>
+<br/><br/><br/><br/>
+<div class="col-xs-6">
+{{'Suchtyp'|translate}}:<br/>
 	<select 
 		class="form-control" 
 		style="width:300px;"
@@ -76,6 +88,7 @@
 </div>
 
 <div class="col-xs-6">
+<br/>
 	<select
 	    class="form-control" 
 		style="width:300px;"
@@ -97,18 +110,6 @@
 		</option>
 	</select>
 	
-</div>
-<br/><br/><br/>
-
-<div class="col-xs-6">
-{{'mode'|translate}}:
-	<select
-	    class="form-control" 
-		style="width:300px;"
-		ng-model="editSearchCtrl.mode"
-		ng-change="editSearchCtrl.changeMode()"
-		ng-options="mode.mode as mode.name for mode in editSearchCtrl.modes">
-	</select>
 </div>
 <br/><br/><br/><br/>
 <table class="table">

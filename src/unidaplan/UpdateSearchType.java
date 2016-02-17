@@ -1,6 +1,5 @@
 package unidaplan;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.servlet.ServletException;
@@ -66,6 +65,9 @@ import org.json.JSONObject;
 			    pStmt.setInt(3, searchID);
 			    pStmt.executeUpdate();
 			    pStmt.close();
+			    
+			    //TODO: Delete all criteria and output parameters
+			    
 		    }
 	    } catch (SQLException e) {
 			System.err.println("UpdateSearchType: Problems with SQL query for deletion");

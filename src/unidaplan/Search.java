@@ -17,13 +17,15 @@ import org.json.JSONObject;
 	public class Search extends HttpServlet {
 		private static final long serialVersionUID = 1L;
 
+	@SuppressWarnings("resource")
 	@Override
 	  public void doGet(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
-		JSONArray parameter = null;
-		JSONArray output = null;
+		JSONArray poparameter = null;
+		JSONArray sparameter = null;
+		JSONArray pparameter = null;
 		userID=userID+1;
 		userID=userID-1;
 		int type=0;
@@ -39,9 +41,7 @@ import org.json.JSONObject;
 	    PrintWriter out = response.getWriter();
 	 	DBconnection dBconn=new DBconnection();
 	    JSONObject answer = new JSONObject();
-	    int id=-1;
-	    boolean operation= false;
-	    
+	    int id=-1;	    
 	  	try {
 	   		 id=Integer.parseInt(request.getParameter("id")); 
 	    } catch (Exception e1) {
@@ -62,88 +62,140 @@ import org.json.JSONObject;
 			
 			// get the searchparameters according to searchtype
 			String query="";
+			
+			
+			
 			switch (type){
-			case 1:   // sample search
-				query = "SELECT searchobject.id, otparameter AS pid, comparison, value, "
-				  		 +"COALESCE (ot_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname, "
-				  		 +"ot_parameters.objecttypesid AS typeid,paramdef.stringkeyunit,paramdef.datatype "
-						 +"FROM searchobject "
-						 +"JOIN ot_parameters ON (ot_parameters.id=otparameter) "
-						 +"JOIN paramdef ON (paramdef.id=ot_parameters.definition) "
-						 +"WHERE search=?";
-				break;
-			case 2:   // process search
-				query = "SELECT searchprocess.id, pparameter AS pid, comparison, value, "
-				  		 +"p_parameters.stringkeyname,p_parameters.processtypeid AS typeid,paramdef.stringkeyunit,paramdef.datatype "
-						 +"FROM searchprocess "
-						 +"JOIN p_parameters ON (p_parameters.id=pparameter) "
-						 +"JOIN paramdef ON (paramdef.id=p_parameters.definition) "
-						 +"WHERE search=?";
-				break;
-			default : // sample specific processparameter
-				query = "SELECT searchpo.id, poparameter AS pid, comparison, value, "
-				 		 +"po_parameters.stringkeyname,po_parameters.processtypeid AS typeid,paramdef.stringkeyunit,paramdef.datatype "
-						 +"FROM searchpo "
-						 +"JOIN po_parameters ON (po_parameters.id=poparameter) "
-						 +"JOIN paramdef ON (paramdef.id=po_parameters.definition) "
-						 +"WHERE search=?";
-				break;
+			
+				case 1:   // sample search
+					query = "SELECT searchobject.id, otparameter AS pid, comparison, value, "
+					  		 +"COALESCE (ot_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname, "
+					  		 +"ot_parameters.objecttypesid AS typeid,paramdef.stringkeyunit,paramdef.datatype "
+							 +"FROM searchobject "
+							 +"JOIN ot_parameters ON (ot_parameters.id=otparameter) "
+							 +"JOIN paramdef ON (paramdef.id=ot_parameters.definition) "
+							 +"WHERE search=?";
+					pStmt= dBconn.conn.prepareStatement(query);
+					pStmt.setInt(1,id);
+					sparameter = dBconn.jsonArrayFromPreparedStmt(pStmt);
+					pStmt.close();
+					// get the sampletype
+					if (sparameter.length()>0){
+						defaultObjecttype=sparameter.getJSONObject(0).getInt("typeid");
+						for (int i=0; i<sparameter.length();i++){
+							stringkeys.add(Integer.toString(sparameter.getJSONObject(i).getInt("stringkeyname")));
+							int datatype=sparameter.getJSONObject(i).getInt("datatype");
+							sparameter.getJSONObject(i).remove("datatype");
+							sparameter.getJSONObject(i).put("datatype", Unidatoolkit.Datatypes[datatype]);
+							if (sparameter.getJSONObject(i).has("stringkeyunit")){
+								stringkeys.add(Integer.toString(sparameter.getJSONObject(i).getInt("stringkeyunit")));
+							}
+						}
+					}
+					break;
+					
+				
+				case 2:   // process search
+					query = "SELECT searchprocess.id, pparameter AS pid, comparison, value, "
+					  		 +"p_parameters.stringkeyname,p_parameters.processtypeid AS typeid,paramdef.stringkeyunit,paramdef.datatype "
+							 +"FROM searchprocess "
+							 +"JOIN p_parameters ON (p_parameters.id=pparameter) "
+							 +"JOIN paramdef ON (paramdef.id=p_parameters.definition) "
+							 +"WHERE search=?";
+					pStmt= dBconn.conn.prepareStatement(query);
+					pStmt.setInt(1,id);
+					pparameter = dBconn.jsonArrayFromPreparedStmt(pStmt);
+					pStmt.close();
+					// get the processtype
+					if (pparameter.length()>0){
+						defaultProcesstype=pparameter.getJSONObject(0).getInt("typeid");
+						for (int i=0; i<pparameter.length();i++){
+							stringkeys.add(Integer.toString(pparameter.getJSONObject(i).getInt("stringkeyname")));
+							int datatype=pparameter.getJSONObject(i).getInt("datatype");
+							pparameter.getJSONObject(i).remove("datatype");
+							pparameter.getJSONObject(i).put("datatype", Unidatoolkit.Datatypes[datatype]);
+							if (pparameter.getJSONObject(i).has("stringkeyunit")){
+								stringkeys.add(Integer.toString(pparameter.getJSONObject(i).getInt("stringkeyunit")));
+							}
+						}
+					}
+					break;
+					
+					
+				case 3:  // sample specific processparameter
+					query = "SELECT searchpo.id, poparameter AS pid, comparison, value, "
+					 		 +"po_parameters.stringkeyname,po_parameters.processtypeid AS typeid,paramdef.stringkeyunit,paramdef.datatype "
+							 +"FROM searchpo "
+							 +"JOIN po_parameters ON (po_parameters.id=poparameter) "
+							 +"JOIN paramdef ON (paramdef.id=po_parameters.definition) "
+							 +"WHERE search=?";
+					pStmt= dBconn.conn.prepareStatement(query);
+					pStmt.setInt(1,id);
+					poparameter = dBconn.jsonArrayFromPreparedStmt(pStmt);
+					pStmt.close();
+					break;
+					
+					
+				case 4:  // combined search, sample parameters and processparameters
+					query = "SELECT searchprocess.id, pparameter AS pid, comparison, value, "
+					  		 +"p_parameters.stringkeyname,p_parameters.processtypeid AS typeid,paramdef.stringkeyunit,paramdef.datatype "
+							 +"FROM searchprocess "
+							 +"JOIN p_parameters ON (p_parameters.id=pparameter) "
+							 +"JOIN paramdef ON (paramdef.id=p_parameters.definition) "
+							 +"WHERE search=?";
+					pStmt= dBconn.conn.prepareStatement(query);
+					pStmt.setInt(1,id);
+					pparameter = dBconn.jsonArrayFromPreparedStmt(pStmt);
+					pStmt.close();
+					query = "SELECT searchobject.id, otparameter AS pid, comparison, value, "
+					  		 +"COALESCE (ot_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname, "
+					  		 +"ot_parameters.objecttypesid AS typeid,paramdef.stringkeyunit,paramdef.datatype "
+							 +"FROM searchobject "
+							 +"JOIN ot_parameters ON (ot_parameters.id=otparameter) "
+							 +"JOIN paramdef ON (paramdef.id=ot_parameters.definition) "
+							 +"WHERE search=?";
+					pStmt= dBconn.conn.prepareStatement(query);
+					pStmt.setInt(1, id);
+					sparameter = dBconn.jsonArrayFromPreparedStmt(pStmt);
+					pStmt.close();
+				
+					if (pparameter.length()>0){
+						defaultProcesstype=pparameter.getJSONObject(0).getInt("typeid");
+					}
+					
+					// get the sample type
+					if (sparameter.length()>0){
+						defaultObjecttype=sparameter.getJSONObject(0).getInt("typeid");
+						for (int i=0; i<sparameter.length();i++){
+							stringkeys.add(Integer.toString(sparameter.getJSONObject(i).getInt("stringkeyname")));
+							int datatype=sparameter.getJSONObject(i).getInt("datatype");
+							sparameter.getJSONObject(i).remove("datatype");
+							sparameter.getJSONObject(i).put("datatype", Unidatoolkit.Datatypes[datatype]);
+							if (sparameter.getJSONObject(i).has("stringkeyunit")){
+								stringkeys.add(Integer.toString(sparameter.getJSONObject(i).getInt("stringkeyunit")));
+							}
+						}
+					}
+					
+					// get the processtype
+					if (pparameter.length()>0){
+						defaultProcesstype=pparameter.getJSONObject(0).getInt("typeid");
+						for (int i=0; i<pparameter.length();i++){
+							stringkeys.add(Integer.toString(pparameter.getJSONObject(i).getInt("stringkeyname")));
+//							System.out.println(pparameter.getJSONObject(i).getInt("stringkeyname"));
+							int datatype=pparameter.getJSONObject(i).getInt("datatype");
+							pparameter.getJSONObject(i).remove("datatype");
+							pparameter.getJSONObject(i).put("datatype", Unidatoolkit.Datatypes[datatype]);
+							if (pparameter.getJSONObject(i).has("stringkeyunit")){
+								stringkeys.add(Integer.toString(pparameter.getJSONObject(i).getInt("stringkeyunit")));
+							}
+						}
+					}
+					break;
+						
 			}
-			pStmt= dBconn.conn.prepareStatement(query);
-			pStmt.setInt(1,id);
-			parameter = dBconn.jsonArrayFromPreparedStmt(pStmt);
-			pStmt.close();
-			if (parameter.length()>0){
-				if (type==1){
-					defaultObjecttype=parameter.getJSONObject(0).getInt("typeid");
-				}
-				if (type==2){
-					defaultProcesstype=parameter.getJSONObject(0).getInt("typeid");
-				}
-			}
-			for (int i=0; i<parameter.length();i++){
-				stringkeys.add(Integer.toString(parameter.getJSONObject(i).getInt("stringkeyname")));
-				int datatype=parameter.getJSONObject(i).getInt("datatype");
-				parameter.getJSONObject(i).remove("datatype");
-				parameter.getJSONObject(i).put("datatype", Unidatoolkit.Datatypes[datatype]);
-				if (parameter.getJSONObject(i).has("stringkeyunit")){
-					stringkeys.add(Integer.toString(parameter.getJSONObject(i).getInt("stringkeyunit")));
-				}
-			}
-			// get the outputparameters according to searchtype
-			switch (search.getInt("type")){
-				case 1:   //Object scearch
-						  query = "SELECT ot_parameters.id, "
-						  		 +"COALESCE (ot_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname, "
-						  		 +"paramdef.datatype "
-								 +"FROM osearchoutput "
-								 +"JOIN ot_parameters ON (ot_parameters.id=otparameter) "
-								 +"JOIN paramdef ON (paramdef.id=ot_parameters.definition) "
-								 +"WHERE search=?";
-						  break;
-				case 2:   //Process search
-					  query = "SELECT p_parameters.id, p_parameters.stringkeyname,paramdef.datatype "
-								 +"FROM psearchoutput "
-								 +"JOIN p_parameters ON (p_parameters.id=pparameter) "
-								 +"JOIN paramdef ON (paramdef.id=p_parameters.definition) "
-								 +"WHERE search=?";
-						  break;
-				default : query = "SELECT po_parameters.id, po_parameters.stringkeyname,paramdef.datatype "
-								 +"FROM posearchoutput "
-								 +"JOIN po_parameters ON (po_parameters.id=poparameter) "
-								 +"JOIN paramdef ON (paramdef.id=po_parameters.definition) "
-								 +"WHERE search=?";
-						  break;
-			}
-			pStmt= dBconn.conn.prepareStatement(query);
-			pStmt.setInt(1,id);
-//			System.out.println(pStmt.toString());
-			output = dBconn.jsonArrayFromPreparedStmt(pStmt);
-			pStmt.close();
-			for (int i=0; i<output.length();i++){
-				stringkeys.add(Integer.toString(output.getJSONObject(i).getInt("stringkeyname")));	
-			}
-		
+			
+
 			
     	} catch (SQLException e) {
     		System.err.println("Search: Problems with SQL query for search");
@@ -163,14 +215,25 @@ import org.json.JSONObject;
     	} 
 	    
 	   try {
-		   search.put("parameter",parameter);
-		   search.put("output",output);
-		   if (type==1 && defaultObjecttype>0){
-			   search.put("defaultobject", defaultObjecttype);
+		   switch (type){
+		   
+		   case 1: 	   	search.put("sparameters",sparameter);
+					   	if (defaultObjecttype>0){
+						   search.put("defaultobject", defaultObjecttype);
+					   	}
+		   				break;
+		   case 2: 		search.put("pparameters", pparameter);
+						if (defaultProcesstype>0){
+							   search.put("defaultprocess", defaultProcesstype);
+						}
+		   				break;
+		   case 3: 		search.put("poparameters", poparameter);
+						break;
+		   case 4: 		search.put("sparameters", sparameter);
+		   				search.put("pparameters", pparameter);
+		   				break;
 		   }
-		   if (type==2 && defaultProcesstype>0){
-			   search.put("defaultprocess", defaultProcesstype);
-		   }
+		   
 		   answer.put("search", search);
 		   answer.put("strings", dBconn.getStrings(stringkeys));
 		   answer.put("status", status);

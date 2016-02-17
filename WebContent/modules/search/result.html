@@ -19,12 +19,14 @@
 <br/>
 
 
+<div ng-switch on="resultCtrl.result.type">
 
-<table class="table">
+
+<!--  Case 1: search for a sample -->
+<table ng-switch-when="1" class="table" >
 	<thead class=parametertablehead>
 		<tr>
-			<td ng-show="resultCtrl.result.type==1"> {{'object'|translate}} </td>
-			<td ng-show="resultCtrl.result.type==2"> {{'property'|translate}} </td>
+			<td> {{'object'|translate}} </td>
 			<td ng-repeat="col in resultCtrl.result.headings">
 			 	{{col.namef()}} {{col.unitf()?'(':''}}{{col.unitf()}}{{col.unitf()?')':''}}
 			</td>
@@ -32,8 +34,7 @@
 	</thead>
 	<tbody>
 		<tr ng-repeat="row in resultCtrl.result.data">
-			<td ng-show="resultCtrl.result.type==1"> <a ui-sref="sample({sampleID:row.id})">{{resultCtrl.getType(row.type)}} {{row.name}} </a> </td>
-			<td ng-show="resultCtrl.result.type==2"> <a ui-sref="process({processID:row.id})">{{resultCtrl.getProcessType(row.type)}} {{row.name}} </a> </td>
+			<td> <a ui-sref="sample({sampleID:row.id})">{{resultCtrl.getType(row.type)}} {{row.name}} </a> </td>
 			<td ng-repeat="col in row.rowdata track by $index">
 			 	<tparameter parameter="col"></tparameter>
 			</td>
@@ -41,6 +42,81 @@
 	</tbody>
 </table>
 
+
+<!--  Case 2: search for a property/process -->
+<table ng-switch-when="2" class="table" >
+	<thead class=parametertablehead>
+		<tr>
+			<td> {{'property'|translate}} </td>
+			<td ng-repeat="col in resultCtrl.result.headings">
+			 	{{col.namef()}} {{col.unitf()?'(':''}}{{col.unitf()}}{{col.unitf()?')':''}}
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="row in resultCtrl.result.data">
+			<td> <a ui-sref="process({processID:row.id})">{{resultCtrl.getProcessType(row.type)}} {{row.name}} </a> </td>
+			<td ng-repeat="col in row.rowdata track by $index">
+			 	<tparameter parameter="col"></tparameter>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+<!--  Case 3: search for a property specific parameter -->
+<table ng-switch-when="3" class="table" >
+	<thead class=parametertablehead>
+		<tr>
+			<td> {{'property'|translate}} </td>
+			<td ng-repeat="col in resultCtrl.result.headings">
+			 	{{col.namef()}} {{col.unitf()?'(':''}}{{col.unitf()}}{{col.unitf()?')':''}}
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="row in resultCtrl.result.data">
+			<td> <a ui-sref="process({processID:row.id})">{{resultCtrl.getProcessType(row.type)}} {{row.name}} </a> </td>
+			<td ng-repeat="col in row.rowdata track by $index">
+			 	<tparameter parameter="col"></tparameter>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+<!--  Case 4: combined search for a property and a sample -->
+<table ng-switch-when="4" class="table" >
+	<thead class=parametertablehead>
+		<tr>
+			<td> {{'object'|translate}} </td>
+			<td ng-repeat="col in resultCtrl.result.headings">
+			 	{{col.namef()}} {{col.unitf()?'(':''}}{{col.unitf()}}{{col.unitf()?')':''}}
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<!-- 
+		<tr ng-repeat="sample in resultCtrl.result.samples">
+			<td> <a ui-sref="sample({sampleID:sample.sampleid})">{{resultCtrl.getType(sample.sampletype)}} {{sample.samplename}} </a> </td>
+			<td><tparameter parameter="col"></tparameter>
+			</td>
+			<td ng-repeat="process in sample.processes"> 
+				<a ui-sref="process({processID:process.id})">{{row.getProcessType(process.type)}} process {{process.nr}} </a> 
+			</td>
+			<td>
+				{{process}}
+			</td>
+	 		-->
+	 	<tr ng-repeat="row in resultCtrl.processedArray">
+	 		<td ng-repeat="datacolumn in row track by $index">
+	 			<a ng-show="$index==0" ui-sref="sample({sampleID:datacolumn.id})">{{resultCtrl.getType(datacolumn.type)}} {{datacolumn.name}}</a> 
+	 			<div ng-hide="$index==0">{{datacolumn}}</div>
+	 		</td>		
+		</tr>
+	</tbody>
+</table>
+</div>
 
 
 <br/>
