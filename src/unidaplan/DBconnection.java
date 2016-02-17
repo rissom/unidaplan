@@ -3,9 +3,14 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+//import java.sql.Types;
 import java.util.ArrayList;
+//import java.util.HashMap;
+//import java.util.Map;
+//import java.lang.reflect.Field;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -486,15 +491,54 @@ public class DBconnection  {
       }
   
   
+//  public Map<Integer, String> getAllJdbcTypeNames() {
+//
+//	    Map<Integer, String> result = new HashMap<Integer, String>();
+//
+//	    for (Field field : Types.class.getFields()) {
+//	        try {
+//				result.put((Integer)field.get(null), field.getName());
+//			} catch (IllegalArgumentException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (IllegalAccessException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//	    }
+//
+//	    return result;
+//	}
+  
+  
   
   public JSONArray table2json(ResultSet rs) throws Exception {
-        JSONArray jsArray = new JSONArray();        
-        int columns = rs.getMetaData().getColumnCount();
+        JSONArray jsArray = new JSONArray();
+        
+        
+        ResultSetMetaData rsmd = rs.getMetaData();
+        int columns = rsmd.getColumnCount();
+
+//        Map<Integer, String> jdbcMappings = getAllJdbcTypeNames();
+//
+//        for (int i = 1; i <= columns; i++) {
+//        	int dataType = rsmd.getColumnType(i);
+//        	String typeName = jdbcMappings.get(dataType); // now that will return BIGINT
+//        	System.out.println("Typenr.: "+dataType+"; Type: "+typeName);
+//        }
+//        
+        
         while (rs.next()) {
             JSONObject obj = new JSONObject();
             for (int i = 1; i <= columns; i++) {
-            	Object tempObject=rs.getObject(i);
-                obj.put(rs.getMetaData().getColumnLabel(i), tempObject);
+            	int dataType = rsmd.getColumnType(i);
+            	if (dataType==1111){
+            		JSONObject tempObject = new JSONObject (rs.getString(i));
+	                obj=tempObject;
+            	}else{
+	            	Object tempObject=rs.getObject(i);
+	                obj.put(rs.getMetaData().getColumnLabel(i), tempObject);
+                }
             }
             jsArray.put(obj);
         }
