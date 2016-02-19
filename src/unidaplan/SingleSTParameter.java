@@ -80,7 +80,9 @@ public class SingleSTParameter extends HttpServlet {
 				parameter.put("datatype", Unidatoolkit.Datatypes[datatype]);
 				stringkeys.add(Integer.toString(parameter.getInt("name")));
 				stringkeys.add(Integer.toString(parameter.getInt("description")));
-				stringkeys.add(Integer.toString(parameter.getInt("parametergroupname")));
+				if (parameter.has("parametergroupname")){
+					stringkeys.add(Integer.toString(parameter.getInt("parametergroupname")));
+				}
 				stringkeys.add(Integer.toString(parameter.getInt("sampletypename")));
 				if (parameter.has("stringkeyunit")){
 					stringkeys.add(Integer.toString(parameter.getInt("stringkeyunit")));

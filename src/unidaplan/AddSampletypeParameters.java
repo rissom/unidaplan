@@ -10,7 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-	public class AddSampletypePGParameters extends HttpServlet {
+	public class AddSampletypeParameters extends HttpServlet {
 		private static final long serialVersionUID = 1L;
 
 	@Override
@@ -20,6 +20,7 @@ import org.json.JSONObject;
 		Authentificator authentificator = new Authentificator();
 		String status="ok";
 		int userID=authentificator.GetUserID(request,response);
+		int sampleTypeID=0;
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
 	    JSONObject  jsonIn = null;	    
@@ -36,7 +37,11 @@ import org.json.JSONObject;
 	    JSONArray ids=null;
 
 	    try {
-			 parameterGrpID=jsonIn.getInt("parametergroupid");
+	    	 if (jsonIn.has("parametergroupid")){
+	    		 parameterGrpID=jsonIn.getInt("parametergroupid");
+	    	 } else {
+	    		 sampleTypeID=jsonIn.getInt("sampletypeid");
+	    	 }
      		 ids=jsonIn.getJSONArray("parameterids");
 		} catch (JSONException e) {
 			System.err.println("AddSampletypePGParameters: Error parsing ID-Field");
@@ -46,25 +51,40 @@ import org.json.JSONObject;
 
 	    
 	    
-	    // add Parameters to the parametergroup
+	    // add Parameters 
 		try {	
 		    // Initialize Database
 			DBconnection dBconn=new DBconnection();
 		    PreparedStatement pStmt = null;
 		    dBconn.startDB();	
-			for (int i=0; i<ids.length();i++){
-				pStmt= dBconn.conn.prepareStatement( 			
-						 "INSERT INTO ot_parameters (objecttypesID,parametergroup,compulsory,id_field,hidden,pos,definition,lastuser) "
-						 + " VALUES((SELECT ot_id FROM ot_parametergrps WHERE ot_parametergrps.id=?),?,False,False,False, "
-						 + "(SELECT COALESCE ((SELECT max(p2.pos)+1 FROM ot_parameters p2 WHERE p2.parametergroup=?),1)), "
-						 + "?,?)");
-			   	pStmt.setInt(1, parameterGrpID);
-			   	pStmt.setInt(2, parameterGrpID);
-			   	pStmt.setInt(3, parameterGrpID);
-			   	pStmt.setInt(4, ids.getInt(i));
-			   	pStmt.setInt(5, userID);
-//				pStmt.addBatch();  // Does not work. I don't know why.
-				pStmt.executeUpdate();
+		    if (parameterGrpID>0){ 	    // add Parameters to the parametergroup
+				for (int i=0; i<ids.length();i++){
+					pStmt= dBconn.conn.prepareStatement( 			
+							 "INSERT INTO ot_parameters (objecttypesID,parametergroup,compulsory,id_field,hidden,pos,definition,lastuser) "
+							 + " VALUES((SELECT ot_id FROM ot_parametergrps WHERE ot_parametergrps.id=?),?,False,False,False, "
+							 + "(SELECT COALESCE ((SELECT max(p2.pos)+1 FROM ot_parameters p2 WHERE p2.parametergroup=?),1)), "
+							 + "?,?)");
+				   	pStmt.setInt(1, parameterGrpID);
+				   	pStmt.setInt(2, parameterGrpID);
+				   	pStmt.setInt(3, parameterGrpID);
+				   	pStmt.setInt(4, ids.getInt(i));
+				   	pStmt.setInt(5, userID);
+	//				pStmt.addBatch();  // Does not work. I don't know why.
+				   	pStmt.executeUpdate();
+				}
+			} else {   // add Titleparameters 
+				for (int i=0; i<ids.length();i++){
+					pStmt= dBconn.conn.prepareStatement( 			
+						 "INSERT INTO ot_parameters (objecttypesID,compulsory,id_field,hidden,pos,definition,lastuser) "
+						 + " VALUES(?,True,True,False,("
+						 + "  SELECT COALESCE(max(pos)+1,1) FROM ot_parameters WHERE objecttypesID=? AND parametergroup IS null "
+						 + "),?,?)");
+				   	pStmt.setInt(1, sampleTypeID);
+				   	pStmt.setInt(2, sampleTypeID);
+				   	pStmt.setInt(3, ids.getInt(i));
+				   	pStmt.setInt(4, userID);
+				   	pStmt.executeUpdate();
+				}
 			}
 //			pStmt.executeBatch();
 			pStmt.close();
@@ -74,6 +94,7 @@ import org.json.JSONObject;
 		} catch (SQLException e) {
 			System.err.println("AddSampletypePGParameters: Problems with SQL query");
 			status = "SQL Error";
+			e.printStackTrace();
 		} catch (Exception e) {
 			System.err.println("AddSampletypePGParameters: Strange Problems");
 			status = "Misc Error (line70)";

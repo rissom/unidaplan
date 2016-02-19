@@ -1,17 +1,18 @@
 <button type="button" 
 		class="btn btn-default" 
 		ui-sref="adminSamples" >
-	<b>&larr;&larr;&larr;</b> {{'all sampletypes'|translate}}
+	<b>&larr;&larr;</b><b ng-show="editSingleSTParameterCtrl.paramGrpID">&larr;</b></b> {{'all sampletypes'|translate}}
 </button>
 
 <button type="button" 
 		class="btn btn-default" 
 		ui-sref="editSTParamGrps({sampleTypeID:editSingleSTParameterCtrl.sampletype})" >
-	<b>&larr;&larr;</b> {{'sampletype'|translate}} "{{editSingleSTParameterCtrl.sampletypenamef()}}"
+	<b>&larr;</b><b ng-show="editSingleSTParameterCtrl.paramGrpID">&larr;</b> {{'sampletype'|translate}} "{{editSingleSTParameterCtrl.sampletypenamef()}}"
 </button>
 
 <button type="button" 
 		class="btn btn-default" 
+		ng-show="editSingleSTParameterCtrl.paramGrpID"
 		ui-sref="editSTParams({paramGrpID:editSingleSTParameterCtrl.paramGrpID})" >
 	<b>&larr;</b> {{'Parametergroup'|translate}} "{{editSingleSTParameterCtrl.pgnamef()}}"
 </button>
@@ -72,7 +73,7 @@
 	</td>
 </tr>
 
-<tr ng-show="editSingleSTParameterCtrl.unit">
+<tr ng-show="editSingleSTParameterCtrl.unit && editSingleSTParameterCtrl.paramGrpID">
 	<td class="parametertd">
  			<font color="grey">{{'Unit'|translate}} ({{editSingleSTParameterCtrl.lang1}}) </font>
 	</td>
@@ -88,7 +89,7 @@
 	</td>
 </tr>
 
-<tr ng-show="editSingleSTParameterCtrl.unit"> 
+<tr ng-show="editSingleSTParameterCtrl.unit && editSingleSTParameterCtrl.paramGrpID"> 
 	<td class="parametertd">
 	<font color="grey">
 			{{'Unit'|translate}} ({{editSingleSTParameterCtrl.lang2}})
@@ -106,7 +107,7 @@
 	</td>
 </tr>
 
-<tr>
+<tr ng-show="editSingleSTParameterCtrl.paramGrpID">
 	<td class="parametertd">
 			{{'Compulsory'|translate}}
 	</td>
@@ -115,17 +116,6 @@
 		   type="checkbox"
 		   ng-model="editSingleSTParameterCtrl.compulsory"
 		   ng-change="editSingleSTParameterCtrl.setCompulsory()">
-	</td>
-</tr>
-<tr>
-	<td class="parametertd">
-	 	{{'Titlefield'|translate}}
-	</td>
-	<td>
-		<input
-		   type="checkbox"
-		   ng-model="editSingleSTParameterCtrl.titlefield"
-		   ng-change="editSingleSTParameterCtrl.setIDField()">
 	</td>
 </tr>
 

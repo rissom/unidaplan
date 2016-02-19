@@ -145,7 +145,11 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 	        	sampleType: 
 	        		function(avSampleTypeService,$stateParams){
         	   	    	return avSampleTypeService.getSampleTypeParamGrps($stateParams.sampleTypeID);
-        	   	    }
+        	   	    },
+		        avParameters: 
+		        	function(parameterService){
+			   	    	return parameterService.getParameters();
+			   	    }
 			}
         })
         

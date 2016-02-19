@@ -44,6 +44,7 @@ public class SampleTypeParamGrps extends HttpServlet {
 		PreparedStatement pStmt = null; 	// Declare variables
 	    JSONObject sampleType= null;
 	    JSONArray parameterGrps= null;		
+	    JSONArray titleParameters=null;
 	    JSONArray sampleTypeGrps= null;
 	 	DBconnection dBconn=new DBconnection(); // New connection to the database
 	 	ArrayList<String> stringkeys = new ArrayList<String>(); 
@@ -93,9 +94,31 @@ public class SampleTypeParamGrps extends HttpServlet {
            			stringkeys.add(Integer.toString(parameterGrps.getJSONObject(j).getInt("stringkey")));
            		}
            	}
+           	
+        	
+			// get the titleparameters
+   			pStmt = dBconn.conn.prepareStatement(
+	   			"SELECT "
+				+"otp.id, "
+				+"COALESCE (otp.stringkeyname, pd.stringkeyname) AS name, "
+				+"COALESCE (otp.description, pd.description) AS description, "
+				+"format, pos "
+				+"FROM  ot_parameters otp "
+				+"JOIN paramdef pd ON (otp.definition=pd.ID) "
+				+"WHERE otp.ObjecttypesID=? AND otp.ID_FIELD=true "); 
+   			pStmt.setInt(1, sampleTypeID);
+   			titleParameters=dBconn.jsonArrayFromPreparedStmt(pStmt); 
+
+           	if (titleParameters.length()>0) {
+           		for (int j=0; j<titleParameters.length();j++) {
+           			stringkeys.add(Integer.toString(titleParameters.getJSONObject(j).getInt("name")));
+           			stringkeys.add(Integer.toString(titleParameters.getJSONObject(j).getInt("description")));
+           		}
+           	}
      
 	        JSONObject answer=new JSONObject();
 	        answer=sampleType;
+	        answer.put("titleparameters",titleParameters);
 	        answer.put("sampletypegrps", sampleTypeGrps);
 	        answer.put("parametergrps",parameterGrps);
 	        answer.put("strings", dBconn.getStrings(stringkeys));

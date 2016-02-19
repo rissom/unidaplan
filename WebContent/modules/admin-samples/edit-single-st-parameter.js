@@ -72,8 +72,8 @@ function editSingleSTParameterController($state,$modal,$stateParams,$translate,a
 	    thisController.editFieldDL2 = (field=="DL2");
 	    thisController.newNameL1=thisController.nameL1;
 	    thisController.newNameL2=thisController.nameL2;
-	    thisController.newDescL1=thisController.descriptionL1;
-	    thisController.newDescL2=thisController.descriptionL2;
+	    thisController.newDescL1=thisController.descL1;
+	    thisController.newDescL2=thisController.descL2;
     };
 	
   
@@ -124,19 +124,6 @@ function editSingleSTParameterController($state,$modal,$stateParams,$translate,a
   		});
   	};
   	
-  	
-  
-	this.setIDField=function(){
-  		var tempParameter={ 
-  			parameterid : parameter.id,
-			id_field : thisController.titlefield};
-  		var promise= avSampleTypeService.updateParameter(tempParameter);
-  		promise.then(function(){
-  			reload();
-  		},function(){
-  			console.log("error");
-  		});
-  	};
   
   
   

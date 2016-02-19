@@ -104,6 +104,8 @@ function editSTParamsController($state,$modal,$stateParams,$translate,
   			console.log("error");
   		});
   	};
+  	
+  	
   
 	this.setIDField=function(parameter){
   		var tempParameter={ 
@@ -116,6 +118,8 @@ function editSTParamsController($state,$modal,$stateParams,$translate,
   			console.log("error");
   		});
   	};
+  	
+  	
   
 	this.submitParameter=function(){
 		this.editmode=false;
@@ -140,8 +144,6 @@ function editSTParamsController($state,$modal,$stateParams,$translate,
   	this.performAction=function(parameter,action){
   		// actions are defined in av-sampletype-service.getSTypeParams
   		if (action.action==="edit"  && !action.disabled){
-  			console.log('going crazy')
-  			console.log('parameter',parameter)
   			$state.go('editSingleSTParameter',{parameterID:parameter.id});
   		}
   		if (action.action==="delete" && !action.disabled) {
@@ -155,6 +157,9 @@ function editSTParamsController($state,$modal,$stateParams,$translate,
   		if (action.action==="move" && !action.disabled) {
   			var promise = avSampleTypeService.moveParameterToGrp(parameter.id,action.destination);
   			promise.then(function(){reload();});
+  		}
+  		if (action.action==="title") {
+  			thisController.setIDField(parameter);
   		}
   	};
   
@@ -228,6 +233,20 @@ function editSTParamsController($state,$modal,$stateParams,$translate,
     };
 
   
+    
+	this.setIDField=function(parameter){
+  		var tempParameter={ 
+  			parameterid : parameter.id,
+			id_field : true};
+  		var promise= avSampleTypeService.updateParameter(tempParameter);
+  		promise.then(function(){
+  			reload();
+  		},function(){
+  			console.log("error");
+  		});
+  	};
+    
+    
   
     this.up=function(index){  // exchange two parameter positions
 	    var newPositions=[];

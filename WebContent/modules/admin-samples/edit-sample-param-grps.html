@@ -120,9 +120,6 @@
 		</tr>
 	</tbody>
 </table>
-<br />
-
-
 
 <button type="button" 
 		ng-hide="editSampleParamGrpsCtrl.editmode"
@@ -138,13 +135,105 @@
 	{{'Cancel'|translate}}
 </button>
 
-
-
 <button type="button" 
 		ng-show="editSampleParamGrpsCtrl.editmode"
 		class="btn btn-default" 
 		ng-click="editSampleParamGrpsCtrl.addParameterGroup()" >
 	{{'Save Parametergroup'|translate}}
+</button>
+
+<br/><br/><br/>
+
+<h4>{{'Titleparameters'|translate}}</h4>
+
+<table class="table">
+	<thead class=parametertablehead>
+		<tr>
+			<td></td>
+			<td class="parametertd">
+	 			{{'Name'|translate}} ({{editSampleParamGrpsCtrl.lang1}})
+			</td>
+			<td class="parametertd">
+	 			{{'Name'|translate}} ({{editSampleParamGrpsCtrl.lang2}})
+			</td>
+			<td class="parametertd">
+	 			{{'Format'|translate}}
+			</td>
+			<td class="parametertd" ng-hide="editSampleParamGrpsCtrl.editmode">
+				{{'action'|translate}}
+			</td>
+		</tr>
+	</thead>
+	
+	
+	<tbody>
+		<tr ng-repeat="parameter in editSampleParamGrpsCtrl.titleparameters | orderBy : 'pos'">
+			<td class="parametertd">
+				<button type="button" class="btn btn-default btn-xs" 
+					ng-click="editSampleParamGrpsCtrl.parameterUp($index)"   ng-hide="$first">&#9650;
+				</button>
+				<button type="button" class="btn btn-default btn-xs" 
+					ng-click="editSampleParamGrpsCtrl.parameterDown($index)" ng-hide="$last" >&#9660;
+				</button>
+			</td> 
+			<td class="parametertd" ng-dblclick="editSampleParamGrpsCtrl.editNL1(parameter)">
+				<span ng-hide="parameter.editNL1">
+					{{parameter.nameLang(editSampleParamGrpsCtrl.lang1key)}}
+				</span>
+				<input 						   
+				type="text"
+				ng-show="parameter.editNL1"
+			    ng-model="parameter.newParameterNameL1"
+			    ng-keyup="editSampleParamGrpsCtrl.keyUpParameter($event.keyCode,parameter)"> 
+			</td>
+			<td class="parametertd" ng-dblclick="editSampleParamGrpsCtrl.editNL2(parameter)">
+				<span ng-hide="parameter.editNL2">
+					{{parameter.nameLang(editSampleParamGrpsCtrl.lang2key)}}
+				</span>
+				<input 						   
+				type="text"
+				ng-show="parameter.editNL2"
+			    ng-model="parameter.newParameterNameL2" 
+			    ng-keyup="editSampleParamGrpsCtrl.keyUpParameter($event.keyCode,parameter)"> 
+			</td>
+			<td>
+				{{parameter.format}}
+			</td>
+			
+		
+			<td class="parametertd" ng-hide=editSampleParamGrpsCtrl.editmode>			
+				<div class="dropdown" dropdown on-toggle="toggled(open)">
+					<a class="dropdown-toggle" dropdown-toggle>
+			  			{{'action'|translate}} &#x25BC;
+				    </a>
+				    <ul class="dropdown-menu">
+				    	<li ng-repeat="action in parameter.actions" ng-class="{disabled:action.disabled}">
+				        	<a ng-click="editSampleParamGrpsCtrl.performPAction(parameter,action)">{{action.name}}</a>
+				        </li>
+				    </ul>
+	  			</div>
+			</td>
+			
+				
+			
+			<td class="parametertd" ng-show="editSampleParamGrpsCtrl.editmode">
+				<input 						   
+				type="text"
+				ng-keyup="editSampleParamGrpsCtrl.keyUpPG($event.keyCode)"
+			    ng-model="editSampleParamGrpsCtrl.newParameterNameL2"> 
+			</td>
+		</tr>
+		
+
+	</tbody>
+</table>
+
+<button type="button" 
+		ng-click="editSampleParamGrpsCtrl.addParameter()"
+		ng-hide="editSampleParamGrpsCtrl.editmode"
+		class="btn btn-default" 
+		ng-click="editSampleParamGrpsCtrl.addTitleParameter()" >
+	<b>+</b> {{'Add Titleparameter'|translate}}
 </button>
 
 

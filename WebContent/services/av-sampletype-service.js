@@ -15,9 +15,18 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 			parametergroupid : paramgrp,
 			parameterids     : parameters,
 		};
-		return restfactory.POST('add-st-pg-parameters',tempObj);
+		return restfactory.POST('add-st-parameters',tempObj);
 	};
-		
+	
+	
+	
+	this.AddTitleParameters=function(sampletype,parameters){
+		var tempObj={
+			sampletypeid 	 : sampletype,
+			parameterids     : parameters,
+		};
+		return restfactory.POST('add-st-parameters',tempObj);
+	};
 	
 	
 	this.changeOrderSTParameters=function(newPositions){
@@ -75,7 +84,29 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	    		stgrp.actions=[{action:"edit",name:$translate.instant("edit")},
 	    		               {action:"delete",name:$translate.instant("delete"),disabled:!stgrp.deletable}
 	    					  ];
-	         });
+	        });
+	    	angular.forEach(thisController.sampleType.titleparameters,function(tparam) {
+	    		tparam.namef=function(){
+	    			return (key2string.key2string(tparam.name,thisController.strings));
+	    		};
+	    		tparam.nameLang=function(lang){
+	    			return (key2string.key2stringWithLangStrict(tparam.name,thisController.strings,lang));
+	    		};
+
+	    		tparam.actions=[{ action:"edit",
+	    						  name	:$translate.instant("edit")},
+	    		                { action	  : "delete",
+	    						  name		  : $translate.instant("delete"),
+	    						  disabled	  : thisController.sampleType.titleparameters.length==1
+	    						}
+	    					  ];
+	    		for (var i=0; i< rest.data.parametergrps.length; i++){
+	    			tparam.actions.push({ action	  : "move",
+						name		: $translate.instant("move to")+" "+thisController.sampleType.parametergrps[i].namef(),
+						destination : thisController.sampleType.parametergrps[i].id
+					})
+	    		}
+	        });
 	    	defered.resolve(thisController.sampleType); 	
 		    }, function(rest) {
 			console.log("Error loading sampletypes");
@@ -129,10 +160,11 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
     	promise.then(function(rest) {
 	    	var parameter = rest.data;
 	    	var strings = rest.data.strings;
-	    	
-	    	parameter.pgnamef=function(){
-				return (key2string.key2string(parameter.parametergroupname,strings));
-			};
+	    	if (parameter.parametergroupname){
+	    		parameter.pgnamef=function(){
+	    			return (key2string.key2string(parameter.parametergroupname,strings));
+	    		};
+	    	}
 	    	parameter.sampletypenamef=function(){
 				return (key2string.key2string(parameter.sampletypename,strings));
 			};
@@ -199,7 +231,13 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
     					);
 	    			});
 	    		}
-	         });
+	    		if (parameter.datatype=='string' || parameter.datatype=='integer'){
+	    			parameter.actions.push({
+	    				action : 'title',
+	    				name	: $translate.instant("make titleparameter")
+	    			});
+	    		}
+	        });
 	         
 	    	defered.resolve(thisController.paramGrp);  	
 		    }, function(rest) {

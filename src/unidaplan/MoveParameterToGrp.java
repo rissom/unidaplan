@@ -50,7 +50,7 @@ import org.json.JSONObject;
 	
 				// find the stringkey
 				pStmt=dBconn.conn.prepareStatement(
-						"UPDATE ot_parameters SET (parametergroup,lastUser)=(?,?) WHERE id=?");
+						"UPDATE ot_parameters SET (parametergroup,id_field,lastUser)=(?,FALSE,?) WHERE id=?");
 				pStmt.setInt(1,destination);
 				pStmt.setInt(2,userID);
 				pStmt.setInt(3,parameterID);

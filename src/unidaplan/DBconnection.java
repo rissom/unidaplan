@@ -12,7 +12,9 @@ import java.util.ArrayList;
 //import java.util.Map;
 //import java.lang.reflect.Field;
 
+
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 //import java.util.Properties;
 /** Simple servlet for testing deployment on server.
@@ -321,6 +323,22 @@ public class DBconnection  {
 	  return id;
   }
   
+  
+  public void addStringSet (int key, JSONObject stringset) throws JSONException, Exception{
+	  String[] names=JSONObject.getNames(stringset);
+	  for (int i=0; i<names.length;i++){
+		  addString(key,names[i],stringset.getString(names[i]));
+	  }
+  }
+  
+  
+  public Boolean removeStringKey(int key) throws Exception {
+	  PreparedStatement pStmt=conn.prepareStatement("DELETE FROM string_key_table WHERE string_key=?");
+	  pStmt.setInt(1, key);
+	  int keyDeleted=pStmt.executeUpdate();
+	  pStmt.close();
+	  return (keyDeleted==1);
+  }
   
   
   public JSONObject jsonObjectFromPreparedStmt(PreparedStatement pStmt) throws Exception{

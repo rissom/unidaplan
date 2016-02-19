@@ -95,12 +95,15 @@ import org.json.JSONObject;
 		
 		
 		if (jsonIn.has("description")){
+			JSONObject newDescription=null;
 		    try{
-				 newName=jsonIn.getJSONObject("description");
-				 language=JSONObject.getNames(newName)[0];
-				 value=newName.getString(language);
+				 newDescription=jsonIn.getJSONObject("description");
+				 if (newDescription.length()>0){
+					 language=JSONObject.getNames(newDescription)[0];
+					 value=newDescription.getString(language);
+				 }
 			} catch (JSONException e) {
-				System.err.println("UpdateSTParameter: Error parsing ID-Field or comment");
+				System.err.println("UpdateSTParameter: Error parsing Description-Field");
 				response.setStatus(404);
 			}
 
@@ -112,21 +115,35 @@ import org.json.JSONObject;
 				pStmt.setInt(1,parameterID);
 				int stringKey=dBconn.getSingleIntValue(pStmt);
 				pStmt.close();
-				if (stringKey<1)
-				{
-					pStmt=dBconn.conn.prepareStatement(
-							"SELECT description FROM paramdef WHERE id="
-							+ "(SELECT definition FROM ot_parameters WHERE id=?)");
-					pStmt.setInt(1,parameterID);
-					int key=dBconn.getSingleIntValue(pStmt);
-					stringKey=dBconn.copyStringKey(key,userID,value); // new Stringkey with value as description, old entries are copyied
-					pStmt=dBconn.conn.prepareStatement(
-							"UPDATE ot_parameters SET description = ? WHERE id=?");
-					pStmt.setInt(1,stringKey);
-					pStmt.setInt(2,parameterID);
-					pStmt.executeUpdate();
+				
+				if (stringKey<1) { // no string key in database
+					if (newDescription.length()>0){	 //  and new value is not empty
+						pStmt=dBconn.conn.prepareStatement( // copy strings from parent type
+								"SELECT description FROM paramdef WHERE id="
+								+ "(SELECT definition FROM ot_parameters WHERE id=?)");
+						pStmt.setInt(1,parameterID);
+						int key=dBconn.getSingleIntValue(pStmt);
+						stringKey=dBconn.copyStringKey(key,userID,value); // new Stringkey with value as description, old entries are copyied
+						pStmt=dBconn.conn.prepareStatement(
+								"UPDATE ot_parameters SET description = ? WHERE id=?");
+						pStmt.setInt(1,stringKey);
+						pStmt.setInt(2,parameterID);
+						pStmt.executeUpdate();
+						dBconn.addStringSet(stringKey,newDescription);
+					}
+				} else { // there is a stringkey
+					if (newDescription.length()>0){
+						dBconn.addStringSet(stringKey,newDescription);
+					} else {
+						dBconn.removeStringKey(stringKey);
+						pStmt=dBconn.conn.prepareStatement(
+								"UPDATE ot_parameters SET description = ? WHERE id=?");
+						pStmt.setNull(1,java.sql.Types.INTEGER);
+						pStmt.setInt(2,parameterID);
+						pStmt.executeUpdate();
+						pStmt.close();
+					}
 				}
-				dBconn.addString(stringKey, language, value);
 
 				
 			} catch (SQLException e) {
@@ -195,11 +212,12 @@ import org.json.JSONObject;
 			try {
 			    dBconn.startDB();	   
 				Boolean idField=jsonIn.getBoolean("id_field");
-				pStmt=dBconn.conn.prepareStatement(
-						"UPDATE ot_parameters SET (id_field,lastchange,lastuser)=(?,NOW(),?) WHERE id=?");
-				pStmt.setBoolean(1, idField);
-				pStmt.setInt(2,userID);
-				pStmt.setInt(3,parameterID);				
+				if (idField){
+					pStmt=dBconn.conn.prepareStatement(
+							"UPDATE ot_parameters SET (id_field,parametergroup,lastuser)=(TRUE,NULL,?) WHERE id=?");
+					pStmt.setInt(1,userID);
+					pStmt.setInt(2,parameterID);	
+				} 
 				pStmt.executeUpdate();
 				pStmt.close();	
 			} catch (SQLException e){
