@@ -50,7 +50,11 @@ function searchController(restfactory,$state,$stateParams,$translate,
 	 	  
 	this.editFieldNL2 = false;
 		
-	var types=[$translate.instant('all samples'),$translate.instant('all processes'),$translate.instant('all samples in a specific process')];
+	var types=[
+	           $translate.instant('all objects'),
+	           $translate.instant('all processes'),
+	           $translate.instant('all objects in a specific process'),
+	           $translate.instant('all objects with processes')];
 	
 	var modeAnd=$translate.instant('all of the following');
 	
@@ -62,7 +66,7 @@ function searchController(restfactory,$state,$stateParams,$translate,
 	}
 	
 	
-	this.keyUp = function(keyCode,newValue,parameter) {
+	this.keyUp = function(keyCode) {
 		if (keyCode===13) {				// Return key pressed
 			thisController.startSearch();
 		}

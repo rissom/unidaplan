@@ -7,9 +7,7 @@ function resultController(restfactory,result,$state,$translate,$stateParams,avSa
 	var thisController = this;
 	
 	this.result = result;
-	
-
-	
+		
 	
 	this.getType = function(type){
 		return avSampleTypeService.getType({typeid:type},types);
@@ -18,7 +16,7 @@ function resultController(restfactory,result,$state,$translate,$stateParams,avSa
 	
   
 	this.getProcessType = function(type){
-		return avProcessTypeService.getProcessType ({typeid:type},pTypes);
+		return avProcessTypeService.getProcessType ({processtype:type},pTypes);
 	};
 	
 	

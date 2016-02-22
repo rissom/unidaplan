@@ -7,7 +7,7 @@
 <p />
 <h3>{{'Search'|translate}}</h3>
 <p />
-{{'searching for'|translate}} {{searchCtrl.type()}} {{'with'|translate}} {{searchCtrl.mode()}} {{'following properties'|translate}}:
+{{'searching for'|translate}} {{searchCtrl.type()}}  {{'with'|translate}} {{searchCtrl.mode()}} {{'following properties'|translate}}:
 <br/><br/><br/>
 
 
@@ -52,7 +52,8 @@
 			</select>
 		</td>
 		<td>
-			<input ng-model="parameter.value">
+			<input ng-model="parameter.value"
+			 ng-keyup="searchCtrl.keyUp($event.keyCode)">
 		</td>
 	</tr>
 </table>

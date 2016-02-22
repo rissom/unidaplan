@@ -213,15 +213,16 @@ import org.json.JSONObject;
 				
 				//create headings
 				pStmt= dBconn.conn.prepareStatement(
-						"SELECT ot_parameters.id,"
-						+"COALESCE (ot_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname, "
-						+"paramdef.stringkeyunit, "
-						+"paramdef.datatype "
-						+"FROM searches "
-						+"JOIN osearchoutput ON osearchoutput.search = searches.id "
-						+"JOIN ot_parameters ON ot_parameters.id=otparameter "
-						+"JOIN paramdef ON ot_parameters.definition=paramdef.id "
-						+"WHERE searches.id=?");
+						"  SELECT ot_parameters.id,"
+						+ "COALESCE (ot_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname, "
+						+ "paramdef.stringkeyunit, "
+						+ "paramdef.datatype "
+						+ "FROM searches "
+						+ "JOIN osearchoutput ON osearchoutput.search = searches.id "
+						+ "JOIN ot_parameters ON ot_parameters.id=otparameter "
+						+ "JOIN paramdef ON ot_parameters.definition=paramdef.id "
+						+ "WHERE searches.id=? "
+						+ "ORDER BY osearchoutput.position");
 				pStmt.setInt(1, id);
 				headings = dBconn.jsonArrayFromPreparedStmt(pStmt);
 				JSONObject heading = new JSONObject(); 
@@ -271,7 +272,6 @@ import org.json.JSONObject;
 						"WHERE samples.id = ANY('{"+samBuff.toString()+"}'::int[])";
 				pStmt= dBconn.conn.prepareStatement(query);
 				data = dBconn.getSearchTable(pStmt);
-
 			}
 				
 			
@@ -292,12 +292,13 @@ import org.json.JSONObject;
 				
 				//create headings
 				pStmt= dBconn.conn.prepareStatement(
-						"SELECT p_parameters.id,p_parameters.stringkeyname, "
-						+"paramdef.stringkeyunit FROM searches "
-						+"JOIN psearchoutput ON psearchoutput.search = searches.id "
-						+"JOIN p_parameters ON p_parameters.id=pparameter "
-						+"JOIN paramdef ON p_parameters.definition=paramdef.id "
-						+"WHERE searches.id=?");
+						"  SELECT p_parameters.id,p_parameters.stringkeyname, "
+						+ "paramdef.stringkeyunit FROM searches "
+						+ "JOIN psearchoutput ON psearchoutput.search = searches.id "
+						+ "JOIN p_parameters ON p_parameters.id=pparameter "
+						+ "JOIN paramdef ON p_parameters.definition=paramdef.id "
+						+ "WHERE searches.id=? "
+						+ "ORDER BY psearchoutput.position");
 				pStmt.setInt(1, id);
 				headings = dBconn.jsonArrayFromPreparedStmt(pStmt);
 				JSONObject heading = new JSONObject(); 

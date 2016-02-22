@@ -26,9 +26,7 @@ function editSearchController(restfactory,$state,$stateParams,$translate,$modal,
 		
 	this.modes = [{mode:true,  name:$translate.instant("All of the following")},
 				  {mode:false, name:$translate.instant("One of the following")}];
-				
-	this.sampleParameters = [{name:"halli"}, {name:"hallo"}, {name:"hallo2"}];
-	
+					
 //	this.avParameters = iSampleParamsAndGrps.parameters;
 //	
 //	this.paramGroups = iSampleParamsAndGrps.parametergroups;
@@ -36,6 +34,10 @@ function editSearchController(restfactory,$state,$stateParams,$translate,$modal,
 	this.languages = languages;
 	
 	this.search=searchData;
+		
+	this.output=searchData.output;
+	
+	this.output.sort(function(a,b){return a.position-b.position});
 	  
 	this.nameL1 = searchData.nameL1; //parameterGrp.nameLang(languages[0].key);
 	  
@@ -252,6 +254,37 @@ function editSearchController(restfactory,$state,$stateParams,$translate,$modal,
 	
 	
 	
+	this.down=function(index){
+		console.log("index:"+index);
+		var pos1=thisController.output[index].position;
+		var pos2=thisController.output[index+1].position;
+		var temp=thisController.output[index]
+		var temp2=thisController.output[index+1]
+		thisController.output[index]=temp2;
+		thisController.output[index+1]=temp;
+		thisController.output[index].position=pos1;
+		console.log("pos1:"+pos1+", pos2:"+pos2);
+		thisController.output[index+1].position=pos2;
+		var promise = searchService.changeOrder(thisController.search.id,thisController.search.output);
+		promise.then(function(){reload()},function(){console.log("error")})
+	};
+	
+	this.up=function(index){
+		var id1=thisController.output[index-1].id;
+		var id2=thisController.output[index].id;
+		var pos1=thisController.output[index-1].position;
+		var pos2=thisController.output[index].position;
+		var temp=thisController.output[index-1]
+		var temp2=thisController.output[index]
+		thisController.output[index]=temp;
+		thisController.output[index-1]=temp2;
+		thisController.output[index-1].position=pos1;
+		thisController.output[index].position=pos2;
+		var promise = searchService.changeOrder(thisController.search.id,thisController.search.output);
+		promise.then(function(){reload()},function(){console.log("error")})
+	};
+	
+	
 	this.edit = function(field){
 		thisController.editFieldNL1 = (field=="NL1");
 		thisController.editFieldNL2 = (field=="NL2");
@@ -306,7 +339,6 @@ function editSearchController(restfactory,$state,$stateParams,$translate,$modal,
 			}
 		}
 	};
-	
 	
 	
 	this.valueKeyUp=function(keyCode,newValue,parameter){

@@ -38,6 +38,8 @@
 </tr>
 </table>
 <br/>
+
+
 <!-- 
 <h4> {{'Access'|translate}}</h4>
 {{'Can be used by'|translate}}: 
@@ -65,7 +67,7 @@
 
 <br/>
 <h4>{{'Search Criteria'|translate}}</h4>
-<div class="col-xs-6">
+<div class="col-xs-6" ng-hide="editSearchCtrl.type==4">
 {{'mode'|translate}}:
 	<select
 	    class="form-control" 
@@ -112,7 +114,9 @@
 	
 </div>
 <br/><br/><br/><br/>
-<table class="table">
+
+	
+<table class="table" ng-show="editSearchCtrl.search.type==1" >
 	<thead class=parametertablehead>
 	<tr>
 		<td>
@@ -130,7 +134,7 @@
 	</tr>
 	
 	</thead>
-	<tr ng-repeat="parameter in editSearchCtrl.search.parameter | orderBy:'namef()'"
+	<tr ng-repeat="parameter in editSearchCtrl.search.sparameter | orderBy:'namef()'"
 		ng-dblclick="parameter.editing=true">
 		<td>
 			<button 
@@ -165,18 +169,83 @@
 		</td>
 	</tr>
 </table>
+
 <button class="btn btn-default"
 		ng-click="editSearchCtrl.addSampleParameter()"
-		ng-show="editSearchCtrl.searchType==1"
+		ng-show="editSearchCtrl.searchType==1 || editSearchCtrl.searchType==4"
 		>
 	+ {{'Add Parameter'|translate}}
 </button>
+
+
+
+
+
+<table class="table" ng-show="editSearchCtrl.search.type==2">
+
+	<thead class=parametertablehead>
+		<tr>
+			<td>
+				{{'delete'|translate}}
+			</td>
+			<td>
+				{{'Parameter'|translate}}
+			</td>
+			<td>
+				{{'Comparison operation'|translate}}
+			</td>
+			<td>
+				{{'Default Values'|translate}}
+			</td>
+		</tr>
+	</thead>
+	
+	<tr ng-repeat="parameter in editSearchCtrl.search.pparameter | orderBy:'namef()'"
+		ng-dblclick="parameter.editing=true">
+		<td>
+			<button 
+				type="button" 
+				class="btn btn-default btn-xs" 
+				ng-click="editSearchCtrl.deleteParameter(parameter)" >
+				<span class="glyphicon glyphicon-remove"></span>
+			</button>
+		</td>
+		<td>
+			<div>{{parameter.namef()}}</div>
+		</td>
+		<td>
+			<select class="form-control input-sm" 
+				style="width:68px;"	
+				ng-model="parameter.comparison"
+				ng-change="editSearchCtrl.changeComparison(parameter)"
+				ng-options="comparator.index as comparator.label for comparator in editSearchCtrl.comparators[parameter.datatype]"> 
+			</select>
+		</td>
+		<td>
+			<span ng-hide="parameter.editing">{{parameter.value}}
+			</span>
+				<input 						   
+						ng-keyup="editSearchCtrl.valueKeyUp($event.keyCode,newValue,parameter)"
+						ng-show="parameter.editing" type="text"
+					    ng-model="newValue" 
+					    ng-blur="parameter.editing=false">
+				<span ng-show="parameter.unit">
+					{{parameter.unitf()}}
+				</span>
+		</td>
+	</tr>
+</table>
+
+
+
 <button class="btn btn-default"
 		ng-click="editSearchCtrl.addProcessParameter()"
-		ng-show="editSearchCtrl.searchType==2"
+		ng-show="editSearchCtrl.searchType==2 || editSearchCtrl.searchType==4"
 		>
 	+ {{'Add Parameter'|translate}}
 </button>
+
+
 <br/>
 <br/>
 <br/>
@@ -189,15 +258,29 @@
 	<thead class=parametertablehead>
 	<tr>		
 		<td>
-			{{'delete'|translate}}
 		</td>
 		<td>
 			Parameter
 		</td>
+		<td>
+			{{'delete'|translate}}
+		</td>
 	</tr>
 	
 	</thead>
-	<tr  ng-repeat="parameter in editSearchCtrl.search.output">
+	<tr  ng-repeat="parameter in editSearchCtrl.output">
+		<td class="parametertd">
+			<button type="button" class="btn btn-default btn-xs" 
+				ng-click="editSearchCtrl.up($index)"   ng-hide="$first">&#9650;
+			</button>
+			<button type="button" class="btn btn-default btn-xs" 
+				ng-click="editSearchCtrl.down($index)" ng-hide="$last" >&#9660;
+			</button>
+		</td> 
+		
+		<td>
+			<div>{{parameter.namef()}}</div>
+		</td>
 		<td>
 			<button 
 				type="button" 
@@ -205,9 +288,6 @@
 				ng-click="editSearchCtrl.deleteOutParameter(parameter)" >
 				<span class="glyphicon glyphicon-remove"></span>
 			</button>
-		</td>
-		<td>
-			<div>{{parameter.namef()}}</div>
 		</td>
 	</tr>
 </table>
