@@ -144,8 +144,7 @@ import org.json.JSONObject;
 						pStmt.close();
 					}
 				}
-
-				
+			
 			} catch (SQLException e) {
 				System.err.println("UpdateSTParameter: Problems with SQL query");
 				e.printStackTrace();
