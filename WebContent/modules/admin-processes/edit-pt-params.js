@@ -87,7 +87,6 @@ function editPtParamsController($state,$modal,$stateParams,$translate,avParamete
   this.setCompulsory=function(parameter){
 	  var tempParameter={ parameterid : parameter.id,
 			  		  compulsory : parameter.compulsory};
-	  console.log(tempParameter)
 	  var promise= avProcessTypeService.updateParameter(tempParameter);
  	  promise.then(function(){reload()},function(){console.log("error")})
   };
@@ -116,6 +115,9 @@ function editPtParamsController($state,$modal,$stateParams,$translate,avParamete
 	  if (action.action==="delete" && !action.disabled) {
 		  var promise = avProcessTypeService.deletePTParameter(parameter.id);
 		  promise.then(function(){reload()},function(){console.log("error")});
+	  }
+	  if (action.action==="edit") {
+			$state.go('editSinglePTParameter',{parameterID:parameter.id});
 	  }
   };
   

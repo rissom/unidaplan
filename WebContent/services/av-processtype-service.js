@@ -19,29 +19,143 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 	
 	
 	
-	this.getProcessType = function(process,pTypes) {
-		var processTypeName;
-		  angular.forEach(pTypes,function(ptype) {
+	this.addPTParameterGrp = function(processTypeID,position,name){
+		var temp={"processtypeid":processTypeID,"position":position,"name":name};
+		return restfactory.POST("add-pt-parameter-grp",temp);
+	};
+	
+	
+	
+	this.changeOrderPTParameters=function(newPositions){
+		return restfactory.PUT("change-order-pt-parameters",newPositions);
+	};
+	
+
+	
+	this.deletePTParameter=function(id){
+		return restfactory.DELETE("delete-PT-Parameter?id="+id);
+	};
+	
+	
+	
+	this.deletePTParameterGrp=function(id){
+		return restfactory.DELETE("delete-pt-parameter-grp?id="+id);
+	};
+	
+	
+	
+	this.exPosPTParamGrp=function(id1,pos1,id2,pos2){
+		var jsonObj={"id1":id1, "id2":id2, "pos1":pos1, "pos2":pos2};
+		return restfactory.POST ("exchange-pos-pt-parameter-grp",jsonObj);
+	};
+	
+	
+	
+	this.getProcessRecipes = function(process,pTypes){
+		var recipes=[];
+		angular.forEach(pTypes,function(ptype) {
 			if (process.processtype==ptype.id){
-				processTypeName=ptype.namef();
+				recipes=ptype.recipes;
 			}
 	      });
+		return recipes;
+	};
+
+
+	
+	this.getProcessType = function(process,pTypes) {
+		var processTypeName="processtype not found";
+		if (pTypes){
+		  	angular.forEach(pTypes,function(ptype) {
+		  		if (process.processtype==ptype.id){
+		  			processTypeName=ptype.namef();
+		  		}
+		  	});
+		} else {
+			console.log("no ptypes")
+		}
 		return processTypeName; 
 	};
 
 	
 	
-	this.updateParamGrp = function (name, language, paramgrpid){
-		return restfactory.PUT("update-pt-paramgrp",{"newname":name, "paramgrpid":paramgrpid, "language":language});
+	this.getSinglePTypeParameter = function(parameterID){
+        var defered=$q.defer();
+    	var promise = restfactory.GET("single-pt-parameter?parameterid="+parameterID);
+    	promise.then(function(rest) {
+	    	var parameter = rest.data;
+	    	var strings = rest.data.strings;
+	    	if (parameter.parametergroupname){
+	    		parameter.pgnamef=function(){
+	    			return (key2string.key2string(parameter.parametergroupname,strings));
+	    		};
+	    	}
+	    	parameter.processtypenamef=function(){
+				return (key2string.key2string(parameter.processtypename,strings));
+			};
+		    parameter.namef=function(){
+					return (key2string.key2string(parameter.name,strings));
+				};
+			parameter.nameLang=function(lang){
+					return (key2string.key2stringWithLangStrict(parameter.name,strings,lang));
+				};
+			parameter.descf=function(){
+					return (key2string.key2string(parameter.description,strings));
+				};
+			parameter.descLang=function(lang){
+					return (key2string.key2stringWithLangStrict(parameter.description,strings,lang));
+				};
+//				if (parameter.stringkeyunit){
+				parameter.unitLang=function(lang){
+					return (key2string.key2stringWithLangStrict(parameter.stringkeyunit,strings,lang));
+				};
+//				}
+	        defered.resolve(parameter);
+    	}, function(rest) {
+    		console.log("Error loading processtype-parameter");
+    	});
+		return defered.promise;
+	};
+		     
+	
+	
+	
+	this.getProcessTypes = function() {
+        var defered=$q.defer();
+	    var promise = restfactory.GET("available-processtypes");
+	    promise.then(function(rest) {
+	    	var strings = rest.data.strings;
+	    	var processTypes = rest.data.processes;
+	    	angular.forEach(processTypes,function(ptype) {
+	    		ptype.namef=function(){
+	    			return (key2string.key2string(ptype.name,strings));
+	    		};
+	    		ptype.nameLang=function(lang){
+	    			return (key2string.key2stringWithLangStrict(ptype.name,strings,lang));
+	    		};
+	    		ptype.descf=function(){
+	    			return (key2string.key2string(ptype.description,strings));
+	    		};
+	    		ptype.descLang=function(lang){
+	    			return (key2string.key2stringWithLangStrict(ptype.description,strings,lang));
+	    		};
+	    		ptype.actions= [{action:"edit",     name:$translate.instant("edit")},
+	    		                {action:"duplicate",name:$translate.instant("duplicate")},
+	    		                {action:"delete",   name:$translate.instant("delete"), disabled:!ptype.deletable}];
+	    		angular.forEach(ptype.recipes, function(recipe) {
+	    			recipe.namef=function(){
+	    				return (key2string.key2string(recipe.name,strings));
+	    			};
+	    		});
+	         });
+	    	defered.resolve(processTypes);	    	
+		    }, function(rest) {
+			console.log("Error loading processtypes");
+		 });
+	    return defered.promise;
 	};
 	
-	
-	
-	this.updateParameter = function (parameter){
-		return restfactory.PUT("update-pt-parameter",parameter);
-	};
-	
-	
+
 	
 	this.getPTypeParamGrps = function(processTypeID) {
 		var defered=$q.defer();
@@ -74,89 +188,6 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 	
 	
 	
-	this.changeOrderPTParameters=function(newPositions){
-		return restfactory.PUT("change-order-pt-parameters",newPositions);
-	};
-	
-	
-	
-	this.getProcessRecipes = function(process,pTypes){
-		var recipes=[];
-		angular.forEach(pTypes,function(ptype) {
-			if (process.processtype==ptype.id){
-				recipes=ptype.recipes;
-			}
-	      });
-		return recipes;
-	};
-	
-	
-	
-	this.addPTParameterGrp = function(processTypeID,position,name){
-		var temp={"processtypeid":processTypeID,"position":position,"name":name};
-		return restfactory.POST("add-pt-parameter-grp",temp);
-	};
-	
-	
-	
-	this.deletePTParameter=function(id){
-		return restfactory.DELETE("delete-PT-Parameter?id="+id);
-	};
-	
-	
-	
-	this.deletePTParameterGrp=function(id){
-		return restfactory.DELETE("delete-pt-parameter-grp?id="+id);
-	};
-	
-	
-	
-	this.exPosPTParamGrp=function(id1,pos1,id2,pos2){
-		var jsonObj={"id1":id1, "id2":id2, "pos1":pos1, "pos2":pos2};
-		return restfactory.POST ("exchange-pos-pt-parameter-grp",jsonObj);
-	};
-
-	
-	
-	this.getProcessTypes = function() {
-        var defered=$q.defer();
-        var thisController=this;
-	    var promise = restfactory.GET("available-processtypes");
-	    promise.then(function(rest) {
-	    	thisController.processTypes = rest.data.processes;
-	    	angular.forEach(thisController.processTypes,function(ptype) {
-	    		ptype.namef=function(){
-	    			return (key2string.key2string(ptype.name,thisController.strings));
-	    		};
-	    		ptype.nameLang=function(lang){
-	    			return (key2string.key2stringWithLangStrict(ptype.name,thisController.strings,lang));
-	    		};
-	    		ptype.descf=function(){
-	    			return (key2string.key2string(ptype.description,thisController.strings));
-	    		};
-	    		ptype.descLang=function(lang){
-	    			return (key2string.key2stringWithLangStrict(ptype.description,thisController.strings,lang));
-	    		};
-	    		ptype.actions= [{action:"edit",     name:$translate.instant("edit")},
-	    		                {action:"duplicate",name:$translate.instant("duplicate")},
-	    		                {action:"delete",   name:$translate.instant("delete"), disabled:!ptype.deletable}];
-	    		angular.forEach(ptype.recipes, function(recipe) {
-	    			recipe.namef=function(){
-	    				return (key2string.key2string(recipe.name,thisController.strings));
-	    			};
-	    		});
-	         });
-	         thisController.strings = rest.data.strings;
-	    	thisController.loaded=true;
-	    	defered.resolve(thisController.processTypes);	    	
-		    }, function(rest) {
-			console.log("Error loading processtypes");
-		 });
-	    return defered.promise;
-	};
-
-	
-	
 	this.getPTypeParams=function(paramGrpID){
 		var defered=$q.defer();
         var thisController=this;
@@ -180,7 +211,8 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 	    			return (key2string.key2stringWithLangStrict(parameter.stringkeyunit,thisController.paramGrp.strings,lang));
 	    		};
 	    		// actions for the context menu. Have to be implemented in editPtParamsCtrl.performAction
-	    		parameter.actions=[{action:"delete",name:$translate.instant("delete"), disabled:!parameter.deletable}];
+	    		parameter.actions = [{action:"edit",name:$translate.instant("edit")},
+	    		                     {action:"delete",name:$translate.instant("delete"), disabled:!parameter.deletable}];
 	         });
 	         
 	    	defered.resolve(thisController.paramGrp);
@@ -191,12 +223,26 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 	};
 
 	
+	this.updateParamGrp = function (name, language, paramgrpid){
+		return restfactory.PUT("update-pt-paramgrp",{"newname":name, "paramgrpid":paramgrpid, "language":language});
+	};
+	
+	
+	
+	this.updateParameter = function (parameter){
+		return restfactory.PUT("update-pt-parameter",parameter);
+	};
+	
+
 	
 	this.updateProcessTypeData=function(processtypeID,field,value,lang){
 		var tempObj={"processtypeid":processtypeID,"field":field,"newvalue":value,"lang":lang};
 		console.log ("tempObj",tempObj);
 		return restfactory.POST('update-process-type-data',tempObj);
 	};
+	
+	
+	
 };
 
 

@@ -180,7 +180,7 @@
     <url-pattern>/add-user</url-pattern>
   </servlet-mapping>
   
-    <servlet>
+  <servlet>
     <description>AssignGroupMembers</description>
     <display-name>AssignGroupMembers</display-name>
     <servlet-name>AssignGroupMembers</servlet-name>
@@ -189,6 +189,17 @@
   <servlet-mapping>
     <servlet-name>AssignGroupMembers</servlet-name>
     <url-pattern>/assign-group-members</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>ChangeOrderSearchOutput</description>
+    <display-name>ChangeOrderSearchOutput</display-name>
+    <servlet-name>ChangeOrderSearchOutput</servlet-name>
+    <servlet-class>unidaplan.ChangeOrderSearchOutput</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ChangeOrderSearchOutput</servlet-name>
+    <url-pattern>/change-order-search-output</url-pattern>
   </servlet-mapping>
   
   <servlet>
@@ -873,6 +884,17 @@
   </servlet-mapping>
   
   <servlet>
+    <description>SinglePTParameter</description>
+    <display-name>SinglePTParameter</display-name>
+    <servlet-name>SinglePTParameter</servlet-name>
+    <servlet-class>unidaplan.SinglePTParameter</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SinglePTParameter</servlet-name>
+    <url-pattern>/single-pt-parameter</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
     <description>Change value for a Possible Value for chooser parameter type</description>
     <display-name>UpdatePossibleValue</display-name>
     <servlet-name>UpdatePossibleValue</servlet-name>
@@ -994,14 +1016,14 @@
   </servlet-mapping>
   
   <servlet>
-    <description>AddSampletypePGParameters</description>
-    <display-name>AddSampletypePGParameters</display-name>
-    <servlet-name>AddSampletypePGParameters</servlet-name>
-    <servlet-class>unidaplan.AddSampletypePGParameters</servlet-class>
+    <description>AddSampletypeParameters</description>
+    <display-name>AddSampletypeParameters</display-name>
+    <servlet-name>AddSampletypeParameters</servlet-name>
+    <servlet-class>unidaplan.AddSampletypeParameters</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>AddSampletypePGParameters</servlet-name>
-    <url-pattern>/add-st-pg-parameters</url-pattern>
+    <servlet-name>AddSampletypeParameters</servlet-name>
+    <url-pattern>/add-st-parameters</url-pattern>
   </servlet-mapping>
   
   <servlet>

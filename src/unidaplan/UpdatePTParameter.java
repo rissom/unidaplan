@@ -2,10 +2,12 @@ package unidaplan;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -99,11 +101,13 @@ import org.json.JSONObject;
 		
 		if (jsonIn.has("compulsory")){
 			try {
+			    dBconn.startDB();	
 				boolean compulsory=jsonIn.getBoolean("compulsory");
 				pStmt=dBconn.conn.prepareStatement(
 						"UPDATE p_parameters SET compulsory=? WHERE id=?");
 				pStmt.setBoolean(1, compulsory);
-				pStmt.setInt(2,parameterID);				
+				pStmt.setInt(2,parameterID);
+				System.out.println(pStmt.toString());
 				pStmt.executeUpdate();
 				pStmt.close();	
 			} catch (SQLException e){
@@ -112,11 +116,82 @@ import org.json.JSONObject;
 			}catch(JSONException e) {
 				System.err.println("UpdatePTParameter: JSON error reading compulsory field");
 				status="JSON error, compulsory field";
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		
+		
+		
+		if (jsonIn.has("description")){
+			JSONObject newDescription=null;
+		    try{
+				 newDescription=jsonIn.getJSONObject("description");
+				 if (newDescription.length()>0){
+					 language=JSONObject.getNames(newDescription)[0];
+					 value=newDescription.getString(language);
+				 }
+			} catch (JSONException e) {
+				System.err.println("UpdateSTParameter: Error parsing Description-Field");
+				response.setStatus(404);
+			}
+
+			try {
+			    dBconn.startDB();	   
+				// find the stringkey
+				pStmt=dBconn.conn.prepareStatement(
+						"SELECT description FROM p_parameters WHERE id=?");
+				pStmt.setInt(1,parameterID);
+				int stringKey=dBconn.getSingleIntValue(pStmt);
+				pStmt.close();
+				
+				if (stringKey<1) { // no string key in database
+					if (newDescription.length()>0){	 //  and new value is not empty
+						pStmt=dBconn.conn.prepareStatement( // copy strings from parent type
+								"SELECT description FROM paramdef WHERE id="
+								+ "(SELECT definition FROM p_parameters WHERE id=?)");
+						pStmt.setInt(1,parameterID);
+						int key=dBconn.getSingleIntValue(pStmt);
+						stringKey=dBconn.copyStringKey(key,userID,value); // new Stringkey with value as description, old entries are copyied
+						pStmt=dBconn.conn.prepareStatement(
+								"UPDATE p_parameters SET description = ? WHERE id=?");
+						pStmt.setInt(1,stringKey);
+						pStmt.setInt(2,parameterID);
+						pStmt.executeUpdate();
+						dBconn.addStringSet(stringKey,newDescription);
+					}
+				} else { // there is a stringkey
+					if (newDescription.length()>0){
+						dBconn.addStringSet(stringKey,newDescription);
+					} else {
+						dBconn.removeStringKey(stringKey);
+						pStmt=dBconn.conn.prepareStatement(
+								"UPDATE p_parameters SET description = ? WHERE id=?");
+						pStmt.setNull(1,java.sql.Types.INTEGER);
+						pStmt.setInt(2,parameterID);
+						pStmt.executeUpdate();
+						pStmt.close();
+					}
+				}
+
+				
+			} catch (SQLException e) {
+				System.err.println("UpdateSTParameter: Problems with SQL query");
+				e.printStackTrace();
+				status="SQL error";
+			} catch (Exception e) {
+				System.err.println("UpdateSTParameter: some error occured");
+				status="misc error";
+			}
+		}
+		
+		
+		
+		
 		if (jsonIn.has("hidden")){
 			try {
+			    dBconn.startDB();	   
 				boolean hidden=jsonIn.getBoolean("hidden");
 				pStmt=dBconn.conn.prepareStatement(
 						"UPDATE p_parameters SET hidden=? WHERE id=?");
@@ -130,6 +205,9 @@ import org.json.JSONObject;
 			}catch(JSONException e) {
 				System.err.println("UpdatePTParameter: JSON error reading hidden field");
 				status="JSON error, hidden field";
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 

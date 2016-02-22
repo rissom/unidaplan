@@ -187,10 +187,10 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 //			}
 	        defered.resolve(parameter);
     	}, function(rest) {
-    		console.log("Error loading sampletypes");
+    		console.log("Error loading sampletype-parameter");
     	});
 		return defered.promise;
-	};
+	}
 	     
 	
 	
@@ -240,11 +240,11 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	        });
 	         
 	    	defered.resolve(thisController.paramGrp);  	
-		    }, function(rest) {
+	    }, function(rest) {
 			console.log("Error loading parametergroup");
 		});
 	    return defered.promise;
-	};
+	}
 	
 	
 	

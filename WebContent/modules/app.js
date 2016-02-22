@@ -112,7 +112,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 	        templateUrl: 'modules/search/edit-search.html',
 	        controller: 'editSearchController as editSearchCtrl',
 	        resolve:{
-                sampleTypes: 
+                sampleTypes:
             	    function(avSampleTypeService){
         	   	    	return avSampleTypeService.getSampleTypes();
                 	},
@@ -120,7 +120,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
                 	function(avProcessTypeService){
         	   	    	return avProcessTypeService.getProcessTypes();
         	   	    },
-        	   	users: 
+        	   	users:
 	        	    function(userService){
         	   	    	return userService.getUsers();
         	   		},
@@ -167,7 +167,19 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 			}
         })
 
-        
+         
+        .state('editSinglePTParameter', {
+	    	url: '/edit-single-pt-parameter/{parameterID:int}',
+	        templateUrl: 'modules/admin-processes/edit-single-pt-parameter.html',
+	        controller:"editSinglePTParameterController as editSinglePTParameterCtrl",
+	        resolve:{
+	        	parameter: 
+	        		function(avProcessTypeService,$stateParams){
+    	   	    		return avProcessTypeService.getSinglePTypeParameter($stateParams.parameterID);
+    	   	    	}
+			}
+        })
+
         
         .state('editSTParams', {
         	url: '/editsampletypeparams/{paramGrpID:int}',

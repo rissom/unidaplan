@@ -30,12 +30,18 @@ var searchService = function (restfactory,$q,$translate,key2string,languages) {
 	};
 	
 	
-	
+	this.changeOrder = function (searchID,output){
+		var newOrder = { searchid : searchID,
+			  		 	 output   : output };
+		return restfactory.PUT('change-order-search-output',newOrder);
+	};
+		
+		
 	// delete a search
 	this.deleteSearch = function(search){
 		return restfactory.DELETE("delete-search?searchid="+search.id);
 	};
-    
+	
 	
 	
 	// delete a parameter from search criteria
@@ -71,45 +77,61 @@ var searchService = function (restfactory,$q,$translate,key2string,languages) {
 	this.getSearchData = function(searchID){
 	// get the data for editing search
 		var defered=$q.defer();
-		var promise = restfactory.GET("search?id="+searchID);
+		var promise = restfactory.GET("searchdata?id="+searchID);
 		promise.then(function(rest) {
-		  	thisController.search = rest.data.search;
-		  	thisController.strings = rest.data.strings;
-	  		thisController.search.namef=function(){
-	  			return key2string.key2string(thisController.search.name,thisController.strings);
+		  	var search = rest.data.search;
+		  	var strings = rest.data.strings;
+	  		search.namef=function(){
+	  			return key2string.key2string(search.name,strings);
 	  		};
-	  		thisController.search.nameL1=
-	  			key2string.key2stringWithLangStrict(thisController.search.name,
-	  			thisController.strings,languages[0].key);
-		  	thisController.search.nameL2=
-		  		key2string.key2stringWithLangStrict(thisController.search.name,
-		  		thisController.strings,languages[1].key);
-		  	angular.forEach(thisController.search.parameter,function(parameter){
+	  		search.nameL1=
+	  			key2string.key2stringWithLangStrict(search.name,
+	  			strings,languages[0].key);
+		  	search.nameL2=
+		  		key2string.key2stringWithLangStrict(search.name,
+		  		strings,languages[1].key);
+		  	if (search.sparameter){
+			  	angular.forEach(search.sparameter,function(parameter){
+			  		parameter.namef=function(){
+			  			return key2string.key2string(parameter.stringkeyname, strings);
+			  		}
+			  	})
+		  	}
+		  	if (search.pparameter){
+			  	angular.forEach (search.pparameter,function(parameter){
+			  		parameter.namef=function(){
+			  			return key2string.key2string(parameter.stringkeyname,strings);
+			  		}
+			  	});
+		  	}
+		  	if (search.poparameter){
+			  	angular.forEach (search.poparameter,function(parameter){
+			  		parameter.fname=function(){
+			  			return key2string.key2string(parameter.stringkeyname,strings);
+			  		}
+			  	});
+		  	}
+		  	angular.forEach(search.output,function(parameter){
 		  		parameter.namef=function(){
-		  			return key2string.key2string(parameter.stringkeyname, thisController.strings);
+		  			return key2string.key2string(parameter.stringkeyname, strings);
 		  		}
 		  	})
-		  	angular.forEach(thisController.search.output,function(parameter){
-		  		parameter.namef=function(){
-		  			return key2string.key2string(parameter.stringkeyname, thisController.strings);
-		  		}
-		  	})
-		  	if (thisController.search.type===1){
-		  		var prom2 = thisController.getSParameters(thisController.search.defaultobject);
+		  	if (search.type===1){
+		  		var prom2 = thisController.getSParameters(search);
 		  		prom2.then(function(){
-					defered.resolve(thisController.search);
+					defered.resolve(search);
 		  		});
 		  	}
-		  	if (thisController.search.type===2){
-		  		var prom2 = thisController.getPParameters(thisController.search.defaultobject);
+		  	if (search.type===2){
+		  		var prom2 = thisController.getPParameters(search);
 		  		prom2.then(function(){
-					defered.resolve(thisController.search);
+					defered.resolve(search);
 		  		});
 		  	}
-		  	if (thisController.search.type===3){
-		  		var prom2 = thisController.getPParameters(thisController.search.defaultobject);
+		  	if (search.type===3){
+		  		var prom2 = thisController.getPParameters(search);
 		  		prom2.then(function(){
-					defered.resolve(thisController.search);
+					defered.resolve(search);
 		  		});
 		  	}
 		});
@@ -162,55 +184,55 @@ var searchService = function (restfactory,$q,$translate,key2string,languages) {
 	
 	
 	
-	this.getSParameters = function(sampleType){
+	this.getSParameters = function(search){
 		var defered=$q.defer();
-		var promise = restfactory.GET('/all-sample-type-params'+"?sampletypeid="+sampleType);
+		var promise = restfactory.GET('/all-sample-type-params'+"?sampletypeid="+search.defaultobject);
 		promise.then(function(rest) {
-		  	thisController.search.avParameters = rest.data.parameters;
-		  	thisController.search.avParamGrps = rest.data.parametergrps;
+		  	search.avParameters = rest.data.parameters;
+		  	search.avParamGrps = rest.data.parametergrps;
 		  	var strings = rest.data.strings;
-		  	angular.forEach (thisController.search.avParameters,function(parameter){
+		  	angular.forEach (search.avParameters,function(parameter){
 		  		parameter.namef=function(){
 		  			return key2string.key2string(parameter.name,strings);
 		  		}
 		  	});
-		  	angular.forEach (thisController.search.avParamGrps,function(paramGrp){
+		  	angular.forEach (search.avParamGrps,function(paramGrp){
 		  		paramGrp.namef=function(){
 		  			return key2string.key2string(paramGrp.stringkey,strings);
 		  		}
 		  	});
-			defered.resolve(thisController.search.parameters);
+			defered.resolve(search.parameters);
 		});
        return defered.promise;
 	}
 	
 	
 	
-	this.getPParameters = function(processType){
+	this.getPParameters = function(search){
 		var defered=$q.defer();
 		var url="/all-process-type-params";
-		if (processType){
-			url+="?processtypeid="+processType;
+		if (search.defaultprocess){
+			url+="?processtypeid="+search.defaultprocess;
 		}
 		var promise = restfactory.GET(url);
 		promise.then(function(rest) {
-		  	thisController.search.avParameters = rest.data.parameters;
-		  	thisController.search.avParamGrps = rest.data.parametergrps;
+		  	search.avParameters = rest.data.parameters;
+		  	search.avParamGrps = rest.data.parametergrps;
 		  	var strings = rest.data.strings;
-		  	angular.forEach (thisController.search.avParameters,function(parameter){
+		  	angular.forEach (search.avParameters,function(parameter){
 		  		parameter.namef=function(){
 		  			return key2string.key2string(parameter.name,strings);
 		  		}
 		  	});
-		  	angular.forEach (thisController.search.avParamGrps,function(paramGrp){
+		  	angular.forEach (search.avParamGrps,function(paramGrp){
 		  		paramGrp.namef=function(){
 		  			return key2string.key2string(paramGrp.stringkey,strings);
 		  		}
 		  	});
 		  	if (rest.data.processtype){
-		  		thisController.search.processtype=rest.data.processtype;
+		  		search.processtype=rest.data.processtype;
 		  	}
-			defered.resolve(thisController.search.parameters);
+			defered.resolve(search.parameters);
 		});
        return defered.promise;
 	}
