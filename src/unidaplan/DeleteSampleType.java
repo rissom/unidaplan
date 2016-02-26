@@ -63,6 +63,13 @@ public class DeleteSampleType extends HttpServlet {
 			        	description = ot.getInt("description");
 			        } else description=0;
 					pStmt.close();
+					dBconn.conn.setAutoCommit(false);
+//					pStmt = dBconn.conn.prepareStatement(	
+//				        	"UPDATE objecttypes SET (string_key,description) = (?,?) WHERE id=?");
+//					pStmt.setNull(1,java.sql.Types.INTEGER);
+//					pStmt.setNull(2,java.sql.Types.INTEGER);
+//					pStmt.setInt(3,sampleTypeID);
+//					pStmt.executeUpdate();
 				}
 		    } catch (SQLException eS) {
 				System.err.println("DeleteSampleType: SQL Error");
@@ -85,6 +92,7 @@ public class DeleteSampleType extends HttpServlet {
 		    } catch (SQLException eS) {
 				System.err.println("Delete Process: SQL Error");
 				status="error: SQL error";
+				eS.printStackTrace();
 			} catch (Exception e) {
 				System.err.println("Delete Sample Type: Some Error, probably JSON");
 				status="error: JSON error";
@@ -105,16 +113,30 @@ public class DeleteSampleType extends HttpServlet {
 			eS.printStackTrace();
 			status="error: SQL error";
 			response.setStatus(404);
+			try {
+				dBconn.conn.rollback();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} catch (Exception e) {
 			System.err.println("DeleteSampleType: Some Error occurred");
 			status="error";
 			response.setStatus(404);
+			try {
+				dBconn.conn.rollback();
+			} catch (SQLException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+
 		} 
 	    
 finally {
 		try{	
 	         
 	    	   if (dBconn.conn != null) { 
+	    		   dBconn.conn.setAutoCommit(true);
 	    		   dBconn.closeDB();  // close the database 
 	    	   }
 	        } catch (Exception e) {

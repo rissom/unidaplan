@@ -35,7 +35,7 @@ public class DBconnection  {
 	static String user = "thorse";
 	static String pass = "jame765!";
 
-//	// remote DB
+	// remote DB
 //	static Boolean localDB = false;
 //	static String dbURL2 = "jdbc:postgresql://isadb.czghuuewemph.eu-west-1.rds.amazonaws.com/isaheat";
 //	static String user = "thorse";

@@ -7,14 +7,6 @@ var loginController=function($state,restfactory,$scope,$rootScope,$translate){
 	
 	this.error="";
 	
-	this.checkLocalStorageSupport =function() {
-		  try {
-		    return 'localStorage' in window && window.localStorage !== null;
-		  } catch (e) {
-		    return false;
-		  }
-		}
-
 	
 	
 	this.userLogin = function(){
@@ -23,19 +15,31 @@ var loginController=function($state,restfactory,$scope,$rootScope,$translate){
 		promise.then(function(data){
 				thisController.error="";
 				$rootScope.username=data.data.fullname;
-				$rootScope.admin=data.data.admin;
+				$rootScope.userid=data.data.id;
+				if(data.data.admin){
+					$rootScope.admin=data.data.admin;
+				} else {
+					$rootScope.admin=false;
+				}
 				
 				//language and username is stored in Browser storage.
-				if(thisController.checkLocalStorageSupport){
-				    window.localStorage.setItem("username",data.data.fullname);
-				    window.localStorage.setItem("admin",data.data.admin);
-					var lang = window.localStorage.getItem("language");
-				        if(lang !== null){
-				        	  if (lang!=$translate.use()) {
-				      			$translate.use(lang);
-				        	  }
-				        } 
-				}
+		
+			    window.localStorage.setItem("username",data.data.fullname);
+			    if (data.data.admin){
+			    	window.localStorage.setItem("admin",true);
+			    	$rootScope.admin=true;
+			    }else{
+			    	window.localStorage.setItem("admin",false);
+			    	$rootScope.admin=false;
+			    }
+			    window.localStorage.setItem("userid",data.data.id);
+				var lang = window.localStorage.getItem("language");
+			        if(lang !== null){
+			        	  if (lang!=$translate.use()) {
+			      			$translate.use(lang);
+			        	  }
+			        } 
+				
 				
 				// did you want to go somewhere special? If not: sample chooser.
 				if (restfactory.failedState) {

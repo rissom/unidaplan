@@ -66,6 +66,7 @@ public class Login extends HttpServlet {
 			JSONObject answer=new JSONObject();
 			answer.put("status","Password correct");
 			answer.put("fullname",hashjs.getString("fullname"));
+			answer.put("id",id);
 			if (hashjs.has("admin")){
 				answer.put("admin",true);
 			}

@@ -36,9 +36,13 @@ import org.json.JSONObject;
 	    try {  
 		    dBconn.startDB();
 			pstmt= dBconn.conn.prepareStatement( 	
-			"SELECT searches.id, searches.name, users.fullname AS owner " 
-			+"FROM searches " 
-			+"JOIN users ON (users.id=searches.owner) ");
+			"SELECT "
+			+ "searches.id, "
+			+ "searches.name, "
+			+ "users.fullname AS owner, "
+			+ "users.id AS ownerid " 
+			+ "FROM searches " 
+			+ "JOIN users ON (users.id=searches.owner) ");
 			searches=dBconn.jsonArrayFromPreparedStmt(pstmt);
 			pstmt.close();
 			  for (int i=0; i<searches.length();i++) {

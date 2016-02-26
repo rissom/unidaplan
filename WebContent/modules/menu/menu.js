@@ -7,41 +7,9 @@ function menuf(searchService,restfactory,$translate,$rootScope,$state) {
 		
 	this.navCollapsed=true;
 	
-//	this.status = {
-//	    isopen: false
-//	};
-
-	this.oldlanguage='en';  
 	
 	
 	
-	this.checkLocalStorageSupport =function() {
-		  try {
-		    return 'localStorage' in window && window.localStorage !== null;
-		  } catch (e) {
-		    return false;
-		  }
-	};
-	
-	
-	// init function: reads the username from local Browser storage.
-	if (thisController.checkLocalStorageSupport()) {
-		
-		var username=window.localStorage.getItem("username");
-		if (username){
-			$rootScope.username=username;
-		}else{
-			$rootScope.username=$translate.instant("user");
-		}
-		
-		var admin=window.localStorage.getItem("admin");
-		if (admin){
-			$rootScope.admin=admin;
-		}else{
-			$rootScope.admin=false;
-		}
-		
-	};
 	
 	
 	this.language = function(){
@@ -85,17 +53,17 @@ function menuf(searchService,restfactory,$translate,$rootScope,$state) {
 	this.logout = function(){
 		var promise = restfactory.GET('logout');
 		promise.then(function(){
+				$rootScope.username=$translate.instant("User");
+				window.localStorage.removeItem("username");
+				$rootScope.admin=false;
+		    	window.localStorage.setItem("admin",false);
+				$rootScope.userid=0;
+			    window.localStorage.setItem("userid",0);
 				$state.go('login');
 			},
 			function(){
 				console.log("Error!");	
 			});
-	};
-	
-	
-	
-	this.getUserName = function(){
-		return "Thorsten Rissom";
 	};
 	
 	

@@ -531,6 +531,32 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 
 
 .run(function($rootScope, restfactory) {
+	
+	// init function: reads the username from local Browser storage.
+	
+	
+
+	var username=window.localStorage.getItem("username");
+	if (username){
+		$rootScope.username=username;
+	}else{
+		$rootScope.username="User";
+	}
+	
+	if (window.localStorage.getItem("admin")){
+		$rootScope.admin=true;
+	}else{
+		$rootScope.admin=false;
+	}
+	
+	var userid=window.localStorage.getItem("userid");
+	if (userid){
+		$rootScope.userid=userid;
+	}
+		
+	
+	
+	
 	/** ============================================== PRINT DEBUG ========================================================== 
 	 * debug > 3 - print all 
 	 * debug > 2 - print debug  

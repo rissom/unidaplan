@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-function openSearchController(restfactory,$translate,$scope,$state,$stateParams,searches,searchService) {
+function openSearchController(restfactory,$translate,$rootScope,$scope,$state,$stateParams,searches,searchService) {
 	
 	var thisController=this;
 
@@ -9,9 +9,23 @@ function openSearchController(restfactory,$translate,$scope,$state,$stateParams,
 	
 	this.strings = [];
 	
-	var me ='Thorsten Rissom';
-		
 	
+	// contains all searches of the current user
+	this.mySearches = [];
+	// contains all the searches that are not owned by me
+	this.otherSearches=[];
+	
+	angular.forEach(this.searches, function(aSearch) {
+		if (aSearch.ownerid==$rootScope.userid) {
+			thisController.mySearches.push(aSearch);
+		}else{
+			thisController.otherSearches.push(aSearch);
+		}
+	});
+
+
+	
+
 	
 	this.addSearch=function(){
 		var name={};
@@ -25,17 +39,6 @@ function openSearchController(restfactory,$translate,$scope,$state,$stateParams,
 		});
 	};
 	
-	
-	
-	this.mySearches = function() {  // returns all my searches
-		var mySearches=[];
-		angular.forEach(this.searches, function(aSearch) {
-			if (aSearch.owner==me) {
-				mySearches.push(aSearch);
-			}
-		});
-		return mySearches;
-	};
 	
 	
 	  
@@ -53,18 +56,6 @@ function openSearchController(restfactory,$translate,$scope,$state,$stateParams,
 		}
 	};
 	
-	
-	
-	this.otherSearches = function() {  
-		// returns all searches that are not owned by me
-		var otherSearches=[];
-		angular.forEach(this.searches, function(aSearch) {
-			if (aSearch.owner!=me) {
-				otherSearches.push(aSearch);
-			}
-		});
-		return otherSearches;
-	};
 	
 	
 	
@@ -90,6 +81,6 @@ function openSearchController(restfactory,$translate,$scope,$state,$stateParams,
 }
     
         
-angular.module('unidaplan').controller('openSearchController',['restfactory','$translate','$scope','$state','$stateParams','searches','searchService',openSearchController]);
+angular.module('unidaplan').controller('openSearchController',['restfactory','$translate','$rootScope','$scope','$state','$stateParams','searches','searchService',openSearchController]);
 
 })();

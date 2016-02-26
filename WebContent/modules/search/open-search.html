@@ -1,55 +1,59 @@
 
 		
 		<!--  My searches -->
-		<h3 ng-show="openSearchCtrl.mySearches().length>0">
-			{{ 'My Searches' | translate }}
-		</h3>
-	
-		<table class="table">
-			<thead class=parametertablehead>
-				<tr>
-					<td><b>Name</b></td>
-					<td> </td>
-				</tr>
-			</thead>
-			<tbody>
-				<tr ng-repeat="msearch in openSearchCtrl.mySearches() | orderBy : msearch.namef()">
-					<td>
-					<a ui-sref="search({id:msearch.id})">{{msearch.namef()}}</a>
-					</td>
-					<td>
-						<div class="dropdown" dropdown on-toggle="toggled(open)">
-							<a class="dropdown-toggle" dropdown-toggle>
-					  			{{'action'|translate}} &#x25BC;
-						    </a>
-						    <ul class="dropdown-menu">
-						    	<li ng-repeat="action in msearch.actions">
-						        	<a ng-click="openSearchCtrl.performAction(msearch,action)">{{action.name}}</a>
-						        </li>
-				    		</ul>
-		  				 </div>
-	  				 </td>
-				</tr>
-		</tbody>
-		</table>  
-
+		<div ng-show="openSearchCtrl.mySearches.length>0">
+			<h3>
+				{{ 'My Searches' | translate }}
+			</h3>
+		
+			<table class="table">
+				<thead class=parametertablehead>
+					<tr>
+						<td><b>Name</b></td>
+						<td> </td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="msearch in openSearchCtrl.mySearches | orderBy : msearch.namef()">
+						<td>
+							<a ui-sref="search({id:msearch.id})">{{msearch.namef()}}</a>
+						</td>
+						<td>
+							<div class="dropdown" dropdown on-toggle="toggled(open)" ng-show="$root.admin">
+								<a class="dropdown-toggle" dropdown-toggle>
+						  			{{'action'|translate}} &#x25BC;
+							    </a>
+							    <ul class="dropdown-menu">
+							    	<li ng-repeat="action in msearch.actions">
+							        	<a ng-click="openSearchCtrl.performAction(msearch,action)">{{action.name}}</a>
+							        </li>
+					    		</ul>
+			  				 </div>
+		  				 </td>
+					</tr>
+			</tbody>
+			</table>  
+		</div>
+		
+		
 		<button type="button" 
 				class="btn btn-default"
-				ng-click="openSearchCtrl.addSearch()" >
+				ng-click="openSearchCtrl.addSearch()"
+				ng-show="$root.admin==true">
 			{{'Add Search'|translate}}
 		</button>
 		
-		
+
 				
 		<br/>
 		<br/>
 
 
-		<!--  Other searchs -->
-		
-		<h3 ng-show="openSearchCtrl.othersearchs().length>0">
-			{{ 'Other Searches' | translate }}</h3>
-		<table class="table" ng-show="openSearchCtrl.othersearchs().length>0">
+		<!--  Other searches -->
+		<div ng-show="openSearchCtrl.otherSearches.length>0">
+		<h3>
+			{{ 'Searches' | translate }}</h3>
+		<table class="table" ng-show="openSearchCtrl.otherSearches.length>0">
 			<thead class=parametertablehead>
 				<tr>
 					<td><b>Name</b></td>
@@ -57,17 +61,18 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="osearch in openSearchCtrl.othersearches()">
+				<tr ng-repeat="osearch in openSearchCtrl.otherSearches">
 					<td>
-						<a ui-sref="editSearch({id:osearch.id,editmode:'false'})">{{osearch.namef()}}</a>
+						<a ui-sref="search({id:osearch.id})">{{osearch.namef()}}</a>
 					</td>
 					<td>
-						<div class="dropdown" dropdown on-toggle="toggled(open)">
+						<div class="dropdown" dropdown ng-show="$root.admin==true" on-toggle="toggled(open)"
+							>
 							<a class="dropdown-toggle" dropdown-toggle>
 					  			{{'action'|translate}} &#x25BC;
 						    </a>
 						    <ul class="dropdown-menu">
-						    	<li ng-repeat="action in osearch.actions">
+						    	<li ng-repeat="action in osearch.actions" ng-show="$root.admin">
 						        	<a ng-click="openSearchCtrl.performAction(osearch,action)">{{action.name}}</a>
 						        </li>
 				    		</ul>
@@ -75,7 +80,8 @@
 	  				</td>
 				</tr>
 				<tr>
-					<td></td><td></td><td></td><td></td><td></td>
+					<td></td><td></td>
 				</tr>
 			</tbody>
 		</table>
+		</div>
