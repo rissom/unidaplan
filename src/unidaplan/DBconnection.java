@@ -1,4 +1,5 @@
 package unidaplan;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 //import java.util.HashMap;
 //import java.util.Map;
 //import java.lang.reflect.Field;
+
 
 
 import org.json.JSONArray;
@@ -35,7 +37,7 @@ public class DBconnection  {
 	static String user = "thorse";
 	static String pass = "jame765!";
 
-	// remote DB
+//	// remote DB
 //	static Boolean localDB = false;
 //	static String dbURL2 = "jdbc:postgresql://isadb.czghuuewemph.eu-west-1.rds.amazonaws.com/isaheat";
 //	static String user = "thorse";
@@ -74,6 +76,18 @@ public class DBconnection  {
 		System.err.println("Error closing database");
 	}
   }
+  
+  
+  public Boolean isAdmin(int userID) throws SQLException{
+	  PreparedStatement pStmt;
+	  pStmt= conn.prepareStatement( 	
+				"SELECT EXISTS (SELECT 1 FROM groupmemberships WHERE groupid=1 AND userid=?)");
+	  pStmt.setInt(1, userID);
+	  ResultSet queryResult=null;
+	  queryResult = pStmt.executeQuery();
+	  queryResult.next();
+	  return queryResult.getBoolean(1);
+  }
 
   
   
@@ -99,10 +113,35 @@ public class DBconnection  {
   		  System.err.println("DBconnection: Problem with the database! Error! ");
   		  e.printStackTrace();
   	  } catch (Exception e) {
-  		  System.err.println("DBconnection: Some problem during first database query. Error! ");
+  		  System.err.println("DBconnection: Some problem with database query. Error! ");
 	  }
 	  return result;
   }
+  
+  
+  public JSONArray jsonArrayFromCS(CallableStatement cs) throws Exception{
+	  JSONArray result = null;
+	  ResultSet queryResult=null;
+	  	  try {
+	  		queryResult = cs.executeQuery();
+          if (queryResult==null) {
+        	  System.err.println("DBconnection: statement result null! ");
+          } else {
+        	  result=new JSONArray();
+        	  queryResult.next();
+        	  result.put(queryResult.getObject(1));;
+        	  queryResult.close();
+          }     
+          cs.close();
+  	  } catch (SQLException e) {   // Exception for SQL database
+  		  System.err.println("DBconnection: Problem with the database! Error! ");
+  		  e.printStackTrace();
+  	  } catch (Exception e) {
+  		  System.err.println("DBconnection: Some problem with database query. Error! ");
+	  }
+	  return result;
+  }
+  
   
   
   public JSONArray jsonArrayFromPreparedStmt(PreparedStatement pStmt) throws Exception{
