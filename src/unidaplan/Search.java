@@ -29,8 +29,6 @@ import org.json.JSONObject;
 		userID=userID+1;
 		userID=userID-1;
 		int type=0;
-		int defaultObjecttype=0;
-		int defaultProcesstype=0;
 		String status="ok";
 		PreparedStatement pStmt;
 		ArrayList<String> stringkeys = new ArrayList<String>(); 
@@ -81,7 +79,7 @@ import org.json.JSONObject;
 					pStmt.close();
 					// get the sampletype
 					if (sparameter.length()>0){
-						defaultObjecttype=sparameter.getJSONObject(0).getInt("typeid");
+						
 						for (int i=0; i<sparameter.length();i++){
 							stringkeys.add(Integer.toString(sparameter.getJSONObject(i).getInt("stringkeyname")));
 							int datatype=sparameter.getJSONObject(i).getInt("datatype");
@@ -110,7 +108,6 @@ import org.json.JSONObject;
 					
 					// get the processtype
 					if (pparameter.length()>0){
-						defaultProcesstype=pparameter.getJSONObject(0).getInt("typeid");
 						for (int i=0; i<pparameter.length();i++){
 							stringkeys.add(Integer.toString(pparameter.getJSONObject(i).getInt("stringkeyname")));
 							int datatype=pparameter.getJSONObject(i).getInt("datatype");
@@ -163,13 +160,9 @@ import org.json.JSONObject;
 					sparameter = dBconn.jsonArrayFromPreparedStmt(pStmt);
 					pStmt.close();
 				
-					if (pparameter.length()>0){
-						defaultProcesstype=pparameter.getJSONObject(0).getInt("typeid");
-					}
 					
 					// get the sample type
 					if (sparameter.length()>0){
-						defaultObjecttype=sparameter.getJSONObject(0).getInt("typeid");
 						for (int i=0; i<sparameter.length();i++){
 							stringkeys.add(Integer.toString(sparameter.getJSONObject(i).getInt("stringkeyname")));
 							int datatype=sparameter.getJSONObject(i).getInt("datatype");
@@ -183,7 +176,6 @@ import org.json.JSONObject;
 					
 					// get the processtype
 					if (pparameter.length()>0){
-						defaultProcesstype=pparameter.getJSONObject(0).getInt("typeid");
 						for (int i=0; i<pparameter.length();i++){
 							stringkeys.add(Integer.toString(pparameter.getJSONObject(i).getInt("stringkeyname")));
 							int datatype=pparameter.getJSONObject(i).getInt("datatype");
@@ -221,14 +213,8 @@ import org.json.JSONObject;
 		   switch (type){
 		   
 		   case 1: 	   	search.put("sparameters",sparameter);
-					   	if (defaultObjecttype>0){
-						   search.put("defaultobject", defaultObjecttype);
-					   	}
 		   				break;
 		   case 2: 		search.put("pparameters", pparameter);
-						if (defaultProcesstype>0){
-							   search.put("defaultprocess", defaultProcesstype);
-						}
 		   				break;
 		   case 3: 		search.put("poparameters", poparameter);
 						break;

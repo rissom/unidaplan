@@ -2,7 +2,7 @@
 'use strict';
 
 function editSearchController(restfactory,$state,$stateParams,$translate,$modal,
-		key2string,sampleTypes,ptypes,searchData,newSearch,languages,searchService,users){
+		key2string,sampleTypes,ptypes,searchData,newSearch,languages,searchService,users,groups){
 		
 	var thisController = this;
 	
@@ -167,17 +167,7 @@ function editSearchController(restfactory,$state,$stateParams,$translate,$modal,
 		    }
 		);
     };
-    
-
-	
-	this.addSearch = function() {
-		// searchService.saveSearch
-	};
-	
-	
-	
-	this.allowedUsers = ["Greti", "Pleti"];
-	
+		
 	
 	
 	this.changeComparison = function(parameter){
@@ -208,7 +198,8 @@ function editSearchController(restfactory,$state,$stateParams,$translate,$modal,
 
 
 	this.changeSampleType = function () {
-		var promise=searchService.getSParameters(thisController.sampleType.id);
+		thisController.search.defaultobject=thisController.sampleType.id
+		var promise=searchService.getSParameters(thisController.search);
 		promise.then(function(rest){
 			thisController.avParameters=rest;
 		});
@@ -217,7 +208,8 @@ function editSearchController(restfactory,$state,$stateParams,$translate,$modal,
 	
 	
 	this.changeProcessType = function () {
-		var promise=searchService.getPParameters(thisController.processType.id);
+		thisController.search.defaultprocess=thisController.processType.id
+		var promise=searchService.getPParameters(thisController.search);
 		promise.then(function(rest){
 			thisController.avParameters=rest;
 		});
@@ -226,7 +218,8 @@ function editSearchController(restfactory,$state,$stateParams,$translate,$modal,
 	
 	
 	this.changeType = function(){
-		searchService.updateSearchType(thisController.search.id,thisController.searchType);
+		var promise = searchService.updateSearchType(thisController.search.id,thisController.searchType);
+		promise.then(reload());
 	};
 	
 	
@@ -269,20 +262,6 @@ function editSearchController(restfactory,$state,$stateParams,$translate,$modal,
 		promise.then(function(){reload()},function(){console.log("error")})
 	};
 	
-	this.up=function(index){
-		var id1=thisController.output[index-1].id;
-		var id2=thisController.output[index].id;
-		var pos1=thisController.output[index-1].position;
-		var pos2=thisController.output[index].position;
-		var temp=thisController.output[index-1]
-		var temp2=thisController.output[index]
-		thisController.output[index]=temp;
-		thisController.output[index-1]=temp2;
-		thisController.output[index-1].position=pos1;
-		thisController.output[index].position=pos2;
-		var promise = searchService.changeOrder(thisController.search.id,thisController.search.output);
-		promise.then(function(){reload()},function(){console.log("error")})
-	};
 	
 	
 	this.edit = function(field){
@@ -313,6 +292,17 @@ function editSearchController(restfactory,$state,$stateParams,$translate,$modal,
 	
 	
 	
+	this.grantRights = function(groups,users){
+		var tgroups=[];
+		groups.map(function(group){tgroups.push(group.id)});		
+		var tusers=[];
+		users.map(function(user){tusers.push(user.id)});
+		var promise = searchService.grantRights(searchData.id,tgroups,tusers)
+		promise.then(function(){reload()});
+	};
+	
+	
+	
 	this.keyUp = function(keyCode,name,language) {
 		if (keyCode===13) {				// Return key pressed
 			var promise=searchService.updateSearchName(searchData.id,name, language);	
@@ -328,8 +318,66 @@ function editSearchController(restfactory,$state,$stateParams,$translate,$modal,
 	};
 
 	
+
 	
-	
+	this.openDialog = function () {				
+	    var modalInstance = $modal.open({
+		    animation: false,
+		    templateUrl: 'modules/modal-user-group-choser/modal-user-group-choser.html',
+		    controller: 'modalUserGroupChoser as mUserGroupChoserCtrl',
+		    size: 'lg',
+		    resolve: {
+		    	users 		: function() { return users; },
+		    	chosenUsers : function() { 
+		    						var cUsers=[]; 
+		    						if (searchData.rights.users){
+		    							for (var i=0; i<searchData.rights.users.length;i++){
+		    								for (var j=0; j<users.length;j++){
+		    									if (searchData.rights.users[i].id==users[j].id){
+		    										cUsers.push(users[j]);
+		    									}
+		    								}
+		    							}
+		    						}
+	    							return cUsers;
+		    				  },
+		    	chosenGroups : function() { 
+									var cGroups=[]; 
+									if (searchData.rights.groups){
+		    							for (var i=0; i<searchData.rights.groups.length;i++){
+		    								for (var j=0; j<groups.length;j++){
+		    									if (searchData.rights.groups[i].id==groups[j].id){
+		    										cGroups.push(groups[j]);
+		    									}
+		    								}
+		    							}
+		    						}
+									return cGroups;
+							  },	  
+		        groups      : function() { 
+		        				return groups;
+		        			  },
+		        except		: function() {
+//		        				var eSamples2=eSamples.slice(0);
+//		        				eSamples2.push({sampleid:sample.id,typeid:sample.typeid,name:sample.name});
+//		        				return eSamples2;
+		        				return [];
+		        				},
+		        buttonLabel	: function() { return "add to search"; },
+		        label		: function() { return "grant rights";}
+		    }		        
+		});
+	    
+	  	modalInstance.result.then(function (result) {  // get the new Userlist + Info if it is changed from Modal. 
+			if (result.changed==true){
+				thisController.grantRights(result.chosenGroups,result.chosenUsers);
+			}
+	    }, function () {
+	        console.log('Strange Error: Modal dismissed at: ' + new Date());
+	    });
+	};
+
+
 	
 	
 	this.showParamGrp=function(parameter){
@@ -341,8 +389,26 @@ function editSearchController(restfactory,$state,$stateParams,$translate,$modal,
 	};
 	
 	
+	
+	this.up=function(index){
+		var id1=thisController.output[index-1].id;
+		var id2=thisController.output[index].id;
+		var pos1=thisController.output[index-1].position;
+		var pos2=thisController.output[index].position;
+		var temp=thisController.output[index-1]
+		var temp2=thisController.output[index]
+		thisController.output[index]=temp;
+		thisController.output[index-1]=temp2;
+		thisController.output[index-1].position=pos1;
+		thisController.output[index].position=pos2;
+		var promise = searchService.changeOrder(thisController.search.id,thisController.search.output);
+		promise.then(function(){reload()},function(){console.log("error")})
+	};
+	
+	
+	
 	this.valueKeyUp=function(keyCode,newValue,parameter){
-		if (keyCode===13) {				// Return key pressed
+		if (keyCode===13 || keyCode==12) {				// Return or tab key pressed
 			var promise = searchService.updateSearchParamValue(thisController.search.id,parameter.id,newValue);
 			promise.then(function(){reload();});
 		}
@@ -359,6 +425,6 @@ function editSearchController(restfactory,$state,$stateParams,$translate,$modal,
 
 
 angular.module('unidaplan').controller('editSearchController',['restfactory','$state','$stateParams','$translate',
-                          '$modal','key2string','sampleTypes','ptypes','searchData','newSearch','languages','searchService','users',editSearchController]);
+                          '$modal','key2string','sampleTypes','ptypes','searchData','newSearch','languages','searchService','users','groups',editSearchController]);
 
 })();

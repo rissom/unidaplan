@@ -49,19 +49,23 @@ import org.json.JSONObject;
 			    	+"JOIN users ON (users.id=searches.owner) ");
 		    	searches=dBconn.jsonArrayFromPreparedStmt(pStmt);
 		    }else{
-			    CallableStatement cs= dBconn.conn.prepareCall("{ ? = call getSearchesForUser( ? )}");
+			    CallableStatement cs= dBconn.conn.prepareCall("{ ? = call getSearchesForUser(?)}");
 			    cs.registerOutParameter(1, java.sql.Types.OTHER);
 			    cs.setInt(2, userID);
 			    cs.execute();
-			    searches = new JSONArray(cs.getObject(1).toString());
+			    if (cs.getObject(1)!=null){
+			    	searches = new JSONArray(cs.getObject(1).toString());
+			    } 
 			    cs.close();
 			}
 		    
 		    // get the strings 
-			for (int i=0; i<searches.length();i++) {
-				JSONObject tempObj=(JSONObject) searches.get(i);
-	      		stringkeys.add(Integer.toString(tempObj.getInt("name")));
-	      	}
+		    if (searches!=null){
+				for (int i=0; i<searches.length();i++) {
+					JSONObject tempObj=(JSONObject) searches.get(i);
+		      		stringkeys.add(Integer.toString(tempObj.getInt("name")));
+		      	}
+			}
 			
     	} catch (SQLException e) {
     		System.err.println("Searches: Problems with SQL query");
@@ -72,6 +76,7 @@ import org.json.JSONObject;
 			response.setStatus(404);
     	} catch (Exception e2) {
 			System.err.println("Searches: Strange Problem");
+			e2.printStackTrace();
 			response.setStatus(404);
     	} 
 	    

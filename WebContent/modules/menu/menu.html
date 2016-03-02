@@ -52,7 +52,7 @@
 					{{'Search'|translate}} 
 				</a>
 				<ul class="dropdown-menu" role="menu">
-					<li><a ng-click="menuCtrl.addSearch()"> {{'New Search'|translate}} </a></li>
+					<li ng-show="$root.admin"><a ng-click="menuCtrl.addSearch()"> {{'New Search'|translate}} </a></li>
 					<li><a ui-sref="openSearch"> {{'Show Searches'|translate}} </a></li>
 				</ul>
 			</li>

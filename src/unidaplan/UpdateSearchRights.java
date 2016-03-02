@@ -3,11 +3,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -15,7 +17,7 @@ import org.json.JSONObject;
 		private static final long serialVersionUID = 1L;
 
 	@Override
-	  public void doPost(HttpServletRequest request, HttpServletResponse response)
+	  public void doPut(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {
 		
 		Authentificator authentificator = new Authentificator();
@@ -23,7 +25,10 @@ import org.json.JSONObject;
 	    request.setCharacterEncoding("utf-8");
 	    String status="ok";
 	    String in = request.getReader().readLine();
-	    JSONObject  jsonIn = null;	    
+	    JSONObject  jsonIn = null;
+	    JSONArray groups = null;
+	    JSONArray users = null;
+	    
 	    try {
 			  jsonIn = new JSONObject(in);
 		} catch (JSONException e) {
@@ -35,10 +40,14 @@ import org.json.JSONObject;
 	    PreparedStatement pStmt;
 
 	    int searchID=0;
-	    boolean isPublic=false;
 	    try {
 			searchID=jsonIn.getInt("searchid");	
-			isPublic=jsonIn.getBoolean("ispublic");
+			if (jsonIn.has("groups")){
+				groups=jsonIn.getJSONArray("groups");
+			}
+			if (jsonIn.has("users")){
+				users=jsonIn.getJSONArray("users");
+			}
 		} catch (JSONException e) {
 			System.err.println("UpdateSearchRights: Error parsing ID-Field");
 			status="error parsing ID-Field";
@@ -46,24 +55,58 @@ import org.json.JSONObject;
 		}
 
 	 	DBconnection dBconn=new DBconnection();
-	    
-	 	// delete existing rights
-	 	
-	 	
-	    // Insert new rights
-	    try{
+	    try{   
 		    dBconn.startDB();
-		    pStmt= dBconn.conn.prepareStatement("");
+
+		    // delete existing rights
+		    pStmt= dBconn.conn.prepareStatement("DELETE FROM rightssearchgroups WHERE searchid=?");
 		    pStmt.setInt(1, searchID);
-		    pStmt.setBoolean(2, isPublic);
 		    pStmt.executeUpdate();
 		    pStmt.close();
+		    
+		    pStmt= dBconn.conn.prepareStatement("DELETE FROM rightssearchuser WHERE searchid=?");
+		    pStmt.setInt(1, searchID);
+		    pStmt.executeUpdate();
+		    pStmt.close();
+	 	
+		    // Insert new rights
+		    
+		    // for groups
+		    if (groups!=null){
+			    pStmt= dBconn.conn.prepareStatement("INSERT INTO rightssearchgroups (groupid,searchid,permission,lastuser) "
+			    		+ "VALUES  (?,?,'r',?)");
+			    for (int i=0; i<groups.length(); i++){
+			    	 pStmt.setInt(1, groups.getInt(i));
+			    	 pStmt.setInt(2, searchID);
+			    	 pStmt.setInt(3, userID);
+			    	 pStmt.addBatch();
+			    }
+			    pStmt.executeBatch();
+			    pStmt.close();
+		    }
+		    
+		    if (users!=null){
+			    // for users
+			    pStmt= dBconn.conn.prepareStatement("INSERT INTO rightssearchuser (userid,searchid,permission,lastuser) "
+			    		+ "VALUES  (?,?,'r',?)");
+			    for (int i=0; i<users.length(); i++){
+			    	 pStmt.setInt(1, users.getInt(i));
+			    	 pStmt.setInt(2, searchID);
+			    	 pStmt.setInt(3, userID);
+			    	 pStmt.addBatch();
+			    }
+			    pStmt.executeBatch();
+		    }
+		   
 	    } catch (SQLException e) {
-			System.err.println("UpdateSearchRights: Problems with SQL query for deletion");
+			System.err.println("UpdateSearchRights: Problems with SQL query");
 			status="error";
+			e.printStackTrace();
+			e.getNextException().printStackTrace();
 		} catch (Exception e) {
-			System.err.println("UpdateSearchRights: Strange Problems deleting old parameter");
+			System.err.println("UpdateSearchRights: Strange Problems");
 			status="error";
+			e.printStackTrace();
 		}
 	    
 	try{

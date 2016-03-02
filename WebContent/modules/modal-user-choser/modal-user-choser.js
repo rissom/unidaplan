@@ -40,6 +40,12 @@ function modalUserChoser($scope,$translate,$modalInstance,groups,users,chosenUse
 	
 	
 	
+	this.groupSelected = function(user){ // is user in a selected group?
+		return true;
+	}
+	
+	
+	
 	this.cancel=function(){
 	    $modalInstance.close({chosen:this.oldChosenUsers,changed:false});
 	}

@@ -4,8 +4,9 @@
 </h3>
 
 <div class="row">
-<!-- type choser -->  
+
 <div class=col-md-6>
+<!-- 
 	{{'Groups'|translate}} 
 	<br />	
 	<select multiple="multiple"
@@ -16,7 +17,7 @@
 	  		size="5">
 	</select>
 	<br /><br />
-	
+-->
 
 
 <!-- search field -->
@@ -29,14 +30,16 @@
 
 <!--  list of fitting users  -->
 <ul> 
- 	<li ng-repeat="user in mUserChoserCtrl.users  | filter:isNotSelected | filter:{fullname:mUserChoserCtrl.userinput} | orderBy: 'fullname'" -->
- 	<!-- 	ng-show="mUserChoserCtrl.groupSelected(user)" -->
+ 	<li ng-repeat="user in mUserChoserCtrl.users  | filter:isNotSelected | filter:{fullname:mUserChoserCtrl.userinput} | orderBy: 'fullname'">
+ 	<div ng-show="mUserChoserCtrl.groupSelected(user)" >
 					<!-- show only selected user types -->
 		<a ng-click=mUserChoserCtrl.choseUser(user)> 
 			{{user.fullname}}
-		</a>							
+		</a>		
+	</div>					
 	</li>   
 </ul>
+
 <br />
 </div>
 <div class=col-md-6>

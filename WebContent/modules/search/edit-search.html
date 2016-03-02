@@ -40,14 +40,19 @@
 <br/>
 
 
-<!-- 
 <h4> {{'Access'|translate}}</h4>
-{{'Can be used by'|translate}}: 
-<span ng-repeat="object in editSearchCtrl.allowedUsers">
-	{{object}}{{$last?"":","}}
+{{'Can be used by users'|translate}}:
+<span ng-repeat="user in editSearchCtrl.search.rights.users">
+	{{user.name}}{{$last?"":","}}
 </span>
 <br/>
-<button class="btn btn-default">+/- {{'Edit allowed users'|translate}}</button>
+{{'and'|translate}} {{'groups'|translate}}: 
+<span ng-repeat="group in editSearchCtrl.search.rights.groups">
+	{{group.name}}{{$last?"":","}}
+</span>
+
+<br/>
+<button ng-click="editSearchCtrl.openDialog()" class="btn btn-default">+/- {{'Edit allowed users'|translate}}</button>
 <br/>
 <br/>
 {{'owner'|translate}}:
@@ -63,7 +68,6 @@
  </span>
 <br/>
 <br/>
--->
 
 <br/>
 <h4>{{'Search Criteria'|translate}}</h4>
@@ -94,6 +98,7 @@
 	<select
 	    class="form-control" 
 		style="width:300px;"
+		ng-disabled="editSearchCtrl.search.sparameter.length>0"
 		ng-show="editSearchCtrl.searchType==1"
 		ng-model="editSearchCtrl.sampleType"
 		ng-change="editSearchCtrl.changeSampleType()"
@@ -103,6 +108,7 @@
 	<select
     class="form-control" 
 	style="width:300px;"
+	ng-disabled="editSearchCtrl.search.pparameter.length>0"
 	ng-show="editSearchCtrl.searchType>1"
 	ng-model="editSearchCtrl.processType"
 	ng-change="editSearchCtrl.changeProcessType()"
@@ -240,8 +246,7 @@
 
 <button class="btn btn-default"
 		ng-click="editSearchCtrl.addProcessParameter()"
-		ng-show="editSearchCtrl.searchType==2 || editSearchCtrl.searchType==4"
-		>
+		ng-show="editSearchCtrl.searchType==2 || editSearchCtrl.searchType==4">
 	+ {{'Add Parameter'|translate}}
 </button>
 

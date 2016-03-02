@@ -27,6 +27,8 @@ import org.json.JSONObject;
 		JSONArray sparameter = null;
 		JSONArray pparameter = null;
 		JSONArray output = null;
+		JSONArray userRights=null;
+		JSONArray groupRights=null;
 		userID=userID+1;
 		userID=userID-1;
 		String status="ok";
@@ -52,6 +54,48 @@ import org.json.JSONObject;
 	   	}
 	    try {  
 		    dBconn.startDB();
+		    
+		    
+		    // check if the user is allowed to see this data: (1. userrights, 2. grouprights, 3. admin
+		    pStmt= dBconn.conn.prepareStatement( 	
+			    "SELECT EXISTS( "
+			    + "SELECT 1 FROM rightssearchuser WHERE searchid=1 AND userid=? AND permission='w') "
+		    	+ "OR EXISTS ( "
+		    	+ "SELECT 1 FROM rightssearchgroups rg "
+		    	+ "JOIN groupmemberships gm ON (rg.groupid=gm.groupid AND gm.userid=?) "
+				+ "WHERE searchid=1 AND permission='w')"
+				+ "OR EXISTS (SELECT 1 FROM groupmemberships WHERE groupid=1 AND userid=?)");
+			pStmt.setInt(1, userID);
+			pStmt.setInt(2, userID);
+			pStmt.setInt(3, userID);
+			if (!dBconn.getSingleBooleanValue(pStmt)){
+				response.setStatus(401);
+				status="not allowed";
+				throw new Exception("not allowed!");
+			}
+
+		    
+		    
+		    // get the rights
+		    
+		    // for users...
+		    pStmt= dBconn.conn.prepareStatement( 	
+				    "SELECT users.id, permission, username AS name, fullname FROM rightssearchuser "
+		    		+"JOIN users ON users.id=rightssearchuser.userid "
+		    		+"WHERE searchid=?");
+			pStmt.setInt(1, id);
+			userRights=dBconn.jsonArrayFromPreparedStmt(pStmt);
+			pStmt.close();
+			
+			   // for groups...
+		    pStmt= dBconn.conn.prepareStatement( 	
+				    "SELECT groupid as id, permission, name FROM rightssearchgroups "
+		    		+"JOIN groups ON groups.id=rightssearchgroups.groupid "
+		    		+"WHERE searchid=?");
+			pStmt.setInt(1, id);
+			groupRights=dBconn.jsonArrayFromPreparedStmt(pStmt);
+			pStmt.close();
+		    
 	    	// get basic search data (id,name,owner,operation)
 			pStmt= dBconn.conn.prepareStatement( 	
 			    "SELECT id,name,owner,operation,type FROM searches "
@@ -234,6 +278,19 @@ import org.json.JSONObject;
 			}
 			
 			
+			if (type==1 && defaultObjecttype==0){  //get the first objecttype
+				pStmt= dBconn.conn.prepareStatement("SELECT id FROM objecttypes " 
+						+"LIMIT 1");
+				defaultObjecttype=dBconn.getSingleIntValue(pStmt);
+			}
+			
+			if (type==2 && defaultProcesstype==0){  //get the first processtype
+				pStmt= dBconn.conn.prepareStatement("SELECT id FROM processtypes " 
+						+"LIMIT 1");
+				defaultProcesstype=dBconn.getSingleIntValue(pStmt);
+			}
+			
+			
     	} catch (SQLException e) {
     		System.err.println("SearchData: Problems with SQL query for search");
     		e.printStackTrace();
@@ -251,6 +308,10 @@ import org.json.JSONObject;
     	} 
 	    
 	   try {
+		   JSONObject rights= new JSONObject(); 
+		   rights.put("users",userRights);
+		   rights.put("groups", groupRights);
+		   search.put("rights", rights);
 		   if (pparameter!=null && pparameter.length()>0){
 			   search.put("pparameter",pparameter);
 		   }

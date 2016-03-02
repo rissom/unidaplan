@@ -238,6 +238,13 @@ var searchService = function (restfactory,$q,$translate,key2string,languages) {
 	}
 	
 	
+	
+	this.grantRights = function (searchID,groups,users){
+		return restfactory.PUT("update-search-rights",{searchid:searchID,groups:groups,users:users});
+	}
+	
+	
+	
 	this.startSearch = function (searchparameters){
 		var defered=$q.defer();
 		if (searchparameters.searchtype<4){

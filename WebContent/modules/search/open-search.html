@@ -1,5 +1,6 @@
 
 		
+		
 		<!--  My searches -->
 		<div ng-show="openSearchCtrl.mySearches.length>0">
 			<h3>
@@ -85,3 +86,8 @@
 			</tbody>
 		</table>
 		</div>
+		
+	
+	<!--  no searches -->
+	<div ng-show="openSearchCtrl.mySearches.length==0 && openSearchCtrl.otherSearches.length==0" >
+	{{'no searches available'|translate}}</div>

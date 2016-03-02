@@ -124,6 +124,10 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 	        	    function(userService){
         	   	    	return userService.getUsers();
         	   		},
+        	   	groups:
+        	   		function(userService){
+        	   			return userService.getGroups();
+        	   		},
         	   	searchData:
         	   		function(searchService,$stateParams){
         	   			return searchService.getSearchData($stateParams.id);   			
@@ -543,7 +547,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 		$rootScope.username="User";
 	}
 	
-	if (window.localStorage.getItem("admin")){
+	if (window.localStorage.getItem("admin")=="true"){
 		$rootScope.admin=true;
 	}else{
 		$rootScope.admin=false;
