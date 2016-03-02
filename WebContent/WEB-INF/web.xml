@@ -928,6 +928,17 @@
   </servlet-mapping>
   
   <servlet>
+    <description>Update Search Rights</description>
+    <display-name>UpdateSearchRights</display-name>
+    <servlet-name>UpdateSearchRights</servlet-name>
+    <servlet-class>unidaplan.UpdateSearchRights</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateSearchRights</servlet-name>
+    <url-pattern>/update-search-rights</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
     <description>UpdateSearchType</description>
     <display-name>UpdateSearchType</display-name>
     <servlet-name>UpdateSearchType</servlet-name>
