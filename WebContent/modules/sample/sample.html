@@ -70,7 +70,7 @@
 
 
 
-<!-- finished processes 
+<!-- finished processes -->
 <h4 ng-show="sampleCtrl.processes">{{'Finished Processes'|translate}}</h4>
 <div ng-repeat="process in sampleCtrl.processes">
 	{{process.date|date:'EEE'|translate}}, {{process.date|date:'dd-MM-yyyy, HH:mm:ss'}}&nbsp;
@@ -83,14 +83,14 @@
 	</div>
 </div>
 <br />
--->
 
 
 
-<!-- properties -->
+
+<!-- properties 
 <h4 ng-show="sampleCtrl.processes">{{'Properties'|translate}}</h4>
 <div ng-repeat="process in sampleCtrl.processes">
-<!--  	{{process.date|date:'EEE'|translate}}, {{process.date|date:'dd-MM-yyyy, HH:mm:ss'}}&nbsp; -->
+!--  	{{process.date|date:'EEE'|translate}}, {{process.date|date:'dd-MM-yyyy, HH:mm:ss'}}&nbsp; --
 	<button  class="btn btn-default"  ng-class="{'1':'ok','2':'att','3':'failed'}[process.status]"
 			 ui-sref="process({processID:process.processid})">
 		{{sampleCtrl.getProcessType(process)}} {{process.number}}
@@ -100,7 +100,7 @@
 	</div>
 </div>
 <br />
-
+-->
 
 
 <!-- Experiments -->
