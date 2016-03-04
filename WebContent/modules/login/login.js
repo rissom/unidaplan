@@ -34,11 +34,11 @@ var loginController=function($state,restfactory,$scope,$rootScope,$translate){
 			    }
 			    window.localStorage.setItem("userid",data.data.id);
 				var lang = window.localStorage.getItem("language");
-			        if(lang !== null){
-			        	  if (lang!=$translate.use()) {
-			      			$translate.use(lang);
-			        	  }
-			        } 
+		        if(lang !== null){
+		        	  if (lang!=$translate.use()) {
+		      			$translate.use(lang);
+		        	  }
+		        } 
 				
 				
 				// did you want to go somewhere special? If not: sample chooser.

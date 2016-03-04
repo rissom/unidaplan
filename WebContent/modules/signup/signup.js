@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-function signupController(userService,$state,user,token){
+function signupController(userService,$rootScope,$state,$translate,user,token){
 	
 	var thisController=this;
 	this.fullname="";
@@ -20,11 +20,37 @@ function signupController(userService,$state,user,token){
 			password : this.pwinput,
 		};
 		userService.signUpUser(userData).then(
-			 function(data, status, headers, config){
-				 $state.go("sampleChoser");
+			function(data, status, headers, config){
+				$rootScope.username=data.data.fullname;
+				$rootScope.userid=data.data.id;
+				if(data.data.admin){
+					$rootScope.admin=data.data.admin;
+				} else {
+					$rootScope.admin=false;
+				}
+				
+				//language and username is stored in Browser storage.
+		
+			    window.localStorage.setItem("username",data.data.fullname);
+			    if (data.data.admin){
+			    	window.localStorage.setItem("admin",true);
+			    	$rootScope.admin=true;
+			    }else{
+			    	window.localStorage.setItem("admin",false);
+			    	$rootScope.admin=false;
+			    }
+			    window.localStorage.setItem("userid",data.data.id);
+				var lang = window.localStorage.getItem("language");
+		        if(lang !== null){
+		        	  if (lang!=$translate.use()) {
+		      			$translate.use(lang);
+		        	  }
+		        } 
+				$state.go("sampleChoser");
 			 },
 			 function(data, status, headers, config){
 			 }
+			 
 		); 
 	};
 	
@@ -37,6 +63,6 @@ function signupController(userService,$state,user,token){
 }
 
 
-angular.module('unidaplan').controller('signupController',['userService','$state','user','token',signupController]);
+angular.module('unidaplan').controller('signupController',['userService','$rootScope','$state','$translate','user','token',signupController]);
 	
 })();

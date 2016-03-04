@@ -59,9 +59,18 @@ public class SignUp extends HttpServlet {
    		
    		DBconn.startDB();	 
    		PreparedStatement pstmt1 = DBconn.conn.prepareStatement( 			
-			"SELECT token, token_valid_to FROM users WHERE id=?");
+			"SELECT token, token_valid_to,"
+			+ "groupmemberships.groupid AS admin "
+			+ "FROM users "
+			+ "LEFT JOIN groupmemberships ON (groupid=1 AND userid=users.id) "
+			+ "WHERE users.id=?");
 	   	pstmt1.setInt(1, id);
+	   	
 	   	JSONObject jsToken = DBconn.jsonObjectFromPreparedStmt(pstmt1);
+	   	if (jsToken.has("admin")){
+			answer.put("admin",true);
+		}
+	   	answer.put("fullname", fullname);
 	   	String dbtoken = jsToken.getString("token");
 	   	String validToString = jsToken.optString("token_valid_to");
 	   	Timestamp validToDate = Timestamp.valueOf(validToString); 
@@ -106,13 +115,11 @@ public class SignUp extends HttpServlet {
     response.setCharacterEncoding("utf-8");
     try {
 		answer.put("status",status);
-		
 	} catch (JSONException e) {
 		System.err.println("SignUp: Problems generating JSON answer");
 		e.printStackTrace();
 	}
     PrintWriter out = response.getWriter();
 	out.println(answer.toString());
-	
-}	
+	}	
 }

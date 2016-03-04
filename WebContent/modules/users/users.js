@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-function userController(users,userService,$translate) {
+function userController(users,userService,$state,$stateParams,$translate) {
 	
 	this.users =  users;
 	
@@ -10,6 +10,14 @@ function userController(users,userService,$translate) {
 	this.actions = ['block','edit'];
 	
 	var thisController = this;
+	
+	
+	var reload=function() {
+    	var current = $state.current;
+    	var params = angular.copy($stateParams);
+    	params.newSearch=false;
+    	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
+	};
 	
 	
 
@@ -46,14 +54,13 @@ function userController(users,userService,$translate) {
 	
 	this.resendToken = function(user) {
 		var promise = userService.resendToken(user);
-	    promise.then(function(rest) {
-	    	var promise2 = userService.getUsers();
-	    	promise2.then(function(users){
-	    		thisController.users=users;
-	    	}, console.log("fehler"));
-	    }, function(rest) {
-	    	console.log("ERROR");
-	    });
+	    promise.then(
+	    	function(rest) {
+	    		reload();
+	    	},function(rest){ 
+	    		console.log("fehler");
+	    	}
+	    );
 	};
 
 	
@@ -107,7 +114,7 @@ function userController(users,userService,$translate) {
 }
   
         
-angular.module('unidaplan').controller('userController',['users','userService','$translate',userController]);
+angular.module('unidaplan').controller('userController',['users','userService','$state','$stateParams','$translate',userController]);
 
 angular.module('unidaplan').directive('username', function() {
 	return {
