@@ -53,10 +53,10 @@ function menuf(searchService,restfactory,$translate,$rootScope,$state) {
 	this.logout = function(){
 		var promise = restfactory.GET('logout');
 		promise.then(function(){
-				$rootScope.username=$translate.instant("User");
+				delete $rootScope.username;
 				window.localStorage.removeItem("username");
 				$rootScope.admin=false;
-		    	window.localStorage.setItem("admin",false);
+		    	window.localStorage.removeItem("admin");
 				$rootScope.userid=0;
 			    window.localStorage.setItem("userid",0);
 				$state.go('login');

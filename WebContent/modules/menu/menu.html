@@ -55,7 +55,7 @@
 					<li><a ui-sref="openSearch"> {{'Show Searches'|translate}} </a></li>
 				</ul>
 			</li>
-			<li class="dropdown" dropdown="">
+			<li class="dropdown" dropdown="" ng-show="$root.admin==true">
 				<a href="#" class="dropdown-toggle" dropdown-toggle="" ng-disabled="disabled">
 					{{'Administration'|translate}} 
 				</a>
@@ -72,7 +72,7 @@
 			<li class="dropdown" dropdown="">
 				<a href="#" class="dropdown-toggle" dropdown-toggle="" ng-disabled="disabled">
 					<span ng-hide="$root.username">
-					{{'User'|translate}} 
+					{{'User'|translate}}
 					</span>
 					<span>
 					{{$root.username}} 
