@@ -77,6 +77,25 @@ import org.json.JSONObject;
 	    try{
 
 		    dBconn.startDB();
+		    // check if the user is allowed to see this data: (1. userrights, 2. grouprights, 3. admin
+		    pStmt= dBconn.conn.prepareStatement( 	
+			    "SELECT EXISTS( "
+			    + "SELECT 1 FROM rightssearchuser WHERE searchid=1 AND userid=? AND (permission='w' OR permission='r')) "
+		    	+ "OR EXISTS ( "
+		    	+ "SELECT 1 FROM rightssearchgroups rg "
+		    	+ "JOIN groupmemberships gm ON (rg.groupid=gm.groupid AND gm.userid=?) "
+				+ "WHERE searchid=1 AND (permission='w' OR permission='r'))"
+				+ "OR EXISTS (SELECT 1 FROM groupmemberships WHERE groupid=1 AND userid=?)");
+			pStmt.setInt(1, userID);
+			pStmt.setInt(2, userID);
+			pStmt.setInt(3, userID);
+			if (!dBconn.getSingleBooleanValue(pStmt)){
+				response.setStatus(401);
+				status="not allowed";
+				throw new Exception("not allowed!");
+			}
+		    
+		    
 	    	// get basic search data (id,name,owner,operation)
 			pStmt= dBconn.conn.prepareStatement( 	
 			    "SELECT operation,type FROM searches "
