@@ -25,12 +25,14 @@ import org.json.JSONObject;
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
 	    String table="";
+	    String type = "";
 	    JSONObject  jsonIn = null;
 	    JSONArray output = null;
 	    
 	    try {
 			  jsonIn = new JSONObject(in);
 			  output = jsonIn.getJSONArray("output");
+			  type   = jsonIn.getString("type");
 		} catch (JSONException e) {
 			System.err.println("ChangeOrderSearchOutput: Input is not valid JSON");
 		}
@@ -44,21 +46,17 @@ import org.json.JSONObject;
 		    dBconn.startDB();	
 		    PreparedStatement pStmt = null;
 		    
-		    pStmt = dBconn.conn.prepareStatement(
-		    		"SELECT type FROM searches WHERE id=?");
-		    pStmt.setInt(1, jsonIn.getInt("searchid"));
-		    int type=dBconn.getSingleIntValue(pStmt);
+		   
 		    switch (type) {
-			    case 1 : table="osearchoutput"; break;
-			    case 2 : table="psearchoutput"; break;
-			    case 3 : table="posearchoutput"; break;
+			    case "o"  : table="osearchoutput";  break;
+			    case "p"  : table="psearchoutput";  break;
+			    case "po" : table="posearchoutput"; break;
 		    }		    
 
 	    	for (int i=0;i<output.length();i++){
 	    		JSONObject parameter=output.getJSONObject(i);
 	    		pStmt= dBconn.conn.prepareStatement( 			
 						 "UPDATE "+table+" SET (position,lastuser)=(?,?) WHERE id=?");
-//	    		System.out.println("parameter: "+parameter.toString());
 			   	pStmt.setInt(1, parameter.getInt("position"));
 			   	pStmt.setInt(2, userID);
 			   	pStmt.setInt(3, parameter.getInt("outputid"));

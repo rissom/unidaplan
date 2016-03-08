@@ -23,16 +23,20 @@ import org.json.JSONObject;
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
 	    String status = "ok";
+	    String table = "";
+	    String col = "";
+	    
+
 
 	    JSONObject jsonIn = null;	
 	    int searchID = -1;
-	    int type = -1;
 	    JSONArray parameter = null;
 	    
     
 	    try {
 			 jsonIn = new JSONObject(in);
 	         searchID=jsonIn.getInt("searchid");
+	         parameter = jsonIn.getJSONArray("parameter");
 		} catch (JSONException e) {
 			System.err.println("UpdateSearchParam: Error parsing ID-Field or comment");
 			response.setStatus(404);
@@ -46,43 +50,23 @@ import org.json.JSONObject;
 	    try {  
 		    dBconn.startDB();
 	    	// get basic search data (id,name,owner,operation)
-			pStmt= dBconn.conn.prepareStatement( 	
-			    "SELECT type FROM searches WHERE id=?");
-			pStmt.setInt(1, searchID);
-			type=dBconn.getSingleIntValue(pStmt);
-			pStmt.close();
+
 			
 			// get the searchparameters according to searchtype
-			String query="";
-			
-			switch (type){
-				case 1:   //Object scearch
-						  parameter=jsonIn.getJSONArray("otparameter");
-						  query = "INSERT INTO searchobject (search,otparameter,lastchange,lastuser) "
-								   +"VALUES (?,?,NOW(),?)";
-						  break;
-				case 2:   // Process search
-						  parameter=jsonIn.getJSONArray("pparameter");
-						  query = "INSERT INTO searchprocess (search,pparameter,lastchange,lastuser) "
-							   +"VALUES (?,?,NOW(),?)";
-						  break;
-				default : // samplespecific process parameter
-						  System.out.println("hallo");
-					 	  parameter=jsonIn.getJSONArray("poparameter");
-					 	  query = "INSERT INTO searchpo (search,poparameter,lastchange,lastuser) "
-							   +"VALUES (?,?,NOW(),?)";
-						  break;
-			}		
-			
-			pStmt= dBconn.conn.prepareStatement(query);
 			for (int i=0; i<parameter.length();i++){
+				switch (jsonIn.getString("type")){
+					case "o" : table="searchobject";  col="otparameter";break;
+					case "p" : table="searchprocess"; col="pparameter"; break;
+					case "op" : table="searchpo";  	  col="poparameter"; break;
+				}
+				pStmt= dBconn.conn.prepareStatement("INSERT INTO "+table+
+						" (search,"+col+",lastchange,lastuser) VALUES (?,?,NOW(),?)");
 				pStmt.setInt(1, searchID);
 				pStmt.setInt(2, parameter.getInt(i));
 				pStmt.setInt(3, userID);
-				pStmt.addBatch();
+				pStmt.executeUpdate();
+				pStmt.close();
 			}
-			pStmt.executeBatch();
-			pStmt.close();
 			
 		} catch (SQLException e) {
 			System.err.println("UpdateSearchParam: Problems with SQL query");

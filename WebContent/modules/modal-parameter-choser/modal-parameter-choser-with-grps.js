@@ -23,7 +23,7 @@ function modalParameterChoserGrps($translate,$modalInstance,languages,restfactor
 
 	
 	this.assignParameters=function(){    // pass the new list of parameters if it has changed
-	    $modalInstance.close({chosen: this.selectedParameters});
+	    $modalInstance.close({chosen: this.selectedParameters, inParams:parameters});
 	};
 	
 	

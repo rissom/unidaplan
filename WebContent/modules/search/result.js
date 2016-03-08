@@ -6,6 +6,10 @@ function resultController(restfactory,result,$state,$translate,$stateParams,avSa
 		
 	var thisController = this;
 	
+	this.currentSortColumn = -1;
+	
+	this.currentSortDirection = 1;
+	
 	this.result = result;
 		
 	
@@ -32,29 +36,27 @@ function resultController(restfactory,result,$state,$translate,$stateParams,avSa
 		// create a 2 dimensional array for HTML-Table 
 		var processedArray=[];
 		var line=0;
+		
 		for (var i=0; i<result.samples.length; i++){
 			var sample=result.samples[i];
-			processedArray.push(result.samples[i].sampledata);
-			processedArray[line].unshift({
-				id:sample.sampleid,
-				name:sample.samplename,
-				type: sample.sampletype
-				}
-			);
 			for (var j=0; j<result.samples[i].processes.length;j++){
-				if (j>0) {
-					processedArray.push(emptySampleData);
-				}
-				processedArray[line]=processedArray[line].concat(result.samples[i].processes[j].processdata); // concat processdata
+				processedArray.push([{
+						id:sample.sampleid,
+						name:sample.samplename,
+						type: sample.sampletype,
+					}])
+				processedArray[line]=processedArray[line].concat(result.samples[i].sampledata);
+				processedArray[line]=processedArray[line].concat(result.samples[i].processes[j].processdata);
 				line++;
 			}
-		}
+		}		
 		return processedArray;
 	}
 	
 	
 	
 	if (result.type==4){
+		this.sampleDataLength=result.samples[0].sampledata.length;
 		this.processedArray=this.processArray();
 	}
 	
@@ -107,7 +109,6 @@ function resultController(restfactory,result,$state,$translate,$stateParams,avSa
     	} else{
     		line="";
     		var lastObjectName;
-    		console.log("processed Array Length: "+thisController.processedArray.length);
     		for (var i=0;i<thisController.processedArray.length;i++){
     			if (thisController.processedArray[i][0].name){
     				line=thisController.processedArray[i][0].name+";";
@@ -129,7 +130,6 @@ function resultController(restfactory,result,$state,$translate,$stateParams,avSa
     	var b=new Blob(csvData,{encoding:"UTF-8",type : 'text/csv;charset=UTF-8'});
     	var a = document.createElement('a');
     	a.href = window.URL.createObjectURL(b);
-    	console.log(window.URL.createObjectURL(b))
         a.download = "searchresult.csv"; 
     	// Set to whatever file name you want
         // Now just click the link you created
@@ -140,8 +140,19 @@ function resultController(restfactory,result,$state,$translate,$stateParams,avSa
     		  document.body.insertBefore(a,document.body.childNodes[0]);
         }
     	a.click();
-    	
     };
+    
+    this.sortBy = function(index){
+    	if (thisController.currentSortColumn==index) {thisController.currentSortDirection*=-1}
+    	thisController.currentSortColumn=index;
+    	if (result.type<4){
+    		thisController.result.data.sort(function(a,b){return thisController.currentSortDirection*(a.rowdata[index]>b.rowdata[index]?1:-1)});
+    	}else{
+    		thisController.processedArray.sort(function(a,b){
+    			return thisController.currentSortDirection*((a[index]<b[index])?-1:1)});
+    	}
+    	
+    }
     	
 }  
 

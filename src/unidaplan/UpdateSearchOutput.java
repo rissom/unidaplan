@@ -21,42 +21,37 @@ import org.json.JSONObject;
 		
 		Authentificator authentificator = new Authentificator();
 		String status="ok";
+		String type="";
 		int userID=authentificator.GetUserID(request,response);
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
 	    JSONObject  jsonIn = null;
 	    try {
-			jsonIn = new JSONObject(in);
-
 			response.setContentType("application/json");
 		    response.setCharacterEncoding("utf-8");
 		    
-		    // get the id
+		    // get id, type and search
+			jsonIn = new JSONObject(in);
 		    int searchID=0;
-		    int searchType=-1;
 		    JSONArray output=null;
+			searchID=jsonIn.getInt("searchid");
+			output  =jsonIn.getJSONArray("output");
+			type    =jsonIn.getString("type");
+
+		    // connect to DB
 			DBconnection dBconn=new DBconnection();
 		    PreparedStatement pStmt = null;
-
-		    dBconn.startDB();	   
-			output=jsonIn.getJSONArray("output");
-			searchID=jsonIn.getInt("searchid");
-
-			pStmt= dBconn.conn.prepareStatement( 			
-					 "SELECT type FROM searches WHERE id=?");
-			pStmt.setInt(1, searchID);
-			searchType = dBconn.getSingleIntValue(pStmt);
-			pStmt.close();
+		    dBconn.startDB();
+		    
 			
 			String table="";
-			String col="";
-
-			switch (searchType){
-				case 1  : table="osearchoutput";  col="otparameter"; break;
-				case 2  : table="psearchoutput";  col="pparameter"; break;
-				default : table="posearchoutput"; col="poparameter"; 
-			}
+			String column="";
 			
+			switch (type) {
+				case "o" : table="osearchoutput"; column="otparameter"; break;
+				case "p" : table="psearchoutput"; column="pparameter"; break;
+				case "po" : table="posearchoutput"; column="poparameter";
+			}
 			pStmt= dBconn.conn.prepareStatement( 			
 					 "DELETE FROM "+table+" WHERE search=?");
 			pStmt.setInt(1, searchID);
@@ -65,7 +60,7 @@ import org.json.JSONObject;
 			int parameter;	
 		
 			pStmt= dBconn.conn.prepareStatement( 		
-			"INSERT INTO "+table+" (search,position,"+col+",lastuser) VALUES (?,?,?,?)");
+			"INSERT INTO "+table+" (search,position,"+column+",lastuser) VALUES (?,?,?,?)");
 			for (int i=0;i<output.length();i++){
 				parameter=output.getInt(i);
 				pStmt.setInt(1,searchID);

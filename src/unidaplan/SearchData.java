@@ -21,8 +21,12 @@ import org.json.JSONObject;
 	@Override
 	  public void doGet(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {
+		String status="ok";
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
+		if (userID<1){
+			status="not logged in";
+		}
 		JSONArray poparameter = null;
 		JSONArray sparameter = null;
 		JSONArray pparameter = null;
@@ -31,7 +35,6 @@ import org.json.JSONObject;
 		JSONArray groupRights=null;
 		userID=userID+1;
 		userID=userID-1;
-		String status="ok";
 		PreparedStatement pStmt;
 		ArrayList<String> stringkeys = new ArrayList<String>(); 
 		JSONObject search = null;
@@ -236,55 +239,62 @@ import org.json.JSONObject;
 			}
 			
 			// get the outputparameters according to searchtype
-			switch (search.getInt("type")){
-				case 1:   //Object scearch
-						query = "SELECT ot_parameters.id, "
-								+ "position, "
-							    + "COALESCE (ot_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname, "
-							    + "paramdef.datatype, "
-							    + "osearchoutput.id AS outputid "
-							    + "FROM osearchoutput "
-							    + "JOIN ot_parameters ON (ot_parameters.id=otparameter) "
-							    + "JOIN paramdef ON (paramdef.id=ot_parameters.definition) "
-							    + "WHERE search=?";
-						break;
-				case 2:   //Process search (nicht getestet)
-					  query = "SELECT p_parameters.id, "
-					  			+ "position, "
-					  		    + "COALESCE (p_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname, "
-					  		    + "paramdef.datatype, "
-					  		    + "psearchoutput.id AS outputid "
-							    + "FROM psearchoutput "
-							    + "JOIN p_parameters ON (p_parameters.id=pparameter) "
-							    + "JOIN paramdef ON (paramdef.id=p_parameters.definition) "
-							    + "WHERE search=?";
-						break;
-				case 3 : query =  "SELECT po_parameters.id, "
-								+ "position,"
-								+ "po_parameters.stringkeyname,paramdef.datatype "
-								+ "posearchoutput.id AS outputid "
-							    + "FROM posearchoutput "
-							    + "JOIN po_parameters ON (po_parameters.id=poparameter) "
-							    + "JOIN paramdef ON (paramdef.id=po_parameters.definition) "
-							    + "WHERE search=?";
-				  break;			
-			}
-			pStmt= dBconn.conn.prepareStatement(query);
+				
+			pStmt= dBconn.conn.prepareStatement(
+					"SELECT ot_parameters.id, \n"
+					+"position, \n"
+					+"COALESCE (ot_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname, \n"
+					+"paramdef.datatype, \n"
+					+"osearchoutput.id AS outputid, \n"
+					+"'o' as type \n"
+					+"FROM osearchoutput \n"
+					+"JOIN ot_parameters ON (ot_parameters.id=otparameter) \n"
+					+"JOIN paramdef ON (paramdef.id=ot_parameters.definition) \n" 
+					+"WHERE search=? \n"
+					+"\n"
+					+"UNION ALL \n"
+					+" \n"
+					+"SELECT p_parameters.id, \n" 
+					+"position, \n"
+					+"COALESCE (p_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname, \n" 
+					+"paramdef.datatype, \n"
+					+"psearchoutput.id AS outputid, \n"
+					+"'p' as type \n"
+					+"FROM psearchoutput \n"
+					+"JOIN p_parameters ON (p_parameters.id=pparameter) \n"
+					+"JOIN paramdef ON (paramdef.id=p_parameters.definition) \n" 
+					+"WHERE search=? \n"
+					+"\n"
+					+"UNION ALL \n"
+					+"\n"
+					+"SELECT po_parameters.id, \n" 
+					+"position, \n"
+					+"po_parameters.stringkeyname, \n"
+					+"paramdef.datatype, \n"
+					+"posearchoutput.id AS outputid, \n" 
+					+"'po' as type \n"
+					+"FROM posearchoutput \n"
+					+"JOIN po_parameters ON (po_parameters.id=poparameter) \n"
+					+"JOIN paramdef ON (paramdef.id=po_parameters.definition) \n"
+					+"WHERE search=? \n");
 			pStmt.setInt(1,id);
+			pStmt.setInt(2,id);
+			pStmt.setInt(3,id);
 			output = dBconn.jsonArrayFromPreparedStmt(pStmt);
 			pStmt.close();
+			
 			for (int i=0; i<output.length();i++){
 				stringkeys.add(Integer.toString(output.getJSONObject(i).getInt("stringkeyname")));	
 			}
 			
 			
-			if (type==1 && defaultObjecttype==0){  //get the first objecttype
+			if ((type==1 || type==4) && defaultObjecttype==0){  //get the first objecttype
 				pStmt= dBconn.conn.prepareStatement("SELECT id FROM objecttypes " 
 						+"LIMIT 1");
 				defaultObjecttype=dBconn.getSingleIntValue(pStmt);
 			}
 			
-			if (type==2 && defaultProcesstype==0){  //get the first processtype
+			if ((type==2 || type==4) && defaultProcesstype==0){  //get the first processtype
 				pStmt= dBconn.conn.prepareStatement("SELECT id FROM processtypes " 
 						+"LIMIT 1");
 				defaultProcesstype=dBconn.getSingleIntValue(pStmt);
@@ -309,9 +319,15 @@ import org.json.JSONObject;
 	    
 	   try {
 		   JSONObject rights= new JSONObject(); 
-		   rights.put("users",userRights);
-		   rights.put("groups", groupRights);
-		   search.put("rights", rights);
+		   if (userRights!=null){
+			   rights.put("users",userRights);
+		   }
+		   if (groupRights!=null){
+			   rights.put("groups", groupRights);
+		   }
+		   if (!(rights.isNull("groups")&&rights.isNull("users"))){
+			   search.put("rights", rights);
+		   }
 		   if (pparameter!=null && pparameter.length()>0){
 			   search.put("pparameter",pparameter);
 		   }
@@ -321,11 +337,13 @@ import org.json.JSONObject;
 		   if (poparameter!=null && poparameter.length()>0){
 			   search.put("poparameter",poparameter);
 		   }
-		   search.put("output",output);
-		   if (type==1 && defaultObjecttype>0){
+		   if (output!=null){
+			   search.put("output",output);
+		   }
+		   if ((type==1 || type==4) && defaultObjecttype>0){
 			   search.put("defaultobject", defaultObjecttype);
 		   }
-		   if (type==2 && defaultProcesstype>0){
+		   if ((type==2 || type==4) && defaultProcesstype>0){
 			   search.put("defaultprocess", defaultProcesstype);
 		   }
 		   answer.put("search", search);

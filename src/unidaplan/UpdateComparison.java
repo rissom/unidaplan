@@ -22,10 +22,10 @@ import org.json.JSONObject;
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
 	    String status = "ok";
+	    String table="";
 
 	    JSONObject jsonIn = null;
 	    int searchID = -1;
-	    int type = -1;
 	    int id = -1;
 	    int datatype=-1;
 	    int comparison=-1;
@@ -47,19 +47,13 @@ import org.json.JSONObject;
 		
 	    try {  
 		    dBconn.startDB();
-	    	// get basic search data (id,name,owner,operation)
-			pStmt= dBconn.conn.prepareStatement( 	
-			    "SELECT type FROM searches WHERE id=?");
-			pStmt.setInt(1, searchID);
-			type=dBconn.getSingleIntValue(pStmt);
-			pStmt.close();
+		 
 			
 			// get the searchparameters according to searchtype
 			String query="";
-			String table="";
 
-			switch (type){
-				case 1:   //Object scearch
+			switch (jsonIn.getString("type")){
+				case "o":   //Object scearch
 						  query = "SELECT paramdef.datatype "
 								 +"FROM searchobject "
 								 +"JOIN ot_parameters ON (ot_parameters.id=otparameter) "
@@ -67,7 +61,7 @@ import org.json.JSONObject;
 								 +"WHERE search=? AND searchobject.id=?";
 						  table ="searchobject";
 						  break;
-				case 2:   // Process search
+				case "p":   // Process search
 						  query = "SELECT paramdef.datatype "
 								 +"FROM searchprocess "
 								 +"JOIN p_parameters ON (p_parameters.id=pparameter) "
@@ -75,7 +69,7 @@ import org.json.JSONObject;
 								 +"WHERE search=? AND searchprocess.id=?";
 						  table ="searchprocess";
 						  break;
-				default : query = "SELECT paramdef.datatype "
+				case "po" : query = "SELECT paramdef.datatype "
 								 +"FROM searchpo "
 								 +"JOIN po_parameters ON (po_parameters.id=poparameter) "
 								 +"JOIN paramdef ON (paramdef.id=po_parameters.definition) "

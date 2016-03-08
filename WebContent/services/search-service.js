@@ -30,9 +30,10 @@ var searchService = function (restfactory,$q,$translate,key2string,languages) {
 	};
 	
 	
-	this.changeOrder = function (searchID,output){
+	this.changeOrder = function (searchID,output,type){
 		var newOrder = { searchid : searchID,
-			  		 	 output   : output };
+			  		 	 output   : output,
+			  		 	 type 	  : type};
 		return restfactory.PUT('change-order-search-output',newOrder);
 	};
 		
@@ -45,8 +46,8 @@ var searchService = function (restfactory,$q,$translate,key2string,languages) {
 	
 	
 	// delete a parameter from search criteria
-	this.deleteParameter = function(searchid,parameterid){
-		return restfactory.DELETE("delete-search-parameter?parameterid="+parameterid+"&searchid="+searchid);
+	this.deleteParameter = function(searchid,parameterid,type){
+		return restfactory.DELETE("delete-search-parameter?parameterid="+parameterid+"&searchid="+searchid+"&type="+type);
 	};
 	
 	
@@ -134,6 +135,16 @@ var searchService = function (restfactory,$q,$translate,key2string,languages) {
 					defered.resolve(search);
 		  		});
 		  	}
+		  	if (search.type===4){
+		  		var prom2 = thisController.getSParameters(search);
+		  		prom2.then(function(){
+					defered.resolve(search);
+		  		});
+		  		var prom3 = thisController.getPParameters(search);
+		  		prom3.then(function(){
+					defered.resolve(search);
+		  		});
+		  	}
 		});
        return defered.promise;
 	};
@@ -188,15 +199,16 @@ var searchService = function (restfactory,$q,$translate,key2string,languages) {
 		var defered=$q.defer();
 		var promise = restfactory.GET('/all-sample-type-params'+"?sampletypeid="+search.defaultobject);
 		promise.then(function(rest) {
-		  	search.avParameters = rest.data.parameters;
-		  	search.avParamGrps = rest.data.parametergrps;
+			angular.forEach(rest.data.parameters,function(parameter){parameter.type="o";}) // add type to all parameters
+		  	search.avSParameters = rest.data.parameters;
+		  	search.avSParamGrps = rest.data.parametergrps;
 		  	var strings = rest.data.strings;
-		  	angular.forEach (search.avParameters,function(parameter){
+		  	angular.forEach (search.avSParameters,function(parameter){
 		  		parameter.namef=function(){
 		  			return key2string.key2string(parameter.name,strings);
 		  		}
 		  	});
-		  	angular.forEach (search.avParamGrps,function(paramGrp){
+		  	angular.forEach (search.avSParamGrps,function(paramGrp){
 		  		paramGrp.namef=function(){
 		  			return key2string.key2string(paramGrp.stringkey,strings);
 		  		}
@@ -216,15 +228,15 @@ var searchService = function (restfactory,$q,$translate,key2string,languages) {
 		}
 		var promise = restfactory.GET(url);
 		promise.then(function(rest) {
-		  	search.avParameters = rest.data.parameters;
-		  	search.avParamGrps = rest.data.parametergrps;
+		  	search.avPParameters = rest.data.parameters;
+		  	search.avPParamGrps = rest.data.parametergrps;
 		  	var strings = rest.data.strings;
-		  	angular.forEach (search.avParameters,function(parameter){
+		  	angular.forEach (search.avPParameters,function(parameter){
 		  		parameter.namef=function(){
 		  			return key2string.key2string(parameter.name,strings);
 		  		}
 		  	});
-		  	angular.forEach (search.avParamGrps,function(paramGrp){
+		  	angular.forEach (search.avPParamGrps,function(paramGrp){
 		  		paramGrp.namef=function(){
 		  			return key2string.key2string(paramGrp.stringkey,strings);
 		  		}
@@ -289,28 +301,30 @@ var searchService = function (restfactory,$q,$translate,key2string,languages) {
 	
 
 	
-	this.updateSearchOutput = function(id,parameters){
-		return restfactory.PUT("update-search-output",{searchid:id,output:parameters});
+	this.updateSearchOutput = function(id,parameters,type){
+		return restfactory.PUT("update-search-output",{searchid:id,output:parameters,type:type});
 	};
 	
 	
-	
-	this.updateSearchParamValue = function(searchid,parameter,newValue){
-		return restfactory.PUT("update-search-param-value",{searchid:searchid,pid:parameter,value:newValue});
+	this.updateSearchParamValue = function(searchid,parameter,newValue,type){
+		return restfactory.PUT("update-search-param-value",{searchid:searchid,pid:parameter,value:newValue,type:type});
 	}
 	
 	
+	this.updateSearchSParameter = function(searchid,pparameter){
+		return restfactory.POST("update-search-param",{searchid:searchid,parameter:pparameter,type:'o'});
+	}
 	
-	this.updateParameterProcessSearch = function(searchid,pparameter){
-		return restfactory.POST("update-search-param",{searchid:searchid,pparameter:pparameter,type:2});
+	this.updateSearchPParameter = function(searchid,pparameter){
+		return restfactory.POST("update-search-param",{searchid:searchid,parameter:pparameter,type:'p'});
 	}
 	
 	
-	
-	this.goToSearches = function(){
-		console.log("warum bin ich hier?")
-		$state.go("openSearch");
-	}
+//	
+//	this.goToSearches = function(){
+//		console.log("warum bin ich hier?")
+//		$state.go("openSearch");
+//	}
 	
 	
 	

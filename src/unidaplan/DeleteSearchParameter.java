@@ -23,15 +23,16 @@ public class DeleteSearchParameter extends HttpServlet {
 		userID=userID-1; // REMOVE ME!!!
 		request.setCharacterEncoding("utf-8");
 	    String status="ok";
+	    String type="";
 		int searchID=-1;
 		int parameterID=-1;
-		int type=-1;
 
 	 	
 		// get the id
 		try{
 			 searchID=Integer.parseInt(request.getParameter("searchid"));
 			 parameterID=Integer.parseInt(request.getParameter("parameterid"));
+			 type=request.getParameter("type");
 		}
 		catch (Exception e1) {
 			searchID=-1;
@@ -47,44 +48,39 @@ public class DeleteSearchParameter extends HttpServlet {
 	    try {
 		 
 		    dBconn.startDB();
-	    	// get basic search data (id,name,owner,operation)
-			pStmt= dBconn.conn.prepareStatement( 	
-			    "SELECT type FROM searches WHERE id=?");
-			pStmt.setInt(1, searchID);
-			type=dBconn.getSingleIntValue(pStmt);
-			pStmt.close();
 			
 			// get the searchparameters according to searchtype
 			String table="";
 
 			switch (type){
-				case 1:   //Object scearch
+				case "o":   //Object scearch
 						  table ="searchobject";
 						  break;
-				case 2:   // Process search
+				case "p":   // Process search
 						  table ="searchprocess";
 						  break;
-				default : // samplespecific parameter search
+				case "po" : // samplespecific parameter search
 						  table ="searchpo";
 						  break;
 			}
 	    	
-			PreparedStatement pstmt = null; 	// Declare variables
 		 	DBconnection DBconn=new DBconnection(); // New connection to the database
 		 	DBconn.startDB();
 		 	if (parameterID>0){			
 				// delete the search
-		        pstmt = DBconn.conn.prepareStatement(	
-		        	"DELETE FROM "+table+" WHERE id=?");
-				pstmt.setInt(1,parameterID);
-				pstmt.executeUpdate();
-				pstmt.close();
+		        pStmt = DBconn.conn.prepareStatement(	
+		        	"DELETE FROM "+table+" WHERE id=? AND search=?");
+				pStmt.setInt(1,parameterID);
+				pStmt.setInt(2,searchID);
+				pStmt.executeUpdate();
+				pStmt.close();
 			}
  		   DBconn.closeDB();  // close the database 
 
 	    } catch (SQLException eS) {
 			System.err.println("DeleteSearch: SQL Error");
 			status="error: SQL error";
+			eS.printStackTrace();
 			response.setStatus(404);
 		} catch (Exception e) {
 			System.err.println("DeleteSearch: Some Error, probably JSON");

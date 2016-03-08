@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-function editSearchController(restfactory,$state,$stateParams,$translate,$modal,
+function editSearchController(restfactory,$filter,$state,$stateParams,$translate,$modal,
 		key2string,sampleTypes,ptypes,searchData,newSearch,languages,searchService,users,groups){
 		
 	var thisController = this;
@@ -9,16 +9,26 @@ function editSearchController(restfactory,$state,$stateParams,$translate,$modal,
 	this.editFieldNL1 = newSearch;
 	
 	this.sampleTypes = sampleTypes;	
-	
-	this.sampleType = sampleTypes.filter(function(sType){return sType.id==searchData.defaultobject})[0]
+		
+	if (searchData.defaultobject) {
+		this.sampleType = sampleTypes.filter(function(sType){return sType.id==searchData.defaultobject})[0]	
+	} else {
+		this.sampleType = sampleTypes[0];
+	}
 	
 	this.processTypes = ptypes;
 	
-	this.processType = ptypes.filter(function(sType){return sType.id==searchData.defaultprocess})[0]
+	if (searchData.defaultprocess){
+		this.processType = ptypes.filter(function(sType){return sType.id==searchData.defaultprocess})[0]
+	} else{
+		this.processType = ptypes[0];
+	}
 				
 	this.searchTypes = [{id:1,name:$translate.instant('Object')},
 	{id:2,name:$translate.instant('Property')},
-	{id:3,name:$translate.instant('object specific processparameters')}];
+	{id:3,name:$translate.instant('object specific processparameters')},
+	{id:4,name:$translate.instant('sample/process')}];
+
 	
 	this.searchType=searchData.type;
 	
@@ -35,9 +45,17 @@ function editSearchController(restfactory,$state,$stateParams,$translate,$modal,
 	
 	this.search=searchData;
 		
-	this.output=searchData.output;
+	this.ooutput=$filter('filter')(searchData.output,{type:'o'});
 	
-	this.output.sort(function(a,b){return a.position-b.position});
+	this.poutput=$filter('filter')(searchData.output,{type:'p'});
+	
+	this.pooutput=$filter('filter')(searchData.output,{type:'po'});
+		
+	this.poutput.sort(function(a,b){return a.position-b.position});
+	
+	this.ooutput.sort(function(a,b){return a.position-b.position});
+
+	this.poutput.sort(function(a,b){return a.position-b.position});
 	  
 	this.nameL1 = searchData.nameL1; //parameterGrp.nameLang(languages[0].key);
 	  
@@ -65,6 +83,7 @@ function editSearchController(restfactory,$state,$stateParams,$translate,$modal,
 	this.users = users;
 	
 	var allComparators = [{index:1,label:"<"},{index:2,label:">"},{index:3,label:"="},{index:4,label:"not"},{index:5,label:$translate.instant("contains")}];
+	
 
 	
 	this.comparators={ 	integer		: allComparators.slice(0,4), 
@@ -89,16 +108,16 @@ function editSearchController(restfactory,$state,$stateParams,$translate,$modal,
 		    controller: 'modalParameterChoserGrps as mParameterChoserGrpsCtrl',
 		    resolve: {
 		    	mode		  	 : function(){return 'immediate'; },
-		    	avParameters     : function(){return thisController.search.avParameters; },
-		    	paramGroups      : function(){return thisController.search.avParamGrps; },
+		    	avParameters     : function(){return thisController.search.avSParameters; },
+		    	paramGroups      : function(){return thisController.search.avSParamGrps; },
 		    	parameters		 : function(){return []}
 				}
 		});
-		  	
+		
 		modalInstance.result.then(
 			function (result) {  // get the new Parameterlist + Info if it has changed from Modal.  
 				if (result.chosen.length>0){
-					var promise=searchService.updateParameterSampleSearch(thisController.search.id,result.chosen);
+					var promise=searchService.updateSearchSParameter(thisController.search.id,result.chosen);
 					promise.then(function(){reload();});		    	  
 				}
 			},function () {
@@ -116,15 +135,15 @@ function editSearchController(restfactory,$state,$stateParams,$translate,$modal,
 		    controller: 'modalParameterChoserGrps as mParameterChoserGrpsCtrl',
 		    resolve: {
 		    	mode		  	 : function(){return 'immediate'; },
-		    	avParameters     : function(){return thisController.search.avParameters; },
-		    	paramGroups      : function(){return thisController.search.avParamGrps; },
+		    	avParameters     : function(){return thisController.search.avPParameters; },
+		    	paramGroups      : function(){return thisController.search.avPParamGrps; },
 		    	parameters		 : function(){return []}
 				}
 		});
 		  	
 		modalInstance.result.then(
 			function (result) {  // get the new Parameterlist + Info if it has changed from Modal.  
-				var promise=searchService.updateParameterProcessSearch(thisController.search.id,result.chosen);
+				var promise=searchService.updateSearchPParameter(thisController.search.id,result.chosen);
 				if (result.chosen.length>0){
 					promise.then(function(){reload();});		    	  
 				}
@@ -136,19 +155,46 @@ function editSearchController(restfactory,$state,$stateParams,$translate,$modal,
 	
 	
 	
-    this.addOutputParameter = function () {
+    this.addOutputParameter = function (type) {
 		var modalInstance = $modal.open({
 			animation: false,
 		    templateUrl: 'modules/modal-parameter-choser/modal-parameter-choser-with-grps.html',
 		    controller: 'modalParameterChoserGrps as mParameterChoserGrpsCtrl',
 		    resolve: {
 		    	mode		  	 : function(){return 'immediate'; },
-		    	avParameters     : function(){return thisController.search.avParameters; },
-		    	paramGroups      : function(){return thisController.search.avParamGrps; },
+		    	avParameters     : function(){ // All parameters which have not been already chosen
+		    		var avParams=[];
+		    		var outParams=[];
+		    		var oparameters=[];
+		    		switch (type){
+			    		case "o" : avParams=searchData.avSParameters; outParams=thisController.ooutput; break;
+			    		case "p" : avParams=searchData.avPParameters; outParams=thisController.poutput; break;
+			    		case "po": avParams=searchData.avPOParameters; outParams=thisController.pooutput;
+		    		}
+		    		for (var i=0; i<outParams.length;i++){ 
+		    			oparameters.push(outParams[i].id);
+		    		}
+			    	return $filter('filter')(avParams,function(p){
+			    		return (oparameters.indexOf(p.id))==-1});} ,
+		    	paramGroups      : function(){
+		    		var avParamGrps=[];
+		    		switch (type){
+			    		case "o" : avParamGrps=searchData.avSParamGrps; break;
+			    		case "p" : avParamGrps=searchData.avPParamGrps; break;
+			    		case "po": avParamGrps=searchData.avPOParamGrps;
+		    		}
+		    		return avParamGrps; },
 		    	parameters    	 : function(){
+		    			// make an array of outputparameterids of the given type
 			    		var oparameters=[];
-			    		for (var i=0; i<searchData.output.length;i++){ 
-			    			oparameters.push(searchData.output[i].id);
+			    		var outParams=[];
+			    		switch (type){
+				    		case "o" : outParams=thisController.ooutput; break;
+				    		case "p" : outParams=thisController.poutput; break;
+				    		case "po" : outParams=thisController.pooutput;
+			    		}
+			    		for (var i=0; i<outParams.length;i++){ 
+			    			oparameters.push(outParams[i].id);
 			    		}
 			    		return oparameters;
 	//		    		return searchData.output.reduce(function(x,y){return x.push(y.id);},[]); // not working! Why???
@@ -159,8 +205,14 @@ function editSearchController(restfactory,$state,$stateParams,$translate,$modal,
 		modalInstance.result.then(
 			function (result) {  // get the new Parameterlist + Info if it has changed from Modal.  
 				if (result.chosen.length>0){
-					var promise=searchService.updateSearchOutput(thisController.search.id,result.chosen);
-					promise.then(function(){reload();});		    	  
+					var newOutParams=result.inParams;
+					angular.forEach (result.chosen,
+						function(p){
+							if (newOutParams.indexOf(p)==-1) newOutParams.push(p)
+						}
+					);
+					var promise=searchService.updateSearchOutput(thisController.search.id,newOutParams,type);
+					promise.then(function(){reload();});
 				}
 			},function () {
 				console.log('Strange Error: Modal dismissed at: ' + new Date());
@@ -170,8 +222,8 @@ function editSearchController(restfactory,$state,$stateParams,$translate,$modal,
 		
 	
 	
-	this.changeComparison = function(parameter){
-		var args = {searchid:searchData.id,id:parameter.id,comparison:parameter.comparison};
+	this.changeComparison = function(parameter,type){
+		var args = {searchid:searchData.id,id:parameter.id,comparison:parameter.comparison,type:type};
 		var promise = searchService.changeComparison(args);
 		promise.then(function(){reload();},function(){console.log("Error")});
 	}
@@ -224,42 +276,53 @@ function editSearchController(restfactory,$state,$stateParams,$translate,$modal,
 	
 	
     
-    this.deleteOutParameter = function(parameter){
+    this.deleteOutParameter = function(parameter,type){
 		var oparameters=[];
-		for (var i=0; i<searchData.output.length;i++){ 
-			if (searchData.output[i].id!=parameter.id){
-				oparameters.push(searchData.output[i].id);
+		var tParams=[];
+		switch (type) {
+		case 'o'  : tParams=thisController.ooutput; break;
+		case 'p'  : tParams=thisController.poutput; break;
+		case 'po' : tParams=thisController.pooutput; 
+		}
+		for (var i=0; i<tParams.length;i++){ 
+			if (tParams[i].id!=parameter.id){
+				oparameters.push(tParams[i].id);
 			}
 		}
-		var promise=searchService.updateSearchOutput(thisController.search.id,oparameters);
+		var promise=searchService.updateSearchOutput(thisController.search.id,oparameters,type);
 		promise.then(function(){reload();});		
     }
     
 	
 	
-	this.deleteParameter = function (parameter) {
+	this.deleteParameter = function (parameter,type) {
 		// Delete Parameter from searchcriteria
-		var promise=searchService.deleteParameter(thisController.search.id,parameter.id);
+		var promise=searchService.deleteParameter(thisController.search.id,parameter.id,type);
 		promise.then(function(){
 			reload();
 		});
 	};
 	
 	
+	var exchangePositions = function(array, index1,index2){
+		var pos1=array[index1].position;
+		var pos2=array[index2].position;
+		array[index1].position=pos2;
+		array[index2].position=pos1;
+		array.sort(function(a,b){return a.position-b.position});
+	}
 	
-	this.down=function(index){
-		console.log("index:"+index);
-		var pos1=thisController.output[index].position;
-		var pos2=thisController.output[index+1].position;
-		var temp=thisController.output[index]
-		var temp2=thisController.output[index+1]
-		thisController.output[index]=temp2;
-		thisController.output[index+1]=temp;
-		thisController.output[index].position=pos1;
-		console.log("pos1:"+pos1+", pos2:"+pos2);
-		thisController.output[index+1].position=pos2;
-		var promise = searchService.changeOrder(thisController.search.id,thisController.search.output);
-		promise.then(function(){reload()},function(){console.log("error")})
+	
+	this.down=function(index,type){
+		if (type=='o'){
+			exchangePositions (thisController.ooutput, index, index+1);
+			var promise = searchService.changeOrder(thisController.search.id,thisController.ooutput,type);
+			promise.then(function(){reload()},function(){console.log("error")})
+		} else {
+			exchangePositions (thisController.poutput, index, index+1);
+			var promise = searchService.changeOrder(thisController.search.id,thisController.poutput,type);
+			promise.then(function(){reload()},function(){console.log("error")})
+		}
 	};
 	
 	
@@ -388,28 +451,27 @@ function editSearchController(restfactory,$state,$stateParams,$translate,$modal,
 		}
 	};
 	
+
 	
 	
-	this.up=function(index){
-		var id1=thisController.output[index-1].id;
-		var id2=thisController.output[index].id;
-		var pos1=thisController.output[index-1].position;
-		var pos2=thisController.output[index].position;
-		var temp=thisController.output[index-1]
-		var temp2=thisController.output[index]
-		thisController.output[index]=temp;
-		thisController.output[index-1]=temp2;
-		thisController.output[index-1].position=pos1;
-		thisController.output[index].position=pos2;
-		var promise = searchService.changeOrder(thisController.search.id,thisController.search.output);
-		promise.then(function(){reload()},function(){console.log("error")})
+	this.up=function(index,type){
+		if (type=='o'){
+			exchangePositions(thisController.ooutput,index-1,index);
+			var promise = searchService.changeOrder(thisController.search.id,thisController.ooutput,type);
+			promise.then(function(){reload()},function(){console.log("error")})
+		}else{
+			exchangePositions(thisController.poutput,index-1,index);
+			var promise = searchService.changeOrder(thisController.search.id,thisController.poutput,type);
+			promise.then(function(){reload()},function(){console.log("error")})
+		}		
+
 	};
 	
 	
 	
-	this.valueKeyUp=function(keyCode,newValue,parameter){
+	this.valueKeyUp=function(keyCode,newValue,parameter,type){
 		if (keyCode===13 || keyCode==12) {				// Return or tab key pressed
-			var promise = searchService.updateSearchParamValue(thisController.search.id,parameter.id,newValue);
+			var promise = searchService.updateSearchParamValue(thisController.search.id,parameter.id,newValue,type);
 			promise.then(function(){reload();});
 		}
 	}
@@ -424,7 +486,7 @@ function editSearchController(restfactory,$state,$stateParams,$translate,$modal,
 }  
 
 
-angular.module('unidaplan').controller('editSearchController',['restfactory','$state','$stateParams','$translate',
+angular.module('unidaplan').controller('editSearchController',['restfactory','$filter','$state','$stateParams','$translate',
                           '$modal','key2string','sampleTypes','ptypes','searchData','newSearch','languages','searchService','users','groups',editSearchController]);
 
 })();

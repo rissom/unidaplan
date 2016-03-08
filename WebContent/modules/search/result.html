@@ -27,7 +27,9 @@
 	<thead class=parametertablehead>
 		<tr>
 			<td> {{'object'|translate}} </td>
-			<td ng-repeat="col in resultCtrl.result.headings">
+			<td ng-repeat="col in resultCtrl.result.headings" ng-click="resultCtrl.sortBy($index)">
+				<span ng-show="resultCtrl.currentSortColumn==$index && resultCtrl.currentSortDirection== 1"> &#9660; </span>
+				<span ng-show="resultCtrl.currentSortColumn==$index && resultCtrl.currentSortDirection==-1"> &#9650; </span>
 			 	{{col.namef()}} {{col.unitf()?'(':''}}{{col.unitf()}}{{col.unitf()?')':''}}
 			</td>
 		</tr>
@@ -48,7 +50,9 @@
 	<thead class=parametertablehead>
 		<tr>
 			<td> {{'property'|translate}} </td>
-			<td ng-repeat="col in resultCtrl.result.headings">
+			<td ng-repeat="col in resultCtrl.result.headings" ng-click="resultCtrl.sortBy($index)">
+				<span ng-show="resultCtrl.currentSortColumn==$index && resultCtrl.currentSortDirection== 1"> &#9660; </span>
+				<span ng-show="resultCtrl.currentSortColumn==$index && resultCtrl.currentSortDirection==-1"> &#9650; </span>
 			 	{{col.namef()}} {{col.unitf()?'(':''}}{{col.unitf()}}{{col.unitf()?')':''}}
 			</td>
 		</tr>
@@ -69,7 +73,9 @@
 	<thead class=parametertablehead>
 		<tr>
 			<td> {{'property'|translate}} </td>
-			<td ng-repeat="col in resultCtrl.result.headings">
+			<td ng-repeat="col in resultCtrl.result.headings" ng-click="resultCtrl.sortBy($index)">
+				<span ng-show="resultCtrl.currentSortColumn==$index && resultCtrl.currentSortDirection== 1"> &#9660; </span>
+				<span ng-show="resultCtrl.currentSortColumn==$index && resultCtrl.currentSortDirection==-1"> &#9650; </span>
 			 	{{col.namef()}} {{col.unitf()?'(':''}}{{col.unitf()}}{{col.unitf()?')':''}}
 			</td>
 		</tr>
@@ -90,28 +96,19 @@
 	<thead class=parametertablehead>
 		<tr>
 			<td> {{'object'|translate}} </td>
-			<td ng-repeat="col in resultCtrl.result.headings">
+			<td ng-repeat="col in resultCtrl.result.headings"  ng-click="resultCtrl.sortBy($index+1)">
+				<span ng-show="resultCtrl.currentSortColumn==$index+1 && resultCtrl.currentSortDirection== 1"> &#9660; </span>
+				<span ng-show="resultCtrl.currentSortColumn==$index+1 && resultCtrl.currentSortDirection==-1"> &#9650; </span>
 			 	{{col.namef()}} {{col.unitf()?'(':''}}{{col.unitf()}}{{col.unitf()?')':''}}
 			</td>
 		</tr>
 	</thead>
 	<tbody>
-		<!-- 
-		<tr ng-repeat="sample in resultCtrl.result.samples">
-			<td> <a ui-sref="sample({sampleID:sample.sampleid})">{{resultCtrl.getType(sample.sampletype)}} {{sample.samplename}} </a> </td>
-			<td><tparameter parameter="col"></tparameter>
-			</td>
-			<td ng-repeat="process in sample.processes"> 
-				<a ui-sref="process({processID:process.id})">{{row.getProcessType(process.type)}} process {{process.nr}} </a> 
-			</td>
-			<td>
-				{{process}}
-			</td>
-	 		-->
 	 	<tr ng-repeat="row in resultCtrl.processedArray">
 	 		<td ng-repeat="datacolumn in row track by $index">
-	 			<a ng-show="$index==0" ui-sref="sample({sampleID:datacolumn.id})">{{resultCtrl.getType(datacolumn.type)}} {{datacolumn.name}}</a> 
-	 			<div ng-hide="$index==0">{{datacolumn}}</div>
+	 			<a ng-show="$index==0 && resultCtrl.processedArray[$parent.$index-1][0].id!=row[0].id" ui-sref="sample({sampleID:datacolumn.id})">{{resultCtrl.getType(datacolumn.type)}} {{datacolumn.name}}</a>
+	 			<!-- && resultCtrl.processedArray[$parent.$index-1][0].id!=datacolumn[0].id -->
+	 			<div ng-hide="$index==0 || ($index<resultCtrl.sampleDataLength && resultCtrl.processedArray[$parent.$index-1][0].id==row[0].id)">{{datacolumn}}</div>
 	 		</td>		
 		</tr>
 	</tbody>
