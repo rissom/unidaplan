@@ -31,11 +31,10 @@ function groupController($modal,$translate,$scope,$state,$stateParams,groups,use
 	}
 	
 	
+	
 	this.assignUsers = function(group,users){
 		var userList=[];
 		users.map(function(user){userList.push(user.id)});
-		console.log("userList:"+userList)
-//		console.log ("assigning Users: ",userList," to group: ", group.id);
 		var promise = userService.assignGroupMembers(group.id,userList);
 	    promise.then(function(rest) {
 	    	reload();
