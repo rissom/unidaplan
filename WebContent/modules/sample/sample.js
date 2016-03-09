@@ -8,6 +8,7 @@ function sampleController(sample,$state,$stateParams,$modal,$filter,types,sample
 		
 	if (sample.error) this.error=sample.error;
 	this.parametergroups = sample.parametergroups;
+	this.editable = sample.editable;
 	this.processes = $filter('orderBy')(sample.processes, 'date', false);
 	this.titleparameters = sample.titleparameters;
 	this.children = sample.children?sample.children:[];

@@ -15,6 +15,7 @@ var paramfield = function() {
 		restrict: 'E',
 		templateUrl: 'directives/paramfield.html',
 		scope:{
+			editable:'=',
 			pupdate:'&',
 			parameters: '='
 		},

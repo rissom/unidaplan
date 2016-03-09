@@ -15,7 +15,7 @@ var paramgrps = function() {
 		templateUrl: 'directives/paramgrps.html',
 		scope:{
 			pupdate:'&',
-			editable: '@',
+			editable: '=',
 			parametergrps: '='
 		},
 		controller: function($scope){

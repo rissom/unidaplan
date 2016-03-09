@@ -86,7 +86,6 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 		    			   "typeid"		   : rest.data.typeid,
 		    			   "typestringkey" : rest.data.typestringkey,
 		    			   "name"		   : rest.data.name};
-//		    			   "trtype"		   : avSampleTypeService.getType(rest.data.typeid)}; // TODO: Weg damit???
 		    thisController.pushSample(sample);
 	        thisController.sample = rest.data;
 	        var strings = rest.data.strings;
@@ -107,11 +106,7 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 					}
 					if (parameter.unit){
 						parameter.unitf=function(){
-							var unit="";
-							if (parameter.value!="" && parameter.value!=null){
-								unit=key2string.key2string(parameter.unit,strings);
-							}
-							return unit; 
+							return key2string.key2string(parameter.unit,strings);
 						};
 					}
 					if (parameter.datatype==="date" || parameter.datatype==="timestamp"){			

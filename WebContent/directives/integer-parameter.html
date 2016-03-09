@@ -7,7 +7,7 @@
 	type="number"
     ng-model="integerParamCtrl.newValue"
     ng-blur="parameter.editing=false">
-<span ng-show="parameter.unit">
+<span ng-show="parameter.unit && (parameter.editing || parameter.value)">
 	{{parameter.unitf()}}
 </span>
 </div>

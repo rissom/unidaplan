@@ -123,7 +123,7 @@ public class Unidatoolkit {
     			
 		    	// check if user is member of group
         		PreparedStatement pStmt = null;
-				pStmt = dBconn.conn.prepareStatement(	
+				pStmt = dBconn.conn.prepareStatement(
 			       	"SELECT count(userid)>0 FROM groupmemberships WHERE groupID=? AND userid=?");
 				pStmt.setInt(1,groupID);
 				pStmt.setInt(2,userID);

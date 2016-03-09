@@ -7,7 +7,7 @@
 <h4>{{'Parameters'|translate}}</h4>
 <paramgrps 
 	parametergrps="processCtrl.process.parametergroups" 
-	editable="false"
+	editable="processCtrl.editable"
 	pupdate="processCtrl.saveParameter(parameter)">
 </paramgrps>
 
@@ -29,7 +29,6 @@ ng-class="{'1':'ok','2':'att','3':'failed'}[processCtrl.process.status]" >&nbsp;
 </select>
 <br />
 <br />
-
 
 
 <h4>{{'Samples in process'|translate}}</h4>
@@ -58,6 +57,7 @@ ng-class="{'1':'ok','2':'att','3':'failed'}[processCtrl.process.status]" >&nbsp;
 						class="btn btn-danger"
 						ng-class="{'disabled':!processCtrl.deletable}"
 						ng-click="processCtrl.deleteProcess()"
+						ng-show="processCtrl.editable"
 						ui-sref="sampleChoser">
 					{{'Delete Process'|translate}}
 				</button>&nbsp;

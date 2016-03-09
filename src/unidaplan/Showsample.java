@@ -30,7 +30,8 @@ public class Showsample extends HttpServlet {
 	int userID=authentificator.GetUserID(request,response);
 	if (userID>0){
 	 	ArrayList<String> stringkeys = new ArrayList<String>(); 
-	 	Boolean Deletable=true;
+	 	Boolean deletable=false;
+	 	Boolean editable=false;
 	    response.setContentType("application/json");
 	    request.setCharacterEncoding("utf-8");
 	    response.setCharacterEncoding("utf-8");
@@ -51,6 +52,8 @@ public class Showsample extends HttpServlet {
 	    // fetch name and type of the object from the database (samplenames is a view)
 	    try{
 	        dBconn.startDB();
+	        deletable=Unidatoolkit.isMemberOfGroup(userID, 1, dBconn); // Todo: Only admins delete
+	        editable=deletable;
 			pstmt= dBconn.conn.prepareStatement( 	
 					"SELECT objecttypesid FROM samples WHERE id=?");
 			pstmt.setInt(1,objID);
@@ -168,6 +171,9 @@ public class Showsample extends HttpServlet {
 			      			tParam.getInt("parametergroup")==prmgrp.getInt("parametergroup")){		      			
 				      		if (tParam.has("unit")){ 
 				      			stringkeys.add(Integer.toString(tParam.getInt("unit")));
+				      		}
+				      		if (tParam.has("description")){ 
+				      			stringkeys.add(Integer.toString(tParam.getInt("description")));
 				      		}
 			      			int datatype=tParam.getInt("datatype");
 				      		tParam.remove("datatype");
@@ -422,7 +428,7 @@ public class Showsample extends HttpServlet {
 				pstmt.setInt(1,objID);
 				ResultSet resultset=pstmt.executeQuery();
 				if (resultset.next()) {
-					Deletable=false;
+					deletable=false;
 				}
 				pstmt.close();
 				
@@ -431,10 +437,11 @@ public class Showsample extends HttpServlet {
 		        	"SELECT id FROM expp_samples WHERE sample=?");
 				pstmt.setInt(1,objID);
 				resultset=pstmt.executeQuery();
-				if (resultset.next()) {Deletable=false;}
+				if (resultset.next()) {deletable=false;}
 				pstmt.close();
-				jsSample.put("deletable", Deletable);
-				
+				jsSample.put("deletable", deletable);
+				jsSample.put("editable", editable);
+
 				
 			} catch (SQLException e) {
 				System.err.println("Showsample: Problems with SQL query for deletable");

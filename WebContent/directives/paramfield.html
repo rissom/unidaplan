@@ -1,6 +1,6 @@
 <table class="table" style="width:auto">
 	<tr ng-repeat="parameter in parameters | orderBy : 'pos'" 
-	ng-dblclick="parameter.editing=true; newValue=parameter.value">
+	ng-dblclick="parameter.editing=editable; newValue=parameter.value">
 		<td>
 		    {{parameter.namef()}} :
 		</td>

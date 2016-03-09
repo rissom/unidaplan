@@ -5,7 +5,9 @@ function process($state,$stateParams,$translate,avSampleTypeService,types,$modal
   
 	var thisController=this;
   
-	this.deletable=true;
+	this.deletable=processData.deletable;
+	
+	this.editable=processData.editable;
   	
 	this.process=processData;
  

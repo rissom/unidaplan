@@ -1,7 +1,7 @@
 <!-- Heading with sample name -->
 <h3>{{sampleCtrl.getType({typeid:sampleCtrl.typeid})}} 
 	<span ng-repeat="tparameter in sampleCtrl.titleparameters"
-		  ng-dblclick="tparameter.editing=true; newValue=tparameter.value">
+		  ng-dblclick="tparameter.editing=sampleCtrl.editable; newValue=tparameter.value">
 		<span ng-hide="tparameter.editing">{{tparameter.value|trailingzeros:tparameter.maxdigits}}
 		</span>
 		<input 						   
@@ -19,11 +19,12 @@
 <!-- Parameters -->
 <h4>{{'Parameters'|translate}}</h4>
 
+
 <paramgrps 
 	parametergrps="sampleCtrl.parametergroups" 
-	editable="false"
+	editable="sampleCtrl.editable"
 	pupdate="sampleCtrl.saveParameter(parameter)">
-</paramgrps>		
+</paramgrps>
 
 
 	
@@ -46,7 +47,8 @@
 			</a><br />
 		</div> 
 		<button class="btn btn-default"
-				ng-click="sampleCtrl.openDialog('ancestors')">
+				ng-click="sampleCtrl.openDialog('ancestors')"
+				ng-show="sampleCtrl.editable">
 			{{'Add/Remove objects'|translate}}
 		</button>				
 	</div>
@@ -57,7 +59,9 @@
 			</a>
 		</div>
 		<br />
-		<button class="btn btn-default" ng-click="sampleCtrl.openDialog('children')">
+		<button class="btn btn-default" 
+				ng-click="sampleCtrl.openDialog('children')"
+				ng-show="sampleCtrl.editable">
 			{{'Add/Remove objects'|translate}}
 		</button>
 <!-- 	<button type="button" class="btn btn-default" >
@@ -139,6 +143,7 @@
 				<br />
 					<button type="button" class="btn btn-danger"
 							ng-class="{'disabled':!sampleCtrl.deletable}"
+							ng-show="sampleCtrl.editable"
 							ng-click="sampleCtrl.deleteSample()">
 							<span class="glyphicon glyphicon-remove"></span>
 							{{'Delete Object'|translate}}

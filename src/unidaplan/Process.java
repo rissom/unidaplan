@@ -31,10 +31,13 @@ public class Process extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
     	
+    	Boolean deletable = false;
+    	Boolean editable = false;
+		boolean found=false;
+
+
     	Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
-		userID = userID+1;
-		userID = userID-1;
 		
 		ArrayList<String> stringkeys = new ArrayList<String>(); // Array for translation strings
       
@@ -43,7 +46,7 @@ public class Process extends HttpServlet {
 		response.setCharacterEncoding("utf-8");
 		PrintWriter out = response.getWriter();
 		DBconnection dBconn=new DBconnection();
-		boolean found=false;
+
 		int processID=1;
   	  	int processTypeID=1;
   	  	int pnumber=0;
@@ -63,6 +66,9 @@ public class Process extends HttpServlet {
   	  	try {
 
   	  		dBconn.startDB();
+  	  		
+  			deletable=Unidatoolkit.isMemberOfGroup(userID, 1, dBconn);
+  			editable=Unidatoolkit.isMemberOfGroup(userID, 1, dBconn);
 
 		  
   	  		// get number, type and status 
@@ -293,6 +299,8 @@ public class Process extends HttpServlet {
 	        query+= buff.toString() + "}'::int[])";
 	        JSONArray theStrings=dBconn.jsonfromquery(query);
 	        jsProcess.put("strings", theStrings);
+	        jsProcess.put("deletable", deletable);
+	        jsProcess.put("editable", editable);
 		} catch (SQLException e) {
 			System.err.println("Showsample: Problems with SQL query for Stringkeys");
 		} catch (JSONException e) {
