@@ -95,14 +95,15 @@
 	<td>
 	<select class="input-sm"
 			ng-options="type as type for type in editParamCtrl.dataTypes"
-			ng-model="editParamCtrl.dataType">
+			ng-model="editParamCtrl.dataType"
+			ng-change="editParamCtrl.update()">
     </select>
-    <button 
+  <!--   <button 
     	class="btn btn-default btn-sm"
     	ng-show=editParamCtrl.dataTypeChanged()
     	ng-click="editParamCtrl.update()">
     	ok
-    </button>
+    </button>  -->
     </td>
 </tr>
 
