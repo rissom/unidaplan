@@ -25,9 +25,6 @@ public class Authentificator {
 			response.setStatus(401);
 			user=-1;
 		}
-		
-			
-
 		return user;
 	}
 }
