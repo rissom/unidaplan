@@ -37,7 +37,6 @@ function parameterController($scope,$state,$stateParams,$translate,parameterServ
 	  
 	  var promise = parameterService.addParameter(newParameter);
 	  promise.then(function(rest){
-		  console.log(rest.data.id)
 		  $state.go('editParameter',{parameterID:rest.data.id,newParameter:true});
 //		  reload();
 	  	},function(){console.log("error");})
