@@ -26,8 +26,6 @@ import org.json.JSONObject;
 		JSONArray poparameter = null;
 		JSONArray sparameter = null;
 		JSONArray pparameter = null;
-		userID=userID+1;
-		userID=userID-1;
 		int type=0;
 		String status="ok";
 		PreparedStatement pStmt;
@@ -39,9 +37,9 @@ import org.json.JSONObject;
 	    PrintWriter out = response.getWriter();
 	 	DBconnection dBconn=new DBconnection();
 	    JSONObject answer = new JSONObject();
-	    int id=-1;	    
+	    int searchID=-1;	    
 	  	try {
-	   		 id=Integer.parseInt(request.getParameter("id")); 
+	   		 searchID=Integer.parseInt(request.getParameter("id")); 
 	    } catch (Exception e1) {
 	   		System.err.println("no search ID given!");
 			response.setStatus(404);
@@ -51,15 +49,17 @@ import org.json.JSONObject;
 		    // check if the user is allowed to see this data: (1. userrights, 2. grouprights, 3. admin
 		    pStmt= dBconn.conn.prepareStatement( 	
 			    "SELECT EXISTS( "
-			    + "SELECT 1 FROM rightssearchuser WHERE searchid=1 AND userid=? AND (permission='w' OR permission='r')) "
+			    + "SELECT 1 FROM rightssearchuser WHERE searchid=? AND userid=? AND (permission='w' OR permission='r')) "
 		    	+ "OR EXISTS ( "
 		    	+ "SELECT 1 FROM rightssearchgroups rg "
 		    	+ "JOIN groupmemberships gm ON (rg.groupid=gm.groupid AND gm.userid=?) "
-				+ "WHERE searchid=1 AND (permission='w' OR permission='r'))"
+				+ "WHERE searchid=? AND (permission='w' OR permission='r'))"
 				+ "OR EXISTS (SELECT 1 FROM groupmemberships WHERE groupid=1 AND userid=?)");
-			pStmt.setInt(1, userID);
+			pStmt.setInt(1, searchID);
 			pStmt.setInt(2, userID);
 			pStmt.setInt(3, userID);
+			pStmt.setInt(4, searchID);
+			pStmt.setInt(5, userID);
 			if (!dBconn.getSingleBooleanValue(pStmt)){
 				response.setStatus(401);
 				status="not allowed";
@@ -70,7 +70,7 @@ import org.json.JSONObject;
 			pStmt= dBconn.conn.prepareStatement( 	
 			    "SELECT id,name,owner,operation,type FROM searches "
 			   +"WHERE id=?");
-			pStmt.setInt(1, id);
+			pStmt.setInt(1, searchID);
 			search=dBconn.jsonObjectFromPreparedStmt(pStmt);
 			type=search.getInt("type");
 			stringkeys.add(Integer.toString(search.getInt("name")));
@@ -92,7 +92,7 @@ import org.json.JSONObject;
 							 +"JOIN paramdef ON (paramdef.id=ot_parameters.definition) "
 							 +"WHERE search=?";
 					pStmt= dBconn.conn.prepareStatement(query);
-					pStmt.setInt(1,id);
+					pStmt.setInt(1,searchID);
 					sparameter = dBconn.jsonArrayFromPreparedStmt(pStmt);
 					pStmt.close();
 					// get the sampletype
@@ -119,7 +119,7 @@ import org.json.JSONObject;
 							 +"JOIN paramdef ON (paramdef.id=p_parameters.definition) "
 							 +"WHERE search=?";
 					pStmt= dBconn.conn.prepareStatement(query);
-					pStmt.setInt(1,id);
+					pStmt.setInt(1,searchID);
 					pparameter = dBconn.jsonArrayFromPreparedStmt(pStmt);
 					pStmt.close();
 					
@@ -147,7 +147,7 @@ import org.json.JSONObject;
 							 +"JOIN paramdef ON (paramdef.id=po_parameters.definition) "
 							 +"WHERE search=?";
 					pStmt= dBconn.conn.prepareStatement(query);
-					pStmt.setInt(1,id);
+					pStmt.setInt(1,searchID);
 					poparameter = dBconn.jsonArrayFromPreparedStmt(pStmt);
 					pStmt.close();
 					break;
@@ -161,7 +161,7 @@ import org.json.JSONObject;
 							 +"JOIN paramdef ON (paramdef.id=p_parameters.definition) "
 							 +"WHERE search=?";
 					pStmt= dBconn.conn.prepareStatement(query);
-					pStmt.setInt(1,id);
+					pStmt.setInt(1,searchID);
 					pparameter = dBconn.jsonArrayFromPreparedStmt(pStmt);
 					pStmt.close();
 					
@@ -174,7 +174,7 @@ import org.json.JSONObject;
 							 +"JOIN paramdef ON (paramdef.id=ot_parameters.definition) "
 							 +"WHERE search=?";
 					pStmt= dBconn.conn.prepareStatement(query);
-					pStmt.setInt(1, id);
+					pStmt.setInt(1, searchID);
 					sparameter = dBconn.jsonArrayFromPreparedStmt(pStmt);
 					pStmt.close();
 				
@@ -224,7 +224,6 @@ import org.json.JSONObject;
 			System.err.println("Search: Strange Problem while getting the search");
 			status="Problem while getting the search";
 			e2.printStackTrace();
-    		response.setStatus(404);
     	} 
 	    
 	   try {
