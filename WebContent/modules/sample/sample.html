@@ -47,6 +47,7 @@
 			</a><br />
 		</div> 
 		<button class="btn btn-default"
+
 				ng-click="sampleCtrl.openDialog('ancestors')"
 				ng-show="sampleCtrl.editable">
 			{{'Add/Remove objects'|translate}}
@@ -62,10 +63,10 @@
 		<button class="btn btn-default" 
 				ng-click="sampleCtrl.openDialog('children')"
 				ng-show="sampleCtrl.editable">
-			{{'Add/Remove objects'|translate}}
+			{{'Add/Remove samples'|translate}}
 		</button>
 <!-- 	<button type="button" class="btn btn-default" >
-			{{'Divide object in several new samples' | translate}}
+			{{'Divide sample in several new samples' | translate}}
 		</button>
 		 -->	
 	</div>
@@ -146,7 +147,7 @@
 							ng-show="sampleCtrl.editable"
 							ng-click="sampleCtrl.deleteSample()">
 							<span class="glyphicon glyphicon-remove"></span>
-							{{'Delete Object'|translate}}
+							{{'Delete Sample'|translate}}
 					</button> 	
 				</td>
 				<td width="300">		

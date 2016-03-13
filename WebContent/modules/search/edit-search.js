@@ -24,9 +24,9 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 		this.processType = ptypes[0];
 	}
 				
-	this.searchTypes = [{id:1,name:$translate.instant('Object')},
-	{id:2,name:$translate.instant('Property')},
-	{id:3,name:$translate.instant('object specific processparameters')},
+	this.searchTypes = [{id:1,name:$translate.instant('sample')},
+	{id:2,name:$translate.instant('property')},
+	{id:3,name:$translate.instant('sample specific processparameters')},
 	{id:4,name:$translate.instant('sample/process')}];
 
 	

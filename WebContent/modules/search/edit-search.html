@@ -278,9 +278,9 @@
 		</tr>
 		
 		</thead>
-		<!-- object parameters -->
+		<!-- sample parameters -->
 		<tr  ng-repeat="parameter in editSearchCtrl.ooutput">
-			<td><span ng-show="$first">{{'Object parameter'|translate}}</span></td>
+			<td><span ng-show="$first">{{'Sample parameter'|translate}}</span></td>
 			<td class="parametertd">
 				<button type="button" class="btn btn-default btn-xs" 
 					ng-click="editSearchCtrl.up($index,'o')"   ng-hide="$first">&#9650;
@@ -326,7 +326,7 @@
 				</button>
 			</td>
 		</tr>
-		<!--  process / object parameters -->
+		<!--  process / sample parameters -->
 		<tr  ng-repeat="parameter in editSearchCtrl.pooutput">
 			<td class="parametertd">
 				<button type="button" class="btn btn-default btn-xs" 
@@ -354,7 +354,7 @@
 	<button class="btn btn-default"
 			ng-click="editSearchCtrl.addOutputParameter('o')"
 			ng-show="editSearchCtrl.search.type==1 || editSearchCtrl.search.type==4">
-		+ {{'Add object parameter'|translate}}
+		+ {{'Add sample parameter'|translate}}
 	</button>
 	
 	<button class="btn btn-default"
@@ -366,7 +366,7 @@
 	<button class="btn btn-default"
 			ng-click="editSearchCtrl.addOutputParameter('po')"
 			ng-show="editSearchCtrl.search.type==3">
-		+ {{'Add process / object parameter'|translate}}
+		+ {{'Add process / sample parameter'|translate}}
 	</button>
 	<p/>
 	<br/>
