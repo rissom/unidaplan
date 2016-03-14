@@ -43,35 +43,46 @@ import org.json.JSONObject;
 		    PreparedStatement pStmt = null;
 		    dBconn.startDB();
 		    
+		    pStmt = dBconn.conn.prepareStatement("SELECT getSearchRights(vuserid:=?,vsearchid:=?)");
+		    pStmt.setInt(1,userID);
+		    pStmt.setInt(2,searchID);
+		    String rights=dBconn.getSingleStringValue(pStmt);
+		    
+		    if (rights.equals("w")){
+		    	
+				String table="";
+				String column="";
+				
+				switch (type) {
+					case "o" : table="osearchoutput"; column="otparameter"; break;
+					case "p" : table="psearchoutput"; column="pparameter"; break;
+					case "po" : table="posearchoutput"; column="poparameter";
+				}
+				pStmt= dBconn.conn.prepareStatement( 			
+						 "DELETE FROM "+table+" WHERE search=?");
+				pStmt.setInt(1, searchID);
+				pStmt.executeUpdate();
+				pStmt.close();
+				int parameter;	
 			
-			String table="";
-			String column="";
-			
-			switch (type) {
-				case "o" : table="osearchoutput"; column="otparameter"; break;
-				case "p" : table="psearchoutput"; column="pparameter"; break;
-				case "po" : table="posearchoutput"; column="poparameter";
+				pStmt= dBconn.conn.prepareStatement( 		
+				"INSERT INTO "+table+" (search,position,"+column+",lastuser) VALUES (?,?,?,?)");
+				for (int i=0;i<output.length();i++){
+					parameter=output.getInt(i);
+					pStmt.setInt(1,searchID);
+					pStmt.setInt(2,i+1);
+					pStmt.setInt(3,parameter);
+					pStmt.setInt(4,userID);
+					pStmt.addBatch();
+				}
+				pStmt.executeBatch();
+				pStmt.close();
+			} else {
+				status="not authorized";
+				response.setStatus(401);
 			}
-			pStmt= dBconn.conn.prepareStatement( 			
-					 "DELETE FROM "+table+" WHERE search=?");
-			pStmt.setInt(1, searchID);
-			pStmt.executeUpdate();
-			pStmt.close();
-			int parameter;	
-		
-			pStmt= dBconn.conn.prepareStatement( 		
-			"INSERT INTO "+table+" (search,position,"+column+",lastuser) VALUES (?,?,?,?)");
-			for (int i=0;i<output.length();i++){
-				parameter=output.getInt(i);
-				pStmt.setInt(1,searchID);
-				pStmt.setInt(2,i+1);
-				pStmt.setInt(3,parameter);
-				pStmt.setInt(4,userID);
-				pStmt.addBatch();
-			}
-			pStmt.executeBatch();
-			pStmt.close();
 			dBconn.closeDB();
+
 		} catch (JSONException e) {
 			System.err.println("UpdateParameterSampleSearch: Input is not valid JSON");
 			response.setStatus(404);

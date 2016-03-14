@@ -10,6 +10,8 @@ function searchController(restfactory,$state,$stateParams,$translate,
 	
 	this.parameters = search.parameters;
 	
+	this.editable = search.editable;
+	
 	this.sparameters = search.sparameters;
 	
 	this.pparameters = search.pparameters;

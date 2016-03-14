@@ -33,8 +33,6 @@ import org.json.JSONObject;
 		JSONArray output = null;
 		JSONArray userRights=null;
 		JSONArray groupRights=null;
-		userID=userID+1;
-		userID=userID-1;
 		PreparedStatement pStmt;
 		ArrayList<String> stringkeys = new ArrayList<String>(); 
 		JSONObject search = null;
@@ -44,66 +42,52 @@ import org.json.JSONObject;
 	    PrintWriter out = response.getWriter();
 	 	DBconnection dBconn=new DBconnection();
 	    JSONObject answer = new JSONObject();
-	    int id=-1;
+	    int searchID=-1;
 		int type=0;
 		int defaultObjecttype=0;
 		int defaultProcesstype=0;
+	    String privilege="n";
 	    
+	    
+	    // get Parameters
 	  	try {
-	   		 id=Integer.parseInt(request.getParameter("id")); 
+	   		 searchID=Integer.parseInt(request.getParameter("id")); 
 	    } catch (Exception e1) {
 	   		System.err.println("no search ID given!");
 			response.setStatus(404);
 	   	}
-	    try {  
-		    dBconn.startDB();
-		    
-		    
-		    // check if the user is allowed to see this data: (1. userrights, 2. grouprights, 3. admin
-		    pStmt= dBconn.conn.prepareStatement( 	
-			    "SELECT EXISTS( "
-			    + "SELECT 1 FROM rightssearchuser WHERE searchid=1 AND userid=? AND permission='w') "
-		    	+ "OR EXISTS ( "
-		    	+ "SELECT 1 FROM rightssearchgroups rg "
-		    	+ "JOIN groupmemberships gm ON (rg.groupid=gm.groupid AND gm.userid=?) "
-				+ "WHERE searchid=1 AND permission='w')"
-				+ "OR EXISTS (SELECT 1 FROM groupmemberships WHERE groupid=1 AND userid=?)");
-			pStmt.setInt(1, userID);
-			pStmt.setInt(2, userID);
-			pStmt.setInt(3, userID);
-			if (!dBconn.getSingleBooleanValue(pStmt)){
-				response.setStatus(401);
-				status="not allowed";
-				throw new Exception("not allowed!");
-			}
-
-		    
-		    
-		    // get the rights
-		    
-		    // for users...
-		    pStmt= dBconn.conn.prepareStatement( 	
-				    "SELECT users.id, permission, username AS name, fullname FROM rightssearchuser "
-		    		+"JOIN users ON users.id=rightssearchuser.userid "
-		    		+"WHERE searchid=?");
-			pStmt.setInt(1, id);
-			userRights=dBconn.jsonArrayFromPreparedStmt(pStmt);
-			pStmt.close();
-			
-			   // for groups...
-		    pStmt= dBconn.conn.prepareStatement( 	
-				    "SELECT groupid as id, permission, name FROM rightssearchgroups "
-		    		+"JOIN groups ON groups.id=rightssearchgroups.groupid "
-		    		+"WHERE searchid=?");
-			pStmt.setInt(1, id);
-			groupRights=dBconn.jsonArrayFromPreparedStmt(pStmt);
-			pStmt.close();
-		    
+	  	
+	  	// initialize database
+	    try {
+			dBconn.startDB();
+		} catch (Exception e1) {
+			System.err.println("SearchData: Problems initializing database");
+    		e1.printStackTrace();
+    		response.setStatus(404);
+			status="Problems initializing database";
+		}
+	    
+	    
+	    // check if the user is allowed to see this data:
+	    try{
+		    pStmt = dBconn.conn.prepareStatement("SELECT getSearchRights(vuserid:=?,vsearchid:=?)");
+		    pStmt.setInt(1,userID);
+		    pStmt.setInt(2,searchID);
+		    privilege=dBconn.getSingleStringValue(pStmt);
+		} catch (Exception e) {
+    		System.err.println("SearchData: Problems with SQL query for priveleges for this search");
+    		e.printStackTrace();
+    		response.setStatus(404);
+			status="SQL Problem while getting search";	    	
+	    }
+	    if (privilege.equals("w")){
+	    
+	    try{
 	    	// get basic search data (id,name,owner,operation)
 			pStmt= dBconn.conn.prepareStatement( 	
 			    "SELECT id,name,owner,operation,type FROM searches "
 			   +"WHERE id=?");
-			pStmt.setInt(1, id);
+			pStmt.setInt(1, searchID);
 			search=dBconn.jsonObjectFromPreparedStmt(pStmt);
 			type=search.getInt("type");
 			stringkeys.add(Integer.toString(search.getInt("name")));
@@ -121,7 +105,7 @@ import org.json.JSONObject;
 							 +"JOIN paramdef ON (paramdef.id=ot_parameters.definition) "
 							 +"WHERE search=?";
 					  	pStmt= dBconn.conn.prepareStatement(query);
-						pStmt.setInt(1,id);
+						pStmt.setInt(1,searchID);
 						sparameter = dBconn.jsonArrayFromPreparedStmt(pStmt);
 						pStmt.close();
 						// get the sampletype
@@ -150,7 +134,7 @@ import org.json.JSONObject;
 							 + "WHERE search=?";
 						// get the processtype
 						pStmt= dBconn.conn.prepareStatement(query);
-						pStmt.setInt(1,id);
+						pStmt.setInt(1,searchID);
 						pparameter = dBconn.jsonArrayFromPreparedStmt(pStmt);
 						pStmt.close();
 					  
@@ -175,7 +159,7 @@ import org.json.JSONObject;
 								 +"JOIN paramdef ON (paramdef.id=po_parameters.definition) "
 								 +"WHERE search=?";
 						pStmt= dBconn.conn.prepareStatement(query);
-						pStmt.setInt(1,id);
+						pStmt.setInt(1,searchID);
 						pparameter = dBconn.jsonArrayFromPreparedStmt(pStmt);
 						pStmt.close();
 						break;
@@ -187,7 +171,7 @@ import org.json.JSONObject;
 								 +"JOIN paramdef ON (paramdef.id=p_parameters.definition) "
 								 +"WHERE search=?";
 						pStmt= dBconn.conn.prepareStatement(query);
-						pStmt.setInt(1,id);
+						pStmt.setInt(1,searchID);
 						pparameter = dBconn.jsonArrayFromPreparedStmt(pStmt);
 						pStmt.close();
 							
@@ -200,7 +184,7 @@ import org.json.JSONObject;
 								 +"JOIN paramdef ON (paramdef.id=ot_parameters.definition) "
 								 +"WHERE search=?";
 						pStmt= dBconn.conn.prepareStatement(query);
-						pStmt.setInt(1, id);
+						pStmt.setInt(1, searchID);
 						sparameter = dBconn.jsonArrayFromPreparedStmt(pStmt);
 						pStmt.close();
 						
@@ -236,126 +220,128 @@ import org.json.JSONObject;
 							}
 						}
 						break;
-			}
-			
-			// get the outputparameters according to searchtype
+				}
 				
-			pStmt= dBconn.conn.prepareStatement(
-					"SELECT ot_parameters.id, \n"
-					+"position, \n"
-					+"COALESCE (ot_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname, \n"
-					+"paramdef.datatype, \n"
-					+"osearchoutput.id AS outputid, \n"
-					+"'o' as type \n"
-					+"FROM osearchoutput \n"
-					+"JOIN ot_parameters ON (ot_parameters.id=otparameter) \n"
-					+"JOIN paramdef ON (paramdef.id=ot_parameters.definition) \n" 
-					+"WHERE search=? \n"
-					+"\n"
-					+"UNION ALL \n"
-					+" \n"
-					+"SELECT p_parameters.id, \n" 
-					+"position, \n"
-					+"COALESCE (p_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname, \n" 
-					+"paramdef.datatype, \n"
-					+"psearchoutput.id AS outputid, \n"
-					+"'p' as type \n"
-					+"FROM psearchoutput \n"
-					+"JOIN p_parameters ON (p_parameters.id=pparameter) \n"
-					+"JOIN paramdef ON (paramdef.id=p_parameters.definition) \n" 
-					+"WHERE search=? \n"
-					+"\n"
-					+"UNION ALL \n"
-					+"\n"
-					+"SELECT po_parameters.id, \n" 
-					+"position, \n"
-					+"po_parameters.stringkeyname, \n"
-					+"paramdef.datatype, \n"
-					+"posearchoutput.id AS outputid, \n" 
-					+"'po' as type \n"
-					+"FROM posearchoutput \n"
-					+"JOIN po_parameters ON (po_parameters.id=poparameter) \n"
-					+"JOIN paramdef ON (paramdef.id=po_parameters.definition) \n"
-					+"WHERE search=? \n");
-			pStmt.setInt(1,id);
-			pStmt.setInt(2,id);
-			pStmt.setInt(3,id);
-			output = dBconn.jsonArrayFromPreparedStmt(pStmt);
-			pStmt.close();
-			
-			for (int i=0; i<output.length();i++){
-				stringkeys.add(Integer.toString(output.getJSONObject(i).getInt("stringkeyname")));	
-			}
-			
-			
-			if ((type==1 || type==4) && defaultObjecttype==0){  //get the first objecttype
-				pStmt= dBconn.conn.prepareStatement("SELECT id FROM objecttypes " 
-						+"LIMIT 1");
-				defaultObjecttype=dBconn.getSingleIntValue(pStmt);
-			}
-			
-			if ((type==2 || type==4) && defaultProcesstype==0){  //get the first processtype
-				pStmt= dBconn.conn.prepareStatement("SELECT id FROM processtypes " 
-						+"LIMIT 1");
-				defaultProcesstype=dBconn.getSingleIntValue(pStmt);
-			}
-			
-			
-    	} catch (SQLException e) {
-    		System.err.println("SearchData: Problems with SQL query for search");
-    		e.printStackTrace();
-    		response.setStatus(404);
-			status="SQL Problem while getting experiment";
-    	} catch (JSONException e) {
-			System.err.println("SearchData: JSON Problem while getting experiment");
-    		response.setStatus(404);
-			e.printStackTrace();
-			status="JSON Problem while getting experiment";
-    	} catch (Exception e2) {
-			System.err.println("SearchData: Strange Problem while getting experiment");
-			status="Problem while getting experiment";
-    		response.setStatus(404);
-    	} 
-	    
-	   try {
-		   JSONObject rights= new JSONObject(); 
-		   if (userRights!=null){
-			   rights.put("users",userRights);
+				// get the outputparameters according to searchtype
+					
+				pStmt= dBconn.conn.prepareStatement(
+						"SELECT ot_parameters.id, \n"
+						+"position, \n"
+						+"COALESCE (ot_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname, \n"
+						+"paramdef.datatype, \n"
+						+"osearchoutput.id AS outputid, \n"
+						+"'o' as type \n"
+						+"FROM osearchoutput \n"
+						+"JOIN ot_parameters ON (ot_parameters.id=otparameter) \n"
+						+"JOIN paramdef ON (paramdef.id=ot_parameters.definition) \n" 
+						+"WHERE search=? \n"
+						+"\n"
+						+"UNION ALL \n"
+						+" \n"
+						+"SELECT p_parameters.id, \n" 
+						+"position, \n"
+						+"COALESCE (p_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname, \n" 
+						+"paramdef.datatype, \n"
+						+"psearchoutput.id AS outputid, \n"
+						+"'p' as type \n"
+						+"FROM psearchoutput \n"
+						+"JOIN p_parameters ON (p_parameters.id=pparameter) \n"
+						+"JOIN paramdef ON (paramdef.id=p_parameters.definition) \n" 
+						+"WHERE search=? \n"
+						+"\n"
+						+"UNION ALL \n"
+						+"\n"
+						+"SELECT po_parameters.id, \n" 
+						+"position, \n"
+						+"po_parameters.stringkeyname, \n"
+						+"paramdef.datatype, \n"
+						+"posearchoutput.id AS outputid, \n" 
+						+"'po' as type \n"
+						+"FROM posearchoutput \n"
+						+"JOIN po_parameters ON (po_parameters.id=poparameter) \n"
+						+"JOIN paramdef ON (paramdef.id=po_parameters.definition) \n"
+						+"WHERE search=? \n");
+				pStmt.setInt(1,searchID);
+				pStmt.setInt(2,searchID);
+				pStmt.setInt(3,searchID);
+				output = dBconn.jsonArrayFromPreparedStmt(pStmt);
+				pStmt.close();
+				
+				for (int i=0; i<output.length();i++){
+					stringkeys.add(Integer.toString(output.getJSONObject(i).getInt("stringkeyname")));	
+				}
+				
+				
+				if ((type==1 || type==4) && defaultObjecttype==0){  //get the first objecttype
+					pStmt= dBconn.conn.prepareStatement("SELECT id FROM objecttypes " 
+							+"LIMIT 1");
+					defaultObjecttype=dBconn.getSingleIntValue(pStmt);
+				}
+				
+				if ((type==2 || type==4) && defaultProcesstype==0){  //get the first processtype
+					pStmt= dBconn.conn.prepareStatement("SELECT id FROM processtypes " 
+							+"LIMIT 1");
+					defaultProcesstype=dBconn.getSingleIntValue(pStmt);
+				}
+				
+				
+	    	} catch (SQLException e) {
+	    		System.err.println("SearchData: Problems with SQL query for search");
+	    		e.printStackTrace();
+	    		response.setStatus(404);
+				status="SQL Problem while getting experiment";
+	    	} catch (JSONException e) {
+				System.err.println("SearchData: JSON Problem while getting experiment");
+	    		response.setStatus(404);
+				e.printStackTrace();
+				status="JSON Problem while getting experiment";
+	    	} catch (Exception e2) {
+				System.err.println("SearchData: Strange Problem while getting experiment");
+				status="Problem while getting experiment";
+	    		response.setStatus(404);
+	    	} 
+		    
+		   try {
+			   JSONObject rights= new JSONObject(); 
+			   if (userRights!=null){
+				   rights.put("users",userRights);
+			   }
+			   if (groupRights!=null){
+				   rights.put("groups", groupRights);
+			   }
+			   if (!(rights.isNull("groups")&&rights.isNull("users"))){
+				   search.put("rights", rights);
+			   }
+			   if (pparameter!=null && pparameter.length()>0){
+				   search.put("pparameter",pparameter);
+			   }
+			   if (sparameter!=null && sparameter.length()>0){
+				   search.put("sparameter",sparameter);
+			   }
+			   if (poparameter!=null && poparameter.length()>0){
+				   search.put("poparameter",poparameter);
+			   }
+			   if (output!=null){
+				   search.put("output",output);
+			   }
+			   if ((type==1 || type==4) && defaultObjecttype>0){
+				   search.put("defaultobject", defaultObjecttype);
+			   }
+			   if ((type==2 || type==4) && defaultProcesstype>0){
+				   search.put("defaultprocess", defaultProcesstype);
+			   }
+			   answer.put("status",status);
+			   answer.put("strings", dBconn.getStrings(stringkeys));
+			   answer.put("search", search);
+		   } catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 		   }
-		   if (groupRights!=null){
-			   rights.put("groups", groupRights);
-		   }
-		   if (!(rights.isNull("groups")&&rights.isNull("users"))){
-			   search.put("rights", rights);
-		   }
-		   if (pparameter!=null && pparameter.length()>0){
-			   search.put("pparameter",pparameter);
-		   }
-		   if (sparameter!=null && sparameter.length()>0){
-			   search.put("sparameter",sparameter);
-		   }
-		   if (poparameter!=null && poparameter.length()>0){
-			   search.put("poparameter",poparameter);
-		   }
-		   if (output!=null){
-			   search.put("output",output);
-		   }
-		   if ((type==1 || type==4) && defaultObjecttype>0){
-			   search.put("defaultobject", defaultObjecttype);
-		   }
-		   if ((type==2 || type==4) && defaultProcesstype>0){
-			   search.put("defaultprocess", defaultProcesstype);
-		   }
-		   answer.put("search", search);
-		   answer.put("status",status);
-		   answer.put("strings", dBconn.getStrings(stringkeys));
-		   out.println(answer.toString());
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	    }else{
+			response.setStatus(401);
+			status="not allowed";
 		}
-    
-	    		
 	    
+		out.println(answer.toString());
 		dBconn.closeDB();
 	}}	

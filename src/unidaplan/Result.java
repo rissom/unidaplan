@@ -28,8 +28,6 @@ import org.json.JSONObject;
 		JSONArray parameters = null;
 		JSONArray sResults = null;
 		JSONArray samplenames = null;
-		userID=userID+1;
-		userID=userID-1;
 		int type=1;
 		String status="ok";
 		PreparedStatement pStmt;
