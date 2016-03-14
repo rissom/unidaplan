@@ -176,10 +176,19 @@ public class Process extends HttpServlet {
 	    // get the process Parameters:
 	    try{
 	    	pstmt = dBconn.conn.prepareStatement(
-	    	"SELECT p_parameters.id, parametergroup, compulsory, p_parameters.pos, "
-			+" p_parameters.stringkeyname,  pid, value, p_parametergrps.id AS pgrpid, " 
-			+" p_parametergrps.stringkey as parametergrp_key, st.description, paramdef.datatype, "
-			+" paramdef.stringkeyunit as unit "
+	    	"SELECT "
+	    	+ "p_parameters.id, "
+	    	+ "parametergroup, "
+	    	+ "compulsory, "
+	    	+ "p_parameters.pos, "
+			+" p_parameters.stringkeyname,  "
+			+ "pid, "
+			+ "value, "
+			+ "p_parametergrps.id AS pgrpid, " 
+			+" p_parametergrps.stringkey as parametergrp_key, "
+			+ "st.description, paramdef.datatype, "
+			+" paramdef.stringkeyunit as unit, "
+			+ "p_parameters.definition "
 			+"FROM p_parameters "
 			+"JOIN p_parametergrps ON (p_parameters.Parametergroup=p_parametergrps.ID) " 
 			+"JOIN paramdef ON (paramdef.id=p_parameters.definition)"
@@ -243,6 +252,15 @@ public class Process extends HttpServlet {
 				      		default: tParam.put("datatype","undefined"); 
 				      				break;	    
 			      		}
+				      	if (datatype==6) {	// chooser 
+				      			pstmt= dBconn.conn.prepareStatement(
+				      					"SELECT string FROM possible_values "
+				      					+"WHERE parameterid=? ORDER BY position");
+				      			pstmt.setInt(1, tParam.getInt("definition"));
+				      			JSONArray pvalues=dBconn.ArrayFromPreparedStmt(pstmt);
+				      			tParam.put("possiblevalues", pvalues);
+				      			pstmt.close();
+		      				}
 					    prmgrpprms.put(tParam);
 			      		}
 			      	}

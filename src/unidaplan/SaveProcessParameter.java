@@ -179,6 +179,18 @@ import org.json.JSONObject;
 				   		pStmt.close();
 	        		}
 	        		break;
+	        		
+	        case 6:	if (jsonIn.has("value") && !jsonIn.isNull("value")){ //String
+		    			pStmt= dBconn.conn.prepareStatement(
+		    					"INSERT INTO p_string_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
+		    			pStmt.setInt(1, processID);
+		    			pStmt.setInt(2, parameterID); 
+				    	pStmt.setString(3, jsonIn.getString("value"));
+				    	pStmt.setInt(4, userID);
+				    	id=dBconn.getSingleIntValue(pStmt);
+				   		pStmt.close();
+		    		}
+		    		break;
 				   
 	        case 7:	if (jsonIn.has("value") && !jsonIn.isNull("date")){ // Date 
 	        			pStmt= dBconn.conn.prepareStatement( 				
