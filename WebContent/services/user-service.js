@@ -131,6 +131,10 @@ var userService = function(restfactory,$q){
 	};
 	
 	
+	this.setLanguage = function(user, lang){
+		return restfactory.POST("update-user-data",{userid:user,preferredlanguage:lang});
+	}
+	
 	this.updateGroupName = function (group){
 		return restfactory.PUT("update-group-name",{id:group.id, name:group.newName})
 	}

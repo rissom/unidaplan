@@ -948,6 +948,18 @@
     <servlet-name>UpdateSearchType</servlet-name>
     <url-pattern>/update-search-type</url-pattern>
   </servlet-mapping>
+  
+
+ <servlet>
+    <description>UpdateUserData</description>
+    <display-name>UpdateUserData</display-name>
+    <servlet-name>UpdateUserData</servlet-name>
+    <servlet-class>unidaplan.UpdateUserData</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateUserData</servlet-name>
+    <url-pattern>/update-user-data</url-pattern>
+  </servlet-mapping>
 
    <servlet>
     <description>AddExperimentParameter</description>

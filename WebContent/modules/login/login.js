@@ -33,13 +33,14 @@ var loginController=function($state,restfactory,$scope,$rootScope,$translate){
 			    	$rootScope.admin=false;
 			    }
 			    window.localStorage.setItem("userid",data.data.id);
-				var lang = window.localStorage.getItem("language");
-		        if(lang !== null){
-		        	  if (lang!=$translate.use()) {
-		      			$translate.use(lang);
+			    
+				window.localStorage.setItem("language",data.data.preferredlanguage);
+
+		        if(data.data.preferredlanguage && data.data.preferredlanguage !== null){
+		        	  if (data.data.preferredlanguage!=$translate.use()) {
+		      			$translate.use(data.data.preferredlanguage);
 		        	  }
 		        } 
-				
 				
 				// did you want to go somewhere special? If not: sample chooser.
 				if (restfactory.failedState) {

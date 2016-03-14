@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-function menuf(searchService,restfactory,$translate,$rootScope,$state) {
+function menuf(searchService,restfactory,$translate,$rootScope,$state,userService) {
 
 	var thisController=this;
 		
@@ -35,9 +35,10 @@ function menuf(searchService,restfactory,$translate,$rootScope,$state) {
 	this.setLanguage = function(lang){  // change language and send a broadcast
 		if (this.old_language!=$translate.use()) {
 			$translate.use(lang);
-			if (thisController.checkLocalStorageSupport()) {
-				window.localStorage.setItem("language",lang);
-			};
+			window.localStorage.setItem("language",lang);
+			if ($rootScope.userid){
+				userService.setLanguage($rootScope.userid,lang);
+			}
 		}
 	};
 	
@@ -69,6 +70,6 @@ function menuf(searchService,restfactory,$translate,$rootScope,$state) {
 	
 }
 
-angular.module('unidaplan').controller('menu',['searchService','restfactory','$translate','$rootScope','$state',menuf]);
+angular.module('unidaplan').controller('menu',['searchService','restfactory','$translate','$rootScope','$state','userService',menuf]);
   
 })();

@@ -31,6 +31,7 @@ public class Login extends HttpServlet {
     PrintWriter out = response.getWriter();
 	HttpSession session = request.getSession();
 	JSONObject hashjs = null;
+	String preferredLanguage="";
 	String pw="";
 	String user="";
 	  try  {
@@ -47,7 +48,8 @@ public class Login extends HttpServlet {
     try {  
 		pstmt= dBconn.conn.prepareStatement( 	
 		"SELECT pw_hash, users.id, fullname, "
-		+ "groupmemberships.groupid AS admin "
+		+ "groupmemberships.groupid AS admin, "
+		+ "preferredlanguage "
 		+ "FROM users " 
 		+ "LEFT JOIN groupmemberships ON (groupid=1 AND userid=users.id) "
 		+ "WHERE username=?");
@@ -67,6 +69,7 @@ public class Login extends HttpServlet {
 			answer.put("status","Password correct");
 			answer.put("fullname",hashjs.getString("fullname"));
 			answer.put("id",id);
+			answer.put("preferredlanguage",hashjs.getString("preferredlanguage"));
 			if (hashjs.has("admin")){
 				answer.put("admin",true);
 			}
