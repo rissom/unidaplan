@@ -116,10 +116,6 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
         	   		function(searchService,$stateParams){
         	   			return searchService.getSearchData($stateParams.id);   			
         	   		},
-//        	   	iSampleParamsAndGrps: 
-//        	   		function(avSampleTypeService){
-//        	   			return avSampleTypeService.getAllSTParameters(0);
-//        	   		},
         	   	newSearch:
         	   		function($stateParams){
         	   			return $stateParams.newSearch==="true";
@@ -367,7 +363,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	        	searchParams: "searchParams"
 	        },
 	        resolve:{
-			    types:  
+			    types:
 			    	function(avSampleTypeService){
 	   	    			return avSampleTypeService.getSampleTypes();
 	   	    		},
@@ -377,7 +373,12 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router']
 	        	   	    },
         	   	result:
         	   		function(searchService,$stateParams){
-        	   			return searchService.startSearch($stateParams.searchParams);
+        	   			console.log($stateParams)
+        	   			if ($stateParams.searchParams){
+        	   				return searchService.startSearch($stateParams.searchParams);
+        	   			} else {
+        	   				return searchService.goToSearches();
+        	   			}
         	   		}
 	        }
         })

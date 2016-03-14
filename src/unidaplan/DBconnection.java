@@ -26,7 +26,8 @@ public class DBconnection  {
 	static String dbURL2 = "jdbc:postgresql://localhost/thorse";
 	static String user = "thorse";
 	static String pass = "jame765!";
-	
+
+//	static Boolean localDB = false;
 //	static String dbURL2 = "jdbc:postgresql://isadb.czghuuewemph.eu-west-1.rds.amazonaws.com/isaheat";
 //	static String user = "thorse";
 //	static String pass = "Amaz765!";
@@ -86,6 +87,7 @@ public class DBconnection  {
           stmt.close();
   	  } catch (SQLException e) {   // Exception for SQL database
   		  System.err.println("DBconnection: Problem with the database! Error! ");
+  		  e.printStackTrace();
   	  } catch (Exception e) {
   		  System.err.println("DBconnection: Some problem during first database query. Error! ");
 	  }

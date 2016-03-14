@@ -8,12 +8,13 @@ function editSearchController(restfactory,$state,$stateParams,$translate,$modal,
 	
 	this.editFieldNL1 = newSearch;
 	
-	this.sampleTypes = sampleTypes;
+	this.sampleTypes = sampleTypes;	
 	
-	
-	this.sampleType=sampleTypes.filter(function(sType){return sType.id==searchData.defaultobject})[0]
+	this.sampleType = sampleTypes.filter(function(sType){return sType.id==searchData.defaultobject})[0]
 	
 	this.processTypes = ptypes;
+	
+	this.processType = ptypes.filter(function(sType){return sType.id==searchData.defaultprocess})[0]
 				
 	this.searchTypes = [{id:1,name:$translate.instant('Sample')},
 	{id:2,name:$translate.instant('Process')},
@@ -215,7 +216,16 @@ function editSearchController(restfactory,$state,$stateParams,$translate,$modal,
 
 
 	this.changeSampleType = function () {
-		var promise=searchService.getSParameters(this.sampleType.id);
+		var promise=searchService.getSParameters(thisController.sampleType.id);
+		promise.then(function(rest){
+			thisController.avParameters=rest;
+		});
+	};
+	
+	
+	
+	this.changeProcessType = function () {
+		var promise=searchService.getPParameters(thisController.processType.id);
 		promise.then(function(rest){
 			thisController.avParameters=rest;
 		});

@@ -12,7 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-	public class UpdateParamSampleSearch extends HttpServlet {
+	public class UpdateSearchParam extends HttpServlet {
 		private static final long serialVersionUID = 1L;
 
 	@Override
@@ -32,11 +32,13 @@ import org.json.JSONObject;
     
 	    try {
 			 jsonIn = new JSONObject(in);
+			 System.out.println("jsonIn:"+jsonIn.toString());
 	         searchID=jsonIn.getInt("searchid");
-			 otparameter=jsonIn.getJSONArray("otparameter");
+			 otparameter=jsonIn.getJSONArray("pparameter");
 		} catch (JSONException e) {
-			System.err.println("UpdateParamSampleSearch: Error parsing ID-Field or comment");
+			System.err.println("UpdateSearchParam: Error parsing ID-Field or comment");
 			response.setStatus(404);
+			e.printStackTrace();
 		}
 	    
 	 	DBconnection dBconn=new DBconnection(); // initialize database
@@ -53,23 +55,24 @@ import org.json.JSONObject;
 			pStmt.close();
 			
 			// get the searchparameters according to searchtype
-			String table="";
+			String query="";
 			
 			switch (type){
 				case 1:   //Object scearch
-						  table ="searchobject";
+						  query = "INSERT INTO searchobject (search,otparameter,lastchange,lastuser) "
+								   +"VALUES (?,?,NOW(),?)";
 						  break;
 				case 2:   // Process search
-						  table ="searchprocess";
+						  query = "INSERT INTO searchprocess (search,pparameter,lastchange,lastuser) "
+							   +"VALUES (?,?,NOW(),?)";
 						  break;
 				default : // samplespecific process parameter
-						  table ="searchpo";
+					query = "INSERT INTO searchpo (search,poparameter,lastchange,lastuser) "
+							   +"VALUES (?,?,NOW(),?)";
 						  break;
 			}		
 			
-			pStmt= dBconn.conn.prepareStatement( 	
-				    "INSERT INTO "+table+" (search,otparameter,lastchange,lastuser) "
-				    +"VALUES (?,?,NOW(),?)");
+			pStmt= dBconn.conn.prepareStatement(query);
 			
 			for (int i=0; i<otparameter.length();i++){
 				pStmt.setInt(1, searchID);
@@ -81,10 +84,10 @@ import org.json.JSONObject;
 			pStmt.close();
 			
 		} catch (SQLException e) {
-			System.err.println("UpdateParamSampleSearch: Problems with SQL query");
+			System.err.println("UpdateSearchParam: Problems with SQL query");
 			status="SQL error";
 		} catch (Exception e) {
-			System.err.println("UpdateParamSampleSearch: some error occured");
+			System.err.println("UpdateSearchParam: some error occured");
 			status="misc error";
 		}
 		

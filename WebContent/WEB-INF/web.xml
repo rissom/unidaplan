@@ -954,27 +954,16 @@
     <servlet-name>UpdateSearchOwner</servlet-name>
     <url-pattern>/update-search-owner</url-pattern>
   </servlet-mapping>
-  
+   
   <servlet>
-    <description>UpdateParamProcessSearch</description>
-    <display-name>UpdateParamProcessSearch</display-name>
-    <servlet-name>UpdateParamProcessSearch</servlet-name>
-    <servlet-class>unidaplan.UpdateParamProcessSearch</servlet-class>
+    <description>UpdateSearchParam</description>
+    <display-name>UpdateSearchParam</display-name>
+    <servlet-name>UpdateSearchParam</servlet-name>
+    <servlet-class>unidaplan.UpdateSearchParam</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>UpdateParamProcessSearch</servlet-name>
-    <url-pattern>/update-param-process-search</url-pattern>
-  </servlet-mapping>
-  
-  <servlet>
-    <description>UpdateParamSampleSearch</description>
-    <display-name>UpdateParamSampleSearch</display-name>
-    <servlet-name>UpdateParamSampleSearch</servlet-name>
-    <servlet-class>unidaplan.UpdateParamSampleSearch</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>UpdateParamSampleSearch</servlet-name>
-    <url-pattern>/update-param-sample-search</url-pattern>
+    <servlet-name>UpdateSearchParam</servlet-name>
+    <url-pattern>/update-search-param</url-pattern>
   </servlet-mapping>
   
   <servlet>

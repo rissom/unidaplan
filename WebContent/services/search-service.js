@@ -172,7 +172,11 @@ var searchService = function (restfactory,$q,$translate,key2string,languages) {
 	
 	this.getPParameters = function(processType){
 		var defered=$q.defer();
-		var promise = restfactory.GET('/all-process-type-params'+"?processtypeid="+processType);
+		var url="/all-process-type-params";
+		if (processType){
+			url+="?processtypeid="+processType;
+		}
+		var promise = restfactory.GET(url);
 		promise.then(function(rest) {
 		  	thisController.search.avParameters = rest.data.parameters;
 		  	thisController.search.avParamGrps = rest.data.parametergrps;
@@ -187,6 +191,9 @@ var searchService = function (restfactory,$q,$translate,key2string,languages) {
 		  			return key2string.key2string(paramGrp.stringkey,strings);
 		  		}
 		  	});
+		  	if (rest.data.processtype){
+		  		thisController.search.processtype=rest.data.processtype;
+		  	}
 			defered.resolve(thisController.search.parameters);
 		});
        return defered.promise;
@@ -226,16 +233,30 @@ var searchService = function (restfactory,$q,$translate,key2string,languages) {
 	}
 	
 	
-	this.updateParameterSampleSearch = function(searchid,otparameter){
-		return restfactory.POST("update-param-sample-search",{searchid:searchid,otparameter:otparameter});
+	
+	this.updateParameterProcessSearch = function(searchid,pparameter){
+		return restfactory.POST("update-search-param",{searchid:searchid,pparameter:pparameter,type:2});
 	}
 	
+	
+	
+	this.goToSearches = function(){
+		console.log("warum bin ich hier?")
+		$state.go("openSearch");
+	}
+	
+	
+	
+	this.updateParameterSampleSearch = function(searchid,otparameter){
+		return restfactory.POST("update-search-param",{searchid:searchid,otparameter:otparameter,type:1});
+	}
+	
+
 	
 	this.updateSearchName = function(searchID,name,language){
 		var promise = restfactory.PUT("update-search-name",{searchID:searchID,newname:name,language:language});
 		return promise;
 	};
-		
 };
 
 

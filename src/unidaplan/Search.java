@@ -26,7 +26,9 @@ import org.json.JSONObject;
 		JSONArray output = null;
 		userID=userID+1;
 		userID=userID-1;
+		int type=0;
 		int defaultObjecttype=0;
+		int defaultProcesstype=0;
 		String status="ok";
 		PreparedStatement pStmt;
 		ArrayList<String> stringkeys = new ArrayList<String>(); 
@@ -54,13 +56,14 @@ import org.json.JSONObject;
 			   +"WHERE id=?");
 			pStmt.setInt(1, id);
 			search=dBconn.jsonObjectFromPreparedStmt(pStmt);
+			type=search.getInt("type");
 			stringkeys.add(Integer.toString(search.getInt("name")));
 			pStmt.close();
 			
 			// get the searchparameters according to searchtype
 			String query="";
-			switch (search.getInt("type")){
-			case 1:   // sample scearch
+			switch (type){
+			case 1:   // sample search
 				query = "SELECT searchobject.id, otparameter AS pid, comparison, value, "
 				  		 +"ot_parameters.stringkeyname,ot_parameters.objecttypesid AS typeid,paramdef.stringkeyunit,paramdef.datatype "
 						 +"FROM searchobject "
@@ -90,7 +93,12 @@ import org.json.JSONObject;
 			parameter = dBconn.jsonArrayFromPreparedStmt(pStmt);
 			pStmt.close();
 			if (parameter.length()>0){
-				defaultObjecttype=parameter.getJSONObject(0).getInt("typeid");
+				if (type==1){
+					defaultObjecttype=parameter.getJSONObject(0).getInt("typeid");
+				}
+				if (type==2){
+					defaultProcesstype=parameter.getJSONObject(0).getInt("typeid");
+				}
 			}
 			for (int i=0; i<parameter.length();i++){
 				stringkeys.add(Integer.toString(parameter.getJSONObject(i).getInt("stringkeyname")));
@@ -152,7 +160,12 @@ import org.json.JSONObject;
 	   try {
 		   search.put("parameter",parameter);
 		   search.put("output",output);
-		   search.put("defaultobject", defaultObjecttype);
+		   if (type==1 && defaultObjecttype>0){
+			   search.put("defaultobject", defaultObjecttype);
+		   }
+		   if (type==2 && defaultProcesstype>0){
+			   search.put("defaultprocess", defaultProcesstype);
+		   }
 		   answer.put("search", search);
 		   answer.put("strings", dBconn.getStrings(stringkeys));
 		   answer.put("status", status);

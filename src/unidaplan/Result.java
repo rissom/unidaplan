@@ -34,7 +34,6 @@ import org.json.JSONObject;
 		PreparedStatement pStmt;
 		ArrayList<String> stringkeys = new ArrayList<String>(); 
 		JSONObject search = null;
-	    response.setContentType("application/json");
 	    request.setCharacterEncoding("utf-8");
 	    response.setCharacterEncoding("utf-8");
 	    PrintWriter out = response.getWriter();
@@ -43,6 +42,8 @@ import org.json.JSONObject;
 	    JSONObject result = new JSONObject();
 	    int id=-1;
 	    String operationString="AND";
+	    String output="json";
+
 	 
 	  	
 	  	request.setCharacterEncoding("utf-8");
@@ -61,6 +62,9 @@ import org.json.JSONObject;
 	  	if (status=="ok"){ 
 	    try {  
 	    	id =jsonIn.getInt("searchid");
+	    	if (jsonIn.has("output")){
+	    		output = jsonIn.getString("output");
+	    	}
 	    	inParams = jsonIn.getJSONArray("parameters");
 	    } catch (JSONException e) {
 			System.err.println("Search: searchid is missing");
@@ -145,7 +149,7 @@ import org.json.JSONObject;
 			}
 			String where="";
 			int datatype;
-			String[] comparators= {"<",">","=","NOT ","LIKE "};
+			String[] comparators= {"<",">","=","= ","LIKE "};
 
 			for (int i=0; i<parameters.length();i++){
 				JSONObject parameter=parameters.getJSONObject(i);
@@ -168,12 +172,14 @@ import org.json.JSONObject;
 	            set.add(11);
 				if (set.contains(datatype)){colon="'";}
 				String value=parameter.getString("value");
+				String notPrefix="";
+				if (parameter.getInt("comparison")==4){ notPrefix="NOT ";}
 				if (parameter.getInt("comparison")==5){value="%"+value+"%";}
 				parameterTable= ptables[datatype-1];
 				query=query+" JOIN "+parameterTable+" p"+i+" ON p"+i+"."+idString+"="+tString+".id AND p"
 						+i+"."+idString2+"="+parameter.getInt("pid");
 				if (i>0) {where+=" "+operationString;}
-				where=where+" p"+i+".value "+comparators[parameter.getInt("comparison")-1]+
+				where=where+notPrefix+" p"+i+".value "+comparators[parameter.getInt("comparison")-1]+
 						colon+value+colon;
 			}
 			query += " WHERE "+ where +" GROUP BY "+tString+".id";
@@ -331,19 +337,31 @@ import org.json.JSONObject;
 
 			}
 			
-			// compose answer
-			result.put("headings",headings);
-			result.put("status",status);
-			result.put("data",data);
-			result.put("strings",dBconn.getStrings(stringkeys));
-			result.put("objectnames",samplenames);
-			result.put("searchid", id);
-			result.put("type",type);
-			result.put("inparams", inParams);
+			if (output.equalsIgnoreCase("json")){
+			    response.setContentType("application/json");
+				// compose answer JSON
+				result.put("headings",headings);
+				result.put("status",status);
+				result.put("data",data);
+				result.put("strings",dBconn.getStrings(stringkeys));
+				result.put("objectnames",samplenames);
+				result.put("searchid", id);
+				result.put("type",type);
+				result.put("inparams", inParams);
+			    out.println(result.toString());
+			} 
 			
-		    out.println(result.toString());
+			if (output.equalsIgnoreCase("csv")){
+			    response.setContentType("text/plain");
+				// compose answer
+				for (int i=0; i<headings.length();i++){
+					out.print(headings.getString(i)+";");
+				}
+			    out.println(result.toString());
+			}
+			
 			dBconn.closeDB();
- 		    
+
     	} catch (SQLException e) {
     		System.err.println("Search: Problems with SQL query for search");
     		response.setStatus(404);

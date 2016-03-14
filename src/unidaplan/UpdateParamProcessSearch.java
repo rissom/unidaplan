@@ -31,11 +31,13 @@ import org.json.JSONObject;
 	    
     
 	    try {
+			 System.out.println("in:"+in);
 			 jsonIn = new JSONObject(in);
+			 System.out.println("jsonIn:"+jsonIn.toString());
 	         searchID=jsonIn.getInt("searchid");
-			 otparameter=jsonIn.getJSONArray("otparameter");
+			 otparameter=jsonIn.getJSONArray("pparameter");
 		} catch (JSONException e) {
-			System.err.println("UpdateParamSampleSearch: Error parsing ID-Field or comment");
+			System.err.println("UpdateParamProcessSearch: Error parsing ID-Field or comment");
 			response.setStatus(404);
 		}
 	    
@@ -81,10 +83,10 @@ import org.json.JSONObject;
 			pStmt.close();
 			
 		} catch (SQLException e) {
-			System.err.println("UpdateParamSampleSearch: Problems with SQL query");
+			System.err.println("UpdateParamProcessSearch: Problems with SQL query");
 			status="SQL error";
 		} catch (Exception e) {
-			System.err.println("UpdateParamSampleSearch: some error occured");
+			System.err.println("UpdateParamProcessSearch: some error occured");
 			status="misc error";
 		}
 		

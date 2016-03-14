@@ -28,18 +28,18 @@ public class AllProcessTypeParams extends HttpServlet {
 		  
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
+        JSONObject answer=new JSONObject();
 		userID=userID+1;
 		userID=userID-1;
 		request.setCharacterEncoding("utf-8");
 	    response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
 	    PrintWriter out = response.getWriter(); 
-	    int sampleTypeID=-1;
+	    int processTypeID=0;
 	  	try {
-	  		sampleTypeID=Integer.parseInt(request.getParameter("processtypeid")); 
+	  		processTypeID=Integer.parseInt(request.getParameter("processtypeid")); 
 	    } catch (Exception e1) {
-	   		System.err.println("no processtypeid ID given!");
-			response.setStatus(404);
+	   		// return parameters for the first processtype
 	   	}
 	  	
 		PreparedStatement pStmt = null; 	// Declare variables
@@ -51,17 +51,19 @@ public class AllProcessTypeParams extends HttpServlet {
 	    try{
 		 	dBconn.startDB();
 		 	
-		 	// if the sampletypeid is 0, set it to the first existing sample type 
-		 	if (sampleTypeID==0){
+		 	// if the processtypeid is 0, set it to the first existing process type 
+		 	if (processTypeID==0){
 		 		pStmt = dBconn.conn.prepareStatement(
 					  	   "SELECT id FROM processtypes "
 						  +"ORDER BY position "
 						  +"LIMIT 1");
-		 		sampleTypeID = dBconn.getSingleIntValue(pStmt);
-		 		if (sampleTypeID<1) {
+		 		processTypeID = dBconn.getSingleIntValue(pStmt);
+		 		if (processTypeID<1) {
 		 			System.err.println("No processtypes in database!");
 					response.setStatus(404);
 		 			throw new Exception();
+		 		}else {
+		 			answer.put("processtype", processTypeID);
 		 		}
 		 	}
 		 	
@@ -69,7 +71,7 @@ public class AllProcessTypeParams extends HttpServlet {
 		 	pStmt = dBconn.conn.prepareStatement(
 				  	   "SELECT id,pos,stringkey FROM p_parametergrps "
 					  +"WHERE (p_parametergrps.processtype=?) ");
-   			pStmt.setInt(1, sampleTypeID);
+   			pStmt.setInt(1, processTypeID);
    			parameterGrps=dBconn.jsonArrayFromPreparedStmt(pStmt); 
    			if (parameterGrps.length()>0) {
            		for (int j=0; j<parameterGrps.length();j++) {
@@ -87,7 +89,7 @@ public class AllProcessTypeParams extends HttpServlet {
      		  	  +"FROM p_parameters " 
      		  	  +"JOIN paramdef ON (definition=paramdef.id)"
 				  +"WHERE processtypeid=?"); // status, processnumber and date cannot be edited
-	 		pStmt.setInt(1, sampleTypeID);
+	 		pStmt.setInt(1, processTypeID);
 			parameters=dBconn.jsonArrayFromPreparedStmt(pStmt); // get ResultSet from the database using the query
 			
 			if (parameters.length()>0) {
@@ -114,7 +116,6 @@ public class AllProcessTypeParams extends HttpServlet {
 //           		}
            	}
 					
-	        JSONObject answer=new JSONObject();
 	        answer.put("parametergrps",parameterGrps);
 	        answer.put("parameters",parameters);
 	        answer.put("strings", dBconn.getStrings(stringkeys));

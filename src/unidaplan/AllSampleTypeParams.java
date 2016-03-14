@@ -34,12 +34,11 @@ public class AllSampleTypeParams extends HttpServlet {
 	    response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
 	    PrintWriter out = response.getWriter(); 
-	    int sampleTypeID=-1;
+	    int sampleTypeID=0;
 	  	try {
 	  		sampleTypeID=Integer.parseInt(request.getParameter("sampletypeid")); 
 	    } catch (Exception e1) {
-	   		System.err.println("no sampletype ID given!");
-			response.setStatus(404);
+	   		// return parameters of the first sampletype
 	   	}
 	  	
 		PreparedStatement pStmt = null; 	// Declare variables
@@ -47,6 +46,8 @@ public class AllSampleTypeParams extends HttpServlet {
 	    JSONArray parameters= null;
 	 	DBconnection dBconn=new DBconnection(); // New connection to the database
 	 	ArrayList<String> stringkeys = new ArrayList<String>(); 
+        JSONObject answer=new JSONObject();
+
 		 	
 	    try{
 		 	dBconn.startDB();
@@ -62,7 +63,10 @@ public class AllSampleTypeParams extends HttpServlet {
 		 			System.err.println("No sampletypes in database!");
 					response.setStatus(404);
 		 			throw new Exception();
+		 		} else {
+		 			answer.put("sampletype", sampleTypeID);
 		 		}
+		 		
 		 	}
 		 	
 		 	// get the parametergroups
@@ -114,7 +118,6 @@ public class AllSampleTypeParams extends HttpServlet {
 //           		}
            	}
 					
-	        JSONObject answer=new JSONObject();
 	        answer.put("parametergrps",parameterGrps);
 	        answer.put("parameters",parameters);
 	        answer.put("strings", dBconn.getStrings(stringkeys));

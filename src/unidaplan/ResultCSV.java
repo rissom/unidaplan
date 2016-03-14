@@ -43,6 +43,7 @@ import org.json.JSONObject;
 	    JSONObject result = new JSONObject();
 	    int id=-1;
 	    String operationString="AND";
+	    String output="json";
 	 
 	  	
 	  	request.setCharacterEncoding("utf-8");
@@ -61,6 +62,7 @@ import org.json.JSONObject;
 	  	if (status=="ok"){ 
 	    try {  
 	    	id =jsonIn.getInt("searchid");
+	    	output = jsonIn.getString("output");
 	    	inParams = jsonIn.getJSONArray("parameters");
 	    } catch (JSONException e) {
 			System.err.println("Search: searchid is missing");
@@ -74,8 +76,9 @@ import org.json.JSONObject;
 		    dBconn.startDB();
 	    	// get basic search data (id,name,owner,operation)
 			pStmt= dBconn.conn.prepareStatement( 	
-			    "SELECT operation,type FROM searches "
-			   +"WHERE id=?");
+			    "SELECT operation,type FROM "
+			    +"searches "
+			    +"WHERE id=?");
 			pStmt.setInt(1, id);
 			search=dBconn.jsonObjectFromPreparedStmt(pStmt);
 	    	operationString = search.getBoolean("operation")?"AND":"OR";
