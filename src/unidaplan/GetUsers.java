@@ -31,8 +31,12 @@ import org.json.JSONException;
 	    try {  
 		    DBconn.startDB();
 			pstmt= DBconn.conn.prepareStatement( 	
-			"SELECT users.id, users.fullname, users.username, users.email, "
-		   +"                 users.blocked, users.lastchange, "
+			"SELECT users.id, "
+			+ "users.fullname, "
+			+ "users.username, "
+			+ "users.email, "
+		    + "users.blocked, "
+		    + "users.lastchange, "
 		   +"CASE Coalesce((SELECT count(ep.creator) from exp_plan ep WHERE users.id=ep.creator " 
 		   +"GROUP BY ep.creator),0) WHEN 0 THEN true ELSE false END AS deletable "
 		   +"FROM users");
@@ -45,6 +49,7 @@ import org.json.JSONException;
     	} catch (JSONException e) {
 			System.err.println("GetUsers: JSON Problem while getting Stringkeys");
     	} catch (Exception e2) {
-			System.err.println("GetUsers: Strange Problem while getting Stringkeys");
+			System.err.println("GetUsers: Strange Problem getting Stringkeys");
+			e2.printStackTrace();
     	}
 	}}	

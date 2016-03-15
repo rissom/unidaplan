@@ -11,7 +11,7 @@ var loginController=function($state,restfactory,$scope,$rootScope,$translate){
 	
 	this.userLogin = function(){
 		// is called when the user logs in.
-		var promise=restfactory.GET('login?user='+this.userinput+'&pw='+this.pwinput);
+		var promise=restfactory.GET('login?user='+this.userinput+'&pw='+CryptoJS.SHA256(this.pwinput).toString(CryptoJS.enc.Base64));
 		promise.then(function(data){
 				thisController.error="";
 				$rootScope.username=data.data.fullname;

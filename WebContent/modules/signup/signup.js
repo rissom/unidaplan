@@ -17,7 +17,7 @@ function signupController(userService,$rootScope,$state,$translate,user,token){
 			fullname : this.fullname,
 			username : this.username,
 			email : this.email,
-			password : this.pwinput,
+			password :  CryptoJS.SHA256(this.pwinput).toString(CryptoJS.enc.Base64),
 		};
 		userService.signUpUser(userData).then(
 			function(data, status, headers, config){

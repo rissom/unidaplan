@@ -54,10 +54,11 @@ import org.json.JSONObject;
 			}
 			DBconn.closeDB();
     	} catch (SQLException e) {
-    		System.err.println("GetUsers: Problems with SQL query");
+    		System.err.println("GetUser: Problems with SQL query");
     	} catch (JSONException e) {
-			System.err.println("GetUsers: JSON Problem while getting Stringkeys");
+			System.err.println("GetUser: JSON Problem while getting Stringkeys");
     	} catch (Exception e2) {
-			System.err.println("GetUsers: Strange Problem while getting Stringkeys");
+			System.err.println("GetUser: Strange Problem while getting Stringkeys");
+			e2.printStackTrace();
     	}
 	}}	

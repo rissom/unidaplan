@@ -69,7 +69,9 @@ public class Login extends HttpServlet {
 			answer.put("status","Password correct");
 			answer.put("fullname",hashjs.getString("fullname"));
 			answer.put("id",id);
-			answer.put("preferredlanguage",hashjs.getString("preferredlanguage"));
+			if (hashjs.has("preferredlanguage")){
+				answer.put("preferredlanguage",hashjs.getString("preferredlanguage"));
+			}
 			if (hashjs.has("admin")){
 				answer.put("admin",true);
 			}
