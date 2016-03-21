@@ -19,7 +19,7 @@ import org.json.JSONObject;
 	@Override
 	  public void doGet(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {
-		PreparedStatement pstmt;
+		PreparedStatement pStmt;
 	    response.setContentType("application/json");
 	    request.setCharacterEncoding("utf-8");
 	    response.setCharacterEncoding("utf-8");
@@ -34,15 +34,15 @@ import org.json.JSONObject;
 			System.err.print("User: no user ID given!");
 		}
 	    PrintWriter out = response.getWriter();
-	 	DBconnection DBconn=new DBconnection();
+	 	DBconnection dBconn=new DBconnection();
 	    try {  
-		    DBconn.startDB();
-			pstmt= DBconn.conn.prepareStatement(
+		    dBconn.startDB();
+			pStmt= dBconn.conn.prepareStatement(
 			"SELECT id, fullname, username, email, lastchange, token, token_valid_to " 
 		   +"FROM users WHERE id=?");
-			pstmt.setInt(1, userID);
-			JSONObject user=DBconn.jsonObjectFromPreparedStmt(pstmt);
-			pstmt.close();
+			pStmt.setInt(1, userID);
+			JSONObject user=dBconn.jsonObjectFromPreparedStmt(pStmt);
+			pStmt.close();
 		   	String validToString = user.optString("token_valid_to");
 		   	Timestamp validToDate = Timestamp.valueOf(validToString);
 			if (user.getString("token").equals(token) &&
@@ -52,7 +52,7 @@ import org.json.JSONObject;
 				System.out.println("wrong or timedout token");
 				out.println("{\"error\":\"invalid token\"}");
 			}
-			DBconn.closeDB();
+			dBconn.closeDB();
     	} catch (SQLException e) {
     		System.err.println("GetUser: Problems with SQL query");
     	} catch (JSONException e) {

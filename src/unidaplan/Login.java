@@ -47,7 +47,10 @@ public class Login extends HttpServlet {
     dBconn.startDB();
     try {  
 		pstmt= dBconn.conn.prepareStatement( 	
-		"SELECT pw_hash, users.id, fullname, "
+		"SELECT "
+		+ "pw_hash, "
+		+ "users.id, "
+		+ "fullname, "
 		+ "groupmemberships.groupid AS admin, "
 		+ "preferredlanguage "
 		+ "FROM users " 
