@@ -214,6 +214,28 @@
   </servlet-mapping>
   
   <servlet>
+    <description>Delete a file</description>
+    <display-name>DeleteFile</display-name>
+    <servlet-name>DeleteFile</servlet-name>
+    <servlet-class>unidaplan.DeleteFile</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeleteFile</servlet-name>
+    <url-pattern>/delete-file</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>Download a file</description>
+    <display-name>FileDownload</display-name>
+    <servlet-name>FileDownload</servlet-name>
+    <servlet-class>unidaplan.FileDownload</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FileDownload</servlet-name>
+    <url-pattern>/file-download/*</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
     <description>Get a list of users</description>
     <display-name>GetUsers</display-name>
     <servlet-name>GetUsers</servlet-name>
@@ -1058,6 +1080,17 @@
   <servlet-mapping>
     <servlet-name>UpdateGroupName</servlet-name>
     <url-pattern>/update-group-name</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>UploadFile2</description>
+    <display-name>UploadFile2</display-name>
+    <servlet-name>UploadFile2</servlet-name>
+    <servlet-class>unidaplan.UploadFile2</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UploadFile2</servlet-name>
+    <url-pattern>/upload-file2</url-pattern>
   </servlet-mapping>
   
   <servlet>
