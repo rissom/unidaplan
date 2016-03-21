@@ -42,6 +42,30 @@ ng-class="{'1':'ok','2':'att','3':'failed'}[processCtrl.process.status]" >&nbsp;
 </button>
 <br />
 <br />
+<h4>{{'Files' | translate}}</h4>
+<ul>
+	<li ng-repeat="file in processCtrl.files">
+		<a ng-href="file-download/{{file.id}}">
+			{{file.filename}}
+		</a>
+		<button type="button" class="btn btn-default btn-xs" ng-click="processCtrl.deleteFile(file.id)">
+			<span class="glyphicon glyphicon-remove"></span>
+		</button>
+	</li>
+</ul>
+
+<form id="upload_form" action="upload-file" method="post" enctype="multipart/form-data" >
+	<span class="btn btn-default btn-file">
+    	{{'Add File'| translate}}<input type="file" name="file" id="file" onchange="angular.element(this).scope().processCtrl.upload(this)" class="file"/> <br/>
+	</span>
+</form>
+<br/>
+<br /> <br />
+
+
+
+<br/>
+<br/>
 	<table>
 		<tr>
 			<td width="300" align="center">

@@ -28,6 +28,12 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 	};
 	
 
+	// delete an attached file
+	this.deleteFile = function(fileID){
+		return restfactory.DELETE("delete-file?fileid="+fileID)
+	}
+	
+	
 	
 	// delete a sample (also from recent samples)
 	this.deleteSample = function(id){
@@ -39,6 +45,12 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 		return restfactory.DELETE("delete-sample?id="+id);
 	};
 	
+	
+	
+	this.deleteSampleType=function(id){
+		return restfactory.DELETE("delete-sample-type?id="+id);
+	};
+
 	
 	
 	this.getSamplesByName = function (name,details){
@@ -70,12 +82,6 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 	    return defered.promise;
 	}
 	
-	
-	
-	this.deleteSampleType=function(id){
-		return restfactory.DELETE("delete-sample-type?id="+id);
-	};
-
 	
 	
 	this.loadSample = function(id) {			// Load data and filter Titleparameters
@@ -129,7 +135,8 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 						process.trrecipe=key2string.key2string(process.recipename,thisController.sample.strings);
 					}
 				});
-			});		    defered.resolve(thisController.sample);
+			});
+			defered.resolve(thisController.sample);
 	    }, function(rest) {
 	    	console.log("Sample not found");
 	    	defered.reject({"error":"Not Found!"});

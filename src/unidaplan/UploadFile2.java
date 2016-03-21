@@ -16,73 +16,100 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 @MultipartConfig
 
-	public class UploadFile extends HttpServlet {
+	public class UploadFile2 extends HttpServlet {
 		private static final long serialVersionUID = 1L;
 
 	@Override
-	  public void doPost(HttpServletRequest request, HttpServletResponse response)
-	      throws ServletException, IOException {		
+		public void doPost(HttpServletRequest request, HttpServletResponse response)
+				throws ServletException, IOException {		
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
 		DBconnection dBconn=null;
-
 		int id = -1;
-		String status="ok";
+		String fileType="dat";
+
+	    
+
 	    request.setCharacterEncoding("utf-8");
 		response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
 	    
 	    
-//	    UploadS3.uploadFileToS3();
-	    
-	    
+	 
 	    // path to upload directory
-	    final String path = "uploads";
+	    final String path = "/mnt/data-store";
 	    
 	    
 	    // check if an upload folder exists, if not: create one.
 	    File theDir = new File(path);
 
-		 // if the directory does not exist, create it
-		 if (!theDir.exists()) {
-		     System.out.println("creating upload directory");
-		     boolean result = false;
+		// if the directory does not exist, create it
+		if (!theDir.exists()) {
+			System.out.println("creating upload directory");
 	
-		     try{
+		    try{
 		         theDir.mkdir();
-		         result = true;
-		     } 
-		     catch(SecurityException se){
-		         System.out.println("Error creating Directory!");
-		         se.printStackTrace();
-		     }        
-		     if(result) {   
-//		         System.out.println("DIR created");  
-		     }
+		    } 
+		    catch(SecurityException se){
+		    	System.out.println("Error creating Directory!");
+		        se.printStackTrace();
+		    }        
 		 }
 	    
-	    // Create path components to save the file
-	    final Part filePart = request.getPart("file");
-	    final String fileName = getFileName(filePart);
+		// get id of process or object
+		String sampleString = request.getParameter("sample");
+		String processString = request.getParameter("process");
+
+		// get the filename
+		final Part filePart = request.getPart("file");
+		String fileName=null;
+	    for (String content : filePart.getHeader("content-disposition").split(";")) {
+	        if (content.trim().startsWith("filename")) {
+	            fileName = content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
+	            int i = fileName.lastIndexOf('.');
+	            if (i > 0) {
+	                fileType = fileName.substring(i+1);
+	            }
+
+	        }
+	    }
 
 	    OutputStream out = null;
 	    InputStream filecontent = null;
 	    final PrintWriter writer = response.getWriter();
+		PreparedStatement pStmt;
 
 	    try {
+	    	dBconn=new DBconnection();
 			dBconn.startDB();
 			if (!Unidatoolkit.isMemberOfGroup(userID, 1, dBconn)){
 				response.setStatus(401);
 				throw new Exception("not allowed");
 			}
 	    	
-	    	File dings=new File(path + File.separator + fileName);
+			
+			
+			pStmt= dBconn.conn.prepareStatement(
+					"INSERT INTO files (filename, sample, process, lastuser) VALUES (?,?,?,?) RETURNING ID");
+			pStmt.setString(1, fileName);
+			if (sampleString!=null){
+				pStmt.setInt(2, Integer.parseInt(sampleString));
+				pStmt.setNull(3, java.sql.Types.INTEGER);
+			} else {
+				pStmt.setNull(2, java.sql.Types.INTEGER);
+				pStmt.setInt(3, Integer.parseInt(processString));
+			}
+			pStmt.setInt(4, userID);
+			id = dBconn.getSingleIntValue(pStmt);
+			pStmt.close();
+			dBconn.closeDB();
+			
+			
+			// Save file to disk with an 10-digit number as filename
+	    	File dings=new File(path + File.separator + String.format("%010d", id));
 	        out = new FileOutputStream(dings);
 	        filecontent = filePart.getInputStream();
 
@@ -93,16 +120,11 @@ import org.json.JSONObject;
 	            out.write(bytes, 0, read);
 	        }
 	        writer.println("New file " + fileName + " created at " + path);
-//	        LOGGER.log(Level.INFO, "File{0}being uploaded to {1}", 
-//	                new Object[]{fileName, path});
 	    } catch (FileNotFoundException fne) {
 	        writer.println("You either did not specify a file to upload or are "
 	                + "trying to upload a file to a protected or nonexistent "
 	                + "location.");
 	        writer.println("<br/> ERROR: " + fne.getMessage());
-
-//	        LOGGER.log(Level.SEVERE, "Problems during file upload. Error: {0}", 
-//	                new Object[]{fne.getMessage()});
 	    } catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -119,15 +141,5 @@ import org.json.JSONObject;
 	    }
 	}
 	
-	private String getFileName(final Part part) {
-	    final String partHeader = part.getHeader("content-disposition");
-//	    LOGGER.log(Level.INFO, "Part Header = {0}", partHeader);
-	    for (String content : part.getHeader("content-disposition").split(";")) {
-	        if (content.trim().startsWith("filename")) {
-	            return content.substring(
-	                    content.indexOf('=') + 1).trim().replace("\"", "");
-	        }
-	    }
-	    return null;
-	}
+
 }

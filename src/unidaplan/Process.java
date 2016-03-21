@@ -61,7 +61,7 @@ public class Process extends HttpServlet {
 //  		e1.printStackTrace();
   	  	}
 
-  	  	PreparedStatement pstmt = null;
+  	  	PreparedStatement pStmt = null;
 
   	  	try {
 
@@ -72,7 +72,7 @@ public class Process extends HttpServlet {
 
 		  
   	  		// get number, type and status 
-  	  		pstmt= dBconn.conn.prepareStatement(
+  	  		pStmt= dBconn.conn.prepareStatement(
 				"SELECT processes.id, processes.processtypesid as processtype, ptd.value AS date, n1.value AS pnumber, "
 				+"processtypes.name AS pt_string_key, n2.value AS status, pp3.id AS statuspid "
 				+"FROM processes "
@@ -84,8 +84,8 @@ public class Process extends HttpServlet {
 				+"LEFT JOIN p_integer_data n1 ON (n1.ProcessID=processes.id AND n1.P_Parameter_ID=pp2.id) "
 				+"LEFT JOIN p_integer_data n2 ON (n2.ProcessID=processes.id AND n2.P_Parameter_ID=pp3.id) "
 				+"WHERE processes.id=?");
-  	  		pstmt.setInt(1, processID);
-  	  		jsProcess= dBconn.jsonObjectFromPreparedStmt(pstmt);
+  	  		pStmt.setInt(1, processID);
+  	  		jsProcess= dBconn.jsonObjectFromPreparedStmt(pStmt);
   	  		if (jsProcess.length()>0) {
   	  			processTypeID=jsProcess.getInt("processtype");
   	  			pnumber=jsProcess.getInt("pnumber");
@@ -111,12 +111,12 @@ public class Process extends HttpServlet {
 	if (found){
 	    // get next process
 	    try {      
-			pstmt=dBconn.conn.prepareStatement( 
+			pStmt=dBconn.conn.prepareStatement( 
 			"SELECT id,p_number FROM pnumbers "
 			+"WHERE (p_number>? AND processtype=?) LIMIT 1");
-			pstmt.setInt(1,pnumber);
-			pstmt.setInt(2,processTypeID);
-			JSONObject next= dBconn.jsonObjectFromPreparedStmt(pstmt);
+			pStmt.setInt(1,pnumber);
+			pStmt.setInt(2,processTypeID);
+			JSONObject next= dBconn.jsonObjectFromPreparedStmt(pStmt);
 			if (next.length()>0) {
 			jsProcess.put("next",next); } 
 		} catch (SQLException e) {
@@ -132,12 +132,12 @@ public class Process extends HttpServlet {
 	    
 	    // get previous process
 	    try {       
-			pstmt=dBconn.conn.prepareStatement( 
+			pStmt=dBconn.conn.prepareStatement( 
 			"SELECT id,p_number FROM pnumbers "
 			+"WHERE (p_number<? AND processtype=?) ORDER BY p_number DESC LIMIT 1");
-			pstmt.setInt(1,pnumber);
-			pstmt.setInt(2,processTypeID);
-			JSONObject previous= dBconn.jsonObjectFromPreparedStmt(pstmt);
+			pStmt.setInt(1,pnumber);
+			pStmt.setInt(2,processTypeID);
+			JSONObject previous= dBconn.jsonObjectFromPreparedStmt(pStmt);
 			if (previous.length()>0) {
 			jsProcess.put("previous",previous); } 
 		} catch (SQLException e) {
@@ -154,13 +154,13 @@ public class Process extends HttpServlet {
 	    
 	    // get parametergroups
 		try {
-			pstmt= dBconn.conn.prepareStatement(
+			pStmt= dBconn.conn.prepareStatement(
 					"SELECT parametergroup, max(stringkey) AS paramgrpkey, min(p_parametergrps.pos) AS pos FROM p_parameters "+
 					"JOIN p_parametergrps ON parametergroup=p_parametergrps.id "+
 					"WHERE processtypeid=? GROUP BY parametergroup");
-			pstmt.setInt(1,processTypeID);
-			parametergrps=dBconn.jsonArrayFromPreparedStmt(pstmt);
-			pstmt.close();
+			pStmt.setInt(1,processTypeID);
+			parametergrps=dBconn.jsonArrayFromPreparedStmt(pStmt);
+			pStmt.close();
 		} catch (SQLException e) {
 			System.out.println("Problems with SQL query for parameters");
 			e.printStackTrace();
@@ -175,7 +175,7 @@ public class Process extends HttpServlet {
 	    
 	    // get the process Parameters:
 	    try{
-	    	pstmt = dBconn.conn.prepareStatement(
+	    	pStmt = dBconn.conn.prepareStatement(
 	    	"SELECT "
 	    	+ "p_parameters.id, "
 	    	+ "parametergroup, "
@@ -197,9 +197,9 @@ public class Process extends HttpServlet {
 			+"JOIN String_key_table st ON st.id=p_parameters.stringkeyname "
 			+"WHERE (p_parameters.processtypeID=? AND p_parameters.id_field=FALSE AND p_parameters.hidden=FALSE) "
 			+"ORDER BY pos");
-	    	pstmt.setInt(1,processID);
-	    	pstmt.setInt(2,processTypeID);
-			JSONArray parameters=dBconn.jsonArrayFromPreparedStmt(pstmt);
+	    	pStmt.setInt(1,processID);
+	    	pStmt.setInt(2,processTypeID);
+			JSONArray parameters=dBconn.jsonArrayFromPreparedStmt(pStmt);
 	
 			if (parameters.length()>0 && parametergrps.length()>0) { 		
 				for (int j=0;j<parametergrps.length();j++){
@@ -253,13 +253,13 @@ public class Process extends HttpServlet {
 				      				break;	    
 			      		}
 				      	if (datatype==6) {	// chooser 
-				      			pstmt= dBconn.conn.prepareStatement(
+				      			pStmt= dBconn.conn.prepareStatement(
 				      					"SELECT string FROM possible_values "
 				      					+"WHERE parameterid=? ORDER BY position");
-				      			pstmt.setInt(1, tParam.getInt("definition"));
-				      			JSONArray pvalues=dBconn.ArrayFromPreparedStmt(pstmt);
+				      			pStmt.setInt(1, tParam.getInt("definition"));
+				      			JSONArray pvalues=dBconn.ArrayFromPreparedStmt(pStmt);
 				      			tParam.put("possiblevalues", pvalues);
-				      			pstmt.close();
+				      			pStmt.close();
 		      				}
 					    prmgrpprms.put(tParam);
 			      		}
@@ -282,12 +282,12 @@ public class Process extends HttpServlet {
 	    
 	    // get the assigned objects:
 	    try{
-	    	pstmt = dBconn.conn.prepareStatement(
+	    	pStmt = dBconn.conn.prepareStatement(
 	    	"SELECT sp.sampleid, sn.name, sn.typeid  FROM samplesinprocess sp "
 	    	+"JOIN samplenames sn ON sp.sampleid=sn.id "
 	    	+"WHERE ProcessID=?");
-	    	pstmt.setInt(1,processID);
-			JSONArray samples=dBconn.jsonArrayFromPreparedStmt(pstmt);
+	    	pStmt.setInt(1,processID);
+			JSONArray samples=dBconn.jsonArrayFromPreparedStmt(pStmt);
 			jsProcess.put("samples",samples);
 				
 		} catch (SQLException e) {
@@ -301,6 +301,25 @@ public class Process extends HttpServlet {
 			e.printStackTrace();
 		}	  	
 	  	
+	    
+		// Find all corresponding files
+    	try{
+		    pStmt=  dBconn.conn.prepareStatement( 	
+			"SELECT files.id,filename "+
+			"FROM files "+
+			"WHERE files.process=?");
+			pStmt.setInt(1,processID);
+			JSONArray files= dBconn.jsonArrayFromPreparedStmt(pStmt);
+			if (files.length()>0) {
+				jsProcess.put("files",files); 
+			}
+	    } catch (SQLException e) {
+    		System.err.println("Showsample: Problems with SQL query for child samples");
+		} catch (JSONException e2) {
+			System.err.println("Showsample: JSON Problem while getting child samples");
+		} catch (Exception e3) {
+			System.err.println("Showsample: Strange Problem while getting child samples");
+    	}
 
 	
 		// get the strings

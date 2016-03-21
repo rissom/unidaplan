@@ -18,6 +18,13 @@ var processService = function (restfactory,$q,$translate,key2string) {
 		return restfactory.POST("add-process-type",process);
 	};
 	
+
+	
+	// delete an attached file
+	this.deleteFile = function(fileID){
+		return restfactory.DELETE("delete-file?fileid="+fileID)
+	}
+
 	
 	
 	this.getProcess = function(id) {

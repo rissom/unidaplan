@@ -9,6 +9,7 @@ function sampleController(sample,$state,$stateParams,$modal,$filter,types,sample
 	if (sample.error) this.error=sample.error;
 	this.parametergroups = sample.parametergroups;
 	this.editable = sample.editable;
+	this.files = sample.files;
 	this.processes = $filter('orderBy')(sample.processes, 'date', false);
 	this.titleparameters = sample.titleparameters;
 	this.children = sample.children?sample.children:[];
@@ -22,14 +23,52 @@ function sampleController(sample,$state,$stateParams,$modal,$filter,types,sample
 	if (this.previous) {this.previous.typeid = sample.typeid;}
 	this.typestringkey = sample.typestringkey;
 	this.typeid = sample.typeid;
+		
+
 	
-	
-	// returns the translated name of a process
-	this.getProcessType = function(process){
-		return avProcessTypeService.getProcessType(process,ptypes);
+	// store ancestors in database
+	this.assignAncestors = function(ancestors){
+		var a2=[];
+		for (var i=0; i<ancestors.length; i++) {
+			a2.push(ancestors[i].sampleid);
+		}
+		sampleService.addAncestors(sample.id,a2);
 	};
 	
 	
+	
+	// store children in database
+	this.assignChildren = function(children){
+		var c2=[];
+		for (var i=0; i<children.length; i++) {
+			c2.push(children[i].sampleid);
+		}		
+		sampleService.addChildren(sample.id,c2);
+	};
+	
+	
+	
+	this.deleteFile = function (fileID){
+		var promise = sampleService.deleteFile(fileID);
+		promise.then (function(){reload()});
+	}
+	
+	
+	
+	this.deleteSample = function()
+	{  
+		var promise = sampleService.deleteSample(sample.id);
+		promise.then(function(data) {  			// success
+				$state.go('sampleChoser');	// go to experiments			
+			},
+				function(data) { 	 // fail
+			    console.log("Error deleting Sample");
+				$state.go(error);
+			}
+		);
+	};
+	
+
 	
 	// returns the duration between 2 processes
 	this.getDuration = function(index){
@@ -39,6 +78,54 @@ function sampleController(sample,$state,$stateParams,$modal,$filter,types,sample
 		}
 		return duration;
 	};
+	
+	
+	
+	// returns the translated name of a process
+	this.getProcessType = function(process){
+		return avProcessTypeService.getProcessType(process,ptypes);
+	};
+	
+
+	
+	this.getType = function(sample){
+		return avSampleTypeService.getType(sample,types);
+	};
+	
+	
+	
+	this.keyUp = function(keyCode,newValue,parameter) {
+		if (keyCode===13) {				// Return key pressed
+			parameter.editing=false; 
+			var oldValue=parameter.value;
+			parameter.value=newValue;
+			var res;
+			  if (parameter.pid) {
+				res = sampleService.saveParameter(sample.id,parameter);
+				res.then(function() {
+						},
+						function() {
+							parameter.value=oldValue;
+							console.log('error');
+							console.log(data);
+						}
+				);
+			 } else {
+				res = sampleService.addSampleParameter(sample.id,parameter);
+				res.then(function(data) {
+						},function(data) {
+							parameter.value=oldValue;
+							console.log('error');
+							console.log(data);
+						}
+				);
+			 }
+		}
+		if (keyCode===27) {		// Escape key pressed
+			parameter.editing=false;			
+		}
+	};
+	
 	
 
 	this.openDialog = function (mode) {			
@@ -90,83 +177,6 @@ function sampleController(sample,$state,$stateParams,$modal,$filter,types,sample
 
 	
 	
-	// store ancestors in database
-	this.assignAncestors = function(ancestors){
-		var a2=[];
-		for (var i=0; i<ancestors.length; i++) {
-			a2.push(ancestors[i].sampleid);
-		}
-		sampleService.addAncestors(sample.id,a2);
-	};
-	
-	
-	
-	// store children in database
-	this.assignChildren = function(children){
-		var c2=[];
-		for (var i=0; i<children.length; i++) {
-			c2.push(children[i].sampleid);
-		}		
-		sampleService.addChildren(sample.id,c2);
-	};
-	
-	
-	
-	this.keyUp = function(keyCode,newValue,parameter) {
-		if (keyCode===13) {				// Return key pressed
-			parameter.editing=false; 
-			var oldValue=parameter.value;
-			parameter.value=newValue;
-			var res;
-			  if (parameter.pid) {
-				res = sampleService.saveParameter(sample.id,parameter);
-				res.then(function() {
-						},
-						function() {
-							parameter.value=oldValue;
-							console.log('error');
-							console.log(data);
-						}
-				);
-			 } else {
-				res = sampleService.addSampleParameter(sample.id,parameter);
-				res.then(function(data) {
-						},function(data) {
-							parameter.value=oldValue;
-							console.log('error');
-							console.log(data);
-						}
-				);
-			 }
-		}
-		if (keyCode===27) {		// Escape key pressed
-			parameter.editing=false;			
-		}
-	};
-	
-	
-	
-	this.deleteSample = function()
-	{  
-		var promise = sampleService.deleteSample(sample.id);
-		promise.then(function(data) {  			// success
-				$state.go('sampleChoser');	// go to experiments			
-			},
-				function(data) { 	 // fail
-			    console.log("Error deleting Sample");
-				$state.go(error);
-			}
-		);
-	};
-	
-
-	
-	this.getType = function(sample){
-		return avSampleTypeService.getType(sample,types);
-	};
-	
-	
-	
 	this.saveParameter = function(parameter) {
 		var promise = sampleService.saveParameter(sample.id,parameter);
 		promise.then(
@@ -180,6 +190,24 @@ function sampleController(sample,$state,$stateParams,$modal,$filter,types,sample
 		);
 	};
 	
+	
+	
+	this.upload = function(element) {
+		thisController.file=element.files[0].name;
+		var file=element.files[0].name;
+		var xhr = new XMLHttpRequest();
+		xhr.addEventListener('load', function(event) {
+			reload();
+		});
+		
+		xhr.open("POST", 'upload-file2?sample='+$stateParams.sampleID); // xhr.open("POST", 'upload-file',true); ???
+		
+		// formdata
+		var formData = new FormData();
+		formData.append("file", element.files[0]);
+		xhr.send(formData);
+    };
+
 	
 	
 	this.updateSampleParameter = sampleService.saveSampleParameter;

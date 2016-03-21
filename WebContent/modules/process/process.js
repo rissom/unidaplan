@@ -9,12 +9,21 @@ function process($state,$stateParams,$translate,avSampleTypeService,types,$modal
 	
 	this.editable=processData.editable;
   	
+	this.files = processData.files;
+	
 	this.process=processData;
  
 	this.statusStrings = [$translate.instant("OK"),
 		                  $translate.instant("attention"),
 						  $translate.instant("failed")];
-		
+	
+	
+	
+	this.deleteFile = function (fileID){
+		var promise = processService.deleteFile(fileID);
+		promise.then (function(){reload()});
+	}
+	
 
   
 	this.openDialog = function () {
@@ -123,13 +132,31 @@ function process($state,$stateParams,$translate,avSampleTypeService,types,$modal
   	};
   
   	
+	
+	this.upload = function(element) {
+		thisController.file=element.files[0].name;
+		var file=element.files[0].name;
+		var xhr = new XMLHttpRequest();
+		xhr.addEventListener('load', function(event) {
+			reload();
+		});
+		
+		xhr.open("POST", 'upload-file2?process='+processData.id); // xhr.open("POST", 'upload-file',true); ???
+		
+		// formdata
+		var formData = new FormData();
+		formData.append("file", element.files[0]);
+		xhr.send(formData);
+    };
+
+    
   
 	var reload=function() {
 		var current = $state.current;
 		var params = angular.copy($stateParams);
 		return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
 	};
-  
+ 
 }
 
 angular.module('unidaplan').controller('process', ['$state','$stateParams','$translate','avSampleTypeService','types', '$modal',
