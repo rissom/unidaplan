@@ -29,7 +29,8 @@ public class ImportIntoDB extends HttpServlet {
 	
 		void saveValueSample(String value,int id, int sampleid){
 		    try {
-			    // look up the datatype in Database	   			 
+			    // look up the datatype in Database
+		    	dBconn.startDB();
 			    PreparedStatement pStmt = null;
 			    int type=-1;
 				pStmt= dBconn.conn.prepareStatement( 			
