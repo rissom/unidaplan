@@ -20,7 +20,7 @@
 			</td>
 			<td> 
 				<div ng-repeat="user in groupCtrl.users | filter:groupCtrl.isMemberOf(group) " >
-					{{user.fullname}}
+					{{user.fullname}} ({{user.username}})
 				</div>
   				<button type="button"
 						class="btn btn-default btn-xs" 
