@@ -16,7 +16,7 @@
 			</tr>
 			</thead>
 			<tbody>
-			<tr ng-repeat="user in userCtrl.users">				
+			<tr ng-repeat="user in userCtrl.users | orderBy: 'fullname'">				
 				<td>
 					{{user.fullname}}
 				</td>
