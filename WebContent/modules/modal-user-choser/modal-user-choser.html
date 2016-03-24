@@ -34,7 +34,7 @@
  	<div ng-show="mUserChoserCtrl.groupSelected(user)" >
 					<!-- show only selected user types -->
 		<a ng-click=mUserChoserCtrl.choseUser(user)> 
-			{{user.fullname}}
+			{{user.fullname}} ({{user.username}})
 		</a>		
 	</div>					
 	</li>   
@@ -49,7 +49,7 @@
 	<p />
 	<div ng-repeat="cuser in mUserChoserCtrl.chosenUsers | orderBy: 'fullname'">
 		<a ng-click=mUserChoserCtrl.removeUser(cuser)>
- 			{{cuser.fullname}}
+ 			{{cuser.fullname}} ({{cuser.username}})
  		</a>
 	</div>
 	<br />
