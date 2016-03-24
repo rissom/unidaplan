@@ -32,24 +32,45 @@ public class DeleteFile extends HttpServlet {
 	 		dBconn.startDB();
 			int userID = authentificator.GetUserID(request,response);
 			fileID = Integer.parseInt(request.getParameter("fileid"));
+		    String privilege="";
 
 			// Check priveleges 
-			// not implemented yet...
-			pStmt= dBconn.conn.prepareStatement( 	
-					"SELECT sample,process FROM files WHERE files.id=?");
-	 		pStmt.setInt(1, fileID);
-	 		JSONObject dings = dBconn.jsonObjectFromPreparedStmt(pStmt);
-	 		
+		    if (Unidatoolkit.isMemberOfGroup(userID, 1, dBconn)){
+		    	privilege="w";
+		    } else {
+				pStmt= dBconn.conn.prepareStatement( 	
+						"SELECT sample,process FROM files WHERE files.id=?");
+		 		pStmt.setInt(1, fileID);
+		 		JSONObject fileData = dBconn.jsonObjectFromPreparedStmt(pStmt);
+		 		String query="";
+		 		String type="";
+		 		if (fileData.has("sample")){
+		 			type = "sample";
+		 			query="SELECT getSampleRights(vuserid:=?,vsample:=?)";
+		 		} else { // file is attached to a process
+		 			type = "process";
+		 			query="SELECT getProcessRights(vuserid:=?,vprocess:=?)";
+		 		}
+		 		pStmt = dBconn.conn.prepareStatement(query);
+	 		    pStmt.setInt(1,userID);
+	 			pStmt.setInt(2, fileData.getInt(type));
+	 			System.out.println("query:"+pStmt.toString());
+	 		    privilege=dBconn.getSingleStringValue(pStmt);
+	 		    System.out.println("privilege:"+privilege);
+		 		pStmt.close();
+		    }
 			
 			// Get filename and type
-	 		pStmt= dBconn.conn.prepareStatement( 	
-					"DELETE FROM files WHERE files.id=?");
-	 		pStmt.setInt(1, fileID);
-	 		pStmt.executeUpdate();
-	 		
-	        Path path = FileSystems.getDefault().getPath("/mnt/data-store", String.format("%010d", fileID));
-	        Files.delete(path);
-
+	 		if (privilege.equals("w")||privilege.equals("r")){
+	 			System.out.println("deleting");
+		 		pStmt= dBconn.conn.prepareStatement( 	
+						"DELETE FROM files WHERE files.id=?");
+		 		pStmt.setInt(1, fileID);
+		 		pStmt.executeUpdate();
+		 		
+		        Path path = FileSystems.getDefault().getPath("/mnt/data-store", String.format("%010d", fileID));
+		        Files.delete(path);
+	 		}
 	 	}catch (SQLException e) {
 			System.err.println("Showsample: Problems with SQL query for sample name");
 		} catch (Exception e2) {

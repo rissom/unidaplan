@@ -29,13 +29,17 @@
 
 	
 <!-- Files --> 
-<h4>{{'Files' | translate}}</h4>
+<h4 ng-show="sampleCtrl.editable || sampleCtrl.files.length>0">{{'Files' | translate}}</h4>
 <ul>
 	<li ng-repeat="file in sampleCtrl.files">
 		<a ng-href="file-download/{{file.id}}">
 			{{file.filename}}
 		</a>
-		<button type="button" class="btn btn-default btn-xs" ng-click="sampleCtrl.deleteFile(file.id)">
+		<button 
+			type="button" 
+			class="btn btn-default btn-xs" 
+			ng-click="sampleCtrl.deleteFile(file.id)"
+			ng-show="sampleCtrl.editable">
 					<span class="glyphicon glyphicon-remove"></span>
 		</button>
 	</li>
@@ -44,7 +48,7 @@
 
 
 
-<form id="upload_form" action="upload-file" method="post" enctype="multipart/form-data" >
+<form id="upload_form" action="upload-file" method="post" enctype="multipart/form-data" ng-show="sampleCtrl.editable">
 	<span class="btn btn-default btn-file">
     	{{'Add File'| translate}}<input type="file" name="file" id="file" onchange="angular.element(this).scope().sampleCtrl.upload(this)" class="file"/> <br/>
 	</span>
@@ -56,7 +60,7 @@
 <!-- Ancestors and children -->
 <h4>{{'hierarchy' | translate}}</h4>
 <div class=row>
-	<div class="col-md-6">{{'Originates from'|translate}}:<br />
+	<div class="col-md-6" ng-show="sampleCtrl.ancestors.length>0 || sampleCtrl.editable">{{'Originates from'|translate}}:<br />
 		<div ng-repeat="bsample in sampleCtrl.ancestors"> 
 			<a ui-sref="sample({sampleID:bsample.sampleid})">
 				{{sampleCtrl.getType(bsample)}} {{bsample.name}}
@@ -69,7 +73,7 @@
 			{{'Add/Remove objects'|translate}}
 		</button>				
 	</div>
-	<div class="col-md-6">{{'Is ancestor of'|translate}}:<br />
+	<div class="col-md-6" ng-show="sampleCtrl.children.length>0 || sampleCtrl.editable">{{'Is ancestor of'|translate}}:<br />
 		<div ng-repeat="bsample in sampleCtrl.children">
 			<a ui-sref="sample({sampleID:bsample.sampleid})">
 				{{sampleCtrl.getType(bsample)}} {{bsample.name}}
@@ -155,7 +159,6 @@
 			&nbsp;
 			<br />
 				<button type="button" class="btn btn-danger"
-						ng-class="{'disabled':!sampleCtrl.deletable}"
 						ng-show="sampleCtrl.editable"
 						ng-click="sampleCtrl.deleteSample()">
 						<span class="glyphicon glyphicon-remove"></span>

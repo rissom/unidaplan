@@ -37,41 +37,31 @@ public class Showsample extends HttpServlet {
 	    response.setCharacterEncoding("utf-8");
 	    PrintWriter out = response.getWriter();
 	 	DBconnection dBconn=new DBconnection();
-		int objID=1;      // variable initialisation
+		int sampleID=1;      // variable initialisation
 		int typeid=1;
+		String privilege = "";
 		JSONObject jsSample=new JSONObject(); // variable initialisation
 		
 		// get Parameter for id
 		try{
-			 objID=Integer.parseInt(request.getParameter("id")); }
-		catch (Exception e1) {
-			objID=1;
+			 sampleID=Integer.parseInt(request.getParameter("id")); 
+		} catch (Exception e1) {
+			sampleID=1;
 			System.err.print("Showsample: no sample ID given!");
 		}
 		   
 	    // fetch name and type of the object from the database (samplenames is a view)
 	    try{
 	        dBconn.startDB();
-	        deletable=Unidatoolkit.isMemberOfGroup(userID, 1, dBconn); // Todo: Only admins delete
-	        editable=deletable;
 	        pStmt= dBconn.conn.prepareStatement( 	
-					"SELECT objecttypesid FROM samples WHERE id=?");
-			pStmt.setInt(1,objID);
-			typeid=dBconn.getSingleIntValue(pStmt);
+					"SELECT getSampleRights(vuserid:=?,vsample:=?)");
+			pStmt.setInt(1,userID);
+			pStmt.setInt(2,sampleID);
+			privilege=dBconn.getSingleStringValue(pStmt);
 			pStmt.close();
-			pStmt= dBconn.conn.prepareStatement( 	
-					"SELECT name FROM samplenames WHERE id=?");
-			pStmt.setInt(1,objID);
-			jsSample= dBconn.jsonObjectFromPreparedStmt(pStmt);
-			jsSample.put("id", objID);
-			jsSample.put("typeid", typeid);
-			pStmt= dBconn.conn.prepareStatement( 	
-			"SELECT string_key FROM objecttypes WHERE id=?");
-			pStmt.setInt(1,typeid);
-			int stringkey= dBconn.jsonObjectFromPreparedStmt(pStmt).getInt("string_key");
-			stringkeys.add(Integer.toString(stringkey));
-			jsSample.put("typestringkey", stringkey);
-			
+	        
+	        editable= privilege!=null && privilege.equals("w");
+	        
 		} catch (SQLException e) {
 			System.err.println("Showsample: Problems with SQL query for sample name");
 		} catch (JSONException e) {
@@ -79,7 +69,36 @@ public class Showsample extends HttpServlet {
 		} catch (Exception e2) {
 			System.err.println("Showsample: Strange Problem while getting sample name");
 			e2.printStackTrace();
-		}
+		} 
+	        
+		if (editable || (privilege != null && privilege.equals("r"))){
+			try {
+		        pStmt= dBconn.conn.prepareStatement( 	
+						"SELECT objecttypesid FROM samples WHERE id=?");
+				pStmt.setInt(1,sampleID);
+				typeid=dBconn.getSingleIntValue(pStmt);
+				pStmt.close();
+				pStmt= dBconn.conn.prepareStatement( 	
+						"SELECT name FROM samplenames WHERE id=?");
+				pStmt.setInt(1,sampleID);
+				jsSample= dBconn.jsonObjectFromPreparedStmt(pStmt);
+				jsSample.put("id", sampleID);
+				jsSample.put("typeid", typeid);
+				pStmt= dBconn.conn.prepareStatement( 	
+				"SELECT string_key FROM objecttypes WHERE id=?");
+				pStmt.setInt(1,typeid);
+				int stringkey= dBconn.jsonObjectFromPreparedStmt(pStmt).getInt("string_key");
+				stringkeys.add(Integer.toString(stringkey));
+				jsSample.put("typestringkey", stringkey);
+				
+			} catch (SQLException e) {
+				System.err.println("Showsample: Problems with SQL query for sample name");
+			} catch (JSONException e) {
+				System.err.println("Showsample: JSON Problem while getting sample name");
+			} catch (Exception e2) {
+				System.err.println("Showsample: Strange Problem while getting sample name");
+				e2.printStackTrace();
+			}
 	
 	    
 	    // Error if the sample is not found
@@ -98,7 +117,7 @@ public class Showsample extends HttpServlet {
 		try {
 			pStmt= dBconn.conn.prepareStatement( 	 
 			   "SELECT * FROM acc_sample_parameters WHERE id_field=true AND objectid=?");		
-			pStmt.setInt(1,objID);
+			pStmt.setInt(1,sampleID);
 			JSONArray titleparameters=dBconn.jsonArrayFromPreparedStmt(pStmt);
 			if (titleparameters.length()>0) {
 				jsSample.put("titleparameters",titleparameters);
@@ -154,7 +173,7 @@ public class Showsample extends HttpServlet {
 			  +"LEFT JOIN acc_sample_parameters a ON "
 			  +"(a.objectid=? AND a.id=op.id AND hidden=FALSE) "
 			  +"WHERE (op.objecttypesID=? AND op.id_field=false AND op.hidden=false)");
-			pStmt.setInt(1,objID);
+			pStmt.setInt(1,sampleID);
 			pStmt.setInt(2,typeid);
 //			System.err.println("pstmt: "+pstmt.toString());
 			JSONArray parameters=dBconn.jsonArrayFromPreparedStmt(pStmt);
@@ -237,7 +256,7 @@ public class Showsample extends HttpServlet {
 			  +"JOIN p_integer_data n ON (n.ProcessID=samplesinprocess.processid AND n.P_Parameter_ID=pp2.id) "
 			  +"JOIN p_integer_data n2 ON (n2.ProcessID=samplesinprocess.processid AND n2.P_Parameter_ID=pp3.id) " 
 			  +"WHERE sampleid=?");
-			pStmt.setInt(1,objID);
+			pStmt.setInt(1,sampleID);
 			JSONArray processes=dBconn.jsonArrayFromPreparedStmt(pStmt);
 	//	   	String validToString = jsToken.optString("token_valid_to");
 	//	   	Timestamp validToDate = Timestamp.valueOf(validToString); 
@@ -279,7 +298,7 @@ public class Showsample extends HttpServlet {
 			"SELECT ep.id as exp_id, name, creator, status FROM exp_plan ep "
 			+"JOIN expp_samples es ON es.expp_ID=ep.id "
 			+"WHERE sample=?");
-			pStmt.setInt(1,objID);
+			pStmt.setInt(1,sampleID);
 			JSONArray eps = dBconn.jsonArrayFromPreparedStmt(pStmt);
 			pStmt.close();
 			for (int i=0; i<eps.length();i++) {
@@ -294,7 +313,7 @@ public class Showsample extends HttpServlet {
 					+"JOIN exp_plan_processes epp ON (epp.id=eps.exp_plan_pr) "
 					+"WHERE expp_samples.sample=? AND expp_samples.expp_id=? "
 					+"ORDER BY processposition");
-	      		pStmt.setInt(1,objID);
+	      		pStmt.setInt(1,sampleID);
 	      		int experimentID=eps.getJSONObject(i).getInt("exp_id");
 	      		pStmt.setInt(2,experimentID);
 	      		JSONArray pprocesses = dBconn.jsonArrayFromPreparedStmt(pStmt);
@@ -322,7 +341,7 @@ public class Showsample extends HttpServlet {
 			"SELECT files.id,filename "+
 			"FROM files "+
 			"WHERE files.sample=?");
-			pStmt.setInt(1,objID);
+			pStmt.setInt(1,sampleID);
 			JSONArray files= dBconn.jsonArrayFromPreparedStmt(pStmt);
 			if (files.length()>0) {
 				jsSample.put("files",files); 
@@ -344,7 +363,7 @@ public class Showsample extends HttpServlet {
 				"FROM originates_from \n"+
 				"JOIN samplenames ON (samplenames.id=originates_from.child) \n"+
 				"WHERE originates_from.parent=? \n");
-				pStmt.setInt(1,objID);
+				pStmt.setInt(1,sampleID);
 				table= dBconn.jsonArrayFromPreparedStmt(pStmt);
 				if (table.length()>0) {
 					for(int i=0;i<table.length();i++) {
@@ -373,7 +392,7 @@ public class Showsample extends HttpServlet {
 				"FROM originates_from \n" +
 				"JOIN samplenames ON (samplenames.id=originates_from.parent) \n" +
 				"WHERE originates_from.child=? \n");
-				pStmt.setInt(1,objID);
+				pStmt.setInt(1,sampleID);
 				table= dBconn.jsonArrayFromPreparedStmt(pStmt);
 				if (table.length()>0) {
 					for(int i=0;i<table.length();i++) {
@@ -404,8 +423,8 @@ public class Showsample extends HttpServlet {
 				+"AND samplenames.typeid=(SELECT samplenames.typeid FROM samplenames WHERE samplenames.id=?)) "
 				+"ORDER BY UPPER(samplenames.name) DESC "
 				+"LIMIT 1");
-				pStmt.setInt(1,objID);
-				pStmt.setInt(2,objID);
+				pStmt.setInt(1,sampleID);
+				pStmt.setInt(2,sampleID);
 				table= dBconn.jsonArrayFromPreparedStmt(pStmt);
 				if (table.length()>0) {
 					jsSample.put("previous",table.get(0)); }
@@ -427,8 +446,8 @@ public class Showsample extends HttpServlet {
 				+"AND samplenames.typeid=(SELECT samplenames.typeid FROM samplenames WHERE samplenames.id=?)) "
 				+"ORDER BY UPPER(samplenames.name) "	
 	    		+"LIMIT 1 ");
-				pStmt.setInt(1,objID);
-				pStmt.setInt(2,objID); 
+				pStmt.setInt(1,sampleID);
+				pStmt.setInt(2,sampleID); 
 				table= dBconn.jsonArrayFromPreparedStmt(pStmt);
 				if (table.length()>0) {
 					jsSample.put("next",table.get(0)); }	
@@ -446,7 +465,7 @@ public class Showsample extends HttpServlet {
 		        pStmt = dBconn.conn.prepareStatement(	
 		    	"SELECT processid, sampleid FROM samplesinprocess "
 		 		+"WHERE sampleid=?");
-				pStmt.setInt(1,objID);
+				pStmt.setInt(1,sampleID);
 				ResultSet resultset=pStmt.executeQuery();
 				if (resultset.next()) {
 					deletable=false;
@@ -456,7 +475,7 @@ public class Showsample extends HttpServlet {
 				// Check if experiments with this sample exist
 		        pStmt = dBconn.conn.prepareStatement(	
 		        	"SELECT id FROM expp_samples WHERE sample=?");
-				pStmt.setInt(1,objID);
+				pStmt.setInt(1,sampleID);
 				resultset=pStmt.executeQuery();
 				if (resultset.next()) {deletable=false;}
 				pStmt.close();
@@ -481,6 +500,11 @@ public class Showsample extends HttpServlet {
 	    	}
 	    }
 		out.println(jsSample.toString());
+		} else {
+			String status="insufficient rights";
+			response.setStatus(401);
+			Unidatoolkit.sendStandardAnswer(status, response);
+		}
 		dBconn.closeDB();}
   	} 
 }
