@@ -43,8 +43,8 @@ var loginController=function($state,restfactory,$scope,$rootScope,$translate){
 		        } 
 				
 				// did you want to go somewhere special? If not: sample chooser.
-				if (restfactory.failedState) {
-					$state.go(restfactory.failedState);
+				if ($rootScope.failedState) {
+					$state.transitionTo($rootScope.failedState,$rootScope.failedParams,{ reload: true, inherit: true, notify: true });
 				} else {
 					$state.go('sampleChoser');
 				}

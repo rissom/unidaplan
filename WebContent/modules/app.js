@@ -318,6 +318,13 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 	        }
         })
         
+        .state('noRights', {
+	    	url: '/no-rights',
+	        templateUrl: 'modules/login/no-rights.html',
+	        controller: 'loginController as loginCtrl'
+        })
+        
+        
         
         .state('openExperiment', {
 	        url: '/experiments',
@@ -627,7 +634,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
     
     $rootScope.$on('$stateChangeStart', function(event, toState, toStateParams) {
       // track the state the user wants to go to; authorization service needs this
-    	if (toState!="login"){
+    	if (toState.name!="login" && toState.name!="noRights"){
 		    $rootScope.toState = toState;
 		    $rootScope.toStateParams = toStateParams;
 	    }

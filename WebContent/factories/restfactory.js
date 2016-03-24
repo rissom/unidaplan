@@ -7,11 +7,11 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 	$http.defaults.headers.post["Content-Type"] = "application/json";
 	$http.defaults.headers.put["Content-Type"] = "application/json";
 	
-	var rest = {};
-	var failedState={};
-	var setFailedState= function(fstate){
-		if (fstate.name!='login'){
-			rest.failedState=fstate;
+	var rest = {};	
+	var setFailedState = function(fstate,fparams){
+		if (fstate.name!='login' && fstate.name!='noRights'){
+			$rootScope.failedState=fstate;
+			$rootScope.failedParams=fparams
 		}
 	};
 	
@@ -29,7 +29,7 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 		try {
 			var ret = $http.get(uri,config);
 			ret.then(
-				function(data, status, headers, config) {
+				function(data) {
 					try {
 						if ( (typeof data.data == 'string') && (data.data.length>0) ) {
 							var text = data.data;
@@ -44,23 +44,23 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 					} catch (err) {
 						console.log("restfactory.GET: "+uri+" parse error: "+data,err);
 						defer.reject('parse error occured');
-						setFailedState($state.current);
+						setFailedState($rootScope.toState,$rootScope.toStateParams);
 					}
 				},
 				function(data) {
 					console.log("restfactory.GET: error: ",data);
 					defer.reject('some http error occured');
-					setFailedState($rootScope.toState);
+					setFailedState($rootScope.toState,$rootScope.toStateParams);
 					console.log($state);
 					if (data.status==401) {
-						$state.go('login');
+						$state.go('noRights');
 					}
 			    }
 			);
 		} catch(err) {
 			console.log("restfactory.GET: "+uri+" exception loading data: ",err);
 			defer.reject('Oops, try catch!');
-			setFailedState($state.current);
+			setFailedState($rootScope.toState,$rootScope.toStateParams);
 		}
 		return defer.promise;
 	};
@@ -91,22 +91,22 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 					} catch (err) {
 						console.log("restfactory.PUT: parse error: ",err);
 						defer.reject('parse error occured');
-						setFailedState($rootScope.toState);
+						setFailedState($rootScope.toState,$rootScope.toStateParams);
 					}
 				},
 				function(data) {
 					console.log("restfactory.PUT: error: ", data );
 					defer.reject('some http error occured');
-					setFailedState($state.current);
+					setFailedState($rootScope.toState,$rootScope.toStateParams);
 					if (data.status==401) {
-						$state.go('login');
+						$state.go('noRights');
 					}
 			    }
 			);
 		} catch(err) {
 			console.log("restfactory.PUT: exception loading data: ",err);
 			defer.reject('Oops, try catch!');
-			setFailedState($state.current);
+			setFailedState($rootScope.toState,$rootScope.toStateParams);
 		}
 		return defer.promise;
 	};
@@ -135,23 +135,23 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 					} catch (err) {
 						console.log("restfactory.POST: parse error: ",err);
 						defer.reject('parse error occured');
-						setFailedState($rootScope.toState);
+						setFailedState($rootScope.toState,$rootScope.toStateParams);
 					}
 				},
 				function(data) {
 					console.log("restfactory.POST: error: ",data);
 					defer.reject('some http error occured Status: '+data.status);
-					setFailedState($rootScope.toState);
+					setFailedState($rootScope.toState,$rootScope.toStateParams);
 					console.log($state)
 					if (data.status==401) {
-						$state.go('login');
+						$state.go('noRights');
 					}
 			    }
 			);
 		} catch(err) {
 			console.log("restfactory.POST: exception loading data: ",err);
 			defer.reject('Oops, try catch!');
-			setFailedState($state.current);
+			setFailedState($rootScope.toState,$rootScope.toStateParams);
 		}
 		return defer.promise;
 	};
@@ -173,13 +173,13 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 				function(data) {
 					console.log("restfactory.DELETE: error: ", data);
 					defer.reject('some http error occured');
-					setFailedState($rootScope.toState);
+					setFailedState($rootScope.toState,$rootScope.toStateParams);
 			    }
 			);
 		} catch(err) {
 			console.log("restfactory.DELETE: exception loading data: ",err);
 			defer.reject('Oops, try catch!');
-			setFailedState($state.current);
+			setFailedState($rootScope.toState,$rootScope.toStateParams);
 		}
 		return defer.promise;
 	};
