@@ -1,7 +1,7 @@
 (function(){
   'use strict';
 
-function editSingleSTParameterController($state,$modal,$stateParams,$translate,avSampleTypeService,parameter,restfactory,sampleService,languages){
+function editSingleSTParameterController($state,$stateParams,$translate,avSampleTypeService,parameter,restfactory,sampleService,languages){
   
 
     var thisController=this;
@@ -161,7 +161,7 @@ function editSingleSTParameterController($state,$modal,$stateParams,$translate,a
 }
 
 angular.module('unidaplan').controller('editSingleSTParameterController', 
-		['$state','$modal','$stateParams','$translate','avSampleTypeService','parameter',
+		['$state','$stateParams','$translate','avSampleTypeService','parameter',
 		 'restfactory','sampleService','languages',editSingleSTParameterController]);
 
 })();

@@ -1,7 +1,7 @@
 (function(){
   'use strict';
 
-function editSTParamsController($state,$modal,$stateParams,$translate,
+function editSTParamsController($state,$uibModal,$stateParams,$translate,
 		avParameters,restfactory,sampleService,parameterGrp,languages,avSampleTypeService){
   
 
@@ -12,7 +12,7 @@ function editSTParamsController($state,$modal,$stateParams,$translate,
     this.parameters=parameterGrp.parameters.sort(function(a,b){
     	return a.pos-b.pos;
     });
-  
+
     this.strings=parameterGrp.strings;
   
     this.sampletype=parameterGrp.sampletype;
@@ -166,7 +166,7 @@ function editSTParamsController($state,$modal,$stateParams,$translate,
   
   
 	this.addParameter = function () {
-		var modalInstance = $modal.open({
+		var modalInstance = $uibModal.open({
 		    animation: false,
 		    templateUrl: 'modules/modal-parameter-choser/modal-parameter-choser.html',
 		    controller: 'modalParameterChoser as mParameterChoserCtrl',
@@ -272,7 +272,7 @@ function editSTParamsController($state,$modal,$stateParams,$translate,
 }
 
 angular.module('unidaplan').controller('editSTParamsController', 
-		['$state','$modal','$stateParams','$translate','avParameters',
+		['$state','$uibModal','$stateParams','$translate','avParameters',
 		 'restfactory','sampleService','parameterGrp','languages','avSampleTypeService',editSTParamsController]);
 
 })();

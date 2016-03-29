@@ -2,7 +2,7 @@
 'use strict';
 
 
-function modalParameterChoserGrps($translate,$modalInstance,languages,restfactory,avParameters,paramGroups,parameters) {
+function modalParameterChoserGrps($translate,$uibModalInstance,languages,restfactory,avParameters,paramGroups,parameters) {
 
 	
 	this.avParameters=avParameters;
@@ -12,7 +12,7 @@ function modalParameterChoserGrps($translate,$modalInstance,languages,restfactor
 	var thisController=this;
 	
 	this.cancel=function(){ // Parameters where not changed
-	    $modalInstance.close({chosen:[]});
+	    $uibModalInstance.close({chosen:[]});
 	};
 	
 	if (parameters) {
@@ -23,7 +23,7 @@ function modalParameterChoserGrps($translate,$modalInstance,languages,restfactor
 
 	
 	this.assignParameters=function(){    // pass the new list of parameters if it has changed
-	    $modalInstance.close({chosen: this.selectedParameters, inParams:parameters});
+	    $uibModalInstance.close({chosen: this.selectedParameters, inParams:parameters});
 	};
 	
 	
@@ -37,7 +37,7 @@ function modalParameterChoserGrps($translate,$modalInstance,languages,restfactor
 };
 
         
-angular.module('unidaplan').controller('modalParameterChoserGrps',['$translate','$modalInstance','languages',
+angular.module('unidaplan').controller('modalParameterChoserGrps',['$translate','$uibModalInstance','languages',
                             'restfactory','avParameters','paramGroups','parameters',modalParameterChoserGrps]);
 
 })();

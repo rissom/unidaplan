@@ -79,7 +79,6 @@ ng-class="{'1':'ok','2':'att','3':'failed'}[processCtrl.process.status]" >&nbsp;
 			<td width="300" >&nbsp;<br /> &nbsp;
 				<button type="button" 
 						class="btn btn-danger"
-						ng-class="{'disabled':!processCtrl.deletable}"
 						ng-click="processCtrl.deleteProcess()"
 						ng-show="processCtrl.editable"
 						ui-sref="sampleChoser">

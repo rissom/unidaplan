@@ -2,7 +2,7 @@
 'use strict';
 
 
-function modalUserGroupChoser($scope,$translate,$modalInstance,groups,users,chosenUsers,chosenGroups,except,buttonLabel,label) {
+function modalUserGroupChoser($scope,$translate,$uibModalInstance,groups,users,chosenUsers,chosenGroups,except,buttonLabel,label) {
 
 	var thisController=this;
 	
@@ -63,7 +63,7 @@ function modalUserGroupChoser($scope,$translate,$modalInstance,groups,users,chos
 	
 	
 	this.cancel=function(){
-	    $modalInstance.close({chosen:this.oldChosenUsers,changed:false});
+	    $uibModalInstance.close({chosen:this.oldChosenUsers,changed:false});
 	}
 	
 	
@@ -71,7 +71,7 @@ function modalUserGroupChoser($scope,$translate,$modalInstance,groups,users,chos
 	this.grantRights=function(){    // pass the new list of users and if it changed
 		var changed=!thisController.oldChosenUsers.equals(thisController.chosenUsers) ||
 					!thisController.oldChosenGroups.equals(thisController.chosenGroups)
-	    $modalInstance.close({
+	    $uibModalInstance.close({
 	    	chosenUsers: thisController.chosenUsers,
 	    	chosenGroups: thisController.chosenGroups,
 	    	changed : changed}
@@ -146,7 +146,7 @@ function modalUserGroupChoser($scope,$translate,$modalInstance,groups,users,chos
 };
 
 
-angular.module('unidaplan').controller('modalUserGroupChoser',['$scope','$translate','$modalInstance',
+angular.module('unidaplan').controller('modalUserGroupChoser',['$scope','$translate','$uibModalInstance',
                             'groups','users','chosenUsers','chosenGroups','except','buttonLabel','label',modalUserGroupChoser]);
 
 })();

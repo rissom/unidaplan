@@ -1,0 +1,49 @@
+<div class="container">
+	<h3> 
+		{{ 'Chose Sampletypes' | translate }} 
+	</h3>
+	
+	<div class="row">
+	<!-- type choser -->  
+		<div class=col-md-6>
+			<br/>	
+			<table>
+				<tr ng-repeat="sampletype in mSampletypeRightChoserCtrl.sampletypes | orderBy:'namef()'">
+				<td>
+					{{sampletype.namef()}}
+				</td>
+				<td>			{{sampletype.rights}}
+				
+					<div class="btn-group">
+				        <label class="btn btn btn-primary" ng-model="sampletype.rights" uib-btn-radio="'Left'">{{'locked'|translate}}</label>
+				        <label class="btn btn btn-primary" ng-model="sampletype.rights" uib-btn-radio="'Middle'">{{'read'|translate}}</label>
+				        <label class="btn btn btn-primary" ng-model="sampletype.rights" uib-btn-radio="'Right'">{{'write'|translate}}</label>
+				    </div>
+				</td>
+				</tr>
+			</table>
+			
+			{{mSampletypeRightChoserCtrl.radioModel}}<br/>
+			<div class="btn-group">
+		        <label class="btn btn-primary" ng-model="radioModel" uib-btn-radio="'Left'">Left</label>
+		        <label class="btn btn-primary" ng-model="radioModel" uib-btn-radio="'Middle'">Middle</label>
+		        <label class="btn btn-primary" ng-model="radioModel" uib-btn-radio="'Right'">Right</label>
+    		</div>
+			<br/><br/><br/>
+		</div>
+	</div>
+	<br/>
+	<button ng-click="mSampletypeRightChoserCtrl.cancel()" 
+			class="btn btn-default">
+		{{'Cancel'|translate}}
+	</button>&nbsp;
+	
+	
+	<button ng-click="mSampletypeRightChoserCtrl.assignRights()" 
+			class="btn btn-primary">
+		{{'Assign Rights'|translate}}
+	</button>
+	<br /><br />
+	
+	
+</div>

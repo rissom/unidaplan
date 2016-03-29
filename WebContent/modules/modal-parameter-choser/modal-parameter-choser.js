@@ -2,7 +2,7 @@
 'use strict';
 
 
-function modalParameterChoser($translate,$modalInstance,languages,restfactory,avParameters,parameters) {
+function modalParameterChoser($translate,$uibModalInstance,languages,restfactory,avParameters,parameters) {
 	
 	this.avParameters=avParameters;
 
@@ -11,18 +11,18 @@ function modalParameterChoser($translate,$modalInstance,languages,restfactory,av
 
 	
 	this.cancel=function(){ // Parameters where not changed
-	    $modalInstance.close({chosen:[]});
+	    $uibModalInstance.close({chosen:[]});
 	};
 	
 	
 	
 	this.assignParameters=function(){    // pass the new list of parameters if it has changed
-	    $modalInstance.close({chosen: this.selectedParameters});
+	    $uibModalInstance.close({chosen: this.selectedParameters});
 	};
 }
 
         
-angular.module('unidaplan').controller('modalParameterChoser',['$translate','$modalInstance','languages',
+angular.module('unidaplan').controller('modalParameterChoser',['$translate','$uibModalInstance','languages',
                             'restfactory','avParameters','parameters',modalParameterChoser]);
 
 })();

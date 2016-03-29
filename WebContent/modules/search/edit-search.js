@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-function editSearchController(restfactory,$filter,$state,$stateParams,$translate,$modal,
+function editSearchController(restfactory,$filter,$state,$stateParams,$translate,$uibModal,
 		key2string,sampleTypes,ptypes,searchData,newSearch,languages,searchService,users,groups){
 		
 	var thisController = this;
@@ -102,7 +102,7 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 	
 	
 	this.addSampleParameter=function(){
-		var modalInstance = $modal.open({
+		var modalInstance = $uibModal.open({
 			animation: false,
 		    templateUrl: 'modules/modal-parameter-choser/modal-parameter-choser-with-grps.html',
 		    controller: 'modalParameterChoserGrps as mParameterChoserGrpsCtrl',
@@ -129,7 +129,7 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 
 	
 	this.addProcessParameter=function(){
-		var modalInstance = $modal.open({
+		var modalInstance = $uibModal.open({
 			animation: false,
 		    templateUrl: 'modules/modal-parameter-choser/modal-parameter-choser-with-grps.html',
 		    controller: 'modalParameterChoserGrps as mParameterChoserGrpsCtrl',
@@ -156,7 +156,7 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 	
 	
     this.addOutputParameter = function (type) {
-		var modalInstance = $modal.open({
+		var modalInstance = $uibModal.open({
 			animation: false,
 		    templateUrl: 'modules/modal-parameter-choser/modal-parameter-choser-with-grps.html',
 		    controller: 'modalParameterChoserGrps as mParameterChoserGrpsCtrl',
@@ -384,7 +384,7 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 
 	
 	this.openDialog = function () {				
-	    var modalInstance = $modal.open({
+	    var modalInstance = $uibModal.open({
 		    animation: false,
 		    templateUrl: 'modules/modal-user-group-choser/modal-user-group-choser.html',
 		    controller: 'modalUserGroupChoser as mUserGroupChoserCtrl',
@@ -487,6 +487,6 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 
 
 angular.module('unidaplan').controller('editSearchController',['restfactory','$filter','$state','$stateParams','$translate',
-                          '$modal','key2string','sampleTypes','ptypes','searchData','newSearch','languages','searchService','users','groups',editSearchController]);
+                          '$uibModal','key2string','sampleTypes','ptypes','searchData','newSearch','languages','searchService','users','groups',editSearchController]);
 
 })();

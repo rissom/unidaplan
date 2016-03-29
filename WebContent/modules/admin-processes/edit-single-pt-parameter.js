@@ -1,7 +1,7 @@
 (function(){
   'use strict';
 
-function editSinglePTParameterController($state,$modal,$stateParams,$translate,avProcessTypeService,parameter,restfactory,languages){
+function editSinglePTParameterController($state,$uibModal,$stateParams,$translate,avProcessTypeService,parameter,restfactory,languages){
   
 
     var thisController=this;
@@ -161,7 +161,7 @@ function editSinglePTParameterController($state,$modal,$stateParams,$translate,a
 }
 
 angular.module('unidaplan').controller('editSinglePTParameterController', 
-		['$state','$modal','$stateParams','$translate','avProcessTypeService','parameter',
+		['$state','$uibModal','$stateParams','$translate','avProcessTypeService','parameter',
 		 'restfactory','languages',editSinglePTParameterController]);
 
 })();

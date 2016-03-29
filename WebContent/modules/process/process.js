@@ -1,7 +1,7 @@
 (function(){
   'use strict';
 
-function process($state,$stateParams,$translate,avSampleTypeService,types,$modal,processData,restfactory,processService){
+function process($state,$stateParams,$translate,avSampleTypeService,types,$uibModal,processData,restfactory,processService){
   
 	var thisController=this;
   
@@ -28,7 +28,7 @@ function process($state,$stateParams,$translate,avSampleTypeService,types,$modal
   
 	this.openDialog = function () {
 	  
-		var modalInstance = $modal.open({
+		var modalInstance = $uibModal.open({
 			animation: false,
 			templateUrl: 'modules/modal-sample-choser/modal-sample-choser.html',
 			controller: 'modalSampleChoser as mSampleChoserCtrl',
@@ -159,7 +159,7 @@ function process($state,$stateParams,$translate,avSampleTypeService,types,$modal
  
 }
 
-angular.module('unidaplan').controller('process', ['$state','$stateParams','$translate','avSampleTypeService','types', '$modal',
+angular.module('unidaplan').controller('process', ['$state','$stateParams','$translate','avSampleTypeService','types', '$uibModal',
                                                    'processData','restfactory','processService',process]);
 
 })();

@@ -1,7 +1,7 @@
 (function(){
   'use strict';
 
-function editSampleParamGrpsController($state,$modal,$stateParams,$translate,$scope,avParameters,restfactory,sampleService,sampleType,languages,avSampleTypeService){
+function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,$scope,avParameters,restfactory,sampleService,sampleType,languages,avSampleTypeService){
   
   var thisController=this;
     
@@ -39,7 +39,7 @@ function editSampleParamGrpsController($state,$modal,$stateParams,$translate,$sc
   
   
   this.addParameter = function () {
-		var modalInstance = $modal.open({
+		var modalInstance = $uibModal.open({
 		    animation: false,
 		    templateUrl: 'modules/modal-parameter-choser/modal-parameter-choser.html',
 		    controller: 'modalParameterChoser as mParameterChoserCtrl',
@@ -257,7 +257,7 @@ function editSampleParamGrpsController($state,$modal,$stateParams,$translate,$sc
  
 };
 
-angular.module('unidaplan').controller('editSampleParamGrpsController', ['$state','$modal','$stateParams','$translate','$scope',
+angular.module('unidaplan').controller('editSampleParamGrpsController', ['$state','$uibModal','$stateParams','$translate','$scope',
        'avParameters','restfactory','sampleService','sampleType','languages','avSampleTypeService',editSampleParamGrpsController]);
 
 })();

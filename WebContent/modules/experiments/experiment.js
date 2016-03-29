@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-function experimentController($modal,$scope,editmode,experimentService,restfactory,$translate,$state,$stateParams,key2string,
+function experimentController($uibModal,$scope,editmode,experimentService,restfactory,$translate,$state,$stateParams,key2string,
 							  avSampleTypeService,avProcessTypeService,experimentData,ptypes,stypes,avParameters) {
 	
 	this.experiment = experimentData;
@@ -20,7 +20,7 @@ function experimentController($modal,$scope,editmode,experimentService,restfacto
 
 	  
 	this.addParameter = function () {
-		var modalInstance = $modal.open({
+		var modalInstance = $uibModal.open({
 			animation: false,
 			templateUrl: 'modules/modal-parameter-choser/modal-parameter-choser.html',
 			controller: 'modalParameterChoser as mParameterChoserCtrl',
@@ -56,7 +56,7 @@ function experimentController($modal,$scope,editmode,experimentService,restfacto
 	
 	
 	this.addSample = function () {
-		var modalInstance = $modal.open({
+		var modalInstance = $uibModal.open({
 		    animation: false,
 		    templateUrl: 'modules/modal-sample-choser/modal-sample-choser.html',
 		    controller: 'modalSampleChoser as mSampleChoserCtrl',
@@ -265,7 +265,7 @@ function experimentController($modal,$scope,editmode,experimentService,restfacto
 	
 	this.replaceSample = function (sample) {
 		 console.log ("replacing")
-		  var modalInstance = $modal.open({
+		  var modalInstance = $uibModal.open({
 		    animation: false,
 		    templateUrl: 'modules/modal-sample-choser/modal-sample-choser.html',
 		    controller: 'modalSampleChoser as mSampleChoserCtrl',
@@ -405,7 +405,7 @@ function experimentController($modal,$scope,editmode,experimentService,restfacto
 }
     
         
-angular.module('unidaplan').controller('experimentController',['$modal','$scope','editmode','experimentService','restfactory',
+angular.module('unidaplan').controller('experimentController',['$uibModal','$scope','editmode','experimentService','restfactory',
                '$translate','$state','$stateParams','key2string','avSampleTypeService','avProcessTypeService',
                'experimentData','ptypes','stypes','avParameters',experimentController]);
 

@@ -1,7 +1,7 @@
 (function(){
   'use strict';
 
-function editPtParamsController($state,$modal,$stateParams,$translate,avParameters,restfactory,processService,parameterGrp,languages,avProcessTypeService){
+function editPtParamsController($state,$uibModal,$stateParams,$translate,avParameters,restfactory,processService,parameterGrp,languages,avProcessTypeService){
   
   var thisController=this;
   
@@ -124,7 +124,7 @@ function editPtParamsController($state,$modal,$stateParams,$translate,avParamete
   
   
   this.addParameter = function () {
-	  var modalInstance = $modal.open({
+	  var modalInstance = $uibModal.open({
 	    animation: false,
 	    templateUrl: 'modules/modal-parameter-choser/modal-parameter-choser.html',
 	    controller: 'modalParameterChoser as mParameterChoserCtrl',
@@ -201,7 +201,7 @@ function editPtParamsController($state,$modal,$stateParams,$translate,avParamete
 
 };
 
-angular.module('unidaplan').controller('editPtParamsController', ['$state','$modal','$stateParams','$translate',
+angular.module('unidaplan').controller('editPtParamsController', ['$state','$uibModal','$stateParams','$translate',
        'avParameters','restfactory','processService','parameterGrp','languages','avProcessTypeService',editPtParamsController]);
 
 })();

@@ -3,8 +3,11 @@
 </h3>
 <table class="table">
 	<thead class=parametertablehead>
-		<tr><td><b>Name</b></td><td><b>{{'Members'|translate}}</b></td>
-			<td><b>{{'Delete Group'|translate}}</b></td></tr>
+		<tr><td><b>Name</b></td>
+		<td><b>{{'Members'|translate}}</b></td>
+		<td><b>{{'processtypes'|translate}}</b></td>
+		<td><b>{{'sampletypes'|translate}}</b></td>
+		<td><b>{{'Delete Group'|translate}}</b></td></tr>
 	</thead>	
 	<tbody>
 		<tr ng-repeat="group in groupCtrl.groups | orderBy: 'id'">
@@ -24,10 +27,31 @@
 				</div>
   				<button type="button"
 						class="btn btn-default btn-xs" 
-						ng-click="groupCtrl.openDialog(group)">
+						ng-click="groupCtrl.openMembersDialog(group)">
 						<b>+/-</b>
 				</button>
 			</td>
+			<td>
+				<div ng-repeat="processtype in group.processtypes" >
+				{{groupCtrl.getProcesstypeName(processtype)}} ({{processtype.permission}})
+				</div>
+				<button type="button" 
+						class="btn btn-default btn-xs"
+						ng-hide="group.id==1" 
+						ng-click="groupCtrl.openProcessTypeRightsDialog(group)">
+						<b>+/-</b>
+				</button></td>
+			<td>				
+				<div ng-repeat="sampletype in group.sampletypes" >
+				{{groupCtrl.getSampletypeName(sampletype)}} ({{sampletype.permission}})
+				
+				</div>
+				<button type="button" 
+						class="btn btn-default btn-xs" 
+						ng-hide="group.id==1"
+						ng-click="groupCtrl.openSampleTypeRightsDialog(group)">
+						<b>+/-</b>
+				</button></td>
 			<td>
 				<button type="button"
 						class="btn btn-default btn-xs" 
@@ -37,7 +61,7 @@
 				</button>
 			</td>
 		</tr>  <!-- ends ng-repeat -->
-		<tr><td></td><td></td><td></td></tr>
+		<tr><td></td><td></td><td></td><td></td><td></td></tr>
 	</tbody>
 </table>
 	<button type="button"

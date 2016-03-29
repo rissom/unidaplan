@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-function groupController($modal,$translate,$scope,$state,$stateParams,groups,users,userService) {
+function groupController($uibModal,$translate,$scope,$state,$stateParams,groups,ptypes,sampletypes,users,userService) {
 	
 	this.groups = groups;
 	
@@ -9,18 +9,48 @@ function groupController($modal,$translate,$scope,$state,$stateParams,groups,use
 
 	this.strings = [];
 	
+	this.sampletypes = sampletypes;
+	
+	this.ptypes = ptypes;
+	
 	var thisController=this;
 	
 	
 	
 	this.isMemberOf = function(group){
-		return function( user ) {
-			return (group.members.indexOf(user.id)>-1)
-		  };
+		return function(user){
+			var answer;
+			if (group.members){
+				answer = (group.members.indexOf(user.id)>-1);
+			} else {
+				answer = false;
+			}
+			return answer
+		};
+	}
+
+	
+	
+	this.getProcesstypeName = function(pt){
+		for (var i=0; i<ptypes.length; i++){
+			if (ptypes[i].id==pt.id) {
+				return ptypes[i].namef();
+			}
+		}
 	}
 	
 	
+	
+	this.getSampletypeName = function(st){
+		for (var i=0; i<sampletypes.length; i++){
+			if (sampletypes[i].id==st.id) {
+				return sampletypes[i].namef();
+			}
+		}
+	}
+	
 
+	
 	this.addGroup = function(group) {
 		var promise = userService.addGroup();
 	    promise.then(function(rest) {
@@ -73,8 +103,8 @@ function groupController($modal,$translate,$scope,$state,$stateParams,groups,use
 	
 	
 	
-	this.openDialog = function (group) {				
-	    var modalInstance = $modal.open({
+	this.openMembersDialog = function (group) {				
+	    var modalInstanceM = $uibModal.open({
 		    animation: false,
 		    templateUrl: 'modules/modal-user-choser/modal-user-choser.html',
 		    controller: 'modalUserChoser as mUserChoserCtrl',
@@ -86,7 +116,7 @@ function groupController($modal,$translate,$scope,$state,$stateParams,groups,use
 		    						if (group.members){
 		    							cUsers=group.members;
 		    						}
-	    							return users.filter(function(testUser){return group.members.indexOf(testUser.id)>-1});
+	    							return users.filter(function(testUser){return cUsers.indexOf(testUser.id)>-1});
 		    				  },
 		        groups      : function() { 
 		        				var tgroups = groups.filter(function(testGroup){return testGroup!=group});
@@ -104,7 +134,7 @@ function groupController($modal,$translate,$scope,$state,$stateParams,groups,use
 		    }		        
 		});
 	    
-	  	modalInstance.result.then(function (result) {  // get the new Userlist + Info if it is changed from Modal. 
+	  	modalInstanceM.result.then(function (result) {  // get the new Userlist + Info if it is changed from Modal. 
 			if (result.changed==true){
 				thisController.assignUsers(group,result.chosen);
 			}
@@ -113,6 +143,20 @@ function groupController($modal,$translate,$scope,$state,$stateParams,groups,use
 	    });
 	};
 
+	
+	
+	this.openSampleTypeRightsDialog = function (group) {				
+	    var modalInstance = $uibModal.open({
+		    animation: false,
+		    templateUrl: 'modules/modal-right-chosers/modal-sampletype-right-choser.html',
+		    controller: 'mSampletypeRightChoser as mSampletypeRightChoserCtrl',
+		    size: 'lg',
+		    resolve: {
+		        sampletypes	: function() { return sampletypes; }
+		    }
+		});
+	};
+	
 	
 	
 	this.refuse = function(group) { // is called when editing of groupname is cancelled
@@ -132,6 +176,6 @@ function groupController($modal,$translate,$scope,$state,$stateParams,groups,use
 };
     
         
-angular.module('unidaplan').controller('groupController',['$modal','$translate','$scope','$state','$stateParams','groups','users','userService',groupController]);
+angular.module('unidaplan').controller('groupController',['$uibModal','$translate','$scope','$state','$stateParams','groups','ptypes','sampletypes','users','userService',groupController]);
 
 })();

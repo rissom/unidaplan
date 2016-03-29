@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-function sampleController(sample,$state,$stateParams,$modal,$filter,types,sampleService,avSampleTypeService,
+function sampleController(sample,$state,$stateParams,$uibModal,$filter,types,sampleService,avSampleTypeService,
 						  $translate,key2string,ptypes,avProcessTypeService){
 	
 	var thisController = this;
@@ -139,7 +139,7 @@ function sampleController(sample,$state,$stateParams,$modal,$filter,types,sample
 			eSamples=this.ancestors;
 		}		
 			
-	    var modalInstance = $modal.open({
+	    var modalInstance = $uibModal.open({
 		    animation: false,
 		    templateUrl: 'modules/modal-sample-choser/modal-sample-choser.html',
 		    controller: 'modalSampleChoser as mSampleChoserCtrl',
@@ -225,7 +225,7 @@ function sampleController(sample,$state,$stateParams,$modal,$filter,types,sample
 
 
 
-angular.module('unidaplan').controller('sampleController',['sample','$state','$stateParams','$modal','$filter','types',
+angular.module('unidaplan').controller('sampleController',['sample','$state','$stateParams','$uibModal','$filter','types',
      'sampleService','avSampleTypeService','$translate','key2string','ptypes','avProcessTypeService',sampleController]);
 
 })();

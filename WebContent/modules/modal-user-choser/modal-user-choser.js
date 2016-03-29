@@ -2,7 +2,7 @@
 'use strict';
 
 
-function modalUserChoser($scope,$translate,$modalInstance,groups,users,chosenUsers,except,buttonLabel,mode) {
+function modalUserChoser($scope,$translate,$uibModalInstance,groups,users,chosenUsers,except,buttonLabel,mode) {
 
 	var thisController=this;
 	
@@ -47,14 +47,14 @@ function modalUserChoser($scope,$translate,$modalInstance,groups,users,chosenUse
 	
 	
 	this.cancel=function(){
-	    $modalInstance.close({chosen:this.oldChosenUsers,changed:false});
+	    $uibModalInstance.close({chosen:this.oldChosenUsers,changed:false});
 	}
 	
 	
 	
 	this.assignUsers=function(){    // pass the new list of users and if it changed
 		var assignedUsersChanged=!thisController.oldChosenUsers.equals(this.chosenUsers)
-	    $modalInstance.close({chosen: this.chosenUsers, changed : assignedUsersChanged});
+	    $uibModalInstance.close({chosen: this.chosenUsers, changed : assignedUsersChanged});
 	}
 	
 	
@@ -97,7 +97,7 @@ function modalUserChoser($scope,$translate,$modalInstance,groups,users,chosenUse
 };
 
 
-angular.module('unidaplan').controller('modalUserChoser',['$scope','$translate','$modalInstance',
+angular.module('unidaplan').controller('modalUserChoser',['$scope','$translate','$uibModalInstance',
                             'groups','users','chosenUsers','except','buttonLabel','mode',modalUserChoser]);
 
 })();

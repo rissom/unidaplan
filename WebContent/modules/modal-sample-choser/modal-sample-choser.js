@@ -2,7 +2,7 @@
 'use strict';
 
 
-function modalSampleChoser(avSampleTypeService,$translate,$scope,$modalInstance,restfactory,types,samples,except,buttonLabel,mode,sampleService) {
+function modalSampleChoser(avSampleTypeService,$translate,$scope,$uibModalInstance,restfactory,types,samples,except,buttonLabel,mode,sampleService) {
 
 	var thisController=this;
 	
@@ -154,7 +154,7 @@ function modalSampleChoser(avSampleTypeService,$translate,$scope,$modalInstance,
 	
 	
 	this.close=function(){
-	    $modalInstance.close({chosen:this.oldChosenSamples,changed:false});
+	    $uibModalInstance.close({chosen:this.oldChosenSamples,changed:false});
 	}
 	
 	
@@ -175,7 +175,7 @@ function modalSampleChoser(avSampleTypeService,$translate,$scope,$modalInstance,
 	
 	this.assignSamples=function(){    // pass the new list of samples and if it changed
 		var assignedSamplesChanged=!this.oldChosenSamples.equals(this.chosenSamples)
-	    $modalInstance.close({chosen: this.chosenSamples, changed : assignedSamplesChanged});
+	    $uibModalInstance.close({chosen: this.chosenSamples, changed : assignedSamplesChanged});
 	}
 	
 	
@@ -215,7 +215,7 @@ function modalSampleChoser(avSampleTypeService,$translate,$scope,$modalInstance,
 };
 
         
-angular.module('unidaplan').controller('modalSampleChoser',['avSampleTypeService','$translate','$scope','$modalInstance',
+angular.module('unidaplan').controller('modalSampleChoser',['avSampleTypeService','$translate','$scope','$uibModalInstance',
                             'restfactory','types','samples','except','buttonLabel','mode','sampleService',modalSampleChoser]);
 
 })();
