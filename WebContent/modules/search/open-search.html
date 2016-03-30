@@ -20,8 +20,8 @@
 							<a ui-sref="search({id:msearch.id})">{{msearch.namef()}}</a>
 						</td>
 						<td>
-							<div class="dropdown" dropdown on-toggle="toggled(open)" ng-show="$root.admin">
-								<a class="dropdown-toggle" dropdown-toggle>
+							<div class="dropdown" uib-dropdown on-toggle="toggled(open)" ng-show="$root.admin">
+								<a class="dropdown-toggle" uib-dropdown-toggle>
 						  			{{'action'|translate}} &#x25BC;
 							    </a>
 							    <ul class="dropdown-menu">
@@ -67,9 +67,9 @@
 						<a ui-sref="search({id:osearch.id})">{{osearch.namef()}}</a>
 					</td>
 					<td>
-						<div class="dropdown" dropdown ng-show="$root.admin==true" on-toggle="toggled(open)"
+						<div class="dropdown" uib-dropdown ng-show="$root.admin==true" on-toggle="toggled(open)"
 							>
-							<a class="dropdown-toggle" dropdown-toggle>
+							<a class="dropdown-toggle" uib-dropdown-toggle>
 					  			{{'action'|translate}} &#x25BC;
 						    </a>
 						    <ul class="dropdown-menu">

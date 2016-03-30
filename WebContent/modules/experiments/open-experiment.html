@@ -21,8 +21,8 @@
 				<a ui-sref="experiment({experimentID:experiment.id,editmode:'false'})">{{experiment.namef()}}</a>
 				</td>
 				<td>
-	  				<div class="dropdown" dropdown on-toggle="toggled(open)">
-					      <a class="dropdown-toggle" dropdown-toggle>
+	  				<div class="dropdown" uib-dropdown on-toggle="toggled(open)">
+					      <a class="dropdown-toggle" uib-dropdown-toggle>
 				  			{{oexpCtrl.getStatus(experiment)}}
 					      </a>
 					      <ul class="dropdown-menu">
