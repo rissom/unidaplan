@@ -9,11 +9,11 @@
 		</button>
 		<a class="navbar-brand" ui-sref="openExperiment">Unidaplan</a>
 	</div>
-	<div class="collapse navbar-collapse" collapse="menuCtrl.navCollapsed">
+	<div class="collapse navbar-collapse" uib-collapse="menuCtrl.navCollapsed">
 		<ul class="nav navbar-nav">
 
-			<li class="dropdown" dropdown="">
-				<a href="#" class="dropdown-toggle" dropdown-toggle="" ng-disabled="disabled">
+			<li class="dropdown" uib-dropdown="">
+				<a href="#" class="dropdown-toggle" uib-dropdown-toggle="">
 					{{'Samples'|translate}} 
 				</a>
 				<ul class="dropdown-menu" role="menu">
@@ -24,8 +24,8 @@
 				</ul>
 			</li>
 
-			<li class="dropdown" dropdown="">
-				<a href="#" class="dropdown-toggle" dropdown-toggle="" ng-disabled="disabled">
+			<li class="dropdown" uib-dropdown="">
+				<a href="#" class="dropdown-toggle" uib-dropdown-toggle="">
 					{{'Processes'|translate}}
 				</a>
 				<ul class="dropdown-menu" role="menu">
@@ -36,8 +36,8 @@
 				</ul>
 			</li>
 
-			<li class="dropdown" dropdown="">
-				<a href="#" class="dropdown-toggle" dropdown-toggle="" ng-disabled="disabled">
+			<li class="dropdown" uib-dropdown="">
+				<a href="#" class="dropdown-toggle" uib-dropdown-toggle="">
 					{{'Experiment'|translate}}
 				</a>
 				<ul class="dropdown-menu" role="menu">
@@ -46,8 +46,8 @@
 					<li><a ui-sref="recentExperiments"> {{'Recent Experiments'|translate}} </a></li>
 				</ul>
 			</li>
-			<li class="dropdown" dropdown="">
-				<a href="#" class="dropdown-toggle" dropdown-toggle="" ng-disabled="disabled">
+			<li class="dropdown" uib-dropdown="">
+				<a href="#" class="dropdown-toggle" uib-dropdown-toggle="">
 					{{'Search'|translate}} 
 				</a>
 				<ul class="dropdown-menu" role="menu">
@@ -55,8 +55,8 @@
 					<li><a ui-sref="openSearch"> {{'Show Searches'|translate}} </a></li>
 				</ul>
 			</li>
-			<li class="dropdown" dropdown="" ng-show="$root.admin==true">
-				<a href="#" class="dropdown-toggle" dropdown-toggle="" ng-disabled="disabled">
+			<li class="dropdown" uib-dropdown="" ng-show="$root.admin==true">
+				<a class="dropdown-toggle" uib-dropdown-toggle="">
 					{{'Administration'|translate}} 
 				</a>
 				<ul class="dropdown-menu" role="menu">
@@ -66,11 +66,10 @@
 					<li><a ui-sref="adminProcesses"> {{'Processtypes'|translate}} </a></li>
 					<li><a ui-sref="parameter"> {{'Parameters'|translate}} </a></li>
 					<li><a ui-sref="import"> {{'Import'|translate}} </a></li>
-					
 				</ul>
 			</li>
-			<li class="dropdown" dropdown="">
-				<a href="#" class="dropdown-toggle" dropdown-toggle="" ng-disabled="disabled">
+			<li class="dropdown" uib-dropdown="">
+				<a href="#" class="dropdown-toggle" uib-dropdown-toggle="">
 					<span ng-hide="$root.username">
 					{{'User'|translate}}
 					</span>
@@ -87,8 +86,8 @@
 
 		</ul>
  		<ul class="nav navbar-nav navbar-right">
-			<li class="dropdown" dropdown="">
-				<a href="#" class="dropdown-toggle" dropdown-toggle="" ng-disabled="disabled">
+			<li class="dropdown" uib-dropdown="">
+				<a href="#" class="dropdown-toggle" uib-dropdown-toggle="" ng-disabled="disabled">
 					{{'Help'|translate}} &nbsp;  &nbsp;
 				</a>
 				<ul class="dropdown-menu" role="menu">
