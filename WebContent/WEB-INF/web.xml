@@ -928,6 +928,17 @@
   </servlet-mapping>
   
   <servlet>
+    <description>update rights of groups for sampletypes, processtypes,...</description>
+    <display-name>UpdateGroupRights</display-name>
+    <servlet-name>UpdateGroupRights</servlet-name>
+    <servlet-class>unidaplan.UpdateGroupRights</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateGroupRights</servlet-name>
+    <url-pattern>/update-group-rights</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
     <description>UpdatePTParamGrp</description>
     <display-name>UpdatePTParamGrp</display-name>
     <servlet-name>UpdatePTParamGrp</servlet-name>

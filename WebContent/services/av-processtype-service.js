@@ -243,6 +243,10 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 	
 	
 	
+	this.updateGroupRights = function (updatedRights){
+		return restfactory.PUT('update-group-rights',updatedRights);
+	}	
+	
 };
 
 

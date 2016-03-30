@@ -21,7 +21,7 @@ public class GetGroups extends HttpServlet {
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
 		int admins=1;
-		PreparedStatement pstmt;
+		PreparedStatement pStmt;
 	    response.setContentType("application/json");
 	    request.setCharacterEncoding("utf-8");
 	    response.setCharacterEncoding("utf-8");
@@ -30,23 +30,32 @@ public class GetGroups extends HttpServlet {
 	    try {  
 		    dBconn.startDB();
 		    if (Unidatoolkit.isMemberOfGroup(userID, admins, dBconn)){ // admins are allowed to do everything
-				pstmt= dBconn.conn.prepareStatement( 	
-						 "SELECT "
-						+" groups.id, "
-						+" groups.name, "
-						+" ''||array_to_json(array_agg(userid)) AS members "
-						+"FROM groups " 
-						+"LEFT JOIN groupmemberships ON (groups.id=groupid) " 
-						+"GROUP BY groups.id");
-				JSONArray groups=dBconn.jsonArrayFromPreparedStmt(pstmt);
-				pstmt.close();			
+				pStmt= dBconn.conn.prepareStatement("WITH "
+						+"members AS ( "
+						+"SELECT groupid, array_to_json(array_agg(userid)) AS members "
+						+"FROM groupmemberships " 
+						+"GROUP BY groupid " 
+						+"), "
+						+"sampletypes AS ( "
+						+"SELECT groupid, array_to_json(array_agg(json_build_object('id',sampletype,'permission',permission))) " 
+						+"AS sampletypes "
+						+"FROM rightssampletypegroup " 
+						+"GROUP BY groupid "
+						+"), "
+						+"processtypes AS ( "
+						+"SELECT groupid, array_to_json(array_agg(json_build_object('id',processtype,'permission',permission))) "
+						+"AS processtypes "
+						+"FROM rightsprocesstypegroup "
+						+"GROUP BY groupid "
+						+") "
+						+"SELECT json_build_object('id',groups.id, 'name',groups.name, 'members',members, 'sampletypes',sampletypes, 'processtypes', processtypes) "
+						+"FROM groups "
+						+"LEFT JOIN members ON members.groupid=groups.id "
+						+"LEFT JOIN sampletypes st ON st.groupid=groups.id "
+						+"LEFT JOIN processtypes pt ON pt.groupid=groups.id ");
+				JSONArray groups=dBconn.jsonArrayFromPreparedStmt(pStmt);
+				pStmt.close();
 				dBconn.closeDB();
-				for (int i=0; i<groups.length();i++){
-					String members=groups.getJSONObject(i).getString("members");
-					groups.getJSONObject(i).remove(members);
-					JSONArray membersArray= new JSONArray(members);
-					groups.getJSONObject(i).put("members",membersArray);
-				}
 				out.println(groups.toString());
 
 		    }

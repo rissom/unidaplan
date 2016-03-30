@@ -31,7 +31,6 @@ public class Process extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
     	
-    	Boolean deletable = false;
     	Boolean editable = false;
 		boolean found=false;
 
@@ -46,7 +45,7 @@ public class Process extends HttpServlet {
 		response.setCharacterEncoding("utf-8");
 		PrintWriter out = response.getWriter();
 		DBconnection dBconn=new DBconnection();
-
+		String privilege="n";
 		int processID=1;
   	  	int processTypeID=1;
   	  	int pnumber=0;
@@ -67,9 +66,15 @@ public class Process extends HttpServlet {
 
   	  		dBconn.startDB();
   	  		
-  			deletable=Unidatoolkit.isMemberOfGroup(userID, 1, dBconn);
-  			editable=Unidatoolkit.isMemberOfGroup(userID, 1, dBconn);
-
+	        pStmt= dBconn.conn.prepareStatement( 	
+					"SELECT getProcessRights(vuserid:=?,vprocess:=?)");
+			pStmt.setInt(1,userID);
+			pStmt.setInt(2,processID);
+			privilege=dBconn.getSingleStringValue(pStmt);
+			pStmt.close();
+	        
+	        editable= privilege!=null && privilege.equals("w");
+ 
 		  
   	  		// get number, type and status 
   	  		pStmt= dBconn.conn.prepareStatement(
@@ -336,7 +341,6 @@ public class Process extends HttpServlet {
 	        query+= buff.toString() + "}'::int[])";
 	        JSONArray theStrings=dBconn.jsonfromquery(query);
 	        jsProcess.put("strings", theStrings);
-	        jsProcess.put("deletable", deletable);
 	        jsProcess.put("editable", editable);
 		} catch (SQLException e) {
 			System.err.println("Showsample: Problems with SQL query for Stringkeys");

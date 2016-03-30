@@ -1,0 +1,42 @@
+<div class="container">
+	<h3> 
+		{{ 'Assign rights for group' | translate }} '{{mProcesstypeRightChoserCtrl.groupname}}' {{'to access processtypes'|translate}} 
+	</h3>
+	
+	<div class="row">
+	<!-- type choser -->  
+		<div class=col-md-6>
+			<br/>	
+			<table>
+				<tr ng-repeat="processtype in mProcesstypeRightChoserCtrl.processtypes | orderBy:'namef()'">
+				<td>
+					{{processtype.namef()}}&nbsp;&nbsp;&nbsp;
+				</td>
+				<td>				
+					<div class="btn-group">
+				        <label class="btn btn btn-default" ng-model="processtype.permission" uib-btn-radio="'l'">{{'locked'|translate}}</label>
+				        <label class="btn btn btn-default" ng-model="processtype.permission" uib-btn-radio="'r'">{{'read only'|translate}}</label>
+				        <label class="btn btn btn-default" ng-model="processtype.permission" uib-btn-radio="'w'">{{'read/write'|translate}}</label>
+				    </div>
+				</td>
+				</tr>
+			</table>
+			
+			<br/><br/><br/>
+		</div>
+	</div>
+	<br/>
+	<button ng-click="mProcesstypeRightChoserCtrl.cancel()" 
+			class="btn btn-default">
+		{{'Cancel'|translate}}
+	</button>&nbsp;
+	
+	
+	<button ng-click="mProcesstypeRightChoserCtrl.assignRights()" 
+			class="btn btn-primary">
+		{{'Assign Rights'|translate}}
+	</button>
+	<br /><br />
+	
+	
+</div>

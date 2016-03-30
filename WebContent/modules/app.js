@@ -248,6 +248,12 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 	        	},
 	        	users : function(userService){
 	        		return userService.getUsers();
+	        	},
+	        	ptypes : function(avProcessTypeService){
+	        		return avProcessTypeService.getProcessTypes();
+	        	},
+	        	sampletypes : function(avSampleTypeService){
+	        		return avSampleTypeService.getSampleTypes();
 	        	}
 	        }
         })

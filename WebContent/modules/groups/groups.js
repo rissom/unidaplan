@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-function groupController($uibModal,$translate,$scope,$state,$stateParams,groups,ptypes,sampletypes,users,userService) {
+function groupController($uibModal,$translate,$scope,$state,$stateParams,avProcessTypeService,avSampleTypeService,groups,ptypes,sampletypes,users,userService) {
 	
 	this.groups = groups;
 	
@@ -49,7 +49,7 @@ function groupController($uibModal,$translate,$scope,$state,$stateParams,groups,
 		}
 	}
 	
-
+	
 	
 	this.addGroup = function(group) {
 		var promise = userService.addGroup();
@@ -142,6 +142,27 @@ function groupController($uibModal,$translate,$scope,$state,$stateParams,groups,
 	        console.log('Strange Error: Modal dismissed at: ' + new Date());
 	    });
 	};
+	
+	
+	
+	this.openProcessTypeRightsDialog = function (group) {				
+	    var modalInstance = $uibModal.open({
+		    animation: false,
+		    templateUrl: 'modules/modal-right-chosers/modal-processtype-right-choser.html',
+		    controller: 'mProcesstypeRightChoser as mProcesstypeRightChoserCtrl',
+		    size: 'lg',
+		    resolve: {
+		    	processtypes: function() { return ptypes; },
+	    		group		: function() { return group;}
+		    }
+		});
+	    modalInstance.result.then(function(updatedRights){
+	    	if (updatedRights){
+	    		var promise = avProcessTypeService.updateGroupRights(updatedRights);
+	    		promise.then(function(){reload()});
+	    	}
+	    })
+	};
 
 	
 	
@@ -152,9 +173,16 @@ function groupController($uibModal,$translate,$scope,$state,$stateParams,groups,
 		    controller: 'mSampletypeRightChoser as mSampletypeRightChoserCtrl',
 		    size: 'lg',
 		    resolve: {
-		        sampletypes	: function() { return sampletypes; }
+		        sampletypes	: function() { return sampletypes; },
+	    		group		: function() { return group;}
 		    }
 		});
+	    modalInstance.result.then(function(updatedRights){
+	    	if (updatedRights){
+	    		var promise = avSampleTypeService.updateGroupRights(updatedRights);
+	    		promise.then(function(){reload()});
+	    	}
+	    })
 	};
 	
 	
@@ -176,6 +204,7 @@ function groupController($uibModal,$translate,$scope,$state,$stateParams,groups,
 };
     
         
-angular.module('unidaplan').controller('groupController',['$uibModal','$translate','$scope','$state','$stateParams','groups','ptypes','sampletypes','users','userService',groupController]);
+angular.module('unidaplan').controller('groupController',['$uibModal','$translate','$scope','$state','$stateParams',
+    'avProcessTypeService','avSampleTypeService','groups','ptypes','sampletypes','users','userService',groupController]);
 
 })();
