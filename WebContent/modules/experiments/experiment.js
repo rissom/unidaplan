@@ -204,19 +204,6 @@ function experimentController($uibModal,$scope,editmode,experimentService,restfa
 	};
 	
 	
-	
-	this.getWidth = function(){
-		//adjusts the width of a div for the experiment in edit-mode. 
-		// So big tables are not squeezed
-		var numProc=0;
-		if (this.experiment.processes) { 
-			numProc=this.experiment.processes.length; 
-		}
-		var mystyle= {'width':500+230*numProc+'px'};
-		return mystyle;
-	};
-	
-	
 		
 	this.getPlannedProcess = function(process,pprocesses){
 		var retprocess=false
@@ -232,6 +219,26 @@ function experimentController($uibModal,$scope,editmode,experimentService,restfa
 	
 	
 	
+	this.getWidth = function(){
+		//adjusts the width of a div for the experiment in edit-mode. 
+		// So big tables are not squeezed
+		var numProc=0;
+		if (this.experiment.processes) { 
+			numProc=this.experiment.processes.length; 
+		}
+		var mystyle= {'width':500+230*numProc+'px'};
+		return mystyle;
+	};
+	
+	
+	
+	this.markColumn=function(processID){
+		var promise=experimentService.markAllProcesses(this.experiment.id,processID);
+		promise.then(function(){reload();});
+	};
+	
+	
+	
 	this.moveProcessRight = function(process){
 		for (var i=0; i<this.experiment.processes.length; i++){
 			if (this.experiment.processes[i].position==process.position+1){
@@ -240,13 +247,6 @@ function experimentController($uibModal,$scope,editmode,experimentService,restfa
 		}
 		process.position=process.position+1;
 		this.updatePositionsForProcesses();
-	};
-	
-	
-	
-	this.markColumn=function(processID){
-		var promise=experimentService.markAllProcesses(this.experiment.id,processID);
-		promise.then(function(){reload();});
 	};
 	
 
@@ -261,6 +261,17 @@ function experimentController($uibModal,$scope,editmode,experimentService,restfa
 		this.updatePositionsForProcesses();
 	};
 	
+	
+	this.plannedProcessExists = function(process,sample){
+		if (sample.pprocesses){
+			for (var i=0; i<sample.pprocesses.length;i++){
+				if (sample.pprocesses[i].eppprocess==process.id){
+					return true;
+				}
+			}
+		}
+		return false;
+	};
 		
 	
 	this.replaceSample = function (sample) {
