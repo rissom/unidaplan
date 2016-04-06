@@ -21,12 +21,22 @@ var dateParameter = function() {
 		},
 		controller: function($scope){
 			
-			var thisController=this;
+			var tc=this;
 			
 			if ("value" in $scope.parameter){
-				var myDate=new Date($scope.parameter.value);
-				this.dateString = myDate.toLocaleDateString()
+				tc.date = new Date($scope.parameter.value);
+				tc.newDate = new Date($scope.parameter.value);
+			}
+			
+			
+			
+			this.getDateString = function(){
+				tc.dateString = myDate.toLocaleDateString()
 				this.newValue=this.dateString;
+				if (tc.date){
+					return tc.date.toLocaleDateString();
+				}
+				return '-'; // return '-' if no timestamp is defined.
 			}
 			
 			this.update= function(){
@@ -40,10 +50,11 @@ var dateParameter = function() {
 			
 			this.keyUp = function(keyCode) {
 				if (keyCode===13) {				// Return key pressed
-					thisController.update();
+					tc.update();
 				}
 				if (keyCode===27) {		// Escape key pressed
-					$scope.parameter.editing=false;			
+					$scope.parameter.editing=false;	
+					this.newValue=this.dateString;
 				}
 			}	  
 						

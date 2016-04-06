@@ -1,11 +1,11 @@
 <div>
-	<span ng-hide="parameter.editing">{{timestampParamCtrl.newValue}}
+	<span ng-hide="parameter.editing">{{timestampParamCtrl.getTimestampString()}}
 	</span>    
 	<input 
-		ng-show="parameter.editing"
+		ng-if="parameter.editing"
 		type="date" 
 		uib-datepicker-popup 
-		ng-model="parameter.newDate"
+		ng-model="timestampParamCtrl.newTimestamp"
 		is-open="status.opened"
 	 	datepicker-options="dateOptions"
 	 	ng-keyup="timestampParamCtrl.keyUp($event.keyCode)"
@@ -13,7 +13,7 @@
 	
 	<input ng-show="parameter.editing"
 			type="time"
-			ng-model="parameter.newDate"
+			ng-model="timestampParamCtrl.newTimestamp"
 			ng-keyup="timestampParamCtrl.keyUp($event.keyCode)">
 	 
 	<button ng-show="parameter.editing"
