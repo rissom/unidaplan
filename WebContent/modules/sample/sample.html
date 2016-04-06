@@ -1,6 +1,6 @@
 <!-- Heading with sample name -->
 <h3>{{sampleCtrl.getType({typeid:sampleCtrl.typeid})}} 
-	<span ng-repeat="tparameter in sampleCtrl.titleparameters"
+	<span ng-repeat="tparameter in sampleCtrl.titleparameters | orderBy: 'pos'"
 		  ng-dblclick="tparameter.editing=sampleCtrl.editable; newValue=tparameter.value">
 		<span ng-hide="tparameter.editing">{{tparameter.value|trailingzeros:tparameter.maxdigits}}
 		</span>
