@@ -18,7 +18,7 @@
 			<tbody>
 			<tr ng-repeat="user in userCtrl.users | orderBy: 'fullname'">				
 				<td>
-					{{user.fullname}}
+					{{user.fullname}} <span ng-show=user.blocked>(blocked)</span>
 				</td>
 				<td>
 					{{user.username}}
@@ -32,8 +32,8 @@
 				  			{{'action'|translate}} &#x25BC;
 					      </a>
 					      <ul class="dropdown-menu">
-					        <li ng-repeat="action in userCtrl.getActions(user)">
-					          <a ng-click="userCtrl.performAction($index,user)">{{action}}</a>
+					        <li ng-repeat="action in user.actions">
+					          <a ng-click="userCtrl.performAction(action,user)">{{action.name}}</a>
 					        </li>
 					      </ul>
 	  				 </div>

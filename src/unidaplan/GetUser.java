@@ -3,13 +3,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,16 +19,21 @@ import org.json.JSONObject;
 	@Override
 	  public void doGet(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {
+		Authentificator authentificator = new Authentificator();
+		int userID=authentificator.GetUserID(request,response);
 		PreparedStatement pStmt;
+		JSONObject user = null;
+		JSONArray experiments = null;
+		JSONArray groups = null;
+		JSONArray ptypes = null;
+		JSONArray sampletypes = null;
 	    response.setContentType("application/json");
 	    request.setCharacterEncoding("utf-8");
 	    response.setCharacterEncoding("utf-8");
-	    int userID=-1;
-	    String token="";
+	    int id=-1;
 		// get Parameter for id
 		try{
-			 userID=Integer.parseInt(request.getParameter("id"));
-			 token=request.getParameter("token");
+			 id=Integer.parseInt(request.getParameter("id"));
 		}
 		catch (Exception e1) {
 			System.err.print("User: no user ID given!");
@@ -37,28 +42,76 @@ import org.json.JSONObject;
 	 	DBconnection dBconn=new DBconnection();
 	    try {  
 		    dBconn.startDB();
-			pStmt= dBconn.conn.prepareStatement(
-			"SELECT id, fullname, username, email, lastchange, token, token_valid_to " 
-		   +"FROM users WHERE id=?");
-			pStmt.setInt(1, userID);
-			JSONObject user=dBconn.jsonObjectFromPreparedStmt(pStmt);
-			pStmt.close();
-		   	String validToString = user.optString("token_valid_to");
-		   	Timestamp validToDate = Timestamp.valueOf(validToString);
-			if (user.getString("token").equals(token) &&
-					validToDate.getTime()>System.currentTimeMillis()){
-				out.println(user.toString());
-			} else {
-				System.out.println("wrong or timedout token");
-				out.println("{\"error\":\"invalid token\"}");
-			}
+		    if (Unidatoolkit.isMemberOfGroup(userID, 1, dBconn)){
+				pStmt = dBconn.conn.prepareStatement(
+						"SELECT "
+					  + "fullname, " 
+					  + "username, " 
+					  + "email, "
+					  + "token_valid_to > NOW() AS validtoken, " 
+					  + "to_char(token_valid_to, 'YYYY-MM-DD\"T\"HH24:MI:SS\"Z\"') AS tokenvalidto "
+					  + "FROM users " 
+					  + "WHERE users.id=?");
+				pStmt.setInt(1, id);
+				user=dBconn.jsonObjectFromPreparedStmt(pStmt);
+				pStmt.close();
+				
+				// Get groupmemberships
+				pStmt = dBconn.conn.prepareStatement(
+						"SELECT "
+					  + "groupid AS id, name "
+					  + "FROM groupmemberships gm "
+					  + "LEFT JOIN groups ON groups.id=gm.groupid "
+					  + "WHERE gm.userid=?");
+				pStmt.setInt(1, id);
+				groups=dBconn.jsonArrayFromPreparedStmt(pStmt);
+				pStmt.close();
+				user.put("groups", groups);
+
+				
+				// Get Experiments
+				pStmt = dBconn.conn.prepareStatement(
+						"SELECT "
+					  + "experiment AS id, permission "
+					  + "FROM rightsexperimentuser "
+					  + "WHERE userid=?");
+				pStmt.setInt(1, id);
+				experiments=dBconn.jsonArrayFromPreparedStmt(pStmt);
+				pStmt.close();
+				user.put("experiments", experiments);
+				
+				// Get processtypes
+				pStmt = dBconn.conn.prepareStatement(
+						"SELECT "
+					  + "processtype AS id, permission "
+					  + "FROM rightsprocesstypeuser "
+					  + "WHERE userid=?");
+				pStmt.setInt(1, id);
+				ptypes=dBconn.jsonArrayFromPreparedStmt(pStmt);
+				pStmt.close();
+				user.put("processtypes", ptypes);
+
+				// Get sampletypes
+				pStmt = dBconn.conn.prepareStatement(
+						"SELECT "
+					  + "sampletype AS id, permission "
+					  + "FROM rightssampletypeuser "
+					  + "WHERE userid=?");
+				pStmt.setInt(1, id);
+				sampletypes = dBconn.jsonArrayFromPreparedStmt(pStmt);
+				pStmt.close(); // Processtypes
+				
+				user.put("sampletypes", sampletypes);
+				
+		    }
 			dBconn.closeDB();
+			out.println(user.toString());
     	} catch (SQLException e) {
     		System.err.println("GetUser: Problems with SQL query");
     	} catch (JSONException e) {
-			System.err.println("GetUser: JSON Problem while getting Stringkeys");
+			System.err.println("GetUser: JSON Problem");
     	} catch (Exception e2) {
-			System.err.println("GetUser: Strange Problem while getting Stringkeys");
+			System.err.println("GetUser: Strange Problem");
 			e2.printStackTrace();
     	}
 	}}	

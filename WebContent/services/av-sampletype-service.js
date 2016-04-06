@@ -324,6 +324,12 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	
 	
 	
+	this.updateUserRights = function (updatedRights){
+		return restfactory.PUT('update-user-rights',updatedRights);
+	}
+	
+	
+	
 	this.updateParamGrp = function (name, language, paramgrpid){
 		return restfactory.PUT("update-st-paramgrp",{"newname":name, "paramgrpid":paramgrpid, "language":language});
 	};

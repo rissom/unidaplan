@@ -16,7 +16,7 @@
 				</span>
 				<input ng-show="group.edit" 
 			   ng-keyup="groupCtrl.keyUp($event.keyCode,group)"
-			   ng-blur="groupCtrl.refuse()"
+			   ng-blur="groupCtrl.refuse(group)"
 			   type="text"
 			   ng-model="group.newName"
 			   autofocus>

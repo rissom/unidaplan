@@ -1,11 +1,11 @@
 <div class="container">
 	<h3> 
-		{{ 'Assign rights for group' | translate }} '{{mSampletypeRightChoserCtrl.groupname}}' {{'to access sampletypes'|translate}} 
+		{{mSampletypeRightChoserCtrl.heading}} 
 	</h3>
 	
 	<div class="row">
 	<!-- type choser -->  
-		<div class=col-md-6>
+		<div class=col-md-12>
 			<br/>	
 			<table>
 				<tr ng-repeat="sampletype in mSampletypeRightChoserCtrl.sampletypes | orderBy:'namef()'">

@@ -97,7 +97,7 @@ function groupController($uibModal,$translate,$scope,$state,$stateParams,avProce
 		}
 		if (keyCode===27) {		// Escape key pressed
 			group.newName=group.name;
-			thisController.editmode=false;
+			group.edit=false;
 		}
 	};
 	
@@ -145,20 +145,23 @@ function groupController($uibModal,$translate,$scope,$state,$stateParams,avProce
 	
 	
 	
-	this.openProcessTypeRightsDialog = function (group) {				
+	this.openProcessTypeRightsDialog = function (group) {	
+	    var h1= $translate.instant ("Assign rights for group");
+	    var h2= $translate.instant ("to access processtypes");
 	    var modalInstance = $uibModal.open({
 		    animation: false,
 		    templateUrl: 'modules/modal-right-chosers/modal-processtype-right-choser.html',
 		    controller: 'mProcesstypeRightChoser as mProcesstypeRightChoserCtrl',
 		    size: 'lg',
 		    resolve: {
-		    	processtypes: function() { return ptypes; },
-	    		group		: function() { return group;}
+		    	processtypes  : function() { return ptypes || []; },
+	    		heading		  : function() { return  h1+" '"+group.name+"' "+h2;},
+		    	assignedTypes : function() { return group.processtypes || [];}
 		    }
 		});
 	    modalInstance.result.then(function(updatedRights){
 	    	if (updatedRights){
-	    		var promise = avProcessTypeService.updateGroupRights(updatedRights);
+	    		var promise = avProcessTypeService.updateGroupRights({groupid:group.id, updatedPTrights: updatedRights});
 	    		promise.then(function(){reload()});
 	    	}
 	    })
@@ -166,20 +169,23 @@ function groupController($uibModal,$translate,$scope,$state,$stateParams,avProce
 
 	
 	
-	this.openSampleTypeRightsDialog = function (group) {				
+	this.openSampleTypeRightsDialog = function (group) {		
+	    var h1= $translate.instant ("Assign rights for group");
+	    var h2= $translate.instant ("to access sampletypes");
 	    var modalInstance = $uibModal.open({
 		    animation: false,
 		    templateUrl: 'modules/modal-right-chosers/modal-sampletype-right-choser.html',
 		    controller: 'mSampletypeRightChoser as mSampletypeRightChoserCtrl',
 		    size: 'lg',
 		    resolve: {
-		        sampletypes	: function() { return sampletypes; },
-	    		group		: function() { return group;}
+		        sampletypes	  : function() { return sampletypes || []; },
+	    		heading		  : function() { return  h1+" '"+group.name+"' "+h2;},
+	    		assignedTypes : function() { return group.sampletypes || [];}
 		    }
 		});
 	    modalInstance.result.then(function(updatedRights){
 	    	if (updatedRights){
-	    		var promise = avSampleTypeService.updateGroupRights(updatedRights);
+	    		var promise = avSampleTypeService.updateGroupRights({groupid:group.id, updatedSTrights: updatedRights});
 	    		promise.then(function(){reload()});
 	    	}
 	    })
@@ -189,7 +195,7 @@ function groupController($uibModal,$translate,$scope,$state,$stateParams,avProce
 	
 	this.refuse = function(group) { // is called when editing of groupname is cancelled
 		group.newName=group.name;
-		thisController.editmode=false;
+		group.edit=false;
 	}
 	
 	

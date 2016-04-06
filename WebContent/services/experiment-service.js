@@ -157,6 +157,18 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 	
 	
 	
+	this.updateGroupRights = function (updatedRights){
+		return restfactory.PUT('update-group-rights',updatedRights);
+	}
+	
+	
+	
+	this.updateUserRights = function (updatedRights){
+		return restfactory.PUT('update-user-rights',updatedRights);
+	}
+	
+	
+	
 	this.updatePositionsForProcessesInExperiment=function(processes){
 		return restfactory.POST("update-positions-for-processes-in-experiment",processes);
 	};

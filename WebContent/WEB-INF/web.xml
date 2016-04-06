@@ -73,6 +73,17 @@
   </servlet-mapping>
   
   <servlet>
+    <description>AssignGroupToUser</description>
+    <display-name>AssignGroupToUser</display-name>
+    <servlet-name>AssignGroupToUser</servlet-name>
+    <servlet-class>unidaplan.AssignGroupToUser</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AssignGroupToUser</servlet-name>
+    <url-pattern>/assign-group-to-user</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
     <description>shows available sample types</description>
     <display-name>Sampletypes</display-name>
     <servlet-name>Sampletypes</servlet-name>
@@ -235,6 +246,17 @@
     <url-pattern>/file-download/*</url-pattern>
   </servlet-mapping>
   
+   <servlet>
+    <description>Get a single user for editing</description>
+    <display-name>GetUser</display-name>
+    <servlet-name>GetUser</servlet-name>
+    <servlet-class>unidaplan.GetUser</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GetUser</servlet-name>
+    <url-pattern>/get-user</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
     <description>Get a list of users</description>
     <display-name>GetUsers</display-name>
@@ -258,14 +280,14 @@
   </servlet-mapping>
   
   <servlet>
-    <description>Get a single user</description>
-    <display-name>GetUser</display-name>
-    <servlet-name>GetUser</servlet-name>
-    <servlet-class>unidaplan.GetUser</servlet-class>
+    <description>Get a single user for signing up with a token</description>
+    <display-name>GetUserWithToken</display-name>
+    <servlet-name>GetUserWithToken</servlet-name>
+    <servlet-class>unidaplan.GetUserWithToken</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>GetUser</servlet-name>
-    <url-pattern>/get-user</url-pattern>
+    <servlet-name>GetUserWithToken</servlet-name>
+    <url-pattern>/get-user-with-token</url-pattern>
   </servlet-mapping>
   
    <servlet>
@@ -1091,6 +1113,17 @@
   <servlet-mapping>
     <servlet-name>UpdateGroupName</servlet-name>
     <url-pattern>/update-group-name</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>UpdateUserRights</description>
+    <display-name>UpdateUserRights</display-name>
+    <servlet-name>UpdateUserRights</servlet-name>
+    <servlet-class>unidaplan.UpdateUserRights</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateUserRights</servlet-name>
+    <url-pattern>/update-user-rights</url-pattern>
   </servlet-mapping>
   
   <servlet>

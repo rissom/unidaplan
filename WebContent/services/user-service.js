@@ -18,6 +18,17 @@ var userService = function(restfactory,$q){
 	}
 	
 	
+	this.assignGroupToUser = function (userid,groups){ // Assign Users to a group
+		return restfactory.PUT("assign-group-to-user",{userid:userid,groups:groups});
+	}
+	
+	
+	this.blockUser = function (user){ // Assign Users to a group
+		return restfactory.PUT("update-user-data",{userid:user.id,blocked:true});
+	}
+	
+	
+	
 	this.deleteGroup = function (group){
 		return restfactory.DELETE("delete-group?id="+group.id);
 	}
@@ -102,7 +113,7 @@ var userService = function(restfactory,$q){
 	
 	  
 	// return a single user
-	this.getUser = function(userID,token){
+	this.getUserWithToken = function(userID,token){
         var defered=$q.defer();
         var user;
 		var promise = restfactory.GET("get-user?id="+userID+"&token="+token);
@@ -123,7 +134,22 @@ var userService = function(restfactory,$q){
 		return defered.promise;
 	};
 	
+	
+	
+	this.getUser = function(userID){
+        var defered=$q.defer();
+		var promise = restfactory.GET("get-user?id="+userID);
+		promise.then(
+	    	function(rest) {
+	    		defered.resolve(rest.data);
+		    }, function(rest) {
+		    	console.log("Error getting user");
+		    	defered.reject("Error connecting to server");
+		    });
+		return defered.promise;
+	}
 		
+	
 	
 	// resend token
 	this.resendToken = function(user) {
@@ -131,14 +157,46 @@ var userService = function(restfactory,$q){
 	};
 	
 	
+	
 	this.setLanguage = function(user, lang){
-		return restfactory.POST("update-user-data",{userid:user,preferredlanguage:lang});
+		return restfactory.PUT("update-user-data",{userid:user,preferredlanguage:lang});
 	}
+	
+	
+	
+	this.updateUsername = function (userID,newUsername){ // Assign Users to a group
+		return restfactory.PUT("update-user-data",{userid:userID,username:newUsername});
+	}
+	
+	
+	
+	this.updateEmail = function (userID,newEmail){ // Assign Users to a group
+		return restfactory.PUT("update-user-data",{userid:userID,email:newEmail});
+	}
+	
+	
+	
+	this.updateFullname = function (userID,newFullname){ // Assign Users to a group
+		return restfactory.PUT("update-user-data",{userid:userID,fullname:newFullname});
+	}
+	
+	
+	
+	this.unblockUser = function (user){ // Assign Users to a group
+		return restfactory.PUT("update-user-data",{userid:user.id,blocked:false});
+	}
+	
+	
 	
 	this.updateGroupName = function (group){
 		return restfactory.PUT("update-group-name",{id:group.id, name:group.newName})
 	}
 	
+	
+	
+	this.updateTokenValidTo = function (userID,timestamp){
+		return restfactory.PUT("update-user-data",{userid:userID,tokenvalidto:timestamp.toISOString()});
+	}
 };
 
 

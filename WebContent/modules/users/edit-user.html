@@ -1,0 +1,107 @@
+
+<button class="btn btn-default"
+		ui-sref="users">
+		&#x25c0;	{{'Back to users'|translate}}
+</button>
+
+<h3>
+	{{'Edit User'|translate}}
+</h3>
+<!--  <form name="parameterForm">  -->
+
+<br/>
+<table class="table">
+<tr ng-dblclick="editUserCtrl.edit('username')">
+	<td>{{'Username'|translate}}:</td>
+	<td>
+		<span ng-hide="editUserCtrl.editUsername">{{editUserCtrl.user.username}}</span>
+		<input ng-show="editUserCtrl.editUsername" 
+			   ng-keyup="editUserCtrl.keyUp($event.keyCode,'username')"
+			   type="text"
+			   ng-model="editUserCtrl.newUsername"
+			   ng-blur="editUserCtrl.cancelEdit()"
+			   autofocus>
+	</td>
+</tr>
+<tr ng-dblclick="editUserCtrl.edit('fullname')">
+	<td>{{'Fullname'|translate}}:</td>
+	<td>
+		<span ng-hide="editUserCtrl.editFullname">{{editUserCtrl.user.fullname}}</span>
+		<input ng-show="editUserCtrl.editFullname" 
+			   ng-keyup="editUserCtrl.keyUp($event.keyCode,'fullname')"
+			   type="text"
+			   ng-model="editUserCtrl.newFullname"
+			   ng-blur="editUserCtrl.cancelEdit()">
+	</td>
+</tr>
+
+<tr ng-dblclick="editUserCtrl.edit('email')">
+	<td>{{'E-mail'|translate}}:</td>
+	<td>
+		<span ng-hide="editUserCtrl.editEmail">{{editUserCtrl.user.email}}</span>
+		<input ng-show="editUserCtrl.editEmail" 
+			   ng-keyup="editUserCtrl.keyUp($event.keyCode,'email')"
+			   type="text"
+			   ng-model="editUserCtrl.newEmail"
+			   ng-blur="editUserCtrl.cancelEdit()">
+	</td>
+</tr>
+<tr ng-show="editUserCtrl.user.validtoken==true" ng-dblclick="editUserCtrl.tValidTo.editing=true">
+<td>{{'Token valid to'|translate}}:</td>
+<td>
+<div>
+	<timestamp-parameter parameter="editUserCtrl.tValidTo" pupdate="editUserCtrl.pupdate(editUserCtrl.tValidTo)">
+	</timestamp-parameter>
+</div></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+</table>
+<h4>{{'Groups'|translate}}</h4>
+<div ng-repeat="group in editUserCtrl.user.groups">
+	{{group.name}}
+</div>
+	
+<button type="button"
+		class="btn btn-default btn-xs" 
+		ng-click="editUserCtrl.openGroupDialog()">
+	<b>+/-</b>
+</button>
+<br />
+<br />
+<h4>{{'Experiments'|translate}}</h4>
+<div ng-repeat="experiment in editUserCtrl.user.experiments">
+	Nr. {{editUserCtrl.getExperimentNr(experiment)}} : {{editUserCtrl.getExperimentName(experiment)}} ({{experiment.permission}})
+</div>
+<button type="button"
+		class="btn btn-default btn-xs" 
+		ng-click="editUserCtrl.openExperimentRightsDialog()">
+	<b>+/-</b>
+</button>
+<br />
+<br />
+<h4>{{'Processtypes'|translate}}</h4>
+<div ng-repeat="processtype in editUserCtrl.user.processtypes" >
+	{{editUserCtrl.getProcesstypeName(processtype)}} ({{processtype.permission}})
+</div>
+<button type="button"
+		class="btn btn-default btn-xs" 
+		ng-click="editUserCtrl.openProcessTypeRightsDialog()">
+	<b>+/-</b>
+</button>
+<br />
+<br />
+<h4>{{'Sampletypes'|translate}}</h4>
+<div ng-repeat="sampletype in editUserCtrl.user.sampletypes">
+	{{editUserCtrl.getSampletypeName(sampletype)}} ({{sampletype.permission}})
+</div>
+<button type="button"
+		class="btn btn-default btn-xs" 
+		ng-click="editUserCtrl.openSampleTypeRightsDialog()">
+	<b>+/-</b>
+</button>
+
+
+

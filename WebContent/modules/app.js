@@ -201,6 +201,33 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
         })
 
         
+        
+        .state('editUser', {
+	    	url: '/edit-user/{userID:int}',
+	        templateUrl: 'modules/users/edit-user.html',
+	        controller:"editUserController as editUserCtrl",
+	        resolve:{
+	        	experiments:
+	        		function(experimentService){
+	        			return experimentService.getExperiments();
+	        		},
+	        	user: 
+	        		function(userService,$stateParams){
+    	   	    		return userService.getUser($stateParams.userID);
+    	   	    	},
+	   	    	ptypes: 
+                	function(avProcessTypeService){
+        	   	    	return avProcessTypeService.getProcessTypes();
+        	   	    },
+        	   	sampletypes : function(avSampleTypeService){
+ 	        		return avSampleTypeService.getSampleTypes();
+        	   		},
+    	   		groups : function(userService){
+	        		return userService.getGroups()
+    	   			}
+			}
+        })
+        
               
         .state('error', {
     		url: '/error',
@@ -506,7 +533,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 	    	resolve:{
 	            user: 
 	        	    function(userService,$stateParams){
-	        	   	    return userService.getUser($stateParams.userID,$stateParams.token);
+	        	   	    return userService.getUserWithToken($stateParams.userID,$stateParams.token);
 	            	},
 	        	token: 
 	        	   	function($stateParams){

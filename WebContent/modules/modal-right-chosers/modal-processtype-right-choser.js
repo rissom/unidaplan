@@ -2,19 +2,17 @@
 'use strict';
 
 
-function mProcesstypeRightChoser($translate,$uibModalInstance,languages,restfactory,processtypes,group) {
+function mProcesstypeRightChoser($translate,$uibModalInstance,languages,restfactory,processtypes,heading,assignedTypes) {
 	
 	this.processtypes = processtypes || [];
 	
-	this.groupname = group.name;
-	
-	var groupPTypes = group.processtypes || [];
+	this.heading = heading
 	
 	for (var i=0; i<this.processtypes.length; i++){
 		var found=false;
-		for (var j=0; j<groupPTypes.length; j++){
-			if (this.processtypes[i].id==groupPTypes[j].id){
-				this.processtypes[i].permission=groupPTypes[j].permission;
+		for (var j=0; j<assignedTypes.length; j++){
+			if (this.processtypes[i].id==assignedTypes[j].id){
+				this.processtypes[i].permission=assignedTypes[j].permission;
 				found=true;
 			}
 		}
@@ -44,12 +42,12 @@ function mProcesstypeRightChoser($translate,$uibModalInstance,languages,restfact
 				}
 			}
 		}
-	    $uibModalInstance.close({groupid:group.id, updatedPTrights: updatedRights});
+	    $uibModalInstance.close(updatedRights);
 	};
 }
 
         
 angular.module('unidaplan').controller('mProcesstypeRightChoser',['$translate','$uibModalInstance','languages',
-                            'restfactory','processtypes','group',mProcesstypeRightChoser]);
+                            'restfactory','processtypes','heading','assignedTypes',mProcesstypeRightChoser]);
 
 })();

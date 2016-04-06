@@ -3,12 +3,40 @@
 
 function userController(users,userService,$state,$stateParams,$translate) {
 	
-	this.users =  users;
+	this.users = users;
 	
+	var tc = this;
+	
+	var addActions = function(){
+		angular.forEach(tc.users,function(user){
+			user.actions=[];
+			user.actions.push({action:"edit",name:$translate.instant("edit")});
+			if (user.blocked) {
+				user.actions.push({action:"unblock",name:$translate.instant("unblock")});
+			}else{
+				user.actions.push({action:"block",name:$translate.instant("block")});
+			}
+			user.actions.push({action:"resendToken",name:$translate.instant("resend token")});
+			if (user.deletable){
+				user.actions.push({action:"delete",name:$translate.instant("delete")});
+			}
+		});
+	}
+	
+	addActions();
+
 	this.edit = false;
 	
-	this.actions = ['block','edit'];
 	
+	
+	this.blockUser = function (user){
+		user.blocked=true;
+		var promise = userService.blockUser(user);
+		addActions();
+	}
+	
+	
+		
 	var thisController = this;
 	
 	
@@ -20,34 +48,44 @@ function userController(users,userService,$state,$stateParams,$translate) {
 	};
 	
 	
-
-	this.performAction=function(index,user){
-		if (index==1){
-			user.edit=true;
-		}
-		if (index==2){
-			this.resendToken(user);
-		}
-		if (index==3){
-			this.deleteUser(user);
-		}
+	
+	this.addUser = function() {
+		this.edit=true;
 	};
 	
 	
 	
-	this.getActions = function(user){
-		var actions=[];
-		actions.push($translate.instant("edit"));
-		if (user.blocked) {
-			actions.push($translate.instant("unblock"));
-		}else{
-			actions.push($translate.instant("block"));
+	this.cancel = function() {
+		this.edit=false;
+	};
+	
+	
+	
+	this.deleteUser = function(user) {
+		var promise = userService.deleteUser(user);
+	    promise.then(function(rest) {
+	    	var promise2 = userService.getUsers();
+	    	promise2.then(function(users){
+	    		thisController.users=users;
+	    		addActions();
+	    		}, function() { 
+	    		console.log("fehler")
+	    	});
+	    }, function() {
+	    	console.log("ERROR");
+	    });
+	};
+	
+
+
+	this.performAction=function(action,user){
+		switch (action.action){
+			case "block" 	  : this.blockUser(user); break;
+			case "edit" 	  : $state.go('editUser',{userID:user.id}); break;
+			case "resendToken": this.resendToken(user); break;
+			case "delete" 	  :	this.deleteUser(user); break;
+			case "unblock" 	  : this.unblockUser(user); break;
 		}
-		actions.push($translate.instant("resend token"));
-		if (user.deletable){
-			actions.push($translate.instant("delete"));
-		}
-		return actions;
 	};
 	
 	
@@ -64,34 +102,7 @@ function userController(users,userService,$state,$stateParams,$translate) {
 	};
 
 	
-	
-	this.deleteUser = function(user) {
-		var promise = userService.deleteUser(user);
-	    promise.then(function(rest) {
-	    	var promise2 = userService.getUsers();
-	    	promise2.then(function(users){
-	    		thisController.users=users;
-	    	}, console.log("fehler"));
-	    }, function(rest) {
-	    	console.log("ERROR");
-	    });
-	};
-	
-	
-	
-	
-	this.addUser = function() {
-		this.edit=true;
-	};
-	
-	
-	
-	this.cancel = function() {
-		this.edit=false;
-	};
-	
-	
-	
+
 	this.submitUser = function() {
 		var newUser=  { "fullname" : this.fullname,
 						"username" : this.username,
@@ -104,12 +115,21 @@ function userController(users,userService,$state,$stateParams,$translate) {
 		promise.then(
 			function(users){
 				thisController.users=users;
+				addActions();
 			}, 
 			function(users){
 				console.log("fehler");
 			}
 		);
 	};
+	
+	
+	
+	this.unblockUser = function (user){
+		user.blocked=false;
+		var promise = userService.unblockUser(user);
+		addActions();
+	}
 	
 }
   

@@ -1,4 +1,5 @@
 {
+	"ASSIGN USER TO GROUP" : "Assign {{user}} to the following groups",
  	"Params" : "Parameters",
  	"abouttext" : "Software to organize your experiments",
 	"HELPTEXT" : "Unidaplan is web-based software for the administration of scientific samples.",

@@ -2,19 +2,17 @@
 'use strict';
 
 
-function mSampletypeRightChoser($translate,$uibModalInstance,languages,restfactory,sampletypes,group) {
+function mSampletypeRightChoser($translate,$uibModalInstance,languages,restfactory,sampletypes,heading,assignedTypes) {
 	
 	this.sampletypes=sampletypes || [];
 	
-	this.groupname = group.name;
-	
-	var groupSTypes = group.sampletypes || [];
-
+	this.heading = heading;
+		
 	for (var i=0; i<this.sampletypes.length; i++){
 		var found=false;
-		for (var j=0; j<groupSTypes.length; j++){
-			if (this.sampletypes[i].id==groupSTypes[j].id){
-				this.sampletypes[i].permission=groupSTypes[j].permission;
+		for (var j=0; j<assignedTypes.length; j++){
+			if (this.sampletypes[i].id==assignedTypes[j].id){
+				this.sampletypes[i].permission=assignedTypes[j].permission;
 				found=true;
 			}
 		}
@@ -44,12 +42,12 @@ function mSampletypeRightChoser($translate,$uibModalInstance,languages,restfacto
 				}
 			}
 		}
-	    $uibModalInstance.close({groupid:group.id, updatedSTrights: updatedRights});
+	    $uibModalInstance.close(updatedRights);
 	};
 }
 
         
 angular.module('unidaplan').controller('mSampletypeRightChoser',['$translate','$uibModalInstance','languages',
-                            'restfactory','sampletypes','group',mSampletypeRightChoser]);
+                            'restfactory','sampletypes','heading','assignedTypes',mSampletypeRightChoser]);
 
 })();

@@ -1,11 +1,11 @@
 <div class="container">
 	<h3> 
-		{{ 'Assign rights for group' | translate }} '{{mProcesstypeRightChoserCtrl.groupname}}' {{'to access processtypes'|translate}} 
+		{{mProcesstypeRightChoserCtrl.heading}} 
 	</h3>
 	
 	<div class="row">
 	<!-- type choser -->  
-		<div class=col-md-6>
+		<div class=col-md-12>
 			<br/>	
 			<table>
 				<tr ng-repeat="processtype in mProcesstypeRightChoserCtrl.processtypes | orderBy:'namef()'">

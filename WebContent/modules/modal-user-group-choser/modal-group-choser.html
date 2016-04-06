@@ -1,0 +1,74 @@
+<div class="container">
+<h3> 
+	{{mGroupChoserCtrl.getLabel()}}
+</h3>
+
+<div class="row">
+
+<div class=col-md-6>
+
+<!-- search field -->
+<label>Name: </label>
+<input type="text" 
+	   ng-model="mGroupChoserCtrl.userinput"
+	   style="width: 253px;" 
+	   placeholder="{{'Enter group name here'|translate}}">
+<br /><br />
+
+{{'Groups'|translate}} 
+
+<br />	
+<!-- 
+<select multiple="multiple"
+		id="typeSelector"
+		style="width: 200px;"
+  		ng-model="mGroupChoserCtrl.selectedGroups" 
+  		ng-options="group as group.name for group in mGroupChoserCtrl.groups"
+  		size="5">
+</select> -->
+
+<!--  list of fitting groups  -->
+<ul> 
+ 	<li ng-repeat="group in mGroupChoserCtrl.groups | filter:groupIsNotSelected | filter:{name:mGroupChoserCtrl.userinput} | orderBy: 'name'">
+					<!-- show only selected user types -->
+		<a ng-click=mGroupChoserCtrl.choseGroup(group)> 
+			{{group.name}}
+		</a>		
+	</li>   
+</ul>
+<br />
+<br />
+</div>
+
+<!-- show assigned groups-->
+<div class="col-md-6">
+	
+	<span ng-show="mGroupChoserCtrl.assignedGroups.length>0">
+		{{'chosen groups'|translate}}:
+	</span>	
+	<p />
+	
+	<div ng-repeat="cgroup in mGroupChoserCtrl.assignedGroups | orderBy: 'name'">
+		<a ng-click=mGroupChoserCtrl.removeGroup(cgroup)>
+ 			{{cgroup.name}}
+ 		</a>
+	</div>
+</div>
+</div>
+<button ng-click="mGroupChoserCtrl.cancel()" 
+		class="btn btn-default">
+	{{'Cancel'|translate}}
+</button>&nbsp;
+<button 
+	ng-hide="mGroupChoserCtrl.immediate" 
+	ng-click="mGroupChoserCtrl.assignGroups()" 
+	class="btn btn-primary">
+	{{mGroupChoserCtrl.buttonLabel}}
+</button>
+
+</div>
+
+
+<br /><br />
+
+</div>
