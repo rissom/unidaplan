@@ -13,21 +13,10 @@ function editParamController($scope,$state,$stateParams,$translate,parameterServ
 	  console.log("ERROR! Parameter doesn't exist");
   }
   
-  $scope.sortableOptions = {
-	        containment: '#table-container',
-	        containerPositioning: 'relative'
-	    };
-  
-  
-  $scope.foo = ['foo 1', '..'];
-  $scope.bar = ['bar 1', '..'];
-  $scope.barConfig = {
-      group: 'foobar',
-      animation: 150,
-      onSort: function (/** ngSortEvent */evt){
-          // @see https://github.com/RubaXa/Sortable/blob/master/ng-sortable.js#L18-L24
-      }
-  };
+//  $scope.sortableOptions = {
+//	        containment: '#table-container',
+//	        containerPositioning: 'relative'
+//	    };
     
   var thisController=this;
     
