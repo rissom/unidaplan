@@ -514,6 +514,41 @@ public class DBconnection  {
   
   
   
+  	public JSONObject getSingleJSONObject(PreparedStatement pStmt) throws Exception{
+  		ResultSet queryResult=null;
+		try{
+			if (pStmt!=null) {
+	        	queryResult = pStmt.executeQuery(); 
+	        } else {
+				System.err.println("DBconnection: prepared statement null! " );
+	        }
+	        if (queryResult==null) {
+	        	System.err.println("DBconnection: statement result null! ");
+	        } else {
+	        	if ( queryResult.next() ){
+	        		JSONObject tempObject = new JSONObject (queryResult.getString(1));
+	    	        queryResult.close();
+	        		return tempObject;
+	        	} else {
+//	        		  it is perfectly normal to not have a result...
+//	        		  System.out.println("DBconnection: No result!");
+	        		return null;
+	        	}
+	        }
+	        pStmt.close();
+	  	} catch (SQLException e) {   // Exception for SQL database
+	  		System.err.println("DBconnection: No result, or problem with the database");
+	  		System.err.println(pStmt.toString());
+	  		e.printStackTrace();
+	  	} catch (Exception e) {
+	  		System.err.println("DBconnection: Some problem with database query. Error! ");
+//	  		  e.printStackTrace();
+		}
+	  	return null;
+  	}
+  
+  
+  
   public String getSingleStringValue(PreparedStatement pStmt) throws Exception{
 	  String result = "";
 	  ResultSet queryResult=null;
