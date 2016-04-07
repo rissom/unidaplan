@@ -113,18 +113,14 @@ import org.json.JSONObject;
 	        case 3: if (jsonIn.has("value") && !jsonIn.isNull("value")){  	
 	        			pStmt= DBconn.conn.prepareStatement( 			// Measurement data
 	        					"INSERT INTO o_measurement_data (objectid,ot_parameter_id,value,error,lastchange,lastUser) VALUES (?,?,?,?,NOW(),?)");
-	        			if (jsonIn.getString("value").contains("±")){
-							pStmt.setDouble(3, Double.parseDouble(jsonIn.getString("value").split("±")[0]));
-							pStmt.setDouble(4, Double.parseDouble(jsonIn.getString("value").split("±")[1]));
-	        			} else {
-							pStmt.setDouble(3, jsonIn.getDouble("value"));
-							pStmt.setDouble(4, 0);
-	        			}
-	        			if (jsonIn.has("error")){
-	        				pStmt.setDouble(4, Double.parseDouble(jsonIn.getString("error"))); 
-	        			}
 	        			pStmt.setInt(1, sampleID);
 	        			pStmt.setInt(2, pid);
+	        			pStmt.setDouble(3, jsonIn.getDouble("value"));
+	        			if (jsonIn.has("error")){
+	        				pStmt.setDouble(4, jsonIn.getDouble("error")); 
+	        			} else {
+	        				pStmt.setNull(4, java.sql.Types.DOUBLE);
+	        			}
 	        			pStmt.setInt(5,userID);
 	        			pStmt.executeUpdate();
 	        		}

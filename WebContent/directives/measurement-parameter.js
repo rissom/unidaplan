@@ -22,14 +22,15 @@ var measurementParameter = function() {
 		controller: function($scope){
 			
 			if ($scope.parameter.value!=undefined) {
-				this.newValue=$scope.parameter.value.split("±")[0];
-				this.newError=$scope.parameter.value.split("±")[1];
+				this.value=parseFloat($scope.parameter.value.split("±")[0]);
+				this.error=parseFloat($scope.parameter.value.split("±")[1]);
+				this.newValue = this.value;
+				this.newError = this.error;
 			}
 			
 			this.keyUp = function(keyCode) {
 				if (keyCode===13) {				// Return key pressed
 					$scope.parameter.editing=false;
-					var oldValue=$scope.parameter.value;
 					$scope.parameter.value=this.newValue;
 					$scope.parameter.error=this.newError;
 					$scope.pupdate({parameter:$scope.parameter});
@@ -37,8 +38,8 @@ var measurementParameter = function() {
 				}
 				if (keyCode===27) {		// Escape key pressed
 					$scope.parameter.editing=false;
-					this.newValue=$scope.parameter.value.split("±")[0];
-					this.newError=$scope.parameter.value.split("±")[1];
+					this.newValue=this.value;
+					this.newError=this.error;
 				}
 			}
 						
