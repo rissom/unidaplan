@@ -28,8 +28,8 @@
 		<tr>
 			<td> {{'object'|translate}} </td>
 			<td ng-repeat="col in resultCtrl.result.headings" ng-click="resultCtrl.sortBy($index)">
-				<span ng-show="resultCtrl.currentSortColumn==$index && resultCtrl.currentSortDirection== 1"> &#9660; </span>
-				<span ng-show="resultCtrl.currentSortColumn==$index && resultCtrl.currentSortDirection==-1"> &#9650; </span>
+				<span ng-show="resultCtrl.currentSortColumn==$index && resultCtrl.currentSortDirection== 1">&#9660;</span>&nbsp;
+				<span ng-show="resultCtrl.currentSortColumn==$index && resultCtrl.currentSortDirection==-1">&#9650;</span>&nbsp;
 			 	{{col.namef()}} {{col.unitf()?'(':''}}{{col.unitf()}}{{col.unitf()?')':''}}
 			</td>
 		</tr>
