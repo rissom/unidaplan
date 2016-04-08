@@ -65,7 +65,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
         
         
         .state('editParameter', {
-	    	url: '/edit-parameter?:parameterID&:newParameter',
+	    	url: '/edit-parameter?:parameterID&:newParameter&:newPossvalue',
 	        templateUrl: 'modules/parameters/edit-parameter.html',
 	        controller:"editParamController as editParamCtrl",
 	        resolve:{

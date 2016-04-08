@@ -13,13 +13,15 @@ function editParamController($scope,$state,$stateParams,$translate,parameterServ
 	  console.log("ERROR! Parameter doesn't exist");
   }
   
+
+  
 //  $scope.sortableOptions = {
 //	        containment: '#table-container',
 //	        containerPositioning: 'relative'
 //	    };
     
   var thisController=this;
-    
+      
   this.lang1=$translate.instant(languages[0].name);
   
   this.lang2=$translate.instant(languages[1].name);
@@ -57,6 +59,10 @@ function editParamController($scope,$state,$stateParams,$translate,parameterServ
   }	
   
   $scope.possibleValues=parameters[index].possiblevalues;
+  
+  if ($stateParams.newPossvalue=='true') {
+	  $scope.possibleValues[$scope.possibleValues.length-1].edit=true;
+  }
   
   this.format=parameters[index].format;
   
@@ -103,7 +109,7 @@ function editParamController($scope,$state,$stateParams,$translate,parameterServ
   
   this.addPossibleValue = function(){
 	  var promise = parameterService.addPossibleValue("new Value",$stateParams.parameterID);
-	  promise.then(function(){reload();});
+	  promise.then(function(){reload(true);});
   };
   
   this.cancelEdit = function(){
@@ -188,24 +194,25 @@ function editParamController($scope,$state,$stateParams,$translate,parameterServ
   
   
   $scope.dragControlListeners = {
-		    accept: function (sourceItemHandleScope, destSortableScope) {return true},
-  			//override to determine drag is allowed or not. default is true.
-		    itemMoved: function (event) {console.log ("order changed")
+		accept: function (sourceItemHandleScope, destSortableScope) {return true},
+			//override to determine drag is allowed or not. default is true.
+		itemMoved: function (event) {console.log ("order changed")
 			  	var neworder=[];
+		  	for (var i=0; i<$scope.possibleValues.length; i++){
+		  		neworder.push($scope.possibleValues[i].id);
+		  	}
+			var promise=parameterService.reorderPossibleValues($stateParams.parameterID,neworder);
+			//		promise.then(function(){reload();})
+		},
+	    orderChanged: function(event) {
+	      	var neworder=[];
 		  	for (var i=0; i<$scope.possibleValues.length; i++)
 		  		neworder.push($scope.possibleValues[i].id);
 			var promise=parameterService.reorderPossibleValues($stateParams.parameterID,neworder);
 			//		promise.then(function(){reload();})
-    },
-		    orderChanged: function(event) {
-		    	  	var neworder=[];
-				  	for (var i=0; i<$scope.possibleValues.length; i++)
-				  		neworder.push($scope.possibleValues[i].id);
-					var promise=parameterService.reorderPossibleValues($stateParams.parameterID,neworder);
-					//		promise.then(function(){reload();})
-		    },
-		    allowDuplicates: false //optional param allows duplicates to be dropped.
-		};
+	    },
+	    allowDuplicates: false //optional param allows duplicates to be dropped.
+  };
 
 //	$scope.dragControlListeners1 = {
 //	        containment: '#board'//optional param.
@@ -263,9 +270,10 @@ function editParamController($scope,$state,$stateParams,$translate,parameterServ
 		  promise.then(function(){reload()});
   }
   
-  var reload=function() {
+  var reload=function(newPossvalue) {
   	var current = $state.current;
   	var params = angular.copy($stateParams);
+  	params.newPossvalue=newPossvalue;
   	params.newParameter=false;
   	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
   };

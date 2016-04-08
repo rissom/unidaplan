@@ -4,7 +4,6 @@
 		&#x25c0;	{{'Back to parameters'|translate}}
 </button>
 
-
 <h3>
 	{{'Edit Parameter'|translate}}
 </h3>
@@ -174,7 +173,8 @@
 		            <input ng-show="item.edit"
 		            	type="text"
 		            	ng-model="item.string"
-		            	ng-keyup="editParamCtrl.keyUpPValue(item,$event.keyCode)">
+		            	ng-keyup="editParamCtrl.keyUpPValue(item,$event.keyCode)"
+		            	autofocus>
 		        </td>
 		        <td ng-click="editParamCtrl.deletePossibleValue(item)">
 		            <span  class="glyphicon glyphicon-remove"></span>
