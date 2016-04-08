@@ -129,7 +129,11 @@ function groupController($uibModal,$translate,$scope,$state,$stateParams,avProce
 //		        				return eSamples2;
 		        				return [];
 		        				},
-		        mode		: function() { return "multiple";},
+		        mode		: function() { 	if (group.id==1) {
+		        								return "admingroup"
+		        							}else{
+		        								return"multiple";};
+		        							},
 		        buttonLabel	: function() { return $translate.instant('assign to group'); }
 		    }		        
 		});

@@ -25,6 +25,9 @@ function modalUserChoser($scope,$translate,$uibModalInstance,groups,users,chosen
 			
 	this.immediate= (mode=='immediate');
 	
+	this.admingroup= (mode=='admingroup');
+
+	
 		
 	
 	$scope.isNotSelected=function(user){ // shows if a user is not already selected
@@ -67,6 +70,7 @@ function modalUserChoser($scope,$translate,$uibModalInstance,groups,users,chosen
 	
 	this.choseUser=function(user){
 		var i;
+		
 		var found=false; // check if the user is not already in chosenUsers
 		for (i=0;i<this.chosenUsers.length;i++){
 			if (this.chosenUsers[i].id==user.id){
@@ -77,16 +81,20 @@ function modalUserChoser($scope,$translate,$uibModalInstance,groups,users,chosen
 			this.chosenUsers.push(user);
 		}
 		if (this.immediate){
-			console.log ("immediate mode")
 			this.assignUsers()} // If the dialog is for just chosing one user immediately
 	}
 	
 	
 	
 	this.removeUser=function(user){ // remove User from list of chosen users.
-		for (var i=0;i<this.chosenUsers.length;i++){
-			if (this.chosenUsers[i].id==user.id){
-				this.chosenUsers.splice(i,1);
+		
+		if (thisController.admingroup && this.chosenUsers.length==1){
+			alert($translate.instant("at least 1 admin has to remain"));
+		} else {
+			for (var i=0;i<this.chosenUsers.length;i++){
+				if (this.chosenUsers[i].id==user.id){
+					this.chosenUsers.splice(i,1);
+				}
 			}
 		}
 	}
