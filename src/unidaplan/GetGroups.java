@@ -58,6 +58,9 @@ public class GetGroups extends HttpServlet {
 				dBconn.closeDB();
 				out.println(groups.toString());
 
+		    } else {
+		    	response.setStatus(401);
+//				out.println("{status:\"Error: access restricted\"}");
 		    }
     	} catch (SQLException e) {
     		System.err.println("GetGroups: Problems with SQL query");
