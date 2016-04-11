@@ -232,6 +232,28 @@ function editParamController($scope,$state,$stateParams,$translate,parameterServ
   }
   
   
+  
+  this.showMinMaxNumber = function(){
+	  if (['double','measurement','integer'].indexOf(thisController.dataType)>-1){
+		  return true;
+	  }else{ 
+		  return false;
+	  }
+  }
+  
+
+  
+  
+  this.showMinMaxTimestamp = function(){
+	  if (["date","timestamp"].indexOf(thisController.dataType)>-1){
+		  return true;
+	  }else{ 
+		  return false;
+	  }
+  }
+  
+  
+  
   this.update = function(){
 		  thisController.regex=thisController.newRegex;
 		  thisController.format=thisController.newFormat;

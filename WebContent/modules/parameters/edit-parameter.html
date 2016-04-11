@@ -129,29 +129,57 @@
 	</td>
 </tr>
  -->
-<tr ng-dblclick="editParamCtrl.edit('min')" ng-show="editParamCtrl.showFormat()">
+<tr ng-dblclick="editParamCtrl.edit('min')" ng-show="editParamCtrl.showMinMaxNumber()">
+
+<tr ng-dblclick="editParamCtrl.edit('min')" ng-show="editParamCtrl.showMinMaxNumber()">
 <td>{{'Minimum'|translate}}</td>
 	<td><span ng-hide="editParamCtrl.editMin">{{editParamCtrl.min}}</span>
 		<input ng-show="editParamCtrl.editMin" 
 			   ng-keyup="editParamCtrl.keyUp($event.keyCode,'Min')"
-			   type="text"
+			   type="number"
 			   ng-model="editParamCtrl.newMin"
 			   ng-blur="editParamCtrl.cancelEdit()"
 			   select-on-click>
 	</td>
 </tr>
-<tr ng-dblclick="editParamCtrl.edit('max')" ng-show="editParamCtrl.showFormat()">
+
+<tr ng-dblclick="editParamCtrl.edit('max')" ng-show="editParamCtrl.showMinMaxNumber()">
 <td>{{'Maximum'|translate}}</td>
 	<td><span ng-hide="editParamCtrl.editMax">{{editParamCtrl.max}}</span>
 		<input ng-show="editParamCtrl.editMax" 
 			   ng-keyup="editParamCtrl.keyUp($event.keyCode,'Max')"
-			   type="text"
+			   type="number"
 			   ng-model="editParamCtrl.newMax"
 			   ng-blur="editParamCtrl.cancelEdit()"
 			   select-on-click>
 	</td>
 </tr>
-<tr>
+<!-- 
+<tr ng-dblclick="editParamCtrl.edit('min')" ng-show="editParamCtrl.showMinMaxTimestamp()">
+<td>{{'Minimum'|translate}}</td>
+	<td><span ng-hide="editParamCtrl.editMin">{{editParamCtrl.min}}</span>
+		<input ng-show="editParamCtrl.editMin" 
+			   ng-keyup="editParamCtrl.keyUp($event.keyCode,'Min')"
+			   type="date"
+			   ng-model="editParamCtrl.newMin"
+			   ng-blur="editParamCtrl.cancelEdit()"
+			   select-on-click>
+	</td>
+</tr>
+
+<tr ng-dblclick="editParamCtrl.edit('max')" ng-show="editParamCtrl.showMinMaxTimestamp()">
+<td>{{'Maximum'|translate}}</td>
+	<td><span ng-hide="editParamCtrl.editMax">{{editParamCtrl.min}}</span>
+		<input ng-show="editParamCtrl.editMax" 
+			   ng-keyup="editParamCtrl.keyUp($event.keyCode,'Max')"
+			   type="date"
+			   ng-model="editParamCtrl.newMax"
+			   ng-blur="editParamCtrl.cancelEdit()"
+			   select-on-click>
+	</td>
+</tr>
+ -->
+
 <td></td>
 <td></td>
 </tr>
