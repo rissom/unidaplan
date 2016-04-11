@@ -5,8 +5,16 @@
 {{'created by'|translate}} {{experimentCtrl.experiment.creator}}
 <br />
 <br />
+
 <!-- Parameters -->
 <h4 ng-show="experimentCtrl.experiment.parameters">{{'Parameters'|translate}}</h4>
+
+<paramfield 
+			parameters="experimentCtrl.experiment.parameters"
+			editable="experimentCtrl.experiment.editable"
+			pupdate="experimentCtrl.submitParameter(parameter)">
+</paramfield>
+<!-- 
 <table class="table">
 	<tr ng-repeat="parameter in experimentCtrl.experiment.parameters 
 				   | orderBy : experimentCtrl.experiment.parameters.pos" 
@@ -48,9 +56,9 @@
 		<td></td>
 		<td></td>
 	</tr>
-	<!-- um letzten Strich in Tabelle zu erzeugen --> 
+	 
 </table>
- 
+  -->
 
 <button type="button" 
 		class="btn btn-default" 

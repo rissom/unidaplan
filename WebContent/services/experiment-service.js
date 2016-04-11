@@ -175,11 +175,21 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 	
 	
 	
-	this.updateExperimentParameter=function(parameter){
-		if (parameter.datatype==="date+time"){
-			parameter.tz=parameter.date.getTimezoneOffset();
+	this.updateExperimentParameter=function(parameter,experimentid){
+		
+		var json={experimentid:experimentid, parameterid:parameter.id, value:parameter.value};
+		if ("date" in parameter) {
+			json.date=parameter.date;
+			json.tz=parameter.tz;
 		}
-		return restfactory.POST('update-experiment-parameter',parameter);		
+		if ("time" in parameter) {
+			json.time=parameter.time;
+		}
+		if ("error" in parameter) {
+			json.error=parameter.error;
+		} 
+		
+		return restfactory.POST('update-experiment-parameter',parameter);
 	};
 	
 	

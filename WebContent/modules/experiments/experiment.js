@@ -387,16 +387,15 @@ function experimentController($uibModal,$scope,editmode,experimentService,restfa
 	this.submitParameter=function(parameter){
 		parameter.editing=false; 
 		var oldValue=parameter.value;
-		if (parameter.datatype=="date") {
-			parameter.date=parameter.newDate;
-			parameter.tz=new Date().getTimezoneOffset();
-		} else {
-			parameter.value=parameter.newValue;
-		}
+//		if (parameter.datatype=="date") {
+//			parameter.date=parameter.newDate;
+//			parameter.tz=new Date().getTimezoneOffset();
+//		}
 		parameter.experimentid=this.experiment.id;
 		var res = experimentService.updateExperimentParameter(parameter);
 		res.then(
 			function(data) {
+				reload();
 			},
 			function(data) {
 				console.log('error');
