@@ -31,13 +31,13 @@ var dateParameter = function() {
 			
 			
 			this.getDateString = function(){
-				tc.dateString = myDate.toLocaleDateString()
-				this.newValue=this.dateString;
+				tc.newValue   = tc.date;
 				if (tc.date){
 					return tc.date.toLocaleDateString();
 				}
 				return '-'; // return '-' if no timestamp is defined.
 			}
+			
 			
 			this.update= function(){
 				$scope.parameter.editing=false; 

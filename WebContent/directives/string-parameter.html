@@ -4,8 +4,7 @@
 <input 						   
 	ng-keyup="stringParamCtrl.keyUp($event.keyCode)"
 	ng-show="parameter.editing" type="text"
-    ng-model="stringParamCtrl.newValue"
-    ng-blur="parameter.editing=false">
+    ng-model="stringParamCtrl.newValue">
 <span ng-show="parameter.unit">
 	{{parameter.unitf()}}
 </span>

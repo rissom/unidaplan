@@ -5,8 +5,7 @@
 	ng-keyup="integerParamCtrl.keyUp($event.keyCode)"
 	ng-show="parameter.editing" 
 	type="number"
-    ng-model="integerParamCtrl.newValue"
-    ng-blur="parameter.editing=false">
+    ng-model="integerParamCtrl.newValue">
 <span ng-show="parameter.unit && (parameter.editing || parameter.value)">
 	{{parameter.unitf()}}
 </span>

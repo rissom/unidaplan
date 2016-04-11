@@ -5,8 +5,7 @@
 	ng-keyup="floatParamCtrl.keyUp($event.keyCode)"
 	ng-show="parameter.editing" 
 	type="number"
-    ng-model="floatParamCtrl.newValue"
-    ng-blur="parameter.editing=false">
+    ng-model="floatParamCtrl.newValue">
 <span ng-show="parameter.unit && parameter.value && parameter.value!=''">
 	{{parameter.unitf()}}
 </span>
