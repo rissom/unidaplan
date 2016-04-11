@@ -24,7 +24,7 @@ import org.json.JSONObject;
 		int userID=authentificator.GetUserID(request,response);
 		userID=userID+1;
 		userID=userID-1;
-		PreparedStatement pstmt;
+		PreparedStatement pStmt;
 		ArrayList<String> stringkeys = new ArrayList<String>(); 
 		JSONObject experiment = null;
 		JSONArray processes = null;
@@ -34,19 +34,10 @@ import org.json.JSONObject;
 	    response.setCharacterEncoding("utf-8");
 	    PrintWriter out = response.getWriter();
 	 	DBconnection dBconn=new DBconnection();
-	    JSONObject expPlans = new JSONObject();
+	    JSONObject answer = new JSONObject();
+	    Boolean editable = false;
 	    int id=-1;
-	    
-	 // Print the current Session's ID
-//	    out.println("Session ID:" + " " + session.getId());
-//	    out.println("<br>");
-//
-//	    // Print the current Session's Creation Time
-//	    out.println("Session Created:" + " " + new Date(session.getCreationTime()) + "<br>");
-//
-//	    // Print the current Session's Last Access Time
-//	    out.println("Session Last Accessed" + " " + new Date(session.getLastAccessedTime()));
-//	    
+
 	  	try {
 	   		 id=Integer.parseInt(request.getParameter("id")); 
 	    } catch (Exception e1) {
@@ -55,17 +46,40 @@ import org.json.JSONObject;
 	   	}
 	    try {  
 		    dBconn.startDB();
+		    
+		    // check privileges
+		    try{
+		        dBconn.startDB();
+		        pStmt= dBconn.conn.prepareStatement( 	
+						"SELECT getExperimentRights(vuserid:=?,vexperimentid:=?)");
+				pStmt.setInt(1,userID);
+				pStmt.setInt(2,id);
+				String privilege=dBconn.getSingleStringValue(pStmt);
+				pStmt.close();
+		        
+		        editable= privilege!=null && privilege.equals("w");
+		        
+			} catch (SQLException e) {
+				System.err.println("Showsample: Problems with SQL query for sample name");
+			} catch (JSONException e) {
+				System.err.println("Showsample: JSON Problem while getting sample name");
+			} catch (Exception e2) {
+				System.err.println("Showsample: Strange Problem while getting sample name");
+				e2.printStackTrace();
+			} 
+		    
+		    
 	    	// get basic experiment data (creator, id, name, status, number)
-			pstmt= dBconn.conn.prepareStatement( 	
+			pStmt= dBconn.conn.prepareStatement( 	
 			"SELECT exp_plan.ID AS ID,users.fullname as creator, exp_plan.name ,status , intd.value AS number "
 			+"FROM  exp_plan "
 			+"JOIN users ON (users.id=exp_plan.Creator) "
 			+"JOIN expp_integer_data intd ON (intd.expp_id=exp_plan.ID) "
 			+"JOIN expp_param ON (intd.expp_param=expp_param.id AND expp_param.definition=2) "
 			+"WHERE exp_plan.ID=?");
-			pstmt.setInt(1, id);
-			experiment=dBconn.jsonObjectFromPreparedStmt(pstmt);
-			pstmt.close();
+			pStmt.setInt(1, id);
+			experiment=dBconn.jsonObjectFromPreparedStmt(pStmt);
+			pStmt.close();
     	} catch (SQLException e) {
     		System.err.println("Experiments: Problems with SQL query for experiment");
     	} catch (JSONException e) {
@@ -80,13 +94,13 @@ import org.json.JSONObject;
 	    if (experiment.length()>0) {
 		    try {
 	    		// Get the default processes for this experiment
-	 			pstmt= dBconn.conn.prepareStatement( 
+	 			pStmt= dBconn.conn.prepareStatement( 
 	 			"SELECT exp_plan_processes.id, p_recipes.name AS recipename, position, ptid AS processtype, recipe, note "
 				+"FROM exp_plan_processes "
 				+"LEFT JOIN p_recipes ON (p_recipes.id=exp_plan_processes.recipe) " 
 				+"WHERE expp_id=? ORDER BY exp_plan_processes.position");
-	 			pstmt.setInt(1,id);
-	 			processes=dBconn.jsonArrayFromPreparedStmt(pstmt);
+	 			pStmt.setInt(1,id);
+	 			processes=dBconn.jsonArrayFromPreparedStmt(pStmt);
 	 			if (processes.length()>0) {
 	 				// get keys for the names of the receipes:
 	 				for (int i=0; i<processes.length();i++){
@@ -105,14 +119,14 @@ import org.json.JSONObject;
 		 			
 	 			
 	 			// Get the associated samples and their associated processes
-	 			pstmt= dBconn.conn.prepareStatement( 
+	 			pStmt= dBconn.conn.prepareStatement( 
 	 			"SELECT expp_samples.id,expp_samples.position AS sampleposition,expp_samples.sample AS sampleid, "
 	 			+"samplenames.typeid, samplenames.name, note "
 	 			+"FROM expp_samples "
 	 			+"JOIN samplenames ON expp_samples.sample=samplenames.id "
 	 			+"WHERE expp_samples.expp_id=? ORDER BY sampleposition");
-	 			pstmt.setInt(1,id);
-	 			samples=dBconn.jsonArrayFromPreparedStmt(pstmt);
+	 			pStmt.setInt(1,id);
+	 			samples=dBconn.jsonArrayFromPreparedStmt(pStmt);
 	 			if (samples.length()>0) {
 	 				for (int i=0; i<samples.length();i++){
 	 					JSONObject tempSample = samples.getJSONObject(i);
@@ -122,7 +136,7 @@ import org.json.JSONObject;
 	 					}
 		 					
 	 					// get planned Processes for a sample
-						pstmt= dBconn.conn.prepareStatement("SELECT eps.id as process_step_id, "
+						pStmt= dBconn.conn.prepareStatement("SELECT eps.id as process_step_id, "
 							+"epp.position AS processposition, epp.ptid AS processtype, eps.recipe, eps.note, " 
 							+"p_recipes.name AS recipename, epp.id AS eppprocess "
 							+"FROM exp_plan_steps eps "
@@ -130,8 +144,8 @@ import org.json.JSONObject;
 							+"LEFT JOIN p_recipes ON (p_recipes.id=eps.recipe) " 
 							+"WHERE eps.expp_s_id=? "
 							+"ORDER BY processposition");
-			 			pstmt.setInt(1,samples.getJSONObject(i).getInt("id"));
-			 			JSONArray pprocesses=dBconn.jsonArrayFromPreparedStmt(pstmt);
+			 			pStmt.setInt(1,samples.getJSONObject(i).getInt("id"));
+			 			JSONArray pprocesses=dBconn.jsonArrayFromPreparedStmt(pStmt);
 			 			if (pprocesses.length()>0) {
 			 				samples.getJSONObject(i).put("pprocesses",pprocesses);
 			 				for (int j=0; j<pprocesses.length();j++){
@@ -144,7 +158,7 @@ import org.json.JSONObject;
 	 					}
 	 			 			
 	 					// get finished Processes for a sample
- 			 			pstmt= dBconn.conn.prepareStatement( 
+ 			 			pStmt= dBconn.conn.prepareStatement( 
  			 				   "SELECT samplesinprocess.processid, processes.processtypesid as processtype, ptd.value AS date, n.value AS number, "
  			 				  +"n2.value AS status "
  			 				  +"FROM samplesinprocess "
@@ -157,8 +171,8 @@ import org.json.JSONObject;
  			 				  +"JOIN p_integer_data n ON (n.ProcessID=samplesinprocess.processid AND n.P_Parameter_ID=pp2.id) "
  			 				  +"JOIN p_integer_data n2 ON (n2.ProcessID=samplesinprocess.processid AND n2.P_Parameter_ID=pp3.id) "
  			 				  +"WHERE sampleid=?");
- 			 			pstmt.setInt(1,samples.getJSONObject(i).getInt("sampleid"));
- 			 			JSONArray fprocesses=dBconn.jsonArrayFromPreparedStmt(pstmt);
+ 			 			pStmt.setInt(1,samples.getJSONObject(i).getInt("sampleid"));
+ 			 			JSONArray fprocesses=dBconn.jsonArrayFromPreparedStmt(pStmt);
  			 			if (fprocesses.length()>0) {
  			 				samples.getJSONObject(i).put("fprocesses",fprocesses);
  			 			}
@@ -178,7 +192,7 @@ import org.json.JSONObject;
 	    	stringkeys.add(Integer.toString(experiment.getInt("name")));
 	    	
      		// Query the parameters
-			pstmt= dBconn.conn.prepareStatement( 	
+			pStmt= dBconn.conn.prepareStatement( 	
      		"SELECT expp_param.id, expp_param.pos, "
 			+"expp_param.stringkeyname, value, "
 			+"st.description, paramdef.datatype, paramdef.stringkeyunit "
@@ -189,9 +203,9 @@ import org.json.JSONObject;
 			+"JOIN String_key_table st ON st.id=expp_param.stringkeyname "
 			+"WHERE expp_param.exp_plan_id=? AND hidden=false "
 			+"ORDER BY pos ");
-			pstmt.setInt(1, id);
-			JSONArray parameters=dBconn.jsonArrayFromPreparedStmt(pstmt);
-			pstmt.close();
+			pStmt.setInt(1, id);
+			JSONArray parameters=dBconn.jsonArrayFromPreparedStmt(pStmt);
+			pStmt.close();
 			if (parameters.length()>0) {
 				experiment.put("parameters", parameters);
 		      	for (int i=0; i<parameters.length();i++) {
@@ -228,9 +242,10 @@ import org.json.JSONObject;
 	    
 	    	// Output data
 	    	try {
-		        expPlans.put("experiment", experiment);
-		        expPlans.put("strings", dBconn.getStrings(stringkeys));
-				out.println(expPlans.toString());
+		        experiment.put("editable",editable);
+		        answer.put("experiment", experiment);
+		        answer.put("strings", dBconn.getStrings(stringkeys));
+				out.println(answer.toString());
 	    	} catch (JSONException e) {
 				System.err.println("Experiments: JSON Problem while getting Stringkeys");
 	    	} catch (Exception e2) {
