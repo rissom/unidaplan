@@ -14,6 +14,12 @@ var processService = function (restfactory,$q,$translate,key2string) {
 	
 	
 	
+	this.setNumber = function(processid,number){
+		return restfactory.PUT("update-process-number",{number:number, processid:processid});
+	};
+	
+	
+	
 	this.addProcessType = function(process){
 		return restfactory.POST("add-process-type",process);
 	};

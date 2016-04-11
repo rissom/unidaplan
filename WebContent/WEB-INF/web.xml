@@ -7,16 +7,29 @@
   <session-config>
     <session-timeout>1440</session-timeout>
   </session-config>
+  
   <servlet>
-    <description>shows data for a sample</description>
-    <display-name>Showsample</display-name>
-    <servlet-name>Showsample</servlet-name>
-    <servlet-class>unidaplan.Showsample</servlet-class>
+    <description>AddProcesstypePGParameters</description>
+    <display-name>AddProcesstypePGParameters</display-name>
+    <servlet-name>AddProcesstypePGParameters</servlet-name>
+    <servlet-class>unidaplan.AddProcesstypePGParameters</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>Showsample</servlet-name>
-    <url-pattern>/showsample</url-pattern>
+    <servlet-name>AddProcesstypePGParameters</servlet-name>
+    <url-pattern>/add-pt-pg-parameters</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <description>AddSampletypeParameters</description>
+    <display-name>AddSampletypeParameters</display-name>
+    <servlet-name>AddSampletypeParameters</servlet-name>
+    <servlet-class>unidaplan.AddSampletypeParameters</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddSampletypeParameters</servlet-name>
+    <url-pattern>/add-st-parameters</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
     <description>shows samples with a name close to parameter name</description>
     <display-name>SamplesByName</display-name>
@@ -872,17 +885,6 @@
   </servlet-mapping>
   
   <servlet>
-    <description>AddProcesstypePGParameters</description>
-    <display-name>AddProcesstypePGParameters</display-name>
-    <servlet-name>AddProcesstypePGParameters</servlet-name>
-    <servlet-class>unidaplan.AddProcesstypePGParameters</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>AddProcesstypePGParameters</servlet-name>
-    <url-pattern>/add-pt-pg-parameters</url-pattern>
-  </servlet-mapping>
-  
-  <servlet>
     <description>ChangeOrderPTParameters</description>
     <display-name>ChangeOrderPTParameters</display-name>
     <servlet-name>ChangeOrderPTParameters</servlet-name>
@@ -958,6 +960,17 @@
   <servlet-mapping>
     <servlet-name>UpdateGroupRights</servlet-name>
     <url-pattern>/update-group-rights</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>UpdateProcessNumber</description>
+    <display-name>UpdateProcessNumber</display-name>
+    <servlet-name>UpdateProcessNumber</servlet-name>
+    <servlet-class>unidaplan.UpdateProcessNumber</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateProcessNumber</servlet-name>
+    <url-pattern>/update-process-number</url-pattern>
   </servlet-mapping>
   
   <servlet>
@@ -1094,14 +1107,14 @@
   </servlet-mapping>
   
   <servlet>
-    <description>AddSampletypeParameters</description>
-    <display-name>AddSampletypeParameters</display-name>
-    <servlet-name>AddSampletypeParameters</servlet-name>
-    <servlet-class>unidaplan.AddSampletypeParameters</servlet-class>
+    <description>shows data for a sample</description>
+    <display-name>Showsample</display-name>
+    <servlet-name>Showsample</servlet-name>
+    <servlet-class>unidaplan.Showsample</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>AddSampletypeParameters</servlet-name>
-    <url-pattern>/add-st-parameters</url-pattern>
+    <servlet-name>Showsample</servlet-name>
+    <url-pattern>/showsample</url-pattern>
   </servlet-mapping>
   
   <servlet>

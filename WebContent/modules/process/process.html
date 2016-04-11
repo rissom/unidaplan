@@ -1,5 +1,11 @@
-<h3>{{processCtrl.process.fprocesstype()}} {{processCtrl.process.pnumber}}</h3>
+<h3 ng-dblclick="processCtrl.editNumber=true">{{processCtrl.process.fprocesstype()}} <span ng-hide="processCtrl.editNumber">{{processCtrl.process.pnumber}}</span>
+<input 						   
+	ng-keyup="processCtrl.keyUpNumber($event.keyCode)"
+	ng-show="processCtrl.editNumber" 
+	type="number"
+    ng-model="processCtrl.newNumber">
 <br />
+</h3>
 
 
 
@@ -17,14 +23,13 @@
 ng-hide="processCtrl.editStatus"
 class="status"
 ng-dblclick="processCtrl.editStatus=true"
-ng-class="{'1':'ok','2':'att','3':'failed'}[processCtrl.process.status]" >&nbsp;{{processCtrl.status()}} </span>
+ng-class="{'1':'ok','2':'att','3':'failed'}[processCtrl.process.status]" >&nbsp;{{processCtrl.status.stringf()}} </span>
  <select class="input-sm"
          ng-show="processCtrl.editStatus"
          ng-change="processCtrl.setStatus()"
          ng-model="processCtrl.newStatus"
-         ng-blur="processCtrl.editStatus=false" >
-	<option ng-repeat="state in processCtrl.statusStrings" value="{{$index+1}}" ng-selected="processCtrl.process.status==($index+1)">
-    	{{state}}  
+         ng-blur="processCtrl.editStatus=false"
+		 ng-options="state as state.stringf() for state in processCtrl.stati">
     </option> 
 </select>
 <br />

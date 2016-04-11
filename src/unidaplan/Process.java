@@ -78,17 +78,23 @@ public class Process extends HttpServlet {
 		  
   	  		// get number, type and status 
   	  		pStmt= dBconn.conn.prepareStatement(
-				"SELECT processes.id, processes.processtypesid as processtype, ptd.value AS date, n1.value AS pnumber, "
-				+"processtypes.name AS pt_string_key, n2.value AS status, pp3.id AS statuspid "
-				+"FROM processes "
-				+"JOIN processtypes ON (processes.processtypesid=processtypes.id) "
-				+"JOIN p_parameters pp1 ON (pp1.definition=10 AND pp1.ProcesstypeID=processes.processtypesid) " // date
-				+"JOIN p_parameters pp2 ON (pp2.definition=8 AND pp2.ProcesstypeID=processes.processtypesid) " // number
-				+"JOIN p_parameters pp3 ON (pp3.definition=1 AND pp3.ProcesstypeID=processes.processtypesid) " // status
-				+"LEFT JOIN p_timestamp_data ptd ON (ptd.processID=processes.id AND ptd.P_Parameter_ID=pp1.id) "
-				+"LEFT JOIN p_integer_data n1 ON (n1.ProcessID=processes.id AND n1.P_Parameter_ID=pp2.id) "
-				+"LEFT JOIN p_integer_data n2 ON (n2.ProcessID=processes.id AND n2.P_Parameter_ID=pp3.id) "
-				+"WHERE processes.id=?");
+				  "SELECT "
+				+ "  processes.id, "
+				+ "  processes.processtypesid as processtype, "
+				+ "  ptd.value AS date, "
+				+ "  n1.value AS pnumber, "
+				+ "  processtypes.name AS pt_string_key, "
+				+ "  n2.value AS status, "
+				+ "  pp3.id AS statuspid "
+				+ "FROM processes "
+				+ "JOIN processtypes ON (processes.processtypesid=processtypes.id) "
+				+ "JOIN p_parameters pp1 ON (pp1.definition=10 AND pp1.ProcesstypeID=processes.processtypesid) " // date
+				+ "JOIN p_parameters pp2 ON (pp2.definition=8 AND pp2.ProcesstypeID=processes.processtypesid) " // number
+				+ "JOIN p_parameters pp3 ON (pp3.definition=1 AND pp3.ProcesstypeID=processes.processtypesid) " // status
+				+ "LEFT JOIN p_timestamp_data ptd ON (ptd.processID=processes.id AND ptd.P_Parameter_ID=pp1.id) "
+				+ "LEFT JOIN p_integer_data n1 ON (n1.ProcessID=processes.id AND n1.P_Parameter_ID=pp2.id) "
+				+ "LEFT JOIN p_integer_data n2 ON (n2.ProcessID=processes.id AND n2.P_Parameter_ID=pp3.id) "
+				+ "WHERE processes.id=?");
   	  		pStmt.setInt(1, processID);
   	  		jsProcess= dBconn.jsonObjectFromPreparedStmt(pStmt);
   	  		if (jsProcess.length()>0) {
@@ -118,7 +124,7 @@ public class Process extends HttpServlet {
 	    try {      
 			pStmt=dBconn.conn.prepareStatement( 
 			"SELECT id,p_number FROM pnumbers "
-			+"WHERE (p_number>? AND processtype=?) LIMIT 1");
+			+"WHERE (p_number>? AND processtype=?) ORDER BY p_number LIMIT 1");
 			pStmt.setInt(1,pnumber);
 			pStmt.setInt(2,processTypeID);
 			JSONObject next= dBconn.jsonObjectFromPreparedStmt(pStmt);

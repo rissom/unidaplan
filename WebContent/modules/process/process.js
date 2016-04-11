@@ -4,20 +4,25 @@
 function process($state,$stateParams,$translate,avSampleTypeService,types,$uibModal,processData,restfactory,processService){
   
 	var thisController=this;
-  
-	this.deletable=processData.deletable;
 	
-	this.editable=processData.editable;
+	this.newNumber = processData.pnumber;
+  
+	this.deletable = processData.deletable;
+	
+	this.editable = processData.editable;
   	
 	this.files = processData.files;
 	
-	this.process=processData;
+	this.process = processData;
  
-	this.statusStrings = [$translate.instant("OK"),
-		                  $translate.instant("attention"),
-						  $translate.instant("failed")];
+	this.stati = [{index: 1, stringf : function() {return $translate.instant("OK")}},
+				  {index: 2, stringf : function() {return $translate.instant("attention")}},
+				  {index: 3, stringf : function() {return $translate.instant("failed")}}];
 	
+    this.status = this.stati[processData.status-1];
 	
+    this.newStatus = this.stati[processData.status-1];
+
 	
 	this.deleteFile = function (fileID){
 		var promise = processService.deleteFile(fileID);
@@ -102,7 +107,22 @@ function process($state,$stateParams,$translate,avSampleTypeService,types,$uibMo
   		var promise = restfactory.POST("add-sample-to-process",samples2assign);
   	};
  
-  
+  	
+  	
+  	this.keyUpNumber = function(keyCode){
+		if (keyCode===13) {				// Return key pressed
+			thisController.editNumber = false; 
+			var oldValue = thisController.process.pnumber;
+			thisController.process.pnumber = thisController.newNumber;
+			var res = processService.setNumber(thisController.process.id,thisController.newNumber);
+			res.then(function(rest) {reload();}, function(){thisController.process.pnumber=oldValue; reload();});
+		}			 
+		if (keyCode===27) {		// Escape key pressed
+			thisController.editNumber = false; 		
+		}
+	};
+  		
+  	
 	
   	this.saveParameter = function(parameter) {
 		var promise = processService.saveParameter(this.process.id,parameter);
@@ -116,19 +136,12 @@ function process($state,$stateParams,$translate,avSampleTypeService,types,$uibMo
 			}
 		);
 	};
-	
-	
-	
-    this.status=function(){
-    	return this.statusStrings[this.process.status-1]; 
-    };
-  
   
   
   	this.setStatus=function(){
-  		var promise=processService.setStatus(processData,this.newStatus);
-		promise.then(function(){
-		reload();});
+        console.log(thisController.newStatus);
+  		var promise=processService.setStatus(processData,thisController.newStatus.index);
+		promise.then(function(){reload();});
   	};
   
   	
