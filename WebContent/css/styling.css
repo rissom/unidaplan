@@ -139,6 +139,10 @@ ol {
 	background-color: #FF8888;
 }
 
+img {  
+	border-style: none;
+}
+
 .noleftborder{
 	border-left: 0;
 }

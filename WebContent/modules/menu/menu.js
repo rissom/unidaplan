@@ -58,8 +58,8 @@ function menuf(searchService,restfactory,$translate,$rootScope,$state,userServic
 				window.localStorage.removeItem("username");
 				$rootScope.admin=false;
 		    	window.localStorage.removeItem("admin");
-				$rootScope.userid=0;
-			    window.localStorage.setItem("userid",0);
+				delete $rootScope.userid;
+		    	window.localStorage.removeItem("userid");
 				$state.go('login');
 			},
 			function(){
