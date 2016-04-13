@@ -24,6 +24,7 @@ import org.json.JSONObject;
 	    String status = "ok";
 	    String language = "";
 	    String value ="";
+	    int paramDatatype;
 
 	    JSONObject  jsonIn = null;	
 	    int parameterID = -1;
@@ -63,6 +64,31 @@ import org.json.JSONObject;
 			e.printStackTrace();
 		}
 	    
+	    
+		if (jsonIn.has("datatype")){
+			try {
+				String datatype=jsonIn.getString("datatype");
+				int dt=0;
+				for (int i=0; i<Unidatoolkit.Datatypes.length; i++){
+					if (Unidatoolkit.Datatypes[i].equalsIgnoreCase(datatype)){
+						dt=i;
+					}
+				}
+				pStmt=dBconn.conn.prepareStatement(
+						"UPDATE paramdef SET datatype=? WHERE id=?");
+				pStmt.setInt(1,dt);
+				pStmt.setInt(2,parameterID);				
+				pStmt.executeUpdate();
+				pStmt.close();	
+			} catch (SQLException e){
+				System.err.println("UpdateParameter: SQL error reading format field");
+				status="SQL error, format field";
+			}catch(JSONException e) {
+				System.err.println("UpdateParameter: JSON error reading format field");
+				status="JSON error, format field";
+			}
+		}
+	    
 
 		if (jsonIn.has("name")){
 		    try{
@@ -75,9 +101,6 @@ import org.json.JSONObject;
 				response.setStatus(404);
 			}
 		   
-	
-		    
-			
 			try {
 				// find the stringkey
 				pStmt=dBconn.conn.prepareStatement(
@@ -106,8 +129,6 @@ import org.json.JSONObject;
 					pStmt.executeUpdate();
 					pStmt.close();
 				}
-				
-				
 				
 			} catch (SQLException e) {
 				System.err.println("UpdateParameter: Problems with SQL query");
@@ -254,6 +275,22 @@ import org.json.JSONObject;
 		}
 		
 		
+		// determine datatype
+		try {
+			pStmt=dBconn.conn.prepareStatement(
+					"SELECT datatype FROM paramdef WHERE id=?");
+			pStmt.setInt(1,parameterID);				
+			paramDatatype = dBconn.getSingleIntValue(pStmt);
+			pStmt.close();
+		} catch (SQLException e){
+			System.err.println("UpdateParameter: SQL error determining datafield");
+			status="SQL error, determining datafield";
+		}catch(Exception e) {
+			System.err.println("UpdateParameter: error determining datafield");
+			status="error determining datafield";
+			e.printStackTrace();
+		}
+		
 		if (jsonIn.has("min")){
 			try {
 				pStmt=dBconn.conn.prepareStatement(
@@ -313,31 +350,7 @@ import org.json.JSONObject;
 				status="JSON error, format field";
 			}
 		}
-		
 
-		if (jsonIn.has("datatype")){
-			try {
-				String datatype=jsonIn.getString("datatype");
-				int dt=0;
-				for (int i=0; i<Unidatoolkit.Datatypes.length; i++){
-					if (Unidatoolkit.Datatypes[i].equalsIgnoreCase(datatype)){
-						dt=i;
-					}
-				}
-				pStmt=dBconn.conn.prepareStatement(
-						"UPDATE paramdef SET datatype=? WHERE id=?");
-				pStmt.setInt(1,dt);
-				pStmt.setInt(2,parameterID);				
-				pStmt.executeUpdate();
-				pStmt.close();	
-			} catch (SQLException e){
-				System.err.println("UpdateParameter: SQL error reading format field");
-				status="SQL error, format field";
-			}catch(JSONException e) {
-				System.err.println("UpdateParameter: JSON error reading format field");
-				status="JSON error, format field";
-			}
-		}
 	
 	
 			dBconn.closeDB();
