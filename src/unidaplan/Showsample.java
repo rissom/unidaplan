@@ -50,7 +50,7 @@ public class Showsample extends HttpServlet {
 			System.err.print("Showsample: no sample ID given!");
 		}
 		   
-	    // fetch name and type of the object from the database (samplenames is a view)
+	    // check privileges
 	    try{
 	        dBconn.startDB();
 	        pStmt= dBconn.conn.prepareStatement( 	
