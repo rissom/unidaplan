@@ -99,7 +99,9 @@
 	<li class="exp_li noleftborder" ng-repeat="process in sample.mprocesses"> 
 		<ol class="exp_ol2">
 			<li class="exp_li2 title ">&nbsp;
-				{{experimentCtrl.getProcessType({"processtype":process.pprocess.processtype})}}
+				<span ng-show="process.pprocess.processtype">
+					{{experimentCtrl.getProcessType({"processtype":process.pprocess.processtype})}}
+				</span>
 				<span ng-show="process.pprocess.note">
 					({{process.pprocess.trnote}})
 				</span>
