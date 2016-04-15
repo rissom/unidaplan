@@ -18,16 +18,17 @@ public class ChangeExperimentStatus extends HttpServlet {
 			      throws ServletException, IOException {
 			
 			Authentificator authentificator = new Authentificator();
+		    PreparedStatement pStmt = null;
+		   	String privilege="n";
 			int userID=authentificator.GetUserID(request,response);
-			userID=userID+1; // Remove me!!
-			userID=userID-1;
+
 			String status="ok";
 		    request.setCharacterEncoding("utf-8");
 		    // look up the datatype in Database	    
-		    int id=-1;
+		    int experimentID=-1;
 		    int processstatus=-1;
 		  	try {
-		   		 id=Integer.parseInt(request.getParameter("id")); 
+		   		 experimentID=Integer.parseInt(request.getParameter("id")); 
 		    } catch (Exception e1) {
 		   		System.err.println("no experiment ID given!");
 				response.setStatus(404);
@@ -42,14 +43,31 @@ public class ChangeExperimentStatus extends HttpServlet {
 		    
 
 			try {	
-			 	DBconnection DBconn=new DBconnection();
-			    PreparedStatement pstmt = null;
-			    DBconn.startDB();	   
-				pstmt= DBconn.conn.prepareStatement( 			
-						 "UPDATE exp_plan SET status=? WHERE id=?");
-			   	pstmt.setInt(2, id);
-			   	pstmt.setInt(1, processstatus);
-			   	pstmt.executeUpdate();
+				// Connect to database
+			 	DBconnection dBconn=new DBconnection();
+			    dBconn.startDB();	   
+			    
+			    // Check privileges
+			    pStmt = dBconn.conn.prepareStatement( 	
+						"SELECT getExperimentRights(vuserid:=?,vexperimentid:=?)");
+				pStmt.setInt(1,userID);
+				pStmt.setInt(2,experimentID);
+				System.out.println(pStmt.toString());
+				privilege = dBconn.getSingleStringValue(pStmt);
+				pStmt.close();
+				
+				if (privilege.equals("w")){
+			    
+					pStmt= dBconn.conn.prepareStatement( 			
+							 "UPDATE experiments SET status=? WHERE id=?");
+				   	pStmt.setInt(2, experimentID);
+				   	pStmt.setInt(1, processstatus);
+				   	pStmt.executeUpdate();
+				   	pStmt.close();
+				} else {
+					response.setStatus(401);
+				}
+				dBconn.closeDB();
 			} catch (SQLException e) {
 				System.err.println("SaveSampleParameter: Problems with SQL query");
 				status="SaveSampleParameter: Problems with SQL query";

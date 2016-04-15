@@ -119,25 +119,33 @@ public class UpdateExperimentParameter extends HttpServlet {
 		// differentiate according to type, insert new value in a table
 		try {	
 			switch (dataType) {
-	        case 1: pStmt= dBconn.conn.prepareStatement( 			// Integer values
-			   				 "INSERT INTO expp_integer_data (expp_id,expp_param,value,lastUser) VALUES (?,?,?,?)");
-					pStmt.setInt(1, expID); //experiment ID
-   					pStmt.setInt(2, expParamID); // Parameter ID
-			   		pStmt.setInt(3, jsonIn.getInt("value")); // Value
-	   				pStmt.setInt(4, userID); // UserID
+	        case 1: if (jsonIn.has("value") && !jsonIn.isNull("value")){  
+		        		pStmt= dBconn.conn.prepareStatement( 			// Integer values
+				   				 "INSERT INTO expp_integer_data (expp_id,expp_param,value,lastUser) VALUES (?,?,?,?)");
+						pStmt.setInt(1, expID); //experiment ID
+	   					pStmt.setInt(2, expParamID); // Parameter ID
+				   		pStmt.setInt(3, jsonIn.getInt("value")); // Value
+		   				pStmt.setInt(4, userID); // UserID
+		   				pStmt.executeUpdate();
+		   				pStmt.close();
+	        		}
 			   		break;
 			        
-	        case 2: pStmt= dBconn.conn.prepareStatement( 			// Double values
-	   				 		"INSERT INTO expp_float_data (expp_id,expp_param,value,lastUser) VALUES (?,?,?,?)");
-					pStmt.setInt(1, expID); //experiment ID
-   					pStmt.setInt(2, expParamID); // Parameter ID
-	   				pStmt.setDouble(3, jsonIn.getDouble("value"));
-	   				pStmt.setInt(4, userID); // UserID
+	        case 2: if (jsonIn.has("value") && !jsonIn.isNull("value")){  
+	        			pStmt= dBconn.conn.prepareStatement( 			// Double values
+	   				 			"INSERT INTO expp_float_data (expp_id,expp_param,value,lastUser) VALUES (?,?,?,?)");
+						pStmt.setInt(1, expID); //experiment ID
+	   					pStmt.setInt(2, expParamID); // Parameter ID
+		   				pStmt.setDouble(3, jsonIn.getDouble("value"));
+		   				pStmt.setInt(4, userID); // UserID
+		   				pStmt.executeUpdate();
+		   				pStmt.close();
+	        		}
 	   				break;
 	        
 	        case 3:	if (jsonIn.has("value") && !jsonIn.isNull("value")){  	
     					pStmt= dBconn.conn.prepareStatement( 			// Measurement data
-    					"INSERT INTO expp_measurement_data (expp_id,expp_param,value,error,lastUser) VALUES (?,?,?,?,?)");
+    							"INSERT INTO expp_measurement_data (expp_id,expp_param,value,error,lastUser) VALUES (?,?,?,?,?)");
     					pStmt.setInt(1, expID);
     					pStmt.setInt(2, expParamID);
     					pStmt.setDouble(3, jsonIn.getDouble("value"));
@@ -147,42 +155,56 @@ public class UpdateExperimentParameter extends HttpServlet {
 		    				pStmt.setNull(4, java.sql.Types.DOUBLE);
 		    			}
 		    			pStmt.setInt(5,userID);
+		    			pStmt.executeUpdate();
+		    			pStmt.close();
 		    		}
 	        		break;
 			
-	        case 4: pStmt= dBconn.conn.prepareStatement( 			// String data	
-				 			"INSERT INTO expp_string_data (expp_id,expp_param,value,lastUser) VALUES (?,?,?,?)");
-					pStmt.setInt(1, expID); //experiment ID
-				    pStmt.setInt(2, expParamID); // Parameter ID
-					pStmt.setString(3, jsonIn.getString("value"));
-	   				pStmt.setInt(4, userID);
+	        case 4: if (jsonIn.has("value") && !jsonIn.isNull("value")){  
+		        		pStmt= dBconn.conn.prepareStatement( 			// String data	
+					 			"INSERT INTO expp_string_data (expp_id,expp_param,value,lastUser) VALUES (?,?,?,?)");
+						pStmt.setInt(1, expID); //experiment ID
+					    pStmt.setInt(2, expParamID); // Parameter ID
+						pStmt.setString(3, jsonIn.getString("value"));
+		   				pStmt.setInt(4, userID);
+		   				pStmt.executeUpdate();
+		   				pStmt.close();
+	        		}
 					break;
 			        
-	        case 5: pStmt= dBconn.conn.prepareStatement( 			// String data	
-		 					"INSERT INTO expp_string_data (expp_id,expp_param,value,lastUser) VALUES (?,?,?,?)");
-					pStmt.setInt(1, expID); //experiment ID
-				    pStmt.setInt(2, expParamID); // Parameter ID
-					pStmt.setString(3, jsonIn.getString("value"));
-					pStmt.setInt(4, userID);
+	        case 5: if (jsonIn.has("value") && !jsonIn.isNull("value")){  
+		        		pStmt= dBconn.conn.prepareStatement( 			// String data	
+			 					"INSERT INTO expp_string_data (expp_id,expp_param,value,lastUser) VALUES (?,?,?,?)");
+						pStmt.setInt(1, expID); //experiment ID
+					    pStmt.setInt(2, expParamID); // Parameter ID
+						pStmt.setString(3, jsonIn.getString("value"));
+						pStmt.setInt(4, userID);
+						pStmt.executeUpdate();
+						pStmt.close();
+	        		}
 					break;
 				    
-	        case 7: pStmt= dBconn.conn.prepareStatement( 			// date data	
-	        				"INSERT INTO expp_timestamp_data (expp_id,expp_param,value,tz,lastUser) VALUES (?,?,?,?,?)");
-					pStmt.setInt(1, expID); //experiment ID
-				    pStmt.setInt(2, expParamID); // Parameter ID
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
-					SimpleDateFormat sqldf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-					java.sql.Timestamp ts = java.sql.Timestamp.valueOf(sqldf.format(sdf.parse(jsonIn.getString("date"))));		   
-					pStmt.setTimestamp(3, (Timestamp) ts);
-					pStmt.setInt(4, jsonIn.getInt("tz")); //Timezone in Minutes
-					pStmt.setInt(5, userID);
+	        case 7: if (jsonIn.has("date") && !jsonIn.isNull("date")){  //   7: date,
+		        		pStmt= dBconn.conn.prepareStatement( 			
+		        				"INSERT INTO expp_timestamp_data (expp_id,expp_param,value,tz,lastUser) VALUES (?,?,?,?,?)");
+						pStmt.setInt(1, expID); //experiment ID
+					    pStmt.setInt(2, expParamID); // Parameter ID
+						SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+						SimpleDateFormat sqldf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+						java.sql.Timestamp ts = java.sql.Timestamp.valueOf(sqldf.format(sdf.parse(jsonIn.getString("date"))));
+						pStmt.setTimestamp(3, (Timestamp) ts);
+						pStmt.setInt(4, jsonIn.getInt("tz")); //Timezone in Minutes
+						pStmt.setInt(5, userID);
+						pStmt.executeUpdate();
+						pStmt.close();
+	        		}
 					break;
 			}
-			pStmt.executeUpdate();
-			pStmt.close();
+
 			dBconn.closeDB();
 		} catch (SQLException e) {
 			System.err.println("UpdateExperimentParameter: More Problems with SQL query");
+			e.printStackTrace();
 			status = "SQL Error";
 		} catch (JSONException e){
 			System.err.println("UpdateExperimentParameter: More Problems creating JSON");

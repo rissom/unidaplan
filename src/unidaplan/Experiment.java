@@ -196,9 +196,14 @@ import org.json.JSONObject;
 	    	
      		// Query the parameters
 			pStmt= dBconn.conn.prepareStatement( 	
-     		"SELECT expp_param.id, expp_param.pos, "
-			+"expp_param.stringkeyname, value, "
-			+"st.description, paramdef.datatype, paramdef.stringkeyunit "
+     		  "SELECT "
+     		+ "  expp_param.id, "
+     		+ "  expp_param.pos, "
+			+ "  expp_param.stringkeyname, "
+			+ "  value, "
+			+ "  st.description, "
+			+ "  paramdef.datatype, "
+			+ "  paramdef.stringkeyunit AS unit "
 			+"FROM expp_param "
 			+"JOIN paramdef ON (paramdef.id=expp_param.definition) " 
 			+"LEFT JOIN acc_expp_parameters a ON  "
@@ -214,8 +219,8 @@ import org.json.JSONObject;
 		      	for (int i=0; i<parameters.length();i++) {
 		      		JSONObject tempObj=parameters.getJSONObject(i);
 		      		stringkeys.add(Integer.toString(tempObj.getInt("stringkeyname")));
-		      		if (tempObj.has("stringkeyunit")){
-			      		stringkeys.add(Integer.toString(tempObj.getInt("stringkeyunit")));
+		      		if (tempObj.has("unit")){
+			      		stringkeys.add(Integer.toString(tempObj.getInt("unit")));
 		      		}
 		      		String datatype="undefined";
 		      		switch (tempObj.getInt("datatype")) {

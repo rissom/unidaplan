@@ -96,6 +96,7 @@ import org.json.JSONObject;
 			   		  	pStmt.setInt(3, jsonIn.getInt("value"));
 			   		  	pStmt.setInt(4, userID);
 	        			pStmt.executeUpdate();
+	        			pStmt.close();
 	        		}
 			   		break;
 			   		
@@ -107,6 +108,7 @@ import org.json.JSONObject;
 	   				  	pStmt.setDouble(3, jsonIn.getDouble("value"));
 	   				  	pStmt.setInt(4, userID);
 	        			pStmt.executeUpdate();
+	        			pStmt.close();
 	        		}
 	   				break;
         			
@@ -123,6 +125,7 @@ import org.json.JSONObject;
 	        			}
 	        			pStmt.setInt(5,userID);
 	        			pStmt.executeUpdate();
+	        			pStmt.close();
 	        		}
 					break;
 			        
@@ -134,6 +137,7 @@ import org.json.JSONObject;
 	        			pStmt.setString(3, jsonIn.getString("value"));
 	        			pStmt.setInt(4, userID);
 	        			pStmt.executeUpdate();
+	        			pStmt.close();
 	        		}
 	        		break;
 			        
@@ -145,6 +149,7 @@ import org.json.JSONObject;
 						pStmt.setString(3, jsonIn.getString("value"));
 						pStmt.setInt(4, userID);
 	        			pStmt.executeUpdate();
+	        			pStmt.close();
 	        		}
 					break;
 				    
@@ -156,6 +161,7 @@ import org.json.JSONObject;
 	        			pStmt.setString(3, jsonIn.getString("value"));
 	        			pStmt.setInt(4, userID);
 	        			pStmt.executeUpdate();
+	        			pStmt.close();
 	        		}
 					break;
 	        		
@@ -171,6 +177,7 @@ import org.json.JSONObject;
      		   		  	pStmt.setInt(4, jsonIn.getInt("tz")); //Timezone in Minutes
      		   		  	pStmt.setInt(5, userID);
 	        			pStmt.executeUpdate();
+	        			pStmt.close();
 	        		}
      		   		break;
      			    
@@ -182,6 +189,7 @@ import org.json.JSONObject;
 			   		  	pStmt.setString(3, jsonIn.getString("value"));
 			   		  	pStmt.setInt(4, userID);
 	        			pStmt.executeUpdate();
+	        			pStmt.close();
 					}
 			   		break;
 			        
@@ -197,6 +205,7 @@ import org.json.JSONObject;
 						pStmt.setInt(4, jsonIn.getInt("tz")); //Timezone in Minutes
 						pStmt.setInt(5, userID);
 	        			pStmt.executeUpdate();
+	        			pStmt.close();
 	        		}
 				   	break;
 			    
@@ -208,6 +217,7 @@ import org.json.JSONObject;
 	        			pStmt.setString(3, jsonIn.getString("value"));
 	        			pStmt.setInt(4, userID);
 	        			pStmt.executeUpdate();
+	        			pStmt.close();
 	        		}	
 	        		break;
 			        
@@ -219,10 +229,10 @@ import org.json.JSONObject;
 	        			pStmt.setString(3, jsonIn.getString("value"));
 	        			pStmt.setInt(4, userID);
 	        			pStmt.executeUpdate();
+	        			pStmt.close();
 	        		}
 	        		break;
 		} // end of switch Statement
-		pStmt.close();
 		DBconn.closeDB();
 	} catch (SQLException e) {
 		System.err.println("SaveSampleParameter: More Problems with SQL query");

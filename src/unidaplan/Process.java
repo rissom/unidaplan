@@ -123,8 +123,11 @@ public class Process extends HttpServlet {
 	    // get next process
 	    try {      
 			pStmt=dBconn.conn.prepareStatement( 
-			"SELECT id,p_number FROM pnumbers "
-			+"WHERE (p_number>? AND processtype=?) ORDER BY p_number LIMIT 1");
+			  "SELECT "
+			+ "  id,p_number "
+			+ "FROM pnumbers "
+			+ "WHERE (p_number>? AND processtype=?) "
+			+ "ORDER BY p_number LIMIT 1");
 			pStmt.setInt(1,pnumber);
 			pStmt.setInt(2,processTypeID);
 			JSONObject next= dBconn.jsonObjectFromPreparedStmt(pStmt);
@@ -144,8 +147,11 @@ public class Process extends HttpServlet {
 	    // get previous process
 	    try {       
 			pStmt=dBconn.conn.prepareStatement( 
-			"SELECT id,p_number FROM pnumbers "
-			+"WHERE (p_number<? AND processtype=?) ORDER BY p_number DESC LIMIT 1");
+			  "SELECT "
+			+ "  id,p_number "
+			+ "FROM pnumbers "
+			+ "WHERE (p_number<? AND processtype=?) "
+			+ "ORDER BY p_number DESC LIMIT 1");
 			pStmt.setInt(1,pnumber);
 			pStmt.setInt(2,processTypeID);
 			JSONObject previous= dBconn.jsonObjectFromPreparedStmt(pStmt);
@@ -196,18 +202,18 @@ public class Process extends HttpServlet {
 			+ "pid, "
 			+ "value, "
 			+ "p_parametergrps.id AS pgrpid, " 
-			+" p_parametergrps.stringkey as parametergrp_key, "
+			+ "p_parametergrps.stringkey as parametergrp_key, "
 			+ "st.description, paramdef.datatype, "
-			+" paramdef.stringkeyunit as unit, "
+			+ "paramdef.stringkeyunit as unit, "
 			+ "p_parameters.definition "
-			+"FROM p_parameters "
-			+"JOIN p_parametergrps ON (p_parameters.Parametergroup=p_parametergrps.ID) " 
-			+"JOIN paramdef ON (paramdef.id=p_parameters.definition)"
-			+"LEFT JOIN acc_process_parameters a ON "
-			+"(a.processid=? AND a.ppid=p_parameters.id AND hidden=FALSE) "
-			+"JOIN String_key_table st ON st.id=p_parameters.stringkeyname "
-			+"WHERE (p_parameters.processtypeID=? AND p_parameters.id_field=FALSE AND p_parameters.hidden=FALSE) "
-			+"ORDER BY pos");
+			+ "FROM p_parameters "
+			+ "JOIN p_parametergrps ON (p_parameters.Parametergroup=p_parametergrps.ID) " 
+			+ "JOIN paramdef ON (paramdef.id=p_parameters.definition)"
+			+ "LEFT JOIN acc_process_parameters a ON "
+			+ "(a.processid=? AND a.ppid=p_parameters.id AND hidden=FALSE) "
+			+ "JOIN String_key_table st ON st.id=p_parameters.stringkeyname "
+			+ "WHERE (p_parameters.processtypeID=? AND p_parameters.id_field=FALSE AND p_parameters.hidden=FALSE) "
+			+ "ORDER BY pos");
 	    	pStmt.setInt(1,processID);
 	    	pStmt.setInt(2,processTypeID);
 			JSONArray parameters=dBconn.jsonArrayFromPreparedStmt(pStmt);
