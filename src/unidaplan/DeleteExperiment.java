@@ -19,11 +19,11 @@ public class DeleteExperiment extends HttpServlet {
 		
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
-		userID=userID+1; // REMOVE ME!!!
-		userID=userID-1; // REMOVE ME!!!
 		request.setCharacterEncoding("utf-8");
 	    String status="ok";
 		int experimentID=-1;
+		String privilege = "n";
+
 
 	 	
 		// get Parameter for id
@@ -37,18 +37,33 @@ public class DeleteExperiment extends HttpServlet {
 	 	
 		
 	    try {
-			PreparedStatement pstmt = null; 	// Declare variables
-		 	DBconnection DBconn=new DBconnection(); // New connection to the database
-		 	DBconn.startDB();
-		 	if (experimentID>0){			
-				// delete the experiment
-		        pstmt = DBconn.conn.prepareStatement(	
-		        	"DELETE FROM exp_plan WHERE id=?");
-				pstmt.setInt(1,experimentID);
-				pstmt.executeUpdate();
-				pstmt.close();
+			PreparedStatement pStmt = null; 	// Declare variables
+		 	DBconnection dBconn=new DBconnection(); // New connection to the database
+		 	dBconn.startDB();
+		 	
+		 	
+		 	
+		 	if (experimentID>0){	
+		 		
+		 		  // check privileges
+			    pStmt = dBconn.conn.prepareStatement( 	
+						"SELECT getExperimentRights(vuserid:=?,vexperimentid:=?)");
+				pStmt.setInt(1,userID);
+				pStmt.setInt(2,experimentID);
+				privilege = dBconn.getSingleStringValue(pStmt);
+				pStmt.close();
+			    
+				if (privilege.equals("w")){
+				  
+					// delete the experiment
+			        pStmt = dBconn.conn.prepareStatement(	
+			        	"DELETE FROM experiments WHERE id=?");
+					pStmt.setInt(1,experimentID);
+					pStmt.executeUpdate();
+					pStmt.close();
+				}
 			}
- 		   DBconn.closeDB();  // close the database 
+ 		   dBconn.closeDB();  // close the database 
 
 	    } catch (SQLException eS) {
 			System.err.println("Delete Experiment: SQL Error");

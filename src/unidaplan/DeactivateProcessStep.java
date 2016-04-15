@@ -18,10 +18,15 @@ import org.json.JSONObject;
 	@Override
 	  public void doPost(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {		
-	    
-//		Authentificator authentificator = new Authentificator();
-//		int userID=authentificator.GetUserID(request,response);
+		
+		PreparedStatement pStmt=null;
+		Authentificator authentificator = new Authentificator();
+		int userID = authentificator.GetUserID(request,response);
+		int experimentID = 0;
+		String privilege = "n";
+		
 		request.setCharacterEncoding("utf-8");
+		
 	    int processStepID=0;
 	  	  	try{
 	  	  		processStepID=Integer.parseInt(request.getParameter("processstepid")); 
@@ -33,15 +38,35 @@ import org.json.JSONObject;
 
 	    try {
 		    // Delete the user to the database	    
-		 	DBconnection DBconn=new DBconnection();
-		    DBconn.startDB();	   
-		    // decrease positions behind the sample to delete
-		    PreparedStatement pstmt = DBconn.conn.prepareStatement(    	
-				"DELETE FROM exp_plan_steps WHERE id=?");
-		   	pstmt.setInt(1, processStepID);
-		   	pstmt.executeUpdate();
-			pstmt.close();
-			DBconn.closeDB();
+		 	DBconnection dBconn=new DBconnection();
+		    dBconn.startDB();
+		    
+		    // get experiment ID
+		    pStmt = dBconn.conn.prepareStatement( 	
+					"SELECT expp_s_id FROM exp_plan_steps WHERE id=?");
+			pStmt.setInt(1,processStepID);
+			experimentID = dBconn.getSingleIntValue(pStmt);
+			pStmt.close();
+		    
+		    // check privileges
+		    pStmt = dBconn.conn.prepareStatement( 	
+					"SELECT getExperimentRights(vuserid:=?,vexperimentid:=?)");
+			pStmt.setInt(1,userID);
+			pStmt.setInt(2,experimentID);
+			privilege = dBconn.getSingleStringValue(pStmt);
+			pStmt.close();
+		    
+			if (privilege.equals("w")){
+			    // TODO: decrease positions behind the sample to delete
+			    pStmt = dBconn.conn.prepareStatement(    	
+					"DELETE FROM exp_plan_steps WHERE id=?");
+			   	pStmt.setInt(1, processStepID);
+			   	pStmt.executeUpdate();
+				pStmt.close();
+			}
+			
+			
+			dBconn.closeDB();
 		} catch (SQLException e) {
 			System.err.println("DeactivateProcessStep: Problems with SQL query");
 			status="SQL Error; DeactivateProcessStep";

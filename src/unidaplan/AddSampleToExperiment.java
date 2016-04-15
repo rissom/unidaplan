@@ -21,10 +21,13 @@ import org.json.JSONObject;
 	    
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
-		request.setCharacterEncoding("utf-8");
+	    PreparedStatement pStmt = null;
+	   	String privilege="n";
 	    int experimentID=0;
 	    int position=0;
 	    int sampleID=0;
+
+		request.setCharacterEncoding("utf-8");
 
 
 	  	  	try{
@@ -38,19 +41,37 @@ import org.json.JSONObject;
 	    String status="ok";
 
 	    try {
-	    // Delete the user to the database	    
-	 	DBconnection DBconn=new DBconnection();
-	    DBconn.startDB();	   
-	    PreparedStatement pstmt = null;
-			pstmt= DBconn.conn.prepareStatement( 			
-					"INSERT INTO expp_samples VALUES (default, ?, NULL, ?, ?, NOW(),?)");
-		   	pstmt.setInt(1, position);
-		   	pstmt.setInt(2, experimentID);
-		   	pstmt.setInt(3, sampleID);
-		   	pstmt.setInt(4, userID);
-		   	pstmt.executeUpdate();
-			pstmt.close();
-			DBconn.closeDB();
+		    // Delete the user to the database	    
+		 	DBconnection dBconn=new DBconnection();
+		    dBconn.startDB();	   
+		    
+		    
+		    
+		    // check privilege
+		    pStmt = dBconn.conn.prepareStatement( 	
+					"SELECT getExperimentRights(vuserid:=?,vexperimentid:=?)");
+			pStmt.setInt(1,userID);
+			pStmt.setInt(2,experimentID);
+			privilege = dBconn.getSingleStringValue(pStmt);
+			pStmt.close();
+		    
+			if (privilege.equals("w")){
+		    
+				
+				pStmt= dBconn.conn.prepareStatement( 			
+						"INSERT INTO expp_samples VALUES (default, ?, NULL, ?, ?, NOW(),?)");
+			   	pStmt.setInt(1, position);
+			   	pStmt.setInt(2, experimentID);
+			   	pStmt.setInt(3, sampleID);
+			   	pStmt.setInt(4, userID);
+			   	pStmt.executeUpdate();
+				pStmt.close();
+				
+			} else {
+				response.setStatus(401);
+			}
+			dBconn.closeDB();
+			
 		} catch (SQLException e) {
 			System.err.println("AddSampleToExperiment: Problems with SQL query");
 			status="SQL Error; AddSampleToExperiment";

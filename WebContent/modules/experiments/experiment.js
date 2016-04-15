@@ -8,6 +8,9 @@ function experimentController($uibModal,$scope,editmode,experimentService,restfa
 	
 	this.editmode=editmode;
 	
+	this.newNumber=experimentData.number;
+
+	
 	this.sampleActions = [$translate.instant("Go to sample"),
 	                      $translate.instant("Delete Sample from Experiment"),
 	                      $translate.instant("Replace sample")];	
@@ -262,6 +265,7 @@ function experimentController($uibModal,$scope,editmode,experimentService,restfa
 	};
 	
 	
+	
 	this.plannedProcessExists = function(process,sample){
 		if (sample.pprocesses){
 			for (var i=0; i<sample.pprocesses.length;i++){
@@ -273,6 +277,7 @@ function experimentController($uibModal,$scope,editmode,experimentService,restfa
 		return false;
 	};
 		
+	
 	
 	this.replaceSample = function (sample) {
 		 console.log ("replacing")
@@ -375,10 +380,23 @@ function experimentController($uibModal,$scope,editmode,experimentService,restfa
 	
 	this.keyUp = function(keyCode,newValue,parameter) {
 		if (keyCode===13) {				// Return key pressed
-			thisController.submitParameter(parameter);
+			var promise = thisController.submitParameter(parameter);
+			promise.then(function(){reload()},function(){reload()});
 		}
 		if (keyCode===27) {		// Escape key pressed
 			parameter.editing=false;		
+		}
+	};
+	
+	
+	
+	this.keyUpNumber = function(keyCode) {
+		if (keyCode===13) {				// Return key pressed
+			var promise = experimentService.updateNumber(experimentData.id,thisController.newNumber);
+			promise.then(function(){reload()},function(){reload()});
+		}
+		if (keyCode===27) {		// Escape key pressed
+			thisController.newNumber = experimentData.number;
 		}
 	};
 

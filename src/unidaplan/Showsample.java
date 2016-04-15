@@ -295,9 +295,10 @@ public class Showsample extends HttpServlet {
 		
 		// Find all experiment plans
 		try {pStmt= dBconn.conn.prepareStatement( 
-			"SELECT ep.id as exp_id, name, creator, status FROM exp_plan ep "
-			+"JOIN expp_samples es ON es.expp_ID=ep.id "
-			+"WHERE sample=?");
+			"SELECT ep.id as exp_id, name, creator, status "
+			+ "FROM experiments ep "
+			+ "JOIN expp_samples es ON es.expp_ID=ep.id "
+			+ "WHERE sample=?");
 			pStmt.setInt(1,sampleID);
 			JSONArray eps = dBconn.jsonArrayFromPreparedStmt(pStmt);
 			pStmt.close();

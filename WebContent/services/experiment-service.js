@@ -78,28 +78,6 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 		return restfactory.POST("exp-step-change-recipe?processstepid="+id+"&recipe="+recipe);
 	};
 	
-    
-	
-	// save experiment for "recent experiments"
-	this.pushExperiment = function(experiment){
-		var found=false;
-		if (this.recentExperiments===undefined) {
-			this.recentExperiments=[];
-		}
-		var tExperiment={"id":experiment.id,"number":experiment.number,"trname":experiment.trname,"name":experiment.name};
-		for (var i=0;i<this.recentExperiments.length;i++){
-			if (this.recentExperiments[i].id==tExperiment.id) {
-				found=true;	
-			}
-		}
-		if (!found) {
-			this.recentExperiments.push(tExperiment);
-		}
-		if (this.recentExperiments.length>20){
-			this.recentExperiments.slice(0,this.recentExperiments.length-20);
-		}
-	};
-	
 	
 	
 	// delete an experiment (also from recent experiments)
@@ -157,6 +135,28 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 	
 	
 	
+	// save experiment for "recent experiments"
+	this.pushExperiment = function(experiment){
+		var found=false;
+		if (this.recentExperiments===undefined) {
+			this.recentExperiments=[];
+		}
+		var tExperiment={"id":experiment.id,"number":experiment.number,"trname":experiment.trname,"name":experiment.name};
+		for (var i=0;i<this.recentExperiments.length;i++){
+			if (this.recentExperiments[i].id==tExperiment.id) {
+				found=true;	
+			}
+		}
+		if (!found) {
+			this.recentExperiments.push(tExperiment);
+		}
+		if (this.recentExperiments.length>20){
+			this.recentExperiments.slice(0,this.recentExperiments.length-20);
+		}
+	};
+	
+	
+	
 	this.updateGroupRights = function (updatedRights){
 		return restfactory.PUT('update-group-rights',updatedRights);
 	}
@@ -205,6 +205,13 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 	this.updateExperimentStepComment = function(id,comment){
 		var promise = restfactory.POST('update-experiment-step-comment',
 						{"id":id,"comment":comment});
+		return promise;
+	};
+	
+	
+	
+	this.updateNumber = function(id,newNumber){
+		var promise = restfactory.PUT('update-experiment-number?id='+id+'&number='+newNumber);
 		return promise;
 	};
 	

@@ -1195,6 +1195,17 @@
   </servlet-mapping>
   
   <servlet>
+    <description>Update the number of an experiment</description>
+    <display-name>UpdateExperimentNumber</display-name>
+    <servlet-name>UpdateExperimentNumber</servlet-name>
+    <servlet-class>unidaplan.UpdateExperimentNumber</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateExperimentNumber</servlet-name>
+    <url-pattern>/update-experiment-number</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
     <description>UpdateObjectOutputParamSearch</description>
     <display-name>UpdateObjectOutputParamSearch</display-name>
     <servlet-name>UpdateObjectOutputParamSearch</servlet-name>

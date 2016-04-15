@@ -22,13 +22,14 @@ import org.json.JSONObject;
 		int userID=authentificator.GetUserID(request,response);
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
+	    String privilege = "n";
 	    String status = "ok";
 
 	    JSONObject  jsonIn = null;	
 	    int newKeyID = -1;
 	    
 	    try {
-			  jsonIn = new JSONObject(in);
+	    	jsonIn = new JSONObject(in);
 		} catch (JSONException e) {
 			System.err.println("UpdateExperimentStepComment: Input is not valid JSON");
 		}
@@ -49,59 +50,96 @@ import org.json.JSONObject;
 		}
 	    
 	 	DBconnection dBconn=new DBconnection();
-	    PreparedStatement pstmt = null;
+	    PreparedStatement pStmt = null;
 	    
 		
 		try {
 		    dBconn.startDB();	   
-			// get the old string key.
-			pstmt=dBconn.conn.prepareStatement(
-					"SELECT note FROM exp_plan_steps WHERE id=?");
-			pstmt.setInt(1,stepID);
-			int oldKeyID = dBconn.getSingleIntValue(pstmt);
+		    
+		    // check privileges
+		    
+	        dBconn.startDB();
+	        pStmt= dBconn.conn.prepareStatement( 	
+					"  SELECT exp_plan_processes.expp_id FROM exp_plan_steps "
+					+ "JOIN exp_plan_processes ON exp_plan_steps.exp_plan_pr=exp_plan_steps.id "
+					+ "WHERE exp_plan_steps.id=? ");
+			pStmt.setInt(1,stepID);
+			int expID=dBconn.getSingleIntValue(pStmt);
+			pStmt.close();
+	        
+	        pStmt= dBconn.conn.prepareStatement( 	
+					"SELECT getExperimentRights(vuserid:=?,vexperimentid:=?)");
+			pStmt.setInt(1,userID);
+			pStmt.setInt(2,expID);
 			
-			// create a new stringkey
-			pstmt= dBconn.conn.prepareStatement( 			
-					 "INSERT INTO string_key_table VALUES (default,?,NOW(),?) RETURNING id");
-			pstmt.setString(1, newComment);
-			pstmt.setInt(2, userID);
-			newKeyID=dBconn.getSingleIntValue(pstmt);
-			pstmt.close();
-			
-			pstmt= dBconn.conn.prepareStatement( 			
-					 "INSERT INTO stringtable VALUES(default,?,?,?,NOW())");
-			pstmt.setInt(1,newKeyID);
-			pstmt.setString(2, "none");
-			pstmt.setString(3, newComment);
-			pstmt.executeUpdate();
-			pstmt.close();
-			
-			pstmt= dBconn.conn.prepareStatement(
-					 "UPDATE exp_plan_steps SET note=?, lastUser=? WHERE id=?");
-			pstmt.setInt(1,newKeyID);
-			pstmt.setInt(2,userID);
-			pstmt.setInt(3,stepID);
-			pstmt.executeUpdate();
-			pstmt.close();
-			
-			if (oldKeyID>0){
-				pstmt= dBconn.conn.prepareStatement(
-						 "DELETE FROM string_key_table WHERE id=?");
-				pstmt.setInt(1,oldKeyID);
-				pstmt.executeUpdate();
-				pstmt.close();
-			}
-			
+			privilege=dBconn.getSingleStringValue(pStmt);
+			pStmt.close();
+	        	        
 		} catch (SQLException e) {
-			System.err.println("UpdateExperimentStepComment: Problems with SQL query");
-			status="SQL error";
-		} catch (JSONException e){
-			System.err.println("UpdateExperimentStepComment: Problems creating JSON");
-			status="JSON error";
-		} catch (Exception e) {
-			System.err.println("UpdateExperimentStepComment: Strange Problems");
-			status="error";
-		}	
+			System.err.println("Showsample: Problems with SQL query for sample name");
+		} catch (JSONException e) {
+			System.err.println("Showsample: JSON Problem while getting sample name");
+		} catch (Exception e2) {
+			System.err.println("Showsample: Strange Problem while getting sample name");
+			e2.printStackTrace();
+		} 
+		  
+		
+		if (privilege.equals("w")){
+			
+			try{
+				// get the old string key.
+				pStmt=dBconn.conn.prepareStatement(
+						"SELECT note FROM exp_plan_steps WHERE id=?");
+				pStmt.setInt(1,stepID);
+				int oldKeyID = dBconn.getSingleIntValue(pStmt);
+				
+				// create a new stringkey
+				pStmt= dBconn.conn.prepareStatement( 			
+						 "INSERT INTO string_key_table VALUES (default,?,NOW(),?) RETURNING id");
+				pStmt.setString(1, newComment);
+				pStmt.setInt(2, userID);
+				newKeyID=dBconn.getSingleIntValue(pStmt);
+				pStmt.close();
+				
+				pStmt= dBconn.conn.prepareStatement( 			
+						 "INSERT INTO stringtable VALUES(default,?,?,?,NOW())");
+				pStmt.setInt(1,newKeyID);
+				pStmt.setString(2, "none");
+				pStmt.setString(3, newComment);
+				pStmt.executeUpdate();
+				pStmt.close();
+				
+				pStmt= dBconn.conn.prepareStatement(
+						 "UPDATE exp_plan_steps SET note=?, lastUser=? WHERE id=?");
+				pStmt.setInt(1,newKeyID);
+				pStmt.setInt(2,userID);
+				pStmt.setInt(3,stepID);
+				pStmt.executeUpdate();
+				pStmt.close();
+				
+				if (oldKeyID>0){
+					pStmt= dBconn.conn.prepareStatement(
+							 "DELETE FROM string_key_table WHERE id=?");
+					pStmt.setInt(1,oldKeyID);
+					pStmt.executeUpdate();
+					pStmt.close();
+				}
+				
+			} catch (SQLException e) {
+				System.err.println("UpdateExperimentStepComment: Problems with SQL query");
+				status="SQL error";
+			} catch (JSONException e){
+				System.err.println("UpdateExperimentStepComment: Problems creating JSON");
+				status="JSON error";
+			} catch (Exception e) {
+				System.err.println("UpdateExperimentStepComment: Strange Problems");
+				status="error";
+			}	
+		} else{
+			response.setStatus(401);
+			status="restricted";
+		}
 		
 		dBconn.closeDB();
 

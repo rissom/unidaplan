@@ -24,6 +24,9 @@ import org.json.JSONObject;
 		request.setCharacterEncoding("utf-8");
 	    int experimentID=0;
 	    int processTypeID=0;
+	    PreparedStatement pStmt = null;
+	   	String privilege="n";
+
 
 
 	  	  	try{
@@ -36,21 +39,37 @@ import org.json.JSONObject;
 	    String status="ok";
 
 	    try {
-	    // Delete the user to the database	    
-	 	DBconnection DBconn=new DBconnection();
-	    DBconn.startDB();	   
-	    PreparedStatement pstmt = null;
-			pstmt= DBconn.conn.prepareStatement( 			
-					"INSERT INTO exp_plan_processes VALUES "
-					+ "(default, (SELECT count(position)+1 FROM exp_plan_processes WHERE expp_id=?),"
-					+ "?, ?, NULL, NULL,NOW(),?)");
-		   	pstmt.setInt(1, experimentID);
-		   	pstmt.setInt(2, experimentID);
-		   	pstmt.setInt(3, processTypeID);
-		   	pstmt.setInt(4, userID);
-		   	pstmt.executeUpdate();
-			pstmt.close();
-			DBconn.closeDB();
+		    // Delete the user to the database	    
+		 	DBconnection dBconn=new DBconnection();
+		    dBconn.startDB();
+		    
+		    // Check privileges
+		    pStmt = dBconn.conn.prepareStatement( 	
+					"SELECT getExperimentRights(vuserid:=?,vexperimentid:=?)");
+			pStmt.setInt(1,userID);
+			pStmt.setInt(2,experimentID);
+			System.out.println(pStmt.toString());
+			privilege = dBconn.getSingleStringValue(pStmt);
+			pStmt.close();
+			
+			if (privilege.equals("w")){	    
+		    
+				pStmt= dBconn.conn.prepareStatement( 			
+						"INSERT INTO exp_plan_processes VALUES "
+						+ "(default, (SELECT count(position)+1 FROM exp_plan_processes WHERE expp_id=?),"
+						+ "?, ?, NULL, NULL,NOW(),?)");
+			   	pStmt.setInt(1, experimentID);
+			   	pStmt.setInt(2, experimentID);
+			   	pStmt.setInt(3, processTypeID);
+			   	pStmt.setInt(4, userID);
+			   	pStmt.executeUpdate();
+				pStmt.close();
+			} else {
+				response.setStatus(401);
+			}
+		
+			dBconn.closeDB();
+			
 		} catch (SQLException e) {
 			System.err.println("AddProcessToExperiment: Problems with SQL query");
 			status="SQL Error; AddProcessToExperiment";

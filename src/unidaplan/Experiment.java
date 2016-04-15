@@ -71,12 +71,15 @@ import org.json.JSONObject;
 		    
 	    	// get basic experiment data (creator, id, name, status, number)
 			pStmt= dBconn.conn.prepareStatement( 	
-			"SELECT exp_plan.ID AS ID,users.fullname as creator, exp_plan.name ,status , intd.value AS number "
-			+"FROM  exp_plan "
-			+"JOIN users ON (users.id=exp_plan.Creator) "
-			+"JOIN expp_integer_data intd ON (intd.expp_id=exp_plan.ID) "
-			+"JOIN expp_param ON (intd.expp_param=expp_param.id AND expp_param.definition=2) "
-			+"WHERE exp_plan.ID=?");
+			  "SELECT " 
+			+ "  experiments.id,"
+			+ "  users.fullname as creator, "
+			+ "  experiments.name,"
+			+ "  status, "
+			+ "  experiments.number "
+			+ "FROM experiments "
+			+ "JOIN users ON (users.id=experiments.Creator) "
+			+ "WHERE experiments.id=?");
 			pStmt.setInt(1, id);
 			experiment=dBconn.jsonObjectFromPreparedStmt(pStmt);
 			pStmt.close();

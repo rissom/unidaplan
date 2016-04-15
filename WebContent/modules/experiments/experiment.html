@@ -1,5 +1,12 @@
 <h3>
-{{'Experiment'|translate}} {{'no.'|translate}} {{experimentCtrl.experiment.number}}: 
+{{'Experiment'|translate}} {{'no.'|translate}} 
+<input 
+	ng-keyup="experimentCtrl.keyUpNumber($event.keyCode)"
+	ng-show="experimentCtrl.editmode" 
+	type="number" 
+	style="width: 80px;" 
+	ng-model="experimentCtrl.newNumber"/> 
+	<span ng-hide="experimentCtrl.editmode">{{experimentCtrl.experiment.number}}</span>: 
 {{experimentCtrl.experiment.namef()}}
 </h3>
 {{'created by'|translate}} {{experimentCtrl.experiment.creator}}
