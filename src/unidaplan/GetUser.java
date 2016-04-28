@@ -19,8 +19,8 @@ import org.json.JSONObject;
 	@Override
 	  public void doGet(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {
-//		Authentificator authentificator = new Authentificator();
-//		int userID=authentificator.GetUserID(request,response);
+		Authentificator authentificator = new Authentificator();
+		int userID=authentificator.GetUserID(request,response);
 		PreparedStatement pStmt;
 		JSONObject user = null;
 		JSONArray experiments = null;
@@ -42,6 +42,7 @@ import org.json.JSONObject;
 	 	DBconnection dBconn=new DBconnection();
 	    try {  
 		    dBconn.startDB();
+		    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
 				pStmt = dBconn.conn.prepareStatement(
 						"SELECT "
 					  + "fullname, " 
@@ -102,7 +103,7 @@ import org.json.JSONObject;
 				
 				user.put("sampletypes", sampletypes);
 				
-		    
+		    }
 			dBconn.closeDB();
 			out.println(user.toString());
     	} catch (SQLException e) {

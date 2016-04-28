@@ -116,7 +116,7 @@ var userService = function(restfactory,$q){
 	this.getUserWithToken = function(userID,token){
         var defered=$q.defer();
         var user;
-		var promise = restfactory.GET("get-user?id="+userID+"&token="+token);
+		var promise = restfactory.GET("get-user-with-token?id="+userID+"&token="+token);
 	    promise.then(
 	    	function(rest) {
 	    		if (rest.data.token==(token)){
