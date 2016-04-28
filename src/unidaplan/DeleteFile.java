@@ -32,7 +32,7 @@ public class DeleteFile extends HttpServlet {
 	 		dBconn.startDB();
 			int userID = authentificator.GetUserID(request,response);
 			fileID = Integer.parseInt(request.getParameter("fileid"));
-		    String privilege="";
+		    String privilege="n";
 
 			// Check priveleges 
 		    if (Unidatoolkit.isMemberOfGroup(userID, 1, dBconn)){
@@ -54,15 +54,12 @@ public class DeleteFile extends HttpServlet {
 		 		pStmt = dBconn.conn.prepareStatement(query);
 	 		    pStmt.setInt(1,userID);
 	 			pStmt.setInt(2, fileData.getInt(type));
-	 			System.out.println("query:"+pStmt.toString());
 	 		    privilege=dBconn.getSingleStringValue(pStmt);
-	 		    System.out.println("privilege:"+privilege);
 		 		pStmt.close();
 		    }
 			
 			// Get filename and type
 	 		if (privilege.equals("w")||privilege.equals("r")){
-	 			System.out.println("deleting");
 		 		pStmt= dBconn.conn.prepareStatement( 	
 						"DELETE FROM files WHERE files.id=?");
 		 		pStmt.setInt(1, fileID);
@@ -70,6 +67,8 @@ public class DeleteFile extends HttpServlet {
 		 		
 		        Path path = FileSystems.getDefault().getPath("/mnt/data-store", String.format("%010d", fileID));
 		        Files.delete(path);
+	 		}else{
+	 			response.setStatus(401);
 	 		}
 	 	}catch (SQLException e) {
 			System.err.println("Showsample: Problems with SQL query for sample name");

@@ -23,6 +23,7 @@ import org.json.JSONObject;
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
 	    String status = "ok";
+	    String privilege = "n";
 	    JSONObject  jsonIn = null;	
 	    int searchID = -1;
 
@@ -54,25 +55,39 @@ import org.json.JSONObject;
 		   
 			try {
 				// delete old searchobjects
-			    dBconn.startDB();	   
-				pStmt=dBconn.conn.prepareStatement("DELETE FROM searchobject WHERE search=?");
-				pStmt.setInt(1,searchID);
-				pStmt.executeUpdate();
+			    dBconn.startDB();
+			    
+			    // Check privileges
+			    pStmt = dBconn.conn.prepareStatement( 	
+						"SELECT getExperimentRights(vuserid:=?,vexperimentid:=?)");
+				pStmt.setInt(1,userID);
+				pStmt.setInt(2,searchID);
+				privilege = dBconn.getSingleStringValue(pStmt);
 				pStmt.close();
-
-				// put new searchobjects
-				pStmt=dBconn.conn.prepareStatement(
-						"INSERT INTO searchobject (search,otparameter,lastchange,lastuser) "
-						+"VALUES (?,?,NOW(),?)");
-				for (int i=0;i<newParameters.length();i++){
+							
+				if (privilege.equals("w")){
+			    
+					pStmt=dBconn.conn.prepareStatement("DELETE FROM searchobject WHERE search=?");
 					pStmt.setInt(1,searchID);
-					pStmt.setInt(2,newParameters.getInt(i));
-					pStmt.setInt(3,userID);
-					System.out.println(pStmt.toString());
-					pStmt.addBatch();
+					pStmt.executeUpdate();
+					pStmt.close();
+	
+					// put new searchobjects
+					pStmt=dBconn.conn.prepareStatement(
+							"INSERT INTO searchobject (search,otparameter,lastchange,lastuser) "
+							+"VALUES (?,?,NOW(),?)");
+					for (int i=0;i<newParameters.length();i++){
+						pStmt.setInt(1,searchID);
+						pStmt.setInt(2,newParameters.getInt(i));
+						pStmt.setInt(3,userID);
+						System.out.println(pStmt.toString());
+						pStmt.addBatch();
+					}
+					pStmt.executeBatch();
+					pStmt.close();
+				}else{
+					response.setStatus(401);
 				}
-				pStmt.executeBatch();
-				pStmt.close();
 			} catch (JSONException e) {
 				System.err.println("UpdateParameterSampleSearch: Error parsing ID-Field or comment");
 				response.setStatus(404);

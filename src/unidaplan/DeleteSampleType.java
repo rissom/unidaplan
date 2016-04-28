@@ -29,8 +29,6 @@ public class DeleteSampleType extends HttpServlet {
 		
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
-		userID=userID+1;
-		userID=userID-1;
 		int name = 0;
 		request.setCharacterEncoding("utf-8");
 	    String status="ok";
@@ -50,8 +48,11 @@ public class DeleteSampleType extends HttpServlet {
 			status="error: no process ID";
 		}
 	 	
-		 try {
-			 	if (sampleTypeID>0){			
+
+	 	if (sampleTypeID>0){	
+	 		if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+	 			try {
+			 		
 					// get string_key_table references for later deletion
 			        pStmt = dBconn.conn.prepareStatement(	
 			        	"SELECT string_key,description FROM objecttypes WHERE id=?");
@@ -64,91 +65,81 @@ public class DeleteSampleType extends HttpServlet {
 			        } else description=0;
 					pStmt.close();
 					dBconn.conn.setAutoCommit(false);
-//					pStmt = dBconn.conn.prepareStatement(	
-//				        	"UPDATE objecttypes SET (string_key,description) = (?,?) WHERE id=?");
-//					pStmt.setNull(1,java.sql.Types.INTEGER);
-//					pStmt.setNull(2,java.sql.Types.INTEGER);
-//					pStmt.setInt(3,sampleTypeID);
-//					pStmt.executeUpdate();
+			    } catch (SQLException eS) {
+					System.err.println("DeleteSampleType: SQL Error");
+					status="error: SQL error";
+					eS.printStackTrace();
+				} catch (Exception e) {
+					System.err.println("DeleteSampleType: Some Error, probably JSON");
+					status="error: JSON error";
 				}
-		    } catch (SQLException eS) {
-				System.err.println("DeleteSampleType: SQL Error");
-				status="error: SQL error";
-				eS.printStackTrace();
-			} catch (Exception e) {
-				System.err.println("DeleteSampleType: Some Error, probably JSON");
-				status="error: JSON error";
-			}
 		 
-		  try {
-			 	if (sampleTypeID>0){			
-					// delete the sampletype
-			        pStmt = dBconn.conn.prepareStatement(	
-			        	"DELETE FROM objecttypes WHERE id=?");
-					pStmt.setInt(1,sampleTypeID);
-					pStmt.executeUpdate();
-					pStmt.close();
+	 			try {
+				 	if (sampleTypeID>0){			
+						// delete the sampletype
+				        pStmt = dBconn.conn.prepareStatement(	
+				        	"DELETE FROM objecttypes WHERE id=?");
+						pStmt.setInt(1,sampleTypeID);
+						pStmt.executeUpdate();
+						pStmt.close();
+					}
+	 			} catch (SQLException eS) {
+	 				System.err.println("Delete Process: SQL Error");
+	 				status="error: SQL error";
+	 				eS.printStackTrace();
+				} catch (Exception e) {
+					System.err.println("Delete Sample Type: Some Error, probably JSON");
+					status="error: JSON error";
 				}
-		    } catch (SQLException eS) {
-				System.err.println("Delete Process: SQL Error");
-				status="error: SQL error";
-				eS.printStackTrace();
-			} catch (Exception e) {
-				System.err.println("Delete Sample Type: Some Error, probably JSON");
-				status="error: JSON error";
-			}
 		 
-	    try {
-		 	if (sampleTypeID>0){			
-				// delete the stringkeys
-		        pStmt = dBconn.conn.prepareStatement(
-		        	"DELETE FROM string_key_table WHERE id IN (?,?)");
-				pStmt.setInt(1,name);
-				pStmt.setInt(2,description);
-				pStmt.executeUpdate();
-				pStmt.close();
-			}
-	    } catch (SQLException eS) {
-			System.err.println("DeleteSampleType: SQL Error");
-			eS.printStackTrace();
-			status="error: SQL error";
-			response.setStatus(404);
-			try {
-				dBconn.conn.rollback();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} catch (Exception e) {
-			System.err.println("DeleteSampleType: Some Error occurred");
-			status="error";
-			response.setStatus(404);
-			try {
-				dBconn.conn.rollback();
-			} catch (SQLException e2) {
-				// TODO Auto-generated catch block
-				e2.printStackTrace();
-			}
-
-		} 
-	    
-finally {
-		try{	
-	         
-	    	   if (dBconn.conn != null) { 
-	    		   dBconn.conn.setAutoCommit(true);
-	    		   dBconn.closeDB();  // close the database 
-	    	   }
-	        } catch (Exception e) {
+			    try {
+				 	if (sampleTypeID>0){			
+						// delete the stringkeys
+				        pStmt = dBconn.conn.prepareStatement(
+				        	"DELETE FROM string_key_table WHERE id IN (?,?)");
+						pStmt.setInt(1,name);
+						pStmt.setInt(2,description);
+						pStmt.executeUpdate();
+						pStmt.close();
+					}
+			    } catch (SQLException eS) {
+					System.err.println("DeleteSampleType: SQL Error");
+					eS.printStackTrace();
+					status="error: SQL error";
+					response.setStatus(404);
+					try {
+						dBconn.conn.rollback();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} catch (Exception e) {
+					System.err.println("DeleteSampleType: Some Error occurred");
+					status="error";
+					response.setStatus(404);
+					try {
+						dBconn.conn.rollback();
+					} catch (SQLException e2) {
+						// TODO Auto-generated catch block
+						e2.printStackTrace();
+					}
+		
+				} 
+		    } else {
+		    	response.setStatus(401);
+		    }
+		    
+			try{	
+				if (dBconn.conn != null) { 
+					dBconn.conn.setAutoCommit(true);
+	    		    dBconn.closeDB();  // close the database 
+	    	    }
+	        }catch (Exception e) {
 				status="error: error closing the database";
 				System.err.println("DeleteSampleType: Some Error closing the database");
 				e.printStackTrace();
 		   	}
-        }
-	    Unidatoolkit.sendStandardAnswer(status, response);
-
-		
-	}
-
-
+	    }
+	Unidatoolkit.sendStandardAnswer(status, response);
+}
 }

@@ -21,91 +21,105 @@ public class DeleteSample extends HttpServlet {
 		
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
-		userID=userID+1;
-		userID=userID-1;
+	   	String privilege = "n";
 		request.setCharacterEncoding("utf-8");
 	    response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
 	    PrintWriter out = response.getWriter(); 
 	    
 	    
-		PreparedStatement pstmt = null; 	// Declare variables
-		int objID;
-	 	DBconnection DBconn=new DBconnection(); // New connection to the database
+		PreparedStatement pStmt = null; 	// Declare variables
+		int sampleID;
+	 	DBconnection dBconn=new DBconnection(); // New connection to the database
 	 	
 		// get Parameter for id
 		try{
-			 objID=Integer.parseInt(request.getParameter("id")); }
+			 sampleID=Integer.parseInt(request.getParameter("id")); }
 		catch (Exception e1) {
-			objID=-1;
+			sampleID=-1;
 			System.err.print("Delete Sample: no object ID given!");
 		}
 	 	
 		
 	    try {
-		 	DBconn.startDB();
+		 	dBconn.startDB();
 
-		 	if (objID>0){
-		 		Boolean DeletionPossible=true;			
-
-		 		// Check if processes with this sample exist
-		        pstmt = DBconn.conn.prepareStatement(	
-		    	"SELECT processid, sampleid FROM samplesinprocess "
-		 		+"WHERE sampleid=?");
-				pstmt.setInt(1,objID);
-				ResultSet resultset=pstmt.executeQuery();
-				if (resultset.next()) {DeletionPossible=false;}
-				pstmt.close();
+		 	if (sampleID>0){
+		 		
+		 		// Check privileges
+			    pStmt = dBconn.conn.prepareStatement( 	
+						"SELECT getSampleRights(vuserid:=?,vsample:=?)");
+				pStmt.setInt(1,userID);
+				pStmt.setInt(2,sampleID);
+				privilege = dBconn.getSingleStringValue(pStmt);
+				pStmt.close();
 				
-				// Check if experiments with this sample exist
-		        pstmt = DBconn.conn.prepareStatement(	
-		        	"SELECT id FROM expp_samples WHERE sample=?");
-				pstmt.setInt(1,objID);
-				resultset=pstmt.executeQuery();
-				if (resultset.next()) {DeletionPossible=false;}
-				pstmt.close();
-				
-				if (DeletionPossible){  // Really deleting the sample (OMG!)
-			        pstmt = DBconn.conn.prepareStatement(	
-					"DELETE FROM o_float_data WHERE objectid=?"); 
-					pstmt.setInt(1,objID);
-					pstmt.executeUpdate();
-					pstmt.close();	    
+				if (privilege.equals("w")){
+		 		
+			 		
+			 		Boolean DeletionPossible=true;			
+	
+			 		// Check if processes with this sample exist
+			        pStmt = dBconn.conn.prepareStatement(	
+			    	"SELECT processid, sampleid FROM samplesinprocess "
+			 		+"WHERE sampleid=?");
+					pStmt.setInt(1,sampleID);
+					ResultSet resultset=pStmt.executeQuery();
+					if (resultset.next()) {DeletionPossible=false;}
+					pStmt.close();
 					
-					pstmt = DBconn.conn.prepareStatement(	
-					"DELETE FROM o_measurement_data WHERE objectid=?"); 
-					pstmt.setInt(1,objID);
-					pstmt.executeUpdate();
-					pstmt.close();
+					// Check if experiments with this sample exist
+			        pStmt = dBconn.conn.prepareStatement(	
+			        	"SELECT id FROM expp_samples WHERE sample=?");
+					pStmt.setInt(1,sampleID);
+					resultset=pStmt.executeQuery();
+					if (resultset.next()) {DeletionPossible=false;}
+					pStmt.close();
 					
-			        pstmt = DBconn.conn.prepareStatement(	
-					"DELETE FROM o_string_data WHERE objectid=?"); 
-					pstmt.setInt(1,objID);
-					pstmt.executeUpdate();
-					pstmt.close();
-					
-			        pstmt = DBconn.conn.prepareStatement(	
-					"DELETE FROM o_integer_data WHERE objectid=?"); 
-					pstmt.setInt(1,objID);
-					pstmt.executeUpdate();
-					pstmt.close();
-					
-			        pstmt = DBconn.conn.prepareStatement(	
-					"DELETE FROM originates_from WHERE parent=? OR child=?");
-					pstmt.setInt(1,objID);
-					pstmt.setInt(2,objID);
-					pstmt.executeUpdate();
-					pstmt.close();
-					
-					// objectinprocess
-			        pstmt = DBconn.conn.prepareStatement(	
-					"DELETE FROM samples WHERE id=?"); 
-					pstmt.setInt(1,objID);
-					pstmt.executeUpdate();
-					pstmt.close();					
-				} else {
-					out.println("{\"error\":\"processes or experiments with this sample exist!}\"");
+					if (DeletionPossible){  // Really deleting the sample (OMG!)
+				        pStmt = dBconn.conn.prepareStatement(	
+						"DELETE FROM o_float_data WHERE objectid=?"); 
+						pStmt.setInt(1,sampleID);
+						pStmt.executeUpdate();
+						pStmt.close();	    
+						
+						pStmt = dBconn.conn.prepareStatement(	
+						"DELETE FROM o_measurement_data WHERE objectid=?"); 
+						pStmt.setInt(1,sampleID);
+						pStmt.executeUpdate();
+						pStmt.close();
+						
+				        pStmt = dBconn.conn.prepareStatement(	
+						"DELETE FROM o_string_data WHERE objectid=?"); 
+						pStmt.setInt(1,sampleID);
+						pStmt.executeUpdate();
+						pStmt.close();
+						
+				        pStmt = dBconn.conn.prepareStatement(	
+						"DELETE FROM o_integer_data WHERE objectid=?"); 
+						pStmt.setInt(1,sampleID);
+						pStmt.executeUpdate();
+						pStmt.close();
+						
+				        pStmt = dBconn.conn.prepareStatement(	
+						"DELETE FROM originates_from WHERE parent=? OR child=?");
+						pStmt.setInt(1,sampleID);
+						pStmt.setInt(2,sampleID);
+						pStmt.executeUpdate();
+						pStmt.close();
+						
+						// objectinprocess
+				        pStmt = dBconn.conn.prepareStatement(	
+						"DELETE FROM samples WHERE id=?"); 
+						pStmt.setInt(1,sampleID);
+						pStmt.executeUpdate();
+						pStmt.close();					
+					} else {
+						out.println("{\"error\":\"processes or experiments with this sample exist!}\"");
 					}
+		 		} else {
+		 			response.setStatus(401);
+		 		}
 			}
 	    } catch (SQLException eS) {
 			System.err.println("DeleteSample: SQL Error");
@@ -115,14 +129,14 @@ public class DeleteSample extends HttpServlet {
 			e.printStackTrace();
 		} finally {
 		try{	
-	           if (pstmt != null) { 
+	           if (pStmt != null) { 
 	        	  try {
-	        	  	pstmt.close();
+	        	  	pStmt.close();
 	        	  } catch (SQLException e) {
 	        	  } 
 	           }
-	    	   if (DBconn.conn != null) { 
-	    		   DBconn.closeDB();  // close the database 
+	    	   if (dBconn.conn != null) { 
+	    		   dBconn.closeDB();  // close the database 
 	    	   }
 	        } catch (Exception e) {
 				System.err.println("DeleteSample: Some Error closing the database");

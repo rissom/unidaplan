@@ -14,8 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 	  public void doDelete(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {		
 	    
-//		Authentificator authentificator = new Authentificator();
-//		int userID=authentificator.GetUserID(request,response);
+		Authentificator authentificator = new Authentificator();
+		int userID=authentificator.GetUserID(request,response);
 		request.setCharacterEncoding("utf-8");
 	    int id=0;
 	  	  try  {
@@ -27,16 +27,23 @@ import javax.servlet.http.HttpServletResponse;
 	    String status="ok";
 
 	    try {
-		    // Delete the parameter
-		 	DBconnection DBconn=new DBconnection();
-		    DBconn.startDB();	   
-		    PreparedStatement pstmt = null;
-			pstmt= DBconn.conn.prepareStatement( 			
-					"DELETE FROM ot_parameters WHERE id=? ");
-		   	pstmt.setInt(1, id);
-		   	pstmt.executeUpdate();
-			pstmt.close();
-			DBconn.closeDB();
+	    	// connect to database
+		 	DBconnection dBconn=new DBconnection();
+		    dBconn.startDB();
+		    
+		    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+		    	
+			    // Delete the parameter
+			    PreparedStatement pStmt = null;
+				pStmt= dBconn.conn.prepareStatement( 			
+						"DELETE FROM ot_parameters WHERE id=? ");
+			   	pStmt.setInt(1, id);
+			   	pStmt.executeUpdate();
+				pStmt.close();
+		    }else{ // no admin rights
+		    	response.setStatus(401);
+		    }
+			dBconn.closeDB();
 		} catch (SQLException e) {
 			System.err.println("DeleteSTParameter: Problems with SQL query");
 			status="SQL Error; DeleteSTParameter";

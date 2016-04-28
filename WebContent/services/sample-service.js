@@ -53,8 +53,14 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 
 	
 	
-	this.getSamplesByName = function (name,details){
-		return restfactory.POST('/samples_by_name?name='+name,details);
+	this.getSamplesByName = function (name,types,privilege){
+		// possible values for privilege: "r"-> read or write; "w"-> write; "a" -> all
+		var params = {
+			sampletypes : types,
+			name : name,
+			privilege : privilege
+		};
+		return restfactory.POST('/samples_by_name',params);
 	};
 	
 	

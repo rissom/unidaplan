@@ -22,9 +22,7 @@ import org.json.JSONObject;
 	      throws ServletException, IOException {
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
-		userID=userID+1;
-		userID=userID-1;
-		PreparedStatement pstmt;
+		PreparedStatement pStmt;
 		ArrayList<String> stringkeys = new ArrayList<String>(); 
 		JSONArray experiments = null;
 	    response.setContentType("application/json");
@@ -35,12 +33,20 @@ import org.json.JSONObject;
 	    JSONObject expPlans = new JSONObject();
 	    try {  
 		    dBconn.startDB();
-			pstmt= dBconn.conn.prepareStatement( 	
-					"SELECT experiments.id, users.fullname as creator, name, status, number "
-					+"FROM experiments " 
-					+"JOIN users ON users.id=experiments.Creator ");
-			experiments=dBconn.jsonArrayFromPreparedStmt(pstmt);
-			pstmt.close();
+			pStmt= dBconn.conn.prepareStatement( 	
+					  "SELECT "
+					+ "  experiments.id, " 
+					+ "  users.fullname as creator, " 
+					+ "  name, "
+					+ "  status, " 
+					+ "  number, "
+					+ "  getExperimentRights(1,experiments.id) AS rights "
+					+ "FROM experiments "
+					+ "JOIN users ON users.id=experiments.Creator "
+					+ "WHERE getExperimentRights(?,experiments.id)>'n'");
+			pStmt.setInt(1,userID);
+			experiments = dBconn.jsonArrayFromPreparedStmt(pStmt);
+			pStmt.close();
 			  for (int i=0; i<experiments.length();i++) {
 	      		  JSONObject tempObj=(JSONObject) experiments.get(i);
 	      		  stringkeys.add(Integer.toString(tempObj.getInt("name")));

@@ -25,31 +25,59 @@ public class FileDownload extends HttpServlet {
 		Authentificator authentificator = new Authentificator();
 	 	DBconnection dBconn=new DBconnection();
 		PreparedStatement pStmt;
+	    String privilege="n";
+
 
 
 	 	try{
 	 		dBconn.startDB();
 			int userID=authentificator.GetUserID(request,response);
-
-			// Check priveleges 
-			// not implemented yet...
-			
 	        int fileID = Integer.parseInt(URLDecoder.decode(request.getPathInfo().substring(1), "UTF-8"));
 
 			
+			// Check priveleges 
+			if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+		    	privilege="w";
+		    } else {
+				pStmt = dBconn.conn.prepareStatement( 	
+						"SELECT sample,process FROM files WHERE files.id=?");
+		 		pStmt.setInt(1, fileID);
+		 		JSONObject fileData = dBconn.jsonObjectFromPreparedStmt(pStmt);
+		 		String query="";
+		 		String type="";
+		 		if (fileData.has("sample")){
+		 			type = "sample";
+		 			query="SELECT getSampleRights(vuserid:=?,vsample:=?)";
+		 		} else { // file is attached to a process
+		 			type = "process";
+		 			query="SELECT getProcessRights(vuserid:=?,vprocess:=?)";
+		 		}
+		 		pStmt = dBconn.conn.prepareStatement(query);
+	 		    pStmt.setInt(1,userID);
+	 			pStmt.setInt(2,fileData.getInt(type));
+	 		    privilege=dBconn.getSingleStringValue(pStmt);
+		 		pStmt.close();
+		    }
+			
+			
 			// Get filename
-	 		pStmt= dBconn.conn.prepareStatement( 	
-					"SELECT filename "
-					+"FROM files " 
-					+"WHERE files.id=?");
-	 		pStmt.setInt(1, fileID);
-	 		JSONObject fileInfo=dBconn.jsonObjectFromPreparedStmt(pStmt);
-
-	        File file = new File("/mnt/data-store", String.format("%010d", fileID));
-	        response.setHeader("Content-Type", getServletContext().getMimeType("."+fileInfo.getString("filename")));
-	        response.setHeader("Content-Length", String.valueOf(file.length()));
-	        response.setHeader("Content-Disposition", "attachment; filename=\"" + fileInfo.getString("filename") + "\"");
-	        Files.copy(file.toPath(), response.getOutputStream());
+			if (privilege.equals("w")||privilege.equals("r")){
+		 		pStmt= dBconn.conn.prepareStatement( 	
+						"SELECT filename "
+						+"FROM files " 
+						+"WHERE files.id=?");
+		 		pStmt.setInt(1, fileID);
+		 		JSONObject fileInfo=dBconn.jsonObjectFromPreparedStmt(pStmt);
+	
+		        File file = new File("/mnt/data-store", String.format("%010d", fileID));
+		        response.setHeader("Content-Type", getServletContext().getMimeType("."+fileInfo.getString("filename")));
+		        response.setHeader("Content-Length", String.valueOf(file.length()));
+		        response.setHeader("Content-Disposition", "attachment; filename=\"" + fileInfo.getString("filename") + "\"");
+		        Files.copy(file.toPath(), response.getOutputStream());
+			} else {
+				response.setStatus(401);
+				Unidatoolkit.sendStandardAnswer("insufficient rights", response);
+			}
 	 	}catch (SQLException e) {
 			System.err.println("Showsample: Problems with SQL query for sample name");
 		} catch (JSONException e) {

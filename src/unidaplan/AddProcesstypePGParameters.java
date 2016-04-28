@@ -2,10 +2,12 @@ package unidaplan;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,12 +19,17 @@ import org.json.JSONObject;
 	  public void doPost(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {
 		
-		Authentificator authentificator = new Authentificator();
-		String status="ok";
-		int userID=authentificator.GetUserID(request,response);
-	    request.setCharacterEncoding("utf-8");
-	    String in = request.getReader().readLine();
+		Authentificator authentificator;
+		String status = "ok";
 	    JSONObject  jsonIn = null;	    
+	    PreparedStatement pStmt = null;
+	    int userID = 0;
+	    
+	    authentificator = new Authentificator();
+	    request.setCharacterEncoding("utf-8");
+		userID=authentificator.GetUserID(request,response);
+	    String in = request.getReader().readLine();
+	    
 	    try {
 			  jsonIn = new JSONObject(in);
 		} catch (JSONException e) {
@@ -53,27 +60,31 @@ import org.json.JSONObject;
 		try {	
 		    // Initialize Database
 			DBconnection dBconn=new DBconnection();
-		    dBconn.startDB();	
-		    PreparedStatement pStmt = null;
+		    dBconn.startDB();
 		    
+		    int admins=1;
+		    if (userID>0 && Unidatoolkit.isMemberOfGroup(userID,admins, dBconn)){
 		    
-			for (int i=0; i<ids.length();i++){
-				pStmt= dBconn.conn.prepareStatement( 			
-						 "INSERT INTO p_parameters (ProcesstypeID,Parametergroup,compulsory,ID_Field,Hidden,pos,definition,StringKeyName,lastUser)"
-						 + " VALUES(?,?,False,False,False,"
-						 + "(SELECT COALESCE ((SELECT max(p2.pos)+1 FROM p_parameters p2 WHERE p2.parametergroup=?),1)),"
-						 + "?,(SELECT stringkeyname FROM paramdef WHERE paramdef.id=?),?)");
-			   	pStmt.setInt(1, processTypeID);
-			   	pStmt.setInt(2, parameterGrpID);
-			   	pStmt.setInt(3, parameterGrpID);
-			   	pStmt.setInt(4, ids.getInt(i));
-			   	pStmt.setInt(5, ids.getInt(i));
-			   	pStmt.setInt(6, userID);
-//				pStmt.addBatch();  // Does not work. I don't know why.
-				pStmt.executeUpdate();
-			}
-//			pStmt.executeBatch();
-			pStmt.close();
+				for (int i=0; i<ids.length();i++){
+					pStmt= dBconn.conn.prepareStatement( 			
+							 "INSERT INTO p_parameters (ProcesstypeID,Parametergroup,compulsory,ID_Field,Hidden,pos,definition,StringKeyName,lastUser)"
+							 + " VALUES(?,?,False,False,False,"
+							 + "(SELECT COALESCE ((SELECT max(p2.pos)+1 FROM p_parameters p2 WHERE p2.parametergroup=?),1)),"
+							 + "?,(SELECT stringkeyname FROM paramdef WHERE paramdef.id=?),?)");
+				   	pStmt.setInt(1, processTypeID);
+				   	pStmt.setInt(2, parameterGrpID);
+				   	pStmt.setInt(3, parameterGrpID);
+				   	pStmt.setInt(4, ids.getInt(i));
+				   	pStmt.setInt(5, ids.getInt(i));
+				   	pStmt.setInt(6, userID);
+	//				pStmt.addBatch();  // Does not work. I don't know why.
+					pStmt.executeUpdate();
+				}
+	//			pStmt.executeBatch();
+				pStmt.close();
+		    } else {
+		    	response.setStatus(401);
+		    }
 			dBconn.closeDB();	
 			
 			

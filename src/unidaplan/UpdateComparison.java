@@ -21,6 +21,7 @@ import org.json.JSONObject;
 		int userID=authentificator.GetUserID(request,response);
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
+		String privilege = "n";
 	    String status = "ok";
 	    String table="";
 
@@ -41,94 +42,106 @@ import org.json.JSONObject;
 			response.setStatus(404);
 		}
 	    
-	 	DBconnection dBconn=new DBconnection(); // initialize database
+	 	DBconnection dBconn = new DBconnection(); // initialize database
 	    PreparedStatement pStmt = null;
 	    
 		
 	    try {  
 		    dBconn.startDB();
 		 
+		    // check privileges
+		    pStmt = dBconn.conn.prepareStatement( 	
+					"SELECT getExperimentRights(vuserid:=?,vexperimentid:=?)");
+			pStmt.setInt(1,userID);
+			pStmt.setInt(2,searchID);
+			privilege = dBconn.getSingleStringValue(pStmt);
+			pStmt.close();
+						
+			if (privilege.equals("w")){    
 			
-			// get the searchparameters according to searchtype
-			String query="";
-
-			switch (jsonIn.getString("type")){
-				case "o":   //Object scearch
-						  query = "SELECT paramdef.datatype "
-								 +"FROM searchobject "
-								 +"JOIN ot_parameters ON (ot_parameters.id=otparameter) "
-								 +"JOIN paramdef ON (paramdef.id=ot_parameters.definition) "
-								 +"WHERE search=? AND searchobject.id=?";
-						  table ="searchobject";
-						  break;
-				case "p":   // Process search
-						  query = "SELECT paramdef.datatype "
-								 +"FROM searchprocess "
-								 +"JOIN p_parameters ON (p_parameters.id=pparameter) "
-								 +"JOIN paramdef ON (paramdef.id=p_parameters.definition) "
-								 +"WHERE search=? AND searchprocess.id=?";
-						  table ="searchprocess";
-						  break;
-				case "po" : query = "SELECT paramdef.datatype "
-								 +"FROM searchpo "
-								 +"JOIN po_parameters ON (po_parameters.id=poparameter) "
-								 +"JOIN paramdef ON (paramdef.id=po_parameters.definition) "
-								 +"WHERE search=? AND searchpo.id=?";
-				  		  table ="searchpo";
-						  break;
-			}
-			pStmt= dBconn.conn.prepareStatement(query);
-			pStmt.setInt(1,searchID);
-			pStmt.setInt(2,id);
-			datatype = dBconn.getSingleIntValue(pStmt);
-			
-			// possible comparators: 1:< , 2:> , 3:=, 4:not, 5:contains
-			switch (datatype){  
-				case 1: // integer,
-					if (comparison<1 || comparison>4) { status="error: illegal comparator";}
-					break;
-				case 2: // float,
-					if (comparison<1 || comparison>4) { status="error: illegal comparator";}
-					break;
-				case 3: // measurement
-					if (comparison<1 || comparison>4) { status="error: illegal comparator";}
-					break;
-				case 4: // string
-					if (comparison<3 || comparison>5) { status="error: illegal comparator";}
-					break;
-				case 5: // long string 
-					if (comparison<3 || comparison>5) { status="error: illegal comparator";}
-					break;
-				case 6: // chooser
-					if (comparison<3 || comparison>4) { status="error: illegal comparator";}
-					break;
-				case 7: // date
-					if (comparison<1 || comparison>4) { status="error: illegal comparator";}
-					break;
-				case 8: // checkbox
-					if (comparison<3 || comparison>4) { status="error: illegal comparator";}
-					break;
-				case 9: // timestamp
-					if (comparison<1 || comparison>4) { status="error: illegal comparator";}
-					break;
-				case 10: // url
-					if (comparison<3 || comparison>5) { status="error: illegal comparator";}
-					break;
-				case 11: // email
-					if (comparison<3 || comparison>5) { status="error: illegal comparator";}
-					break;
-				default: 
-					status="error:unknown datatype";
-			}
-			if (status=="ok") {
-				pStmt= dBconn.conn.prepareStatement( 	
-					    "UPDATE "+table+" SET (comparison,lastuser)=(?,?) WHERE search=? AND id=?");
-				pStmt.setInt(1, comparison);
-				pStmt.setInt(2, userID);
-				pStmt.setInt(3, searchID);
-				pStmt.setInt(4, id);
-				pStmt.executeUpdate();
-				pStmt.close();
+				// get the searchparameters according to searchtype
+				String query="";
+	
+				switch (jsonIn.getString("type")){
+					case "o":   //Object scearch
+							  query = "SELECT paramdef.datatype "
+									 +"FROM searchobject "
+									 +"JOIN ot_parameters ON (ot_parameters.id=otparameter) "
+									 +"JOIN paramdef ON (paramdef.id=ot_parameters.definition) "
+									 +"WHERE search=? AND searchobject.id=?";
+							  table ="searchobject";
+							  break;
+					case "p":   // Process search
+							  query = "SELECT paramdef.datatype "
+									 +"FROM searchprocess "
+									 +"JOIN p_parameters ON (p_parameters.id=pparameter) "
+									 +"JOIN paramdef ON (paramdef.id=p_parameters.definition) "
+									 +"WHERE search=? AND searchprocess.id=?";
+							  table ="searchprocess";
+							  break;
+					case "po" : query = "SELECT paramdef.datatype "
+									 +"FROM searchpo "
+									 +"JOIN po_parameters ON (po_parameters.id=poparameter) "
+									 +"JOIN paramdef ON (paramdef.id=po_parameters.definition) "
+									 +"WHERE search=? AND searchpo.id=?";
+					  		  table ="searchpo";
+							  break;
+				}
+				pStmt= dBconn.conn.prepareStatement(query);
+				pStmt.setInt(1,searchID);
+				pStmt.setInt(2,id);
+				datatype = dBconn.getSingleIntValue(pStmt);
+				
+				// possible comparators: 1:< , 2:> , 3:=, 4:not, 5:contains
+				switch (datatype){  
+					case 1: // integer,
+						if (comparison<1 || comparison>4) { status="error: illegal comparator";}
+						break;
+					case 2: // float,
+						if (comparison<1 || comparison>4) { status="error: illegal comparator";}
+						break;
+					case 3: // measurement
+						if (comparison<1 || comparison>4) { status="error: illegal comparator";}
+						break;
+					case 4: // string
+						if (comparison<3 || comparison>5) { status="error: illegal comparator";}
+						break;
+					case 5: // long string 
+						if (comparison<3 || comparison>5) { status="error: illegal comparator";}
+						break;
+					case 6: // chooser
+						if (comparison<3 || comparison>4) { status="error: illegal comparator";}
+						break;
+					case 7: // date
+						if (comparison<1 || comparison>4) { status="error: illegal comparator";}
+						break;
+					case 8: // checkbox
+						if (comparison<3 || comparison>4) { status="error: illegal comparator";}
+						break;
+					case 9: // timestamp
+						if (comparison<1 || comparison>4) { status="error: illegal comparator";}
+						break;
+					case 10: // url
+						if (comparison<3 || comparison>5) { status="error: illegal comparator";}
+						break;
+					case 11: // email
+						if (comparison<3 || comparison>5) { status="error: illegal comparator";}
+						break;
+					default: 
+						status="error:unknown datatype";
+				}
+				if (status=="ok") {
+					pStmt= dBconn.conn.prepareStatement( 	
+						    "UPDATE "+table+" SET (comparison,lastuser)=(?,?) WHERE search=? AND id=?");
+					pStmt.setInt(1, comparison);
+					pStmt.setInt(2, userID);
+					pStmt.setInt(3, searchID);
+					pStmt.setInt(4, id);
+					pStmt.executeUpdate();
+					pStmt.close();
+				}	
+			} else {
+				response.setStatus(401);
 			}
 			
 		} catch (SQLException e) {

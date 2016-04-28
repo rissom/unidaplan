@@ -21,7 +21,7 @@ import org.json.JSONObject;
 		    String in = request.getReader().readLine();
 		    String status = "ok";
 	
-		    JSONObject  jsonIn = null;	
+		    JSONObject jsonIn = null;	
 		    int parameterID = -1;
 		    int destination = -1;
 		    
@@ -46,16 +46,21 @@ import org.json.JSONObject;
 		    
 			
 			try {
-			    dBconn.startDB();	   
+			    dBconn.startDB();
+			    
+			    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
 	
-				// find the stringkey
-				pStmt=dBconn.conn.prepareStatement(
-						"UPDATE ot_parameters SET (parametergroup,id_field,lastUser)=(?,FALSE,?) WHERE id=?");
-				pStmt.setInt(1,destination);
-				pStmt.setInt(2,userID);
-				pStmt.setInt(3,parameterID);
-				pStmt.executeUpdate();
-				pStmt.close();
+					// find the stringkey
+					pStmt=dBconn.conn.prepareStatement(
+							"UPDATE ot_parameters SET (parametergroup,id_field,lastUser)=(?,FALSE,?) WHERE id=?");
+					pStmt.setInt(1,destination);
+					pStmt.setInt(2,userID);
+					pStmt.setInt(3,parameterID);
+					pStmt.executeUpdate();
+					pStmt.close();
+			    }else{
+			    	response.setStatus(401);
+			    }
 			} catch (SQLException e) {
 				System.err.println("MoveParameterToGrp: Problems with SQL query");
 				status="SQL error";

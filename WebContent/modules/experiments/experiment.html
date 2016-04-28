@@ -17,12 +17,13 @@
 <h4 ng-show="experimentCtrl.experiment.parameters">{{'Parameters'|translate}}</h4>
 
 <paramfield 
+			ng-hide="experimentCtrl.editmode"
 			parameters="experimentCtrl.experiment.parameters"
 			editable="experimentCtrl.experiment.editable"
 			pupdate="experimentCtrl.submitParameter(parameter)">
 </paramfield>
-<!-- 
-<table class="table">
+
+<table class="table" ng-if="experimentCtrl.editmode">
 	<tr ng-repeat="parameter in experimentCtrl.experiment.parameters 
 				   | orderBy : experimentCtrl.experiment.parameters.pos" 
 	ng-dblclick="parameter.editing=true; parameter.datatype==='date+time' ? parameter.newDate=parameter.date : parameter.newValue=parameter.value">
@@ -65,7 +66,6 @@
 	</tr>
 	 
 </table>
-  -->
 
 <button type="button" 
 		class="btn btn-default" 

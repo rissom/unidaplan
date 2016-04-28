@@ -208,7 +208,7 @@ public class Showsample extends HttpServlet {
 						      				tParam.put("value", y);
 					      				}
 				      		if (datatype==6) {	// chooser 
-				      			pStmt= dBconn.conn.prepareStatement(
+				      			pStmt = dBconn.conn.prepareStatement(
 				      					"SELECT string FROM possible_values "
 				      					+"WHERE parameterid=? ORDER BY position");
 				      			pStmt.setInt(1, tParam.getInt("definition"));

@@ -27,8 +27,6 @@ public class ProcessTypeParamGrps extends HttpServlet {
 		  
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
-		userID=userID+1;
-		userID=userID-1;
 		int processTypeID=0;
 		request.setCharacterEncoding("utf-8");
 	    response.setContentType("application/json");
@@ -50,47 +48,54 @@ public class ProcessTypeParamGrps extends HttpServlet {
 		 	
 	    try{
 		 	dBconn.startDB();
- 			pStmt = dBconn.conn.prepareStatement(	
-			   "SELECT processtypes.id, processtypes.position, ptgroup, processtypes.name, "
- 			  +"description, processtypes.lastuser "
-			  +"FROM processtypes "
-			  +"WHERE processtypes.id=?");
-	 		pStmt.setInt(1, processTypeID);
- 			processType=dBconn.jsonObjectFromPreparedStmt(pStmt);
- 			pStmt.close();
-           	stringkeys.add(Integer.toString(processType.getInt("name")));
-           	stringkeys.add(Integer.toString(processType.getInt("description")));
-           	
-           	pStmt = dBconn.conn.prepareStatement( // not implemented in frontend yet
-     		  	   "SELECT id, position, name FROM processtypegroups");
-			processTypeGrps=dBconn.jsonArrayFromPreparedStmt(pStmt);
-			if (processTypeGrps.length()>0) {
-           		for (int j=0; j<processTypeGrps.length();j++) {
-           			stringkeys.add(Integer.toString(processTypeGrps.getJSONObject(j).getInt("name")));
-           		}
-           	}		
-           	
-   			pStmt = dBconn.conn.prepareStatement(
-   				"SELECT pgs.id,pgs.pos,pgs.stringkey, count(pp.id)=0 AS deletable "
-				+"FROM p_parametergrps pgs "
-				+"LEFT JOIN p_parameters pp ON pgs.id=pp.parametergroup "
-				+"WHERE pgs.processtype=? "
-				+"GROUP BY pgs.id ");
-   			pStmt.setInt(1, processTypeID);
-   			parameterGrps=dBconn.jsonArrayFromPreparedStmt(pStmt); // get ResultSet from the database using the query
-
-           	if (parameterGrps.length()>0) {
-           		for (int j=0; j<parameterGrps.length();j++) {
-           			stringkeys.add(Integer.toString(parameterGrps.getJSONObject(j).getInt("stringkey")));
-           		}
-           	}
-     
-	        JSONObject answer=new JSONObject();
-	        answer=processType;
-	        answer.put("processtypegrps", processTypeGrps);
-	        answer.put("parametergrps",parameterGrps);
-	        answer.put("strings", dBconn.getStrings(stringkeys));
-	        out.println(answer.toString());
+		 	
+		 	// check if admin
+		 	if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+		 	
+	 			pStmt = dBconn.conn.prepareStatement(	
+				   "SELECT processtypes.id, processtypes.position, ptgroup, processtypes.name, "
+	 			  +"description, processtypes.lastuser "
+				  +"FROM processtypes "
+				  +"WHERE processtypes.id=?");
+		 		pStmt.setInt(1, processTypeID);
+	 			processType=dBconn.jsonObjectFromPreparedStmt(pStmt);
+	 			pStmt.close();
+	           	stringkeys.add(Integer.toString(processType.getInt("name")));
+	           	stringkeys.add(Integer.toString(processType.getInt("description")));
+	           	
+	           	pStmt = dBconn.conn.prepareStatement( // not implemented in frontend yet
+	     		  	   "SELECT id, position, name FROM processtypegroups");
+				processTypeGrps=dBconn.jsonArrayFromPreparedStmt(pStmt);
+				if (processTypeGrps.length()>0) {
+	           		for (int j=0; j<processTypeGrps.length();j++) {
+	           			stringkeys.add(Integer.toString(processTypeGrps.getJSONObject(j).getInt("name")));
+	           		}
+	           	}		
+	           	
+	   			pStmt = dBconn.conn.prepareStatement(
+	   				"SELECT pgs.id,pgs.pos,pgs.stringkey, count(pp.id)=0 AS deletable "
+					+"FROM p_parametergrps pgs "
+					+"LEFT JOIN p_parameters pp ON pgs.id=pp.parametergroup "
+					+"WHERE pgs.processtype=? "
+					+"GROUP BY pgs.id ");
+	   			pStmt.setInt(1, processTypeID);
+	   			parameterGrps=dBconn.jsonArrayFromPreparedStmt(pStmt); // get ResultSet from the database using the query
+	
+	           	if (parameterGrps.length()>0) {
+	           		for (int j=0; j<parameterGrps.length();j++) {
+	           			stringkeys.add(Integer.toString(parameterGrps.getJSONObject(j).getInt("stringkey")));
+	           		}
+	           	}
+	     
+		        JSONObject answer=new JSONObject();
+		        answer=processType;
+		        answer.put("processtypegrps", processTypeGrps);
+		        answer.put("parametergrps",parameterGrps);
+		        answer.put("strings", dBconn.getStrings(stringkeys));
+		        out.println(answer.toString());
+		 	} else {
+		 		response.setStatus(401);
+		 	}
 	    } catch (SQLException eS) {
 			System.err.println("ProcessTypeParameters: SQL Error");
 			eS.printStackTrace();

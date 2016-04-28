@@ -24,6 +24,7 @@ public class UpdateExperimentNumber extends HttpServlet {
 
 			String status="ok";
 		    request.setCharacterEncoding("utf-8");
+		    
 		    // look up the datatype in Database	    
 		    int experimentID=-1;
 		    int number=-1;

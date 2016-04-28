@@ -19,11 +19,11 @@ public class DeleteSearchParameter extends HttpServlet {
 		
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
-		userID=userID+1; // REMOVE ME!!!
-		userID=userID-1; // REMOVE ME!!!
 		request.setCharacterEncoding("utf-8");
+		String privilege = "n";
 	    String status="ok";
 	    String type="";
+		String table="";
 		int searchID=-1;
 		int parameterID=-1;
 
@@ -48,34 +48,44 @@ public class DeleteSearchParameter extends HttpServlet {
 	    try {
 		 
 		    dBconn.startDB();
+		    
+			// Check privileges
+		    pStmt = dBconn.conn.prepareStatement( 	
+					"SELECT getExperimentRights(vuserid:=?,vexperimentid:=?)");
+			pStmt.setInt(1,userID);
+			pStmt.setInt(2,searchID);
+			privilege = dBconn.getSingleStringValue(pStmt);
+			pStmt.close();
+						
+			if (privilege.equals("w")){
 			
-			// get the searchparameters according to searchtype
-			String table="";
-
-			switch (type){
-				case "o":   //Object scearch
-						  table ="searchobject";
-						  break;
-				case "p":   // Process search
-						  table ="searchprocess";
-						  break;
-				case "po" : // samplespecific parameter search
-						  table ="searchpo";
-						  break;
+				// get the searchparameters according to searchtype
+	
+				switch (type){
+					case "o":   //Object scearch
+							  table ="searchobject";
+							  break;
+					case "p":   // Process search
+							  table ="searchprocess";
+							  break;
+					case "po" : // samplespecific parameter search
+							  table ="searchpo";
+							  break;
+				}
+		    	
+			 	if (parameterID>0){			
+					// delete the search
+			        pStmt = dBconn.conn.prepareStatement(	
+			        	"DELETE FROM "+table+" WHERE id=? AND search=?");
+					pStmt.setInt(1,parameterID);
+					pStmt.setInt(2,searchID);
+					pStmt.executeUpdate();
+					pStmt.close();
+				}
+			}else{
+				response.setStatus(401);
 			}
-	    	
-		 	DBconnection DBconn=new DBconnection(); // New connection to the database
-		 	DBconn.startDB();
-		 	if (parameterID>0){			
-				// delete the search
-		        pStmt = DBconn.conn.prepareStatement(	
-		        	"DELETE FROM "+table+" WHERE id=? AND search=?");
-				pStmt.setInt(1,parameterID);
-				pStmt.setInt(2,searchID);
-				pStmt.executeUpdate();
-				pStmt.close();
-			}
- 		   DBconn.closeDB();  // close the database 
+ 		    dBconn.closeDB();  // close the database 
 
 	    } catch (SQLException eS) {
 			System.err.println("DeleteSearch: SQL Error");
@@ -87,7 +97,6 @@ public class DeleteSearchParameter extends HttpServlet {
 			status="error: JSON error";
 			response.setStatus(404);
 		}
-	    
 	    
 	    Unidatoolkit.sendStandardAnswer(status, response);
 

@@ -23,6 +23,7 @@ import org.json.JSONObject;
 		int userID=authentificator.GetUserID(request,response);
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
+	   	String privilege="n";
 	    String status = "ok";
 
 	    JSONObject  jsonIn = null;	    
@@ -44,65 +45,78 @@ import org.json.JSONObject;
 			response.setStatus(404);
 		}
 	    
-	 	DBconnection DBconn=new DBconnection();
-	    PreparedStatement pstmt = null;
+	 	DBconnection dBconn=new DBconnection();
+	    PreparedStatement pStmt = null;
 	    
 		
 		try {	
-		    DBconn.startDB();	   
+		    dBconn.startDB();
+		    
+		    // check privilege
+		    pStmt = dBconn.conn.prepareStatement( 	
+					"SELECT getProcessRights(vuserid:=?,vprocess:=?)");
+			pStmt.setInt(1,userID);
+			pStmt.setInt(2,processid);
+			privilege = dBconn.getSingleStringValue(pStmt);
+			pStmt.close();
+		    
+		    
+			if (privilege.equals("w")){
 
-			JSONArray samples=(JSONArray) jsonIn.get("samples");
-			pstmt= DBconn.conn.prepareStatement( 
-					"SELECT sampleid FROM samplesinprocess WHERE processid=?");
-			pstmt.setInt(1, processid);
-			JSONArray assignedSamples=DBconn.jsonArrayFromPreparedStmt(pstmt);
-		 	JSONArray newlyCreatedSamples= new JSONArray();
-			ArrayList<Integer> assignedSamplesList = new ArrayList<Integer>();
-		 	ArrayList<Integer> newlyCreatedSamplesList = new ArrayList<Integer>();
-		 	ArrayList<Integer> newSamplesList = new ArrayList<Integer>();
-		 	ArrayList<Integer> samplesToDeleteList = new ArrayList<Integer>();
-
-		 	// create a List of already assigned Samples
-			for (int i=0;i<assignedSamples.length();i++){ 
-			 	assignedSamplesList.add((Integer)((JSONObject)assignedSamples.get(i)).getInt("sampleid"));
-			}
-		 	
-		 	// insert database entries for not already assigned samples
-			pstmt= DBconn.conn.prepareStatement( 			
-					 "INSERT INTO samplesinprocess values(default,?,?,NOW(),?)");
-			for (int i=0;i<samples.length();i++){
-				JSONObject sample=(JSONObject)samples.get(i);
-				newSamplesList.add(sample.getInt("sampleid"));
-				if (!assignedSamplesList.contains(sample.getInt("sampleid"))){
-					newlyCreatedSamples.put(sample);
-					newlyCreatedSamplesList.add(sample.getInt("sampleid"));
-					pstmt.setInt(1, processid);
-					pstmt.setInt(2, sample.getInt("sampleid"));
-					pstmt.setInt(3, userID);
-					pstmt.addBatch();
+				JSONArray samples=(JSONArray) jsonIn.get("samples");
+				pStmt= dBconn.conn.prepareStatement( 
+						"SELECT sampleid FROM samplesinprocess WHERE processid=?");
+				pStmt.setInt(1, processid);
+				JSONArray assignedSamples=dBconn.jsonArrayFromPreparedStmt(pStmt);
+			 	JSONArray newlyCreatedSamples= new JSONArray();
+				ArrayList<Integer> assignedSamplesList = new ArrayList<Integer>();
+			 	ArrayList<Integer> newlyCreatedSamplesList = new ArrayList<Integer>();
+			 	ArrayList<Integer> newSamplesList = new ArrayList<Integer>();
+			 	ArrayList<Integer> samplesToDeleteList = new ArrayList<Integer>();
+	
+			 	// create a List of already assigned Samples
+				for (int i=0;i<assignedSamples.length();i++){ 
+				 	assignedSamplesList.add((Integer)((JSONObject)assignedSamples.get(i)).getInt("sampleid"));
 				}
-			}
-			pstmt.executeBatch();
-			pstmt.close();
-
-			// make a list of samples to delete
-			for (int i=0;i<assignedSamples.length();i++){
-				if (!newSamplesList.contains(assignedSamplesList.get(i))){
-					samplesToDeleteList.add((Integer) assignedSamplesList.get(i));
+			 	
+			 	// insert database entries for not already assigned samples
+				pStmt= dBconn.conn.prepareStatement( 			
+						 "INSERT INTO samplesinprocess values(default,?,?,NOW(),?)");
+				for (int i=0;i<samples.length();i++){
+					JSONObject sample=(JSONObject)samples.get(i);
+					newSamplesList.add(sample.getInt("sampleid"));
+					if (!assignedSamplesList.contains(sample.getInt("sampleid"))){
+						newlyCreatedSamples.put(sample);
+						newlyCreatedSamplesList.add(sample.getInt("sampleid"));
+						pStmt.setInt(1, processid);
+						pStmt.setInt(2, sample.getInt("sampleid"));
+						pStmt.setInt(3, userID);
+						pStmt.addBatch();
+					}
 				}
+				pStmt.executeBatch();
+				pStmt.close();
+	
+				// make a list of samples to delete
+				for (int i=0;i<assignedSamples.length();i++){
+					if (!newSamplesList.contains(assignedSamplesList.get(i))){
+						samplesToDeleteList.add((Integer) assignedSamplesList.get(i));
+					}
+				}
+				
+				// Delete the samples
+				pStmt= dBconn.conn.prepareStatement( 			
+						 "DELETE FROM samplesinprocess WHERE sampleid=? AND processid=?");
+				for(Integer sample: samplesToDeleteList){
+					pStmt.setInt(1, sample);
+					pStmt.setInt(2, processid);
+					pStmt.addBatch();
+					} 
+				pStmt.executeBatch();
+				pStmt.close();
+			}else{
+				response.setStatus(401);
 			}
-			
-			// Delete the samples
-			pstmt= DBconn.conn.prepareStatement( 			
-					 "DELETE FROM samplesinprocess WHERE sampleid=? AND processid=?");
-			for(Integer sample: samplesToDeleteList){
-				pstmt.setInt(1, sample);
-				pstmt.setInt(2, processid);
-				pstmt.addBatch();
-				} 
-			pstmt.executeBatch();
-			pstmt.close();
-			
 
 		} catch (SQLException e) {
 			System.err.println("AddSamplesToProcess: Problems with SQL query");
@@ -115,7 +129,7 @@ import org.json.JSONObject;
 			status="error";
 		}	
 		
-		DBconn.closeDB();
+		dBconn.closeDB();
 
 		
     // tell client that everything is fine

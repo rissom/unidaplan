@@ -28,8 +28,7 @@ public class DeleteProcessType extends HttpServlet {
 		
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
-		userID=userID+1;
-		userID=userID-1;
+
 		request.setCharacterEncoding("utf-8");
 	    response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
@@ -51,9 +50,18 @@ public class DeleteProcessType extends HttpServlet {
 			status="error: no process ID";
 		}
 	 	
-		 try {
-			 	dBconn.startDB();
-
+		 
+		try {
+			dBconn.startDB();
+		} catch (Exception e1) {
+			System.err.println("Delete Process: Error starting Database");
+			e1.printStackTrace();
+		}
+			 	
+		  
+		if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+		
+			try{
 			 	if (processTypeID>0){			
 					// get string_key_table references for later deletion
 			        pStmt = dBconn.conn.prepareStatement(	
@@ -74,71 +82,61 @@ public class DeleteProcessType extends HttpServlet {
 				System.err.println("Delete Sample Type: Some Error, probably JSON");
 				status="error: JSON error";
 			}
-		
-	    try {
-		 	if (processTypeID>0){	
-		 		
-		 		
-				// delete all associatied parameters
-		        pStmt = dBconn.conn.prepareStatement(	
-		        	"DELETE FROM p_parameters WHERE processtypeid=?");
-				pStmt.setInt(1,processTypeID);
-				pStmt.executeUpdate();
-				pStmt.close();
-
-		 		
-		 		
-				// delete the processtype
-		        pStmt = dBconn.conn.prepareStatement(	
-		        	"DELETE FROM processtypes WHERE id=?");
-				pStmt.setInt(1,processTypeID);
-				pStmt.executeUpdate();
-				pStmt.close();
-				
-				
+			
+		    try {
+			 	if (processTypeID>0){	
+			 		
+			 		
+					// delete all associatied parameters
+			        pStmt = dBconn.conn.prepareStatement(	
+			        	"DELETE FROM p_parameters WHERE processtypeid=?");
+					pStmt.setInt(1,processTypeID);
+					pStmt.executeUpdate();
+					pStmt.close();
+	
+			 		
+			 		
+					// delete the processtype
+			        pStmt = dBconn.conn.prepareStatement(	
+			        	"DELETE FROM processtypes WHERE id=?");
+					pStmt.setInt(1,processTypeID);
+					pStmt.executeUpdate();
+					pStmt.close();
+					
+					
+				}
+		    } catch (SQLException eS) {
+				System.err.println("Delete Processtype: SQL Error");
+				status="error: SQL error";
+				eS.printStackTrace();
+			} catch (Exception e) {
+				System.err.println("Delete Processtype: Some Error, probably JSON");
+				status="error: JSON error";
 			}
-	    } catch (SQLException eS) {
-			System.err.println("Delete Processtype: SQL Error");
-			status="error: SQL error";
-			eS.printStackTrace();
-		} catch (Exception e) {
-			System.err.println("Delete Processtype: Some Error, probably JSON");
-			status="error: JSON error";
+		    
+		    
+		    try {
+			 	if (processTypeID>0){			
+					// delete the stringkeys
+			        pStmt = dBconn.conn.prepareStatement(	
+			        	"DELETE FROM string_key_table WHERE id IN (?,?)");
+					pStmt.setInt(1,name);
+					pStmt.setInt(2,description);
+					pStmt.executeUpdate();
+					pStmt.close();
+				}
+		    } catch (SQLException eS) {
+				System.err.println("Delete Processtype: SQL Error");
+				status="error: SQL error";
+			} catch (Exception e) {
+				System.err.println("Delete Processtype: Some Error, probably JSON");
+				status="error: JSON error";
+			} 
+		} else {
+			response.setStatus(401);
 		}
-	    try {
-		 	if (processTypeID>0){			
-				// delete the stringkeys
-		        pStmt = dBconn.conn.prepareStatement(	
-		        	"DELETE FROM string_key_table WHERE id IN (?,?)");
-				pStmt.setInt(1,name);
-				pStmt.setInt(2,description);
-				pStmt.executeUpdate();
-				pStmt.close();
-			}
-	    } catch (SQLException eS) {
-			System.err.println("Delete Processtype: SQL Error");
-			status="error: SQL error";
-		} catch (Exception e) {
-			System.err.println("Delete Processtype: Some Error, probably JSON");
-			status="error: JSON error";
-		} 
-	    
-	    finally {
-		try{	
-	         
-	    	   if (dBconn.conn != null) { 
-	    		   dBconn.closeDB();  // close the database 
-	    	   }
-	        } catch (Exception e) {
-				status="error: error closing the database";
-				System.err.println("Delete Processtype: Some Error closing the database");
-				e.printStackTrace();
-		   	}
-        }
-	    out.println("{\"status:\":\""+status+"\"}");
-
-		
+	   
+	    dBconn.closeDB();  // close the database 
+	    Unidatoolkit.sendStandardAnswer(status, response);
 	}
-
-
 }

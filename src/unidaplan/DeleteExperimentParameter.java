@@ -19,18 +19,18 @@ public class DeleteExperimentParameter extends HttpServlet {
 		
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
-		userID=userID+1; // REMOVE ME!!!
-		userID=userID-1; // REMOVE ME!!!
+		String privilege = "n";
 		request.setCharacterEncoding("utf-8");
 	    String status="ok";
 	    
-		PreparedStatement pstmt = null; 	// Declare variables
+		PreparedStatement pStmt = null; 	// Declare variables
 		int experimentID;
-	 	DBconnection DBconn=new DBconnection(); // New connection to the database
+		int parameterID = 0;
+	 	DBconnection dBconn=new DBconnection(); // New connection to the database
 	 	
 		// get Parameter for id
 		try{
-			 experimentID=Integer.parseInt(request.getParameter("id")); }
+			parameterID=Integer.parseInt(request.getParameter("id")); }
 		catch (Exception e1) {
 			experimentID=-1;
 			System.err.print("DeleteExperimentParameter: no experiment Parameter ID given!");
@@ -39,14 +39,33 @@ public class DeleteExperimentParameter extends HttpServlet {
 	 	
 		
 	    try {
-		 	DBconn.startDB();
-		 	if (experimentID>0){			
-				// delete the experiment
-		        pstmt = DBconn.conn.prepareStatement(	
-		        	"DELETE FROM expp_param WHERE id=?");
-				pstmt.setInt(1,experimentID);
-				pstmt.executeUpdate();
-				pstmt.close();
+		 	dBconn.startDB();
+		 	if (parameterID>0){
+		 		
+		 		// get Experiment ID
+			    pStmt = dBconn.conn.prepareStatement( 	
+						"SELECT exp_plan_id FROM expp_param WHERE id=?");
+				pStmt.setInt(1,parameterID);
+				experimentID = dBconn.getSingleIntValue(pStmt);
+				pStmt.close();
+		 		
+		 		// check privileges
+			    pStmt = dBconn.conn.prepareStatement( 	
+						"SELECT getExperimentRights(vuserid:=?,vexperimentid:=?)");
+				pStmt.setInt(1,userID);
+				pStmt.setInt(2,experimentID);
+				privilege = dBconn.getSingleStringValue(pStmt);
+				pStmt.close();
+			    
+				if (privilege.equals("w")){
+			 		
+					// delete the experimentparameter
+			        pStmt = dBconn.conn.prepareStatement(	
+			        	"DELETE FROM expp_param WHERE id=?");
+					pStmt.setInt(1,parameterID);
+					pStmt.executeUpdate();
+					pStmt.close();
+				}
 			}
 	    } catch (SQLException eS) {
 			System.err.println("DeleteExperimentParameter: SQL Error");
@@ -59,8 +78,8 @@ public class DeleteExperimentParameter extends HttpServlet {
 		} finally {
 		try{	
 	         
-	    	   if (DBconn.conn != null) { 
-	    		   DBconn.closeDB();  // close the database 
+	    	   if (dBconn.conn != null) { 
+	    		   dBconn.closeDB();  // close the database 
 	    	   }
 	        } catch (Exception e) {
 				status="error: error closing the database";

@@ -21,6 +21,7 @@ import org.json.JSONObject;
 		int userID=authentificator.GetUserID(request,response);
 		String status="ok";
 	    request.setCharacterEncoding("utf-8");
+	    PreparedStatement pStmt = null;
 	    String in = request.getReader().readLine();
 	    JSONObject  jsonIn = null;
 	    
@@ -47,51 +48,53 @@ import org.json.JSONObject;
 	    try {	
 		 	DBconnection dBconn=new DBconnection();
 		    dBconn.startDB();	  
+
+		    int admins=1;
+		    if (userID>0 && Unidatoolkit.isMemberOfGroup(userID,admins, dBconn)){
 		    
-			 if (jsonIn.has("name")){
-				 JSONObject name=jsonIn.getJSONObject("name");
-				 String [] names = JSONObject.getNames(name);
-				 stringKeyName=dBconn.createNewStringKey(name.getString(names[0]));
-				 for (int i=0; i<names.length; i++){
-					 dBconn.addString(stringKeyName,names[i],name.getString(names[i]));
-				 }
-			 }else
-			 {
-				 System.out.println("no name exists");
-			 }
-			 if (jsonIn.has("description")){
-				 JSONObject description=jsonIn.getJSONObject("description");
-				 String [] descriptions = JSONObject.getNames(description);
-				 if (descriptions!=null && descriptions.length>0){
-					 stringKeyDesc=dBconn.createNewStringKey(description.getString(descriptions[0]));
-					 for (int i=0; i<descriptions.length; i++){
-						 dBconn.addString(stringKeyDesc,descriptions[i],description.getString(descriptions[i]));
-					 } 
-				 }
-			 }
-			 if (jsonIn.has("position")){
-				 position=jsonIn.getInt("position");
-			 }
-			 if (jsonIn.has("ptgroup")){
-				 ptgroup=jsonIn.getInt("ptgroup");
-			 }
+		    	if (jsonIn.has("name")){
+		    		JSONObject name=jsonIn.getJSONObject("name");
+		    		String [] names = JSONObject.getNames(name);
+		    		stringKeyName=dBconn.createNewStringKey(name.getString(names[0]));
+		    		for (int i=0; i<names.length; i++){
+		    			dBconn.addString(stringKeyName,names[i],name.getString(names[i]));
+		    		}
+		    	}else{
+		    		System.out.println("no name exists");
+		    	}
+		    	if (jsonIn.has("description")){
+		    		JSONObject description=jsonIn.getJSONObject("description");
+		    		String [] descriptions = JSONObject.getNames(description);
+		    		if (descriptions!=null && descriptions.length>0){
+		    			stringKeyDesc=dBconn.createNewStringKey(description.getString(descriptions[0]));
+		    			for (int i=0; i<descriptions.length; i++){
+		    				dBconn.addString(stringKeyDesc,descriptions[i],description.getString(descriptions[i]));
+		    			} 
+		    		}
+		    	}
+				if (jsonIn.has("position")){
+					position=jsonIn.getInt("position");
+				}
+				if (jsonIn.has("ptgroup")){
+					ptgroup=jsonIn.getInt("ptgroup");
+				}
 
   
-	    PreparedStatement pStmt = null;
 
-			pStmt= dBconn.conn.prepareStatement( 			
-				"INSERT INTO processtypes (position,ptgroup,name,description,lastChange,lastUser) "
-				+"VALUES (?,?,?,?,NOW(),?) RETURNING id");
-			pStmt.setInt(1, position);
-			pStmt.setInt(2, ptgroup);
-		   	pStmt.setInt(3, stringKeyName);
-		   	if (stringKeyDesc>0){
-		   		pStmt.setInt(4, stringKeyDesc);
-		   	}else{
-		   		pStmt.setNull(4, java.sql.Types.INTEGER);
-		   	}
-		   	pStmt.setInt(5, userID);
-		   	id=dBconn.getSingleIntValue(pStmt);
+				 pStmt= dBconn.conn.prepareStatement( 			
+					"INSERT INTO processtypes (position,ptgroup,name,description,lastChange,lastUser) "
+					+"VALUES (?,?,?,?,NOW(),?) RETURNING id");
+				 pStmt.setInt(1, position);
+				 pStmt.setInt(2, ptgroup);
+				 pStmt.setInt(3, stringKeyName);
+			   	 if (stringKeyDesc>0){
+			   		pStmt.setInt(4, stringKeyDesc);
+			   	}else{
+			   		pStmt.setNull(4, java.sql.Types.INTEGER);
+			   	}
+			   	pStmt.setInt(5, userID);
+			   	id=dBconn.getSingleIntValue(pStmt);
+			   	pStmt.close();
 		
 //			int parameterGrp=0;
 //			pStmt= dBconn.conn.prepareStatement( 			
@@ -110,6 +113,7 @@ import org.json.JSONObject;
 //			pStmt.setInt(2, parameterGrp);
 			pStmt.setInt(2, userID);
 		   	pStmt.executeUpdate();
+		    pStmt.close();
 		   	// define parameter for processnumber
 			pStmt= dBconn.conn.prepareStatement( 			
 					"INSERT INTO p_parameters (ProcesstypeID,compulsory,ID_Field,Formula,Hidden,pos,definition,StringKeyName,lastUser) "
@@ -118,6 +122,7 @@ import org.json.JSONObject;
 //			pStmt.setInt(2, parameterGrp);
 			pStmt.setInt(2, userID);
 		   	pStmt.executeUpdate();
+		    pStmt.close();
 		   	// define parameter for processtime
 			pStmt= dBconn.conn.prepareStatement( 			
 					"INSERT INTO p_parameters (ProcesstypeID,compulsory,ID_Field,Formula,Hidden,pos,definition,StringKeyName,lastUser) "
@@ -125,8 +130,12 @@ import org.json.JSONObject;
 			pStmt.setInt(1, id);
 //			pStmt.setInt(2, parameterGrp);
 			pStmt.setInt(2, userID);
-		   	pStmt.executeUpdate();		   	
-			   	
+		   	pStmt.executeUpdate();		
+		    pStmt.close();
+		    } else{
+		    	response.setStatus(401);
+		    }
+			dBconn.closeDB();
 		} catch (SQLException e) {
 			status="SQL error";
 			System.err.println("AddProcessType: Problems with SQL query2");

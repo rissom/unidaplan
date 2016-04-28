@@ -76,20 +76,15 @@ function sampleChoser($translate,$scope,restfactory,types,sampleService) {
 	
 	// get a bunch of fitting samples
 	this.loadSamples = function(){
-		var details={};
-		details.sampletypes=this.selectedTypesVar;	
-		var name="";
-		if (thisController.userinput!==undefined){
-			name=thisController.userinput;
-		}
-		var promise=sampleService.getSamplesByName(name,details);
+		var name = thisController.userinput||"";
+		var promise=sampleService.getSamplesByName(name,this.selectedTypesVar,'r'); // possible values: "r"-> read or write; "w"-> write; "a" -> all
 		promise.then(function(data){
 			thisController.samples=data.data;
 			if (thisController.firsttime) {
 				thisController.init();
 				thisController.firsttime=false;
 			}
-		});		
+		});
 	};
 	
 	

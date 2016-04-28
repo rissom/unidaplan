@@ -19,32 +19,56 @@ import org.json.JSONObject;
 	  public void doPost(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {		
 	    
-//		Authentificator authentificator = new Authentificator();
-//		int userID=authentificator.GetUserID(request,response);
-		request.setCharacterEncoding("utf-8");
+		Authentificator authentificator = new Authentificator();
+		int userID=authentificator.GetUserID(request,response);
+		int experimentID = 0;
+		PreparedStatement pStmt;
 	    int processStepID=0;
 	    int newRecipe=0;
-	  	  	try{
-	  	  		processStepID=Integer.parseInt(request.getParameter("processstepid"));
-	  	  		newRecipe=Integer.parseInt(request.getParameter("recipe")); 
-	  	  	}
-	  	  	catch (Exception e1) {
-	  	  		System.err.print("ExpStepChangeRecipe: no processstep ID given!");
-	  	  	}
+	    String privilege="n";
 	    String status="ok";
+	    
+		request.setCharacterEncoding("utf-8");
+
+
+  	  	try{
+  	  		processStepID=Integer.parseInt(request.getParameter("processstepid"));
+  	  		newRecipe=Integer.parseInt(request.getParameter("recipe")); 
+  	  	}
+  	  	catch (Exception e1) {
+  	  		System.err.print("ExpStepChangeRecipe: no processstep ID given!");
+  	  	}
 
 	    try {
-		    // Delete the user to the database	    
-		 	DBconnection DBconn=new DBconnection();
-		    DBconn.startDB();	   
-		    // decrease positions behind the sample to delete
-		    PreparedStatement pstmt = DBconn.conn.prepareStatement(    	
-				"UPDATE exp_plan_steps SET recipe=? WHERE id=?");
-		    pstmt.setInt(1, newRecipe);
-		    pstmt.setInt(2, processStepID);
-		   	pstmt.executeUpdate();
-			pstmt.close();
-			DBconn.closeDB();
+	    	// Connect to database
+		 	DBconnection dBconn=new DBconnection();
+		    dBconn.startDB();	   
+		    
+		    // get experiment ID
+		    pStmt = dBconn.conn.prepareStatement( 	
+					"SELECT expp_s_id FROM exp_plan_steps WHERE id=?");
+			pStmt.setInt(1,processStepID);
+			experimentID = dBconn.getSingleIntValue(pStmt);
+			pStmt.close();
+	
+	 		// check privileges
+		    pStmt = dBconn.conn.prepareStatement( 	
+					"SELECT getExperimentRights(vuserid:=?,vexperimentid:=?)");
+			pStmt.setInt(1,userID);
+			pStmt.setInt(2,experimentID);
+			privilege = dBconn.getSingleStringValue(pStmt);
+			pStmt.close();
+		    
+			if (privilege.equals("w")){
+		    
+			    pStmt = dBconn.conn.prepareStatement(    	
+					"UPDATE exp_plan_steps SET recipe=? WHERE id=?");
+			    pStmt.setInt(1, newRecipe);
+			    pStmt.setInt(2, processStepID);
+			   	pStmt.executeUpdate();
+				pStmt.close();
+				dBconn.closeDB();
+			}
 		} catch (SQLException e) {
 			System.err.println("ExpStepChangeRecipe: Problems with SQL query");
 			status="SQL Error; ExpStepChangeRecipe";
@@ -54,15 +78,6 @@ import org.json.JSONObject;
 		}	
 		
 	    // tell client that everything is fine
-		response.setContentType("application/json");
-	    response.setCharacterEncoding("utf-8");
-	    PrintWriter out = response.getWriter();
-	    try {
-	        JSONObject answer = new JSONObject();
-			answer.put("status", status);
-			out.println(answer.toString());
-		} catch (JSONException e) {
-			System.err.println("ExpStepChangeRecipe: Problems creating JSON answer");
-		}    
+		Unidatoolkit.sendStandardAnswer(status, response);
 	}
 }	 

@@ -19,8 +19,8 @@ import org.json.JSONObject;
 	  public void doDelete(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {		
 	    
-//		Authentificator authentificator = new Authentificator();
-//		int userID=authentificator.GetUserID(request,response);
+		Authentificator authentificator = new Authentificator();
+		int userID=authentificator.GetUserID(request,response);
 		request.setCharacterEncoding("utf-8");
 	    int id=0;
 	  	  try  {
@@ -32,23 +32,28 @@ import org.json.JSONObject;
 	    String status="ok";
 
 	    try {
-	    // Delete the user to the database	    
-		 	DBconnection DBconn=new DBconnection();
-		    DBconn.startDB();	   
-		    PreparedStatement pstmt = null;
+			// connect to database
+		 	DBconnection dBconn=new DBconnection();
+		    dBconn.startDB();	   
 		    
-		    pstmt= DBconn.conn.prepareStatement( 			
-					"DELETE FROM language_preferences WHERE user_id=?");
-		   	pstmt.setInt(1, id);
-		   	pstmt.executeUpdate();
-			pstmt.close();
-		    
-			pstmt= DBconn.conn.prepareStatement( 			
-					"DELETE FROM users WHERE id=?");
-		   	pstmt.setInt(1, id);
-		   	pstmt.executeUpdate();
-			pstmt.close();
-			DBconn.closeDB();
+		    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+		    	
+			    // Delete the user from the database	    
+			    PreparedStatement pstmt = null;
+			    
+			    pstmt= dBconn.conn.prepareStatement( 			
+						"DELETE FROM language_preferences WHERE user_id=?");
+			   	pstmt.setInt(1, id);
+			   	pstmt.executeUpdate();
+				pstmt.close();
+			    
+				pstmt= dBconn.conn.prepareStatement( 			
+						"DELETE FROM users WHERE id=?");
+			   	pstmt.setInt(1, id);
+			   	pstmt.executeUpdate();
+				pstmt.close();
+		    }
+			dBconn.closeDB();
 		} catch (SQLException e) {
 			System.err.println("DeleteUser: Problems with SQL query");
 			status="SQL Error; DeleteUser";

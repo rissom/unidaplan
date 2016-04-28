@@ -27,8 +27,6 @@ public class SampleTypeParams extends HttpServlet {
 		  
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
-		userID=userID+1;
-		userID=userID-1;
 		int paramgroupid=0;
 		request.setCharacterEncoding("utf-8");
 	    response.setContentType("application/json");
@@ -51,86 +49,92 @@ public class SampleTypeParams extends HttpServlet {
 		 	
 	    try{
 		 	dBconn.startDB();
- 			pStmt = dBconn.conn.prepareStatement(	
-			   "SELECT ot_parametergrps.id,ot_id AS sampletype,ot_parametergrps.stringkey AS name, "
-   		  	  +" objecttypes.string_key AS sampletypename "
-			  +"FROM ot_parametergrps "
-   		  	  +"LEFT JOIN objecttypes ON (ot_parametergrps.ot_id=objecttypes.id) "					   
-			  +"WHERE ot_parametergrps.id=?");
-	 		pStmt.setInt(1, paramgroupid);
- 			paramGrp=dBconn.jsonObjectFromPreparedStmt(pStmt); // get ResultSet from the database using the query
- 			pStmt.close();
- 			if (paramGrp.length()>0){
-	 		 	stringkeys.add(Integer.toString(paramGrp.getInt("name"))); 
-	 		 	stringkeys.add(Integer.toString(paramGrp.getInt("sampletypename")));
-	 		 	// get siblings
-	 		 	pStmt = dBconn.conn.prepareStatement(	
-	 				   "SELECT otp.id,stringkey AS name "
-	 				  +"FROM objecttypes "
-	 				  +"JOIN ot_parametergrps otp ON otp.ot_id=objecttypes.id "
-	 				  +"WHERE objecttypes.id=? AND NOT otp.id=?");
-	 		 	pStmt.setInt(1, paramGrp.getInt("sampletype"));
-	 		 	pStmt.setInt(2, paramgroupid);
-	 		 	siblings=dBconn.jsonArrayFromPreparedStmt(pStmt);
-	 		 	if (siblings.length()>0){
-	 		 		for (int i=0;i<siblings.length();i++){
-	 		 			stringkeys.add(Integer.toString(siblings.getJSONObject(i).getInt("name")));
-	 		 		}
-	 		 	}
-
-	 		 	
-	 		// check if the parameter can be deleted. (No, if corresponding data exists).
-	           	pStmt = dBconn.conn.prepareStatement(
-	     		  	   "SELECT ot_parameters.id, compulsory, id_field, formula, hidden, pos, definition, "
-	           		  +"  COALESCE(ot_parameters.stringkeyname,paramdef.stringkeyname) as name, "
-	     		  	  +"  (blabla.count) IS NULL as deletable, stringkeyunit, paramdef.datatype "
-	     		  	  +"FROM ot_parameters " 
-	     		  	  +"JOIN paramdef ON (definition=paramdef.id) "
-	     		  	  +"LEFT JOIN "
-				  	  +"( "
-					  +"  SELECT count(a.id),ot_parameter_id FROM o_integer_data a GROUP BY ot_parameter_id "
-					  +"  UNION ALL "
-					  +"  SELECT count(b.id),ot_parameter_id FROM o_float_data b GROUP BY ot_parameter_id	"
-					  +"  UNION ALL "
-				      +"  SELECT count(c.id),ot_parameter_id FROM o_string_data c GROUP BY ot_parameter_id "
-					  +"  UNION ALL "
-				      +"  SELECT count(d.id),ot_parameter_id FROM o_measurement_data d GROUP BY ot_parameter_id "
-					  +"  UNION ALL "
-					  +"  SELECT count(e.id),ot_parameter_id FROM o_timestamp_data e GROUP BY ot_parameter_id "
-					  +") AS blabla ON blabla.ot_parameter_id=ot_parameters.id "
-					  +"WHERE parametergroup=?"); // status, processnumber and date cannot be edited
+		 	
+		 	// check if admin
+		 	if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+	 			pStmt = dBconn.conn.prepareStatement(	
+				   "SELECT ot_parametergrps.id,ot_id AS sampletype,ot_parametergrps.stringkey AS name, "
+	   		  	  +" objecttypes.string_key AS sampletypename "
+				  +"FROM ot_parametergrps "
+	   		  	  +"LEFT JOIN objecttypes ON (ot_parametergrps.ot_id=objecttypes.id) "					   
+				  +"WHERE ot_parametergrps.id=?");
 		 		pStmt.setInt(1, paramgroupid);
-				processTypeGrps=dBconn.jsonArrayFromPreparedStmt(pStmt); // get ResultSet from the database using the query
-				if (processTypeGrps.length()>0) {
-	           		for (int j=0; j<processTypeGrps.length();j++) {
-	           			JSONObject tObj=processTypeGrps.getJSONObject(j);
-	           			int datatype=tObj.getInt("datatype");
-	           			stringkeys.add(Integer.toString(processTypeGrps.getJSONObject(j).getInt("name")));
-	           			if (datatype<4){
-		           			if (tObj.has("stringkeyunit")){
-		           				stringkeys.add(Integer.toString(tObj.getInt("stringkeyunit")));
+	 			paramGrp=dBconn.jsonObjectFromPreparedStmt(pStmt); // get ResultSet from the database using the query
+	 			pStmt.close();
+	 			if (paramGrp.length()>0){
+		 		 	stringkeys.add(Integer.toString(paramGrp.getInt("name"))); 
+		 		 	stringkeys.add(Integer.toString(paramGrp.getInt("sampletypename")));
+		 		 	// get siblings
+		 		 	pStmt = dBconn.conn.prepareStatement(	
+		 				   "SELECT otp.id,stringkey AS name "
+		 				  +"FROM objecttypes "
+		 				  +"JOIN ot_parametergrps otp ON otp.ot_id=objecttypes.id "
+		 				  +"WHERE objecttypes.id=? AND NOT otp.id=?");
+		 		 	pStmt.setInt(1, paramGrp.getInt("sampletype"));
+		 		 	pStmt.setInt(2, paramgroupid);
+		 		 	siblings=dBconn.jsonArrayFromPreparedStmt(pStmt);
+		 		 	if (siblings.length()>0){
+		 		 		for (int i=0;i<siblings.length();i++){
+		 		 			stringkeys.add(Integer.toString(siblings.getJSONObject(i).getInt("name")));
+		 		 		}
+		 		 	}
+	
+		 		 	
+		 		// check if the parameter can be deleted. (No, if corresponding data exists).
+		           	pStmt = dBconn.conn.prepareStatement(
+		     		  	   "SELECT ot_parameters.id, compulsory, id_field, formula, hidden, pos, definition, "
+		           		  +"  COALESCE(ot_parameters.stringkeyname,paramdef.stringkeyname) as name, "
+		     		  	  +"  (blabla.count) IS NULL as deletable, stringkeyunit, paramdef.datatype "
+		     		  	  +"FROM ot_parameters " 
+		     		  	  +"JOIN paramdef ON (definition=paramdef.id) "
+		     		  	  +"LEFT JOIN "
+					  	  +"( "
+						  +"  SELECT count(a.id),ot_parameter_id FROM o_integer_data a GROUP BY ot_parameter_id "
+						  +"  UNION ALL "
+						  +"  SELECT count(b.id),ot_parameter_id FROM o_float_data b GROUP BY ot_parameter_id	"
+						  +"  UNION ALL "
+					      +"  SELECT count(c.id),ot_parameter_id FROM o_string_data c GROUP BY ot_parameter_id "
+						  +"  UNION ALL "
+					      +"  SELECT count(d.id),ot_parameter_id FROM o_measurement_data d GROUP BY ot_parameter_id "
+						  +"  UNION ALL "
+						  +"  SELECT count(e.id),ot_parameter_id FROM o_timestamp_data e GROUP BY ot_parameter_id "
+						  +") AS blabla ON blabla.ot_parameter_id=ot_parameters.id "
+						  +"WHERE parametergroup=?"); // status, processnumber and date cannot be edited
+			 		pStmt.setInt(1, paramgroupid);
+					processTypeGrps=dBconn.jsonArrayFromPreparedStmt(pStmt); // get ResultSet from the database using the query
+					if (processTypeGrps.length()>0) {
+		           		for (int j=0; j<processTypeGrps.length();j++) {
+		           			JSONObject tObj=processTypeGrps.getJSONObject(j);
+		           			int datatype=tObj.getInt("datatype");
+		           			stringkeys.add(Integer.toString(processTypeGrps.getJSONObject(j).getInt("name")));
+		           			if (datatype<4){
+			           			if (tObj.has("stringkeyunit")){
+			           				stringkeys.add(Integer.toString(tObj.getInt("stringkeyunit")));
+			           			}
+		           			} else {
+		           				tObj.remove("stringkeyunit");
 		           			}
-	           			} else {
-	           				tObj.remove("stringkeyunit");
-	           			}
-	           			tObj.remove("datatype");
-	           			tObj.put("datatype",Unidatoolkit.Datatypes[datatype]);
-	           		}
-	           	}		
- 			} else {
- 				System.err.println("not found");
- 			}
-   		
-		
-	        JSONObject answer=new JSONObject();
-	        answer=paramGrp;
-	        if (siblings.length()>0){
-	        	answer.put("siblings", siblings);
-	        }
-	        answer.put("parameters", processTypeGrps);
-	        answer.put("parametergrps",parameterGrps);
-	        answer.put("strings", dBconn.getStrings(stringkeys));
-	        out.println(answer.toString());
+		           			tObj.remove("datatype");
+		           			tObj.put("datatype",Unidatoolkit.Datatypes[datatype]);
+		           		}
+		           	}		
+	 			} else {
+	 				System.err.println("not found");
+	 			}
+	   		
+			
+		        JSONObject answer=new JSONObject();
+		        answer=paramGrp;
+		        if (siblings.length()>0){
+		        	answer.put("siblings", siblings);
+		        }
+		        answer.put("parameters", processTypeGrps);
+		        answer.put("parametergrps",parameterGrps);
+		        answer.put("strings", dBconn.getStrings(stringkeys));
+		        out.println(answer.toString());
+		 	}else{
+		 		response.setStatus(401);
+		 	}
 	    } catch (SQLException eS) {
 			System.err.println("SampleTypeParameters: SQL Error");
 			eS.printStackTrace();

@@ -12,11 +12,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-	public class AddProcessToExperiment extends HttpServlet {
-		private static final long serialVersionUID = 1L;
+public class AddProcessToExperiment extends HttpServlet {
+	private static final long serialVersionUID = 1L;
 
-	@Override
-	  public void doPost(HttpServletRequest request, HttpServletResponse response)
+		@Override
+	  	public void doPost(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {		
 	    
 		Authentificator authentificator = new Authentificator();
@@ -26,8 +26,6 @@ import org.json.JSONObject;
 	    int processTypeID=0;
 	    PreparedStatement pStmt = null;
 	   	String privilege="n";
-
-
 
 	  	  	try{
 	  	  		experimentID=Integer.parseInt(request.getParameter("experimentid")); 
@@ -39,7 +37,7 @@ import org.json.JSONObject;
 	    String status="ok";
 
 	    try {
-		    // Delete the user to the database	    
+		    // Connect to database	    
 		 	DBconnection dBconn=new DBconnection();
 		    dBconn.startDB();
 		    

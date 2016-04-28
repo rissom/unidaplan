@@ -50,30 +50,32 @@ import org.json.JSONObject;
 	    
 		
 		try {
-		    dBconn.startDB();	   
+		    dBconn.startDB();
+		    int admins = 1;
+			if (Unidatoolkit.isMemberOfGroup(userID, admins, dBconn)){
 
-			// delete old entries
-			pStmt=dBconn.conn.prepareStatement(
-					"DELETE FROM groupmemberships WHERE groupid=?");
-			pStmt.setInt(1,groupID);
-			pStmt.executeUpdate();
-			pStmt.close();
-			
-		
-			// Insert new members into database
-			if (members.length()>0){
-				pStmt= dBconn.conn.prepareStatement( 			
-						 "INSERT INTO groupmemberships (groupid, userid,lastchange,lastuser) VALUES (?,?,NOW(),?)");
-				for (int i=0;i<members.length();i++){
-					pStmt.setInt(1,groupID);
-					pStmt.setInt(2,members.getInt(i));
-					pStmt.setInt(3,userID);
-					pStmt.addBatch();
-				}
-				pStmt.executeBatch();
+				// delete old entries
+				pStmt = dBconn.conn.prepareStatement(
+						"DELETE FROM groupmemberships WHERE groupid=?");
+				pStmt.setInt(1,groupID);
+				pStmt.executeUpdate();
 				pStmt.close();
-			}
+				
 			
+				// Insert new members into database
+				if (members.length()>0){
+					pStmt = dBconn.conn.prepareStatement( 			
+							 "INSERT INTO groupmemberships (groupid, userid,lastchange,lastuser) VALUES (?,?,NOW(),?)");
+					for (int i=0;i<members.length();i++){
+						pStmt.setInt(1,groupID);
+						pStmt.setInt(2,members.getInt(i));
+						pStmt.setInt(3,userID);
+						pStmt.addBatch();
+					}
+					pStmt.executeBatch();
+					pStmt.close();
+				}
+			}
 			
 		} catch (SQLException e) {
 			System.err.println("AssignGroupMembers: Problems with SQL query");

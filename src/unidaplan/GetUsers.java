@@ -37,7 +37,7 @@ import org.json.JSONException;
 			+ "users.email, "
 		    + "users.blocked, "
 		    + "users.lastchange, "
-		   +"CASE Coalesce((SELECT count(ep.creator) from exp_plan ep WHERE users.id=ep.creator " 
+		   +"CASE Coalesce((SELECT count(ep.creator) from experiments ep WHERE users.id=ep.creator " 
 		   +"GROUP BY ep.creator),0) WHEN 0 THEN true ELSE false END AS deletable "
 		   +"FROM users");
 			JSONArray users=DBconn.jsonArrayFromPreparedStmt(pstmt);

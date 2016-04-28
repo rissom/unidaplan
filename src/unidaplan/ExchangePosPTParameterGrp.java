@@ -38,12 +38,12 @@ public class ExchangePosPTParameterGrp extends HttpServlet {
 		String in = request.getReader().readLine();
 	    String status="ok";
 	    
-		PreparedStatement pstmt = null; 	// Declare variables
+		PreparedStatement pStmt = null; 	// Declare variables
 		int paramGrpID1 = 0;
 		int paramGrpID2 = 0;
 		int pos1=0;
 		int pos2=0;
-	 	DBconnection DBconn=new DBconnection(); // New connection to the database
+	 	DBconnection dBconn=new DBconnection(); // New connection to the database
 
 		
 
@@ -63,25 +63,32 @@ public class ExchangePosPTParameterGrp extends HttpServlet {
 	 	
 		
 	    try {
-		 	DBconn.startDB();
+		 	dBconn.startDB();
+		 	
+			if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
 
-			// set new position id for PG 1.
-	        pstmt = DBconn.conn.prepareStatement(	
-	        	"UPDATE p_parametergrps pg SET (pos,lastuser)=(?,?) WHERE ID=?");
-			pstmt.setInt(1,pos1);
-			pstmt.setInt(2,userID);
-			pstmt.setInt(3,paramGrpID1);
-			pstmt.executeUpdate();
-			pstmt.close();
+				// set new position id for PG 1.
+		        pStmt = dBconn.conn.prepareStatement(	
+		        	"UPDATE p_parametergrps pg SET (pos,lastuser)=(?,?) WHERE ID=?");
+				pStmt.setInt(1,pos1);
+				pStmt.setInt(2,userID);
+				pStmt.setInt(3,paramGrpID1);
+				pStmt.executeUpdate();
+				pStmt.close();
+				
+				// set new position id for PG 2.
+		        pStmt = dBconn.conn.prepareStatement(	
+			        "UPDATE p_parametergrps pg SET (pos,lastuser)=(?,?) WHERE ID=?");
+				pStmt.setInt(1,pos2);
+				pStmt.setInt(2,userID);
+				pStmt.setInt(3,paramGrpID2);
+				pStmt.executeUpdate();
+				pStmt.close();				
+			}else{
+				// no admin rights
+				response.setStatus(401);
+			}
 			
-			// set new position id for PG 2.
-	        pstmt = DBconn.conn.prepareStatement(	
-		        "UPDATE p_parametergrps pg SET (pos,lastuser)=(?,?) WHERE ID=?");
-			pstmt.setInt(1,pos2);
-			pstmt.setInt(2,userID);
-			pstmt.setInt(3,paramGrpID2);
-			pstmt.executeUpdate();
-			pstmt.close();				
 	    } catch (SQLException eS) {
 			System.err.println("Delete Process: SQL Error");
 			status="error: SQL error";
@@ -92,8 +99,8 @@ public class ExchangePosPTParameterGrp extends HttpServlet {
 			e.printStackTrace();
 		} finally {
 			try{	
-	    	   if (DBconn.conn != null) { 
-	    		   DBconn.closeDB();  // close the database 
+	    	   if (dBconn.conn != null) { 
+	    		   dBconn.closeDB();  // close the database 
 	    	   }
 		    } catch (Exception e) {
 				status="error: error closing the database";

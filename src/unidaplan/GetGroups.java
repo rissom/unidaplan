@@ -29,7 +29,7 @@ public class GetGroups extends HttpServlet {
 	 	DBconnection dBconn=new DBconnection();
 	    try {  
 		    dBconn.startDB();
-		    if (Unidatoolkit.isMemberOfGroup(userID, admins, dBconn)){ // admins are allowed to do everything
+		    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){ // admins are allowed to do everything
 				pStmt= dBconn.conn.prepareStatement("WITH "
 						+"members AS ( "
 						+"SELECT groupid, array_to_json(array_agg(userid)) AS members "

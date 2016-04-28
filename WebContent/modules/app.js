@@ -674,6 +674,14 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
     });
     
     
+    $rootScope.$on('$stateChangeSuccess', function(event, toState, toStateParams) {
+        // track the state the user wants to go to; authorization service needs this
+      	if (toState.name!="login" && toState.name!="noRights"){
+			delete $rootScope.failedState;
+			delete $rootScope.failedParams;
+  	    }
+      });
+    
 });
 
 })();

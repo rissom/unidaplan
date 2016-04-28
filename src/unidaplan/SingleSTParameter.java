@@ -43,7 +43,7 @@ public class SingleSTParameter extends HttpServlet {
 		 	
 	    try{
 		 	dBconn.startDB();
-		 	if (Unidatoolkit.isMemberOfGroup(userID, 1, dBconn)){
+		 	if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
 	 			pStmt = dBconn.conn.prepareStatement(
 	 					 "SELECT ot_parameters.id, compulsory, id_field, formula, hidden, definition,"
 	 					  +"  objecttypesid AS sampletype, "

@@ -3,6 +3,7 @@ package unidaplan;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -26,14 +27,13 @@ public class DeleteProcess extends HttpServlet {
 		
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
-		userID=userID+1;
-		userID=userID-1;
+	   	String privilege="n";
 		request.setCharacterEncoding("utf-8");
 	    String status="ok";
 	    
-		PreparedStatement pstmt = null; 	// Declare variables
+		PreparedStatement pStmt = null; 	// Declare variables
 		int processID;
-	 	DBconnection DBconn=new DBconnection(); // New connection to the database
+	 	DBconnection dBconn=new DBconnection(); // New connection to the database
 	 	
 		// get Parameter for id
 		try{
@@ -46,15 +46,29 @@ public class DeleteProcess extends HttpServlet {
 	 	
 		
 	    try {
-		 	DBconn.startDB();
-		 	if (processID>0){			
-				// delete the process
-		        pstmt = DBconn.conn.prepareStatement(	
-		        	"DELETE FROM processes WHERE id=?");
-				pstmt.setInt(1,processID);
-				pstmt.executeUpdate();
-				pstmt.close();
-			}
+		 	dBconn.startDB();
+		 	if (processID>0){		
+		 		 // Check privileges
+			    pStmt = dBconn.conn.prepareStatement( 	
+						"SELECT getProcessRights(vuserid:=?,vprocess:=?)");
+				pStmt.setInt(1,userID);
+				pStmt.setInt(2,processID);
+				privilege = dBconn.getSingleStringValue(pStmt);
+				pStmt.close();
+				
+				if (privilege.equals("w")){
+			 		
+					// delete the process
+			        pStmt = dBconn.conn.prepareStatement(	
+			        	"DELETE FROM processes WHERE id=?");
+					pStmt.setInt(1,processID);
+					pStmt.executeUpdate();
+					pStmt.close();
+					
+				} else {
+					response.setStatus(401);
+				}
+		 	}
 	    } catch (SQLException eS) {
 			System.err.println("Delete Process: SQL Error");
 			status="error: SQL error";
@@ -66,8 +80,8 @@ public class DeleteProcess extends HttpServlet {
 		} finally {
 		try{	
 	         
-	    	   if (DBconn.conn != null) { 
-	    		   DBconn.closeDB();  // close the database 
+	    	   if (dBconn.conn != null) { 
+	    		   dBconn.closeDB();  // close the database 
 	    	   }
 	        } catch (Exception e) {
 				status="error: error closing the database";

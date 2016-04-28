@@ -49,47 +49,47 @@ import org.json.JSONObject;
 		}
 	    
 	 	DBconnection dBconn=new DBconnection();
-	    PreparedStatement pstmt = null;
+	    PreparedStatement pStmt = null;
 	    
 		
 		try {
 		    dBconn.startDB();	   
 			// get the old string key.
-			pstmt=dBconn.conn.prepareStatement(
+			pStmt = dBconn.conn.prepareStatement(
 					"SELECT note FROM expp_samples WHERE id=?");
-			pstmt.setInt(1,sampleID);
-			int oldKeyID = dBconn.getSingleIntValue(pstmt);
+			pStmt.setInt(1,sampleID);
+			int oldKeyID = dBconn.getSingleIntValue(pStmt);
 			
 			// create a new stringkey
-			pstmt= dBconn.conn.prepareStatement( 			
+			pStmt = dBconn.conn.prepareStatement( 			
 					 "INSERT INTO string_key_table VALUES (default,?,NOW(),?) RETURNING id");
-			pstmt.setString(1, newComment);
-			pstmt.setInt(2, userID);
-			newKeyID=dBconn.getSingleIntValue(pstmt);
-			pstmt.close();
+			pStmt.setString(1, newComment);
+			pStmt.setInt(2, userID);
+			newKeyID = dBconn.getSingleIntValue(pStmt);
+			pStmt.close();
 			
-			pstmt= dBconn.conn.prepareStatement( 			
+			pStmt = dBconn.conn.prepareStatement( 			
 					 "INSERT INTO stringtable VALUES(default,?,?,?,NOW())");
-			pstmt.setInt(1,newKeyID);
-			pstmt.setString(2, "none");
-			pstmt.setString(3, newComment);
-			pstmt.executeUpdate();
-			pstmt.close();
+			pStmt.setInt(1,newKeyID);
+			pStmt.setString(2, "none");
+			pStmt.setString(3, newComment);
+			pStmt.executeUpdate();
+			pStmt.close();
 			
-			pstmt= dBconn.conn.prepareStatement(
+			pStmt = dBconn.conn.prepareStatement(
 					 "UPDATE expp_samples SET note=?, lastUser=? WHERE id=?");
-			pstmt.setInt(1,newKeyID);
-			pstmt.setInt(2,userID);
-			pstmt.setInt(3,sampleID);
-			pstmt.executeUpdate();
-			pstmt.close();
+			pStmt.setInt(1,newKeyID);
+			pStmt.setInt(2,userID);
+			pStmt.setInt(3,sampleID);
+			pStmt.executeUpdate();
+			pStmt.close();
 			
 			if (oldKeyID>0){
-				pstmt= dBconn.conn.prepareStatement(
+				pStmt = dBconn.conn.prepareStatement(
 						 "DELETE FROM string_key_table WHERE id=?");
-				pstmt.setInt(1,oldKeyID);
-				pstmt.executeUpdate();
-				pstmt.close();
+				pStmt.setInt(1,oldKeyID);
+				pStmt.executeUpdate();
+				pStmt.close();
 			}
 			
 		} catch (SQLException e) {
@@ -107,11 +107,18 @@ import org.json.JSONObject;
 		}	
 		
 		dBconn.closeDB();
-
 		
     // tell client that everything is fine
     PrintWriter out = response.getWriter();
-    out.print("{\"processid\":"+sampleID+",");
-	out.println("\"status\":\""+status+"\"}");
+    JSONObject answer = new JSONObject();
+	try {
+		answer.put("processid",sampleID);
+		answer.put("status",status);
+		out.println(answer.toString());
+	} catch (JSONException e) {	
+		e.printStackTrace();
+	}
+	
+	
 	}
 }	

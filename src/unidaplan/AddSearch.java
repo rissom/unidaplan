@@ -23,6 +23,7 @@ import org.json.JSONObject;
 		int searchID=0;
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
+	    PreparedStatement pStmt = null;
 	    JSONObject  jsonIn = null;
 	    
 	    try {
@@ -41,20 +42,26 @@ import org.json.JSONObject;
 		 	DBconnection dBconn=new DBconnection();
 		    dBconn.startDB();	   
 		    
-			 if (jsonIn.has("name")){
-				 JSONObject name=jsonIn.getJSONObject("name");
-				 String [] names = JSONObject.getNames(name);
-				 stringKeyName=dBconn.createNewStringKey(name.getString(names[0]));
-				 for (int i=0; i<names.length; i++){
-					 dBconn.addString(stringKeyName,names[i],name.getString(names[i]));
-				 }
-			 }else
-			 {
-				 System.err.println("no name exists");
-			 }
+		    //check if admin
+	    	int admins=1;
+			if (userID>0 && Unidatoolkit.isMemberOfGroup(userID,admins, dBconn)){
+				
 			
-  
-	    PreparedStatement pStmt = null;
+				if (jsonIn.has("name")){
+					JSONObject name=jsonIn.getJSONObject("name");
+					String [] names = JSONObject.getNames(name);
+					stringKeyName=dBconn.createNewStringKey(name.getString(names[0]));
+					for (int i=0; i<names.length; i++){
+						dBconn.addString(stringKeyName,names[i],name.getString(names[i]));
+					}
+				}else{
+					System.err.println("no name exists");
+					response.setStatus(404);
+				}
+			
+			} else {
+				response.setStatus(401);
+			}
 
 			pStmt= dBconn.conn.prepareStatement( 			
 					"INSERT INTO searches (Name,lastChange,operation,owner,type) VALUES(?,NOW(),true,?,1) "

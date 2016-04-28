@@ -66,6 +66,7 @@ public class Process extends HttpServlet {
 
   	  		dBconn.startDB();
   	  		
+  	  		// check privileges
 	        pStmt= dBconn.conn.prepareStatement( 	
 					"SELECT getProcessRights(vuserid:=?,vprocess:=?)");
 			pStmt.setInt(1,userID);
@@ -74,301 +75,311 @@ public class Process extends HttpServlet {
 			pStmt.close();
 	        
 	        editable= privilege!=null && privilege.equals("w");
- 
-		  
-  	  		// get number, type and status 
-  	  		pStmt= dBconn.conn.prepareStatement(
-				  "SELECT "
-				+ "  processes.id, "
-				+ "  processes.processtypesid as processtype, "
-				+ "  ptd.value AS date, "
-				+ "  n1.value AS pnumber, "
-				+ "  processtypes.name AS pt_string_key, "
-				+ "  n2.value AS status, "
-				+ "  pp3.id AS statuspid "
-				+ "FROM processes "
-				+ "JOIN processtypes ON (processes.processtypesid=processtypes.id) "
-				+ "JOIN p_parameters pp1 ON (pp1.definition=10 AND pp1.ProcesstypeID=processes.processtypesid) " // date
-				+ "JOIN p_parameters pp2 ON (pp2.definition=8 AND pp2.ProcesstypeID=processes.processtypesid) " // number
-				+ "JOIN p_parameters pp3 ON (pp3.definition=1 AND pp3.ProcesstypeID=processes.processtypesid) " // status
-				+ "LEFT JOIN p_timestamp_data ptd ON (ptd.processID=processes.id AND ptd.P_Parameter_ID=pp1.id) "
-				+ "LEFT JOIN p_integer_data n1 ON (n1.ProcessID=processes.id AND n1.P_Parameter_ID=pp2.id) "
-				+ "LEFT JOIN p_integer_data n2 ON (n2.ProcessID=processes.id AND n2.P_Parameter_ID=pp3.id) "
-				+ "WHERE processes.id=?");
-  	  		pStmt.setInt(1, processID);
-  	  		jsProcess= dBconn.jsonObjectFromPreparedStmt(pStmt);
-  	  		if (jsProcess.length()>0) {
-  	  			processTypeID=jsProcess.getInt("processtype");
-  	  			pnumber=jsProcess.getInt("pnumber");
-  	  			found=true;
-  	  			stringkeys.add(Integer.toString(jsProcess.getInt("pt_string_key")));
-  	  		}else{
-  	  			System.err.println("no such process");
-  	  			response.setStatus(404);
-  	  			found=false;
-  	  		}
-		
-  	  	} catch (SQLException e) { 
-  	  		System.err.println("Problems with SQL query");
-  	  		e.printStackTrace();
-  	  	} catch (JSONException e){
-  	  		System.err.println("Problems creating JSON");
-  	  		e.printStackTrace();
-  	  	} catch (Exception e) {
-  	  		System.err.println("Strange Problems");
-  	  		e.printStackTrace();
-  	  	}
-			
-	if (found){
-	    // get next process
-	    try {      
-			pStmt=dBconn.conn.prepareStatement( 
-			  "SELECT "
-			+ "  id,p_number "
-			+ "FROM pnumbers "
-			+ "WHERE (p_number>? AND processtype=?) "
-			+ "ORDER BY p_number LIMIT 1");
-			pStmt.setInt(1,pnumber);
-			pStmt.setInt(2,processTypeID);
-			JSONObject next= dBconn.jsonObjectFromPreparedStmt(pStmt);
-			if (next.length()>0) {
-			jsProcess.put("next",next); } 
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (JSONException e){
-			System.err.println("Problems creating JSON for next process");
-			e.printStackTrace();
-		} catch (Exception e) {
-			System.err.println("Strange Problems with the next process");
-			e.printStackTrace();
-		}	
-			
-	    
-	    // get previous process
-	    try {       
-			pStmt=dBconn.conn.prepareStatement( 
-			  "SELECT "
-			+ "  id,p_number "
-			+ "FROM pnumbers "
-			+ "WHERE (p_number<? AND processtype=?) "
-			+ "ORDER BY p_number DESC LIMIT 1");
-			pStmt.setInt(1,pnumber);
-			pStmt.setInt(2,processTypeID);
-			JSONObject previous= dBconn.jsonObjectFromPreparedStmt(pStmt);
-			if (previous.length()>0) {
-			jsProcess.put("previous",previous); } 
-		} catch (SQLException e) {
-			System.err.println("Process: Problems with SQL query for previous process");
-			e.printStackTrace();
-		} catch (JSONException e){
-			System.err.println("Process: Problems creating JSON for previous process");
-			e.printStackTrace();
-		} catch (Exception e) {
-			System.err.println("Process: Strange Problems with the previous process");
-			e.printStackTrace();
-		}	
-	    
-	    
-	    // get parametergroups
-		try {
-			pStmt= dBconn.conn.prepareStatement(
-					"SELECT parametergroup, max(stringkey) AS paramgrpkey, min(p_parametergrps.pos) AS pos FROM p_parameters "+
-					"JOIN p_parametergrps ON parametergroup=p_parametergrps.id "+
-					"WHERE processtypeid=? GROUP BY parametergroup");
-			pStmt.setInt(1,processTypeID);
-			parametergrps=dBconn.jsonArrayFromPreparedStmt(pStmt);
-			pStmt.close();
-		} catch (SQLException e) {
-			System.out.println("Problems with SQL query for parameters");
-			e.printStackTrace();
-		} catch (JSONException e){
-			System.out.println("Problems creating JSON for parameters");
-			e.printStackTrace();
-		} catch (Exception e) {
-			System.out.println("Strange Problems with the parameters");
-			e.printStackTrace();
-		}
-			
-	    
-	    // get the process Parameters:
-	    try{
-	    	pStmt = dBconn.conn.prepareStatement(
-	    	"SELECT "
-	    	+ "p_parameters.id, "
-	    	+ "parametergroup, "
-	    	+ "compulsory, "
-	    	+ "p_parameters.pos, "
-			+" p_parameters.stringkeyname,  "
-			+ "pid, "
-			+ "value, "
-			+ "p_parametergrps.id AS pgrpid, " 
-			+ "p_parametergrps.stringkey as parametergrp_key, "
-			+ "st.description, paramdef.datatype, "
-			+ "paramdef.stringkeyunit as unit, "
-			+ "p_parameters.definition "
-			+ "FROM p_parameters "
-			+ "JOIN p_parametergrps ON (p_parameters.Parametergroup=p_parametergrps.ID) " 
-			+ "JOIN paramdef ON (paramdef.id=p_parameters.definition)"
-			+ "LEFT JOIN acc_process_parameters a ON "
-			+ "(a.processid=? AND a.ppid=p_parameters.id AND hidden=FALSE) "
-			+ "JOIN String_key_table st ON st.id=p_parameters.stringkeyname "
-			+ "WHERE (p_parameters.processtypeID=? AND p_parameters.id_field=FALSE AND p_parameters.hidden=FALSE) "
-			+ "ORDER BY pos");
-	    	pStmt.setInt(1,processID);
-	    	pStmt.setInt(2,processTypeID);
-			JSONArray parameters=dBconn.jsonArrayFromPreparedStmt(pStmt);
-	
-			if (parameters.length()>0 && parametergrps.length()>0) { 		
-				for (int j=0;j<parametergrps.length();j++){
-					JSONArray prmgrpprms=new JSONArray();
-					JSONObject prmgrp=parametergrps.getJSONObject(j);
-		      		stringkeys.add(Integer.toString(prmgrp.getInt("paramgrpkey")));				
-		      		
-			      	for (int i=0; i<parameters.length();i++) {  
-			      		JSONObject tParam=parameters.getJSONObject(i);
-			      		stringkeys.add(Integer.toString(tParam.getInt("stringkeyname")));
-			      		if (tParam.has("parametergroup")&&
-				      		tParam.getInt("parametergroup")==prmgrp.getInt("parametergroup")){		
-			      			
-				      		if (tParam.has("unit")){
-					      		stringkeys.add(Integer.toString(tParam.getInt("unit")));
-				      		}
-			      			int datatype=tParam.getInt("datatype");
-				      		tParam.remove("datatype");
-				      		switch (datatype) {
-				      		case 1: tParam.put("datatype","integer"); 
-				      				if (tParam.has("value")){
-				      					int x=Integer.parseInt(tParam.getString("value"));
-				      					tParam.remove("value");
-					      				tParam.put("value", x);
-				      				}
-				      				break;
-				      		case 2: tParam.put("datatype","float"); 
-				      				if (tParam.has("value")){
-					      				double y=Double.parseDouble(tParam.getString("value"));
-					      				tParam.remove("value");
-					      				tParam.put("value", y);
-				      				}
-				      				break;
-				      		case 3: tParam.put("datatype","measurement");  
-				      				break;
-				      		case 4: tParam.put("datatype","string"); 
-				      				break;
-				      		case 5: tParam.put("datatype","long string");  
-				      				break;
-				      		case 6: tParam.put("datatype","chooser"); 
-				      				break;
-				      		case 7: tParam.put("datatype","date");
-				      				break;
-				      		case 8: tParam.put("datatype","checkbox"); 
-				      				break;
-				      		case 9: tParam.put("datatype","timestamp");
-				      				break;
-				      		case 10: tParam.put("datatype","URL");
-				      				break;
-				      		default: tParam.put("datatype","undefined"); 
-				      				break;	    
-			      		}
-				      	if (datatype==6) {	// chooser 
-				      			pStmt= dBconn.conn.prepareStatement(
-				      					"SELECT string FROM possible_values "
-				      					+"WHERE parameterid=? ORDER BY position");
-				      			pStmt.setInt(1, tParam.getInt("definition"));
-				      			JSONArray pvalues=dBconn.ArrayFromPreparedStmt(pStmt);
-				      			tParam.put("possiblevalues", pvalues);
-				      			pStmt.close();
-		      				}
-					    prmgrpprms.put(tParam);
-			      		}
-			      	}
-		      		prmgrp.put("parameter",prmgrpprms);
-				}				
-			}	
-			jsProcess.put("parametergroups",parametergrps);
-		} catch (SQLException e) {
-			System.out.println("Problems with SQL query for parameters");
-			e.printStackTrace();
-		} catch (JSONException e){
-			System.out.println("Problems creating JSON for parameters");
-			e.printStackTrace();
-		} catch (Exception e) {
-			System.out.println("Strange Problems with the parameters");
-			e.printStackTrace();
-		}
-	    
-	    
-	    // get the assigned objects:
-	    try{
-	    	pStmt = dBconn.conn.prepareStatement(
-	    	"SELECT sp.sampleid, sn.name, sn.typeid  FROM samplesinprocess sp "
-	    	+"JOIN samplenames sn ON sp.sampleid=sn.id "
-	    	+"WHERE ProcessID=?");
-	    	pStmt.setInt(1,processID);
-			JSONArray samples=dBconn.jsonArrayFromPreparedStmt(pStmt);
-			jsProcess.put("samples",samples);
-				
-		} catch (SQLException e) {
-			System.out.println("Problems with SQL query for parameters");
-			e.printStackTrace();
-		} catch (JSONException e){
-			System.out.println("Problems creating JSON for parameters");
-			e.printStackTrace();
-		} catch (Exception e) {
-			System.out.println("Strange Problems with the parameters");
-			e.printStackTrace();
-		}	  	
-	  	
-	    
-		// Find all corresponding files
-    	try{
-		    pStmt=  dBconn.conn.prepareStatement( 	
-			"SELECT files.id,filename "+
-			"FROM files "+
-			"WHERE files.process=?");
-			pStmt.setInt(1,processID);
-			JSONArray files= dBconn.jsonArrayFromPreparedStmt(pStmt);
-			if (files.length()>0) {
-				jsProcess.put("files",files); 
-			}
-	    } catch (SQLException e) {
-    		System.err.println("Showsample: Problems with SQL query for child samples");
-		} catch (JSONException e2) {
-			System.err.println("Showsample: JSON Problem while getting child samples");
-		} catch (Exception e3) {
-			System.err.println("Showsample: Strange Problem while getting child samples");
-    	}
+  	    } catch (SQLException e) { 
+	  		System.err.println("Problems with SQL query");
+	  		e.printStackTrace();
+	  	} catch (JSONException e){
+	  		System.err.println("Problems creating JSON");
+	  		e.printStackTrace();
+	  	} catch (Exception e) {
+	  		System.err.println("Strange Problems");
+	  		e.printStackTrace();
+	  	}
+  	  	
 
+ 
+  	  	if (privilege.equals("r")||privilege.equals("w")){
+  	  	  	try{
+	  	  		// get number, type and status 
+	  	  		pStmt= dBconn.conn.prepareStatement(
+					  "SELECT "
+					+ "  processes.id, "
+					+ "  processes.processtypesid as processtype, "
+					+ "  ptd.value AS date, "
+					+ "  n1.value AS pnumber, "
+					+ "  processtypes.name AS pt_string_key, "
+					+ "  n2.value AS status, "
+					+ "  pp3.id AS statuspid "
+					+ "FROM processes "
+					+ "JOIN processtypes ON (processes.processtypesid=processtypes.id) "
+					+ "JOIN p_parameters pp1 ON (pp1.definition=10 AND pp1.ProcesstypeID=processes.processtypesid) " // date
+					+ "JOIN p_parameters pp2 ON (pp2.definition=8 AND pp2.ProcesstypeID=processes.processtypesid) " // number
+					+ "JOIN p_parameters pp3 ON (pp3.definition=1 AND pp3.ProcesstypeID=processes.processtypesid) " // status
+					+ "LEFT JOIN p_timestamp_data ptd ON (ptd.processID=processes.id AND ptd.P_Parameter_ID=pp1.id) "
+					+ "LEFT JOIN p_integer_data n1 ON (n1.ProcessID=processes.id AND n1.P_Parameter_ID=pp2.id) "
+					+ "LEFT JOIN p_integer_data n2 ON (n2.ProcessID=processes.id AND n2.P_Parameter_ID=pp3.id) "
+					+ "WHERE processes.id=?");
+	  	  		pStmt.setInt(1, processID);
+	  	  		jsProcess= dBconn.jsonObjectFromPreparedStmt(pStmt);
+	  	  		if (jsProcess.length()>0) {
+	  	  			processTypeID=jsProcess.getInt("processtype");
+	  	  			pnumber=jsProcess.getInt("pnumber");
+	  	  			found=true;
+	  	  			stringkeys.add(Integer.toString(jsProcess.getInt("pt_string_key")));
+	  	  		}else{
+	  	  			System.err.println("no such process");
+	  	  			response.setStatus(404);
+	  	  			found=false;
+	  	  		}
+			
+	  	  	} catch (SQLException e) { 
+	  	  		System.err.println("Problems with SQL query");
+	  	  		e.printStackTrace();
+	  	  	} catch (JSONException e){
+	  	  		System.err.println("Problems creating JSON");
+	  	  		e.printStackTrace();
+	  	  	} catch (Exception e) {
+	  	  		System.err.println("Strange Problems");
+	  	  		e.printStackTrace();
+	  	  	}
+				
+			if (found){
+			    // get next process
+			    try {      
+					pStmt=dBconn.conn.prepareStatement( 
+					  "SELECT "
+					+ "  id,p_number "
+					+ "FROM pnumbers "
+					+ "WHERE (p_number>? AND processtype=?) "
+					+ "ORDER BY p_number LIMIT 1");
+					pStmt.setInt(1,pnumber);
+					pStmt.setInt(2,processTypeID);
+					JSONObject next= dBconn.jsonObjectFromPreparedStmt(pStmt);
+					if (next.length()>0) {
+					jsProcess.put("next",next); } 
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} catch (JSONException e){
+					System.err.println("Problems creating JSON for next process");
+					e.printStackTrace();
+				} catch (Exception e) {
+					System.err.println("Strange Problems with the next process");
+					e.printStackTrace();
+				}	
+					
+		    
+			    // get previous process
+			    try {       
+					pStmt=dBconn.conn.prepareStatement( 
+					  "SELECT "
+					+ "  id,p_number "
+					+ "FROM pnumbers "
+					+ "WHERE (p_number<? AND processtype=?) "
+					+ "ORDER BY p_number DESC LIMIT 1");
+					pStmt.setInt(1,pnumber);
+					pStmt.setInt(2,processTypeID);
+					JSONObject previous= dBconn.jsonObjectFromPreparedStmt(pStmt);
+					if (previous.length()>0) {
+					jsProcess.put("previous",previous); } 
+				} catch (SQLException e) {
+					System.err.println("Process: Problems with SQL query for previous process");
+					e.printStackTrace();
+				} catch (JSONException e){
+					System.err.println("Process: Problems creating JSON for previous process");
+					e.printStackTrace();
+				} catch (Exception e) {
+					System.err.println("Process: Strange Problems with the previous process");
+					e.printStackTrace();
+				}	
+		    
+		    
+			    // get parametergroups
+				try {
+					pStmt= dBconn.conn.prepareStatement(
+							"SELECT parametergroup, max(stringkey) AS paramgrpkey, min(p_parametergrps.pos) AS pos FROM p_parameters "+
+							"JOIN p_parametergrps ON parametergroup=p_parametergrps.id "+
+							"WHERE processtypeid=? GROUP BY parametergroup");
+					pStmt.setInt(1,processTypeID);
+					parametergrps=dBconn.jsonArrayFromPreparedStmt(pStmt);
+					pStmt.close();
+				} catch (SQLException e) {
+					System.out.println("Problems with SQL query for parameters");
+					e.printStackTrace();
+				} catch (JSONException e){
+					System.out.println("Problems creating JSON for parameters");
+					e.printStackTrace();
+				} catch (Exception e) {
+					System.out.println("Strange Problems with the parameters");
+					e.printStackTrace();
+				}
+				
+		    
+			    // get the process Parameters:
+			    try{
+			    	pStmt = dBconn.conn.prepareStatement(
+			    	"SELECT "
+			    	+ "p_parameters.id, "
+			    	+ "parametergroup, "
+			    	+ "compulsory, "
+			    	+ "p_parameters.pos, "
+					+" p_parameters.stringkeyname,  "
+					+ "pid, "
+					+ "value, "
+					+ "p_parametergrps.id AS pgrpid, " 
+					+ "p_parametergrps.stringkey as parametergrp_key, "
+					+ "st.description, paramdef.datatype, "
+					+ "paramdef.stringkeyunit as unit, "
+					+ "p_parameters.definition "
+					+ "FROM p_parameters "
+					+ "JOIN p_parametergrps ON (p_parameters.Parametergroup=p_parametergrps.ID) " 
+					+ "JOIN paramdef ON (paramdef.id=p_parameters.definition)"
+					+ "LEFT JOIN acc_process_parameters a ON "
+					+ "(a.processid=? AND a.ppid=p_parameters.id AND hidden=FALSE) "
+					+ "JOIN String_key_table st ON st.id=p_parameters.stringkeyname "
+					+ "WHERE (p_parameters.processtypeID=? AND p_parameters.id_field=FALSE AND p_parameters.hidden=FALSE) "
+					+ "ORDER BY pos");
+			    	pStmt.setInt(1,processID);
+			    	pStmt.setInt(2,processTypeID);
+					JSONArray parameters=dBconn.jsonArrayFromPreparedStmt(pStmt);
+			
+					if (parameters.length()>0 && parametergrps.length()>0) { 		
+						for (int j=0;j<parametergrps.length();j++){
+							JSONArray prmgrpprms=new JSONArray();
+							JSONObject prmgrp=parametergrps.getJSONObject(j);
+				      		stringkeys.add(Integer.toString(prmgrp.getInt("paramgrpkey")));				
+				      		
+					      	for (int i=0; i<parameters.length();i++) {  
+					      		JSONObject tParam=parameters.getJSONObject(i);
+					      		stringkeys.add(Integer.toString(tParam.getInt("stringkeyname")));
+					      		if (tParam.has("parametergroup")&&
+						      		tParam.getInt("parametergroup")==prmgrp.getInt("parametergroup")){		
+					      			
+						      		if (tParam.has("unit")){
+							      		stringkeys.add(Integer.toString(tParam.getInt("unit")));
+						      		}
+					      			int datatype=tParam.getInt("datatype");
+						      		tParam.remove("datatype");
+						      		switch (datatype) {
+						      		case 1: tParam.put("datatype","integer"); 
+						      				if (tParam.has("value")){
+						      					int x=Integer.parseInt(tParam.getString("value"));
+						      					tParam.remove("value");
+							      				tParam.put("value", x);
+						      				}
+						      				break;
+						      		case 2: tParam.put("datatype","float"); 
+						      				if (tParam.has("value")){
+							      				double y=Double.parseDouble(tParam.getString("value"));
+							      				tParam.remove("value");
+							      				tParam.put("value", y);
+						      				}
+						      				break;
+						      		case 3: tParam.put("datatype","measurement");  
+						      				break;
+						      		case 4: tParam.put("datatype","string"); 
+						      				break;
+						      		case 5: tParam.put("datatype","long string");  
+						      				break;
+						      		case 6: tParam.put("datatype","chooser"); 
+								      		pStmt = dBconn.conn.prepareStatement(
+								      					"SELECT string FROM possible_values "
+								      					+"WHERE parameterid=? ORDER BY position");
+								      		pStmt.setInt(1, tParam.getInt("definition"));
+								      		JSONArray pvalues=dBconn.ArrayFromPreparedStmt(pStmt);
+								      		tParam.put("possiblevalues", pvalues);
+								      		pStmt.close();
+						      				break;
+						      		case 7: tParam.put("datatype","date");
+						      				break;
+						      		case 8: tParam.put("datatype","checkbox"); 
+						      				break;
+						      		case 9: tParam.put("datatype","timestamp");
+						      				break;
+						      		case 10: tParam.put("datatype","URL");
+						      				break;
+						      		default: tParam.put("datatype","undefined"); 
+						      				break;	    
+					      		}
+						      	if (datatype==6) {	// chooser 
+						      			pStmt= dBconn.conn.prepareStatement(
+						      					"SELECT string FROM possible_values "
+						      					+"WHERE parameterid=? ORDER BY position");
+						      			pStmt.setInt(1, tParam.getInt("definition"));
+						      			JSONArray pvalues=dBconn.ArrayFromPreparedStmt(pStmt);
+						      			tParam.put("possiblevalues", pvalues);
+						      			pStmt.close();
+				      				}
+							    prmgrpprms.put(tParam);
+					      		}
+					      	}
+				      		prmgrp.put("parameter",prmgrpprms);
+						}				
+					}	
+					jsProcess.put("parametergroups",parametergrps);
+				} catch (SQLException e) {
+					System.out.println("Problems with SQL query for parameters");
+					e.printStackTrace();
+				} catch (JSONException e){
+					System.out.println("Problems creating JSON for parameters");
+					e.printStackTrace();
+				} catch (Exception e) {
+					System.out.println("Strange Problems with the parameters");
+					e.printStackTrace();
+				}
+		    
+		    
+			    // get the assigned objects:
+			    try{
+			    	pStmt = dBconn.conn.prepareStatement(
+			    	"SELECT sp.sampleid, sn.name, sn.typeid  FROM samplesinprocess sp "
+			    	+"JOIN samplenames sn ON sp.sampleid=sn.id "
+			    	+"WHERE ProcessID=?");
+			    	pStmt.setInt(1,processID);
+					JSONArray samples=dBconn.jsonArrayFromPreparedStmt(pStmt);
+					jsProcess.put("samples",samples);
+						
+				} catch (SQLException e) {
+					System.out.println("Problems with SQL query for parameters");
+					e.printStackTrace();
+				} catch (JSONException e){
+					System.out.println("Problems creating JSON for parameters");
+					e.printStackTrace();
+				} catch (Exception e) {
+					System.out.println("Strange Problems with the parameters");
+					e.printStackTrace();
+				}	  	
+		  	
+		    
+				// Find all corresponding files
+		    	try{
+				    pStmt=  dBconn.conn.prepareStatement( 	
+					"SELECT files.id,filename "+
+					"FROM files "+
+					"WHERE files.process=?");
+					pStmt.setInt(1,processID);
+					JSONArray files= dBconn.jsonArrayFromPreparedStmt(pStmt);
+					if (files.length()>0) {
+						jsProcess.put("files",files); 
+					}
+			    } catch (SQLException e) {
+		    		System.err.println("Showsample: Problems with SQL query for child samples");
+				} catch (JSONException e2) {
+					System.err.println("Showsample: JSON Problem while getting child samples");
+				} catch (Exception e3) {
+					System.err.println("Showsample: Strange Problem while getting child samples");
+		    	}
 	
-		// get the strings
-		try{
-	        String query="SELECT id,string_key,language,value FROM Stringtable WHERE string_key=ANY('{";
-	      	
-	        StringBuilder buff = new StringBuilder(); // join numbers with commas
-	        String sep = "";
-	        for (String str : stringkeys) {
-	     	    buff.append(sep);
-	     	    buff.append(str);
-	     	    sep = ",";
-	        }
-	        query+= buff.toString() + "}'::int[])";
-	        JSONArray theStrings=dBconn.jsonfromquery(query);
-	        jsProcess.put("strings", theStrings);
-	        jsProcess.put("editable", editable);
-		} catch (SQLException e) {
-			System.err.println("Showsample: Problems with SQL query for Stringkeys");
-		} catch (JSONException e) {
-			System.err.println("Showsample: JSON Problem while getting Stringkeys");
-		} catch (Exception e2) {
-			System.err.println("Showsample: Strange Problem while getting Stringkeys");
-		}
-		if (jsProcess.length()>0){
-			out.println(jsProcess.toString());
-		}else{
-			out.println("{error:nodata}");
-		}
-	}else{
-		out.println("{\"error\":\"notfound\"}");
-    }
+		
+				// get the strings
+				try{
+			        jsProcess.put("strings",dBconn.getStrings(stringkeys));
+			        jsProcess.put("editable", editable);
+				} catch (JSONException e) {
+					System.err.println("Showsample: JSON Problem while getting Stringkeys");
+				} catch (Exception e2) {
+					System.err.println("Showsample: Strange Problem while getting Stringkeys");
+				}
+				if (jsProcess.length()>0){
+					out.println(jsProcess.toString());
+				}else{
+					out.println("{error:nodata}");
+				}
+			}else{
+				out.println("{\"error\":\"notfound\"}");
+			}
+  	  	} else {
+  	  		response.setStatus(401);
+  	  	}
 	dBconn.closeDB();
   }
 }

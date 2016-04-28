@@ -24,6 +24,7 @@ import org.json.JSONObject;
 		int userID=authentificator.GetUserID(request,response);
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
+	    PreparedStatement pStmt = null;
 	    JSONArray  jsonIn = null;	    
 	    try {
 			  jsonIn = new JSONArray(in);
@@ -37,20 +38,19 @@ import org.json.JSONObject;
 	    try {
 		    // Initialize Database
 			DBconnection dBconn=new DBconnection();
-		    dBconn.startDB();	
-		    PreparedStatement pStmt = null;
-
-	    	for (int i=0;i<jsonIn.length();i++){
-	    		JSONObject parameter=jsonIn.getJSONObject(i);
-	    		pStmt= dBconn.conn.prepareStatement( 			
-						 "UPDATE ot_parameters SET (pos,lastuser)=(?,?) WHERE id=?");
-			   	pStmt.setInt(1, parameter.getInt("position"));
-			   	pStmt.setInt(2, userID);
-			   	pStmt.setInt(3, parameter.getInt("id"));
-//				pStmt.addBatch();  // Does not work. I don't know why.
-				pStmt.executeUpdate();
-				
-	    	}
+		    dBconn.startDB();
+		    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+		    	for (int i=0;i<jsonIn.length();i++){
+		    		JSONObject parameter=jsonIn.getJSONObject(i);
+		    		pStmt= dBconn.conn.prepareStatement( 			
+							 "UPDATE ot_parameters SET (pos,lastuser)=(?,?) WHERE id=?");
+				   	pStmt.setInt(1, parameter.getInt("position"));
+				   	pStmt.setInt(2, userID);
+				   	pStmt.setInt(3, parameter.getInt("id"));
+	//				pStmt.addBatch();  // Does not work. I don't know why.
+					pStmt.executeUpdate();
+		    	}
+		    }
 			pStmt.close();
 			dBconn.closeDB();
 		} catch (JSONException e) {

@@ -24,7 +24,9 @@ import org.json.JSONObject;
 		int userID=authentificator.GetUserID(request,response);
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
-	    JSONArray  jsonIn = null;	    
+	    JSONArray  jsonIn = null;
+	    PreparedStatement pStmt = null;
+
 	    try {
 			  jsonIn = new JSONArray(in);
 		} catch (JSONException e) {
@@ -37,19 +39,25 @@ import org.json.JSONObject;
 		    // Initialize Database
 			DBconnection dBconn=new DBconnection();
 		    dBconn.startDB();	
-		    PreparedStatement pStmt = null;
+		    int admins = 1;
+		 	if (Unidatoolkit.isMemberOfGroup(userID, admins, dBconn)){
 
-	    	for (int i=0;i<jsonIn.length();i++){
-	    		JSONObject parameter=jsonIn.getJSONObject(i);
-	    		pStmt= dBconn.conn.prepareStatement( 			
-						 "UPDATE p_parameters SET (pos,lastuser)=(?,?) WHERE id=?");
-			   	pStmt.setInt(1, parameter.getInt("position"));
-			   	pStmt.setInt(2, userID);
-			   	pStmt.setInt(3, parameter.getInt("id"));
-//				pStmt.addBatch();  // Does not work. I don't know why.
-				pStmt.executeUpdate();
-	    	}
-			pStmt.close();
+		    
+
+		    	for (int i=0;i<jsonIn.length();i++){
+		    		JSONObject parameter=jsonIn.getJSONObject(i);
+		    		pStmt= dBconn.conn.prepareStatement( 			
+							 "UPDATE p_parameters SET (pos,lastuser)=(?,?) WHERE id=?");
+				   	pStmt.setInt(1, parameter.getInt("position"));
+				   	pStmt.setInt(2, userID);
+				   	pStmt.setInt(3, parameter.getInt("id"));
+	//				pStmt.addBatch();  // Does not work. I don't know why.
+					pStmt.executeUpdate();
+		    	}
+				pStmt.close();
+		 	}else{
+		 		response.setStatus(401);
+		 	}
 			dBconn.closeDB();
 		} catch (JSONException e) {
 			System.err.println("ChangeOrderPTParameters: Error parsing ID-Field");

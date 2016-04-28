@@ -54,7 +54,7 @@
 	</span>
 </form>
 <br/>
-<br /> <br />
+<br/>
 
 
 <!-- Ancestors and children -->
@@ -79,7 +79,6 @@
 				{{sampleCtrl.getType(bsample)}} {{bsample.name}}
 			</a>
 		</div>
-		<br />
 		<button class="btn btn-default" 
 				ng-click="sampleCtrl.openDialog('children')"
 				ng-show="sampleCtrl.editable">
@@ -109,21 +108,6 @@
 </div>
 <br />
 
-
-<!-- properties 
-<h4 ng-show="sampleCtrl.processes">{{'Properties'|translate}}</h4>
-<div ng-repeat="process in sampleCtrl.processes">
-!--  	{{process.date|date:'EEE'|translate}}, {{process.date|date:'dd-MM-yyyy, HH:mm:ss'}}&nbsp; --
-	<button  class="btn btn-default"  ng-class="{'1':'ok','2':'att','3':'failed'}[process.status]"
-			 ui-sref="process({processID:process.processid})">
-		{{sampleCtrl.getProcessType(process)}} {{process.number}}
-	</button>
-	<br />
-	<div ng-hide="$last">--- {{sampleCtrl.getDuration($index)|duration}} ---
-	</div>
-</div>
-<br />
--->
 
 
 <!-- Experiments -->

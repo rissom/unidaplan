@@ -25,8 +25,9 @@ import org.json.JSONObject;
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
 	    String status = "ok";
+		String privilege = "n";
 
-	    JSONObject  jsonIn = null;	    
+	    JSONObject jsonIn = null;
 	    try {
 			  jsonIn = new JSONObject(in);
 		} catch (JSONException e) {
@@ -45,67 +46,82 @@ import org.json.JSONObject;
 			response.setStatus(404);
 		}
 
-	 	DBconnection DBconn=new DBconnection();
+	 	DBconnection dBconn=new DBconnection();
 
 	    
 		
 		try {	
-		    DBconn.startDB();	   
-		    PreparedStatement pstmt = null;
-			if (jsonIn.has("ancestors")){
-				JSONArray newAncestors=(JSONArray) jsonIn.get("ancestors");
-				pstmt= DBconn.conn.prepareStatement( 
-					"SELECT parent FROM originates_from WHERE child=?");
-				pstmt.setInt(1, sampleID);
-				JSONArray oldAncestors=DBconn.jsonArrayFromPreparedStmt(pstmt);
-				ArrayList<Integer> assignedAncestorList = new ArrayList<Integer>();
-			 	ArrayList<Integer> newlyCreatedAncestorsList = new ArrayList<Integer>();
-			 	ArrayList<Integer> newAncestorsList = new ArrayList<Integer>();
-			 	ArrayList<Integer> AncestorsToDeleteList = new ArrayList<Integer>();
-
-		 	// create a List of already assigned Samples
-			for (int i=0;i<oldAncestors.length();i++){ 
-				assignedAncestorList.add((Integer)((JSONObject)oldAncestors.get(i)).getInt("parent"));
+		    dBconn.startDB();	   
+		    PreparedStatement pStmt = null;
+		    
+		    // check privileges
+	        pStmt= dBconn.conn.prepareStatement( 	
+					"SELECT getSampleRights(vuserid:=?,vsample:=?)");
+			pStmt.setInt(1,userID);
+			pStmt.setInt(2,sampleID);
+			privilege=dBconn.getSingleStringValue(pStmt);
+			if (privilege==null){
+				privilege="n";
 			}
-
-		 	
-		 	// insert database entries for not already assigned samples
-			pstmt= DBconn.conn.prepareStatement( 			
-					 "INSERT INTO originates_from VALUES(default,?,?,NOW(),?)");
-			for (int i=0;i<newAncestors.length();i++){
-				int ancestor=newAncestors.getInt(i);
-				newAncestorsList.add(ancestor);
-				if (!assignedAncestorList.contains(ancestor)){
-//					newlyCreatedAncestors.put(ancestor);
-					newlyCreatedAncestorsList.add(ancestor);
-					pstmt.setInt(1, ancestor);
-					pstmt.setInt(2, sampleID);					
-					pstmt.setInt(3, userID);
-					pstmt.addBatch();
+			pStmt.close();
+		    
+			if (privilege.equals("w")){
+				if (jsonIn.has("ancestors")){
+					JSONArray newAncestors=(JSONArray) jsonIn.get("ancestors");
+					pStmt= dBconn.conn.prepareStatement( 
+						"SELECT parent FROM originates_from WHERE child=?");
+					pStmt.setInt(1, sampleID);
+					JSONArray oldAncestors=dBconn.jsonArrayFromPreparedStmt(pStmt);
+					ArrayList<Integer> assignedAncestorList = new ArrayList<Integer>();
+				 	ArrayList<Integer> newlyCreatedAncestorsList = new ArrayList<Integer>();
+				 	ArrayList<Integer> newAncestorsList = new ArrayList<Integer>();
+				 	ArrayList<Integer> AncestorsToDeleteList = new ArrayList<Integer>();
+	
+			 	// create a List of already assigned Samples
+				for (int i=0;i<oldAncestors.length();i++){ 
+					assignedAncestorList.add((Integer)((JSONObject)oldAncestors.get(i)).getInt("parent"));
 				}
-
-			}
-			pstmt.executeBatch();
-			pstmt.close();
-
-			// make a list of samples to delete
-			for (int i=0;i<oldAncestors.length();i++){
-				if (!newAncestorsList.contains(assignedAncestorList.get(i))){
-					AncestorsToDeleteList.add((Integer) assignedAncestorList.get(i));
+	
+			 	
+			 	// insert database entries for not already assigned samples
+				pStmt= dBconn.conn.prepareStatement( 			
+						 "INSERT INTO originates_from VALUES(default,?,?,NOW(),?)");
+				for (int i=0;i<newAncestors.length();i++){
+					int ancestor=newAncestors.getInt(i);
+					newAncestorsList.add(ancestor);
+					if (!assignedAncestorList.contains(ancestor)){
+	//					newlyCreatedAncestors.put(ancestor);
+						newlyCreatedAncestorsList.add(ancestor);
+						pStmt.setInt(1, ancestor);
+						pStmt.setInt(2, sampleID);					
+						pStmt.setInt(3, userID);
+						pStmt.addBatch();
+					}
+	
 				}
+				pStmt.executeBatch();
+				pStmt.close();
+	
+				// make a list of samples to delete
+				for (int i=0;i<oldAncestors.length();i++){
+					if (!newAncestorsList.contains(assignedAncestorList.get(i))){
+						AncestorsToDeleteList.add((Integer) assignedAncestorList.get(i));
+					}
+				}
+	
+				// Delete the samples
+				pStmt= dBconn.conn.prepareStatement( 			
+						 "DELETE FROM originates_from WHERE child=? AND parent=?");
+				for(Integer ancestor: AncestorsToDeleteList){
+					pStmt.setInt(1, sampleID);
+					pStmt.setInt(2, ancestor);
+					pStmt.addBatch();
+				} 
+				pStmt.executeBatch();
+				pStmt.close();}
+			} else {
+				response.setStatus(401);
 			}
-
-			// Delete the samples
-			pstmt= DBconn.conn.prepareStatement( 			
-					 "DELETE FROM originates_from WHERE child=? AND parent=?");
-			for(Integer ancestor: AncestorsToDeleteList){
-				pstmt.setInt(1, sampleID);
-				pstmt.setInt(2, ancestor);
-				pstmt.addBatch();
-			} 
-			pstmt.executeBatch();
-			pstmt.close();}
-			
 
 		} catch (SQLException e) {
 			System.err.println("AddAncestors: Problems with SQL query");
@@ -119,7 +135,7 @@ import org.json.JSONObject;
 			status="error";
 		}	
 		
-		DBconn.closeDB();
+		dBconn.closeDB();
 
 		
     // tell client that everything is fine

@@ -37,23 +37,30 @@ import org.json.JSONObject;
 	    try {
 		    // Initialize Database
 			DBconnection dBconn=new DBconnection();
-		    dBconn.startDB();	
-		    PreparedStatement pStmt = null;
-    		int parameterID=jsonIn.getInt("parameterid");
-    		//TODO: check privileges.
-    		
-    		JSONArray newOrder=jsonIn.getJSONArray("neworder");
-
-    		pStmt= dBconn.conn.prepareStatement( 			
-					 "UPDATE possible_values SET (position,lastchange,lastuser)=(?,now(),?) WHERE id=?");
-	    	for (int i=0;i<newOrder.length();i++){
-			   	pStmt.setInt(1, i+1);
-			   	pStmt.setInt(2, userID);
-			   	pStmt.setInt(3, newOrder.getInt(i));
-				pStmt.addBatch();  // Does not work. I don't know why.
-	    	}
-			pStmt.executeBatch();
-			pStmt.close();
+		    dBconn.startDB();
+		    
+		 	// check if admin
+		 	if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+		    
+			    PreparedStatement pStmt = null;
+	    		int parameterID=jsonIn.getInt("parameterid");
+	    		//TODO: check privileges.
+	    		
+	    		JSONArray newOrder=jsonIn.getJSONArray("neworder");
+	
+	    		pStmt= dBconn.conn.prepareStatement( 			
+						 "UPDATE possible_values SET (position,lastchange,lastuser)=(?,now(),?) WHERE id=?");
+		    	for (int i=0;i<newOrder.length();i++){
+				   	pStmt.setInt(1, i+1);
+				   	pStmt.setInt(2, userID);
+				   	pStmt.setInt(3, newOrder.getInt(i));
+					pStmt.addBatch();  // Does not work. I don't know why.
+		    	}
+				pStmt.executeBatch();
+				pStmt.close();
+		 	}else{
+		 		response.setStatus(401);
+		 	}
 			dBconn.closeDB();
 		} catch (JSONException e) {
 			System.err.println("ReorderPossibleValues: Error parsing ID-Field");

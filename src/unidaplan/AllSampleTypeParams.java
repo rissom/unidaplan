@@ -26,10 +26,8 @@ public class AllSampleTypeParams extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
 		throws ServletException, IOException {
 		  
-		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
-		userID=userID+1;
-		userID=userID-1;
+//		Authentificator authentificator = new Authentificator();
+//		int userID=authentificator.GetUserID(request,response);
 		request.setCharacterEncoding("utf-8");
 	    response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
@@ -104,19 +102,6 @@ public class AllSampleTypeParams extends HttpServlet {
            				stringkeys.add(Integer.toString(parameters.getJSONObject(j).getInt("stringkeyunit")));
            			}
            		}
-           		
-//    			// assign parameters to parametergroups (not needed any more)
-//           		for (int k=0; k<parameterGrps.length();k++){
-//           			JSONObject parameterGrp=parameterGrps.getJSONObject(k);
-//           			JSONArray grpParameters = new JSONArray();
-//               		for (int j=0; j<parameters.length();j++) {
-//               			JSONObject parameter=parameters.getJSONObject(j);
-//	           			if (parameterGrp.getInt("id")==parameter.getInt("parametergroup")){
-//	           				grpParameters.put(parameter);
-//	           			}
-//               		}
-//           			parameterGrp.put("parameters", grpParameters);
-//           		}
            	}
 					
 	        answer.put("parametergrps",parameterGrps);

@@ -1,8 +1,8 @@
 package unidaplan;
 import java.io.IOException;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +15,6 @@ import org.json.JSONObject;
 		private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("resource")
-	@Override
 	  public void doPost(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {		
 		Authentificator authentificator = new Authentificator();
@@ -23,21 +22,25 @@ import org.json.JSONObject;
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
 	    String status = "ok";
-	    JSONObject  jsonIn = null;	    
+	    JSONObject  jsonIn = null;
+	    PreparedStatement pStmt = null;
+		String privilege = "n";
+
+
 	    try {
 			  jsonIn = new JSONObject(in);
 		} catch (JSONException e) {
-			System.err.println("SaveSampleParameter: Input is not valid JSON");
+			System.err.println("AddSampleParameter: Input is not valid JSON");
 		}
 		response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
 	    
 	    // get the id
 	    int id=0;
-	    int sampleid=-1;
+	    int sampleID=-1;
 	    try {
 			 id=jsonIn.getInt("id");	
-			 sampleid=Integer.parseInt(request.getParameter("sampleid")); 
+			 sampleID=Integer.parseInt(request.getParameter("sampleid")); 
 //			 sampleid=jsonIn.getInt("sampleid");			 
 		} catch (JSONException e) {
 			System.err.println("AddSampleParameter: Error parsing ID-Field");
@@ -47,92 +50,112 @@ import org.json.JSONObject;
 	    
 	    try {
 		    // look up the datatype in Database	    
-		 	DBconnection DBconn=new DBconnection();
-		    DBconn.startDB();	   
-		    PreparedStatement pStmt = null;
-		    int type=-1;
-			pStmt= DBconn.conn.prepareStatement( 			
-					 "SELECT paramdef.datatype FROM Ot_parameters otp \n"
-					+"JOIN paramdef ON otp.definition=paramdef.id \n"
-					+"WHERE otp.id=?");
-		   	pStmt.setInt(1, id);
-		   	JSONObject answer=DBconn.jsonObjectFromPreparedStmt(pStmt);
-			type= answer.getInt("datatype");
+		 	DBconnection dBconn=new DBconnection();
+		    dBconn.startDB();	   
+		    
+		    
+		    // check privileges
+	        pStmt = dBconn.conn.prepareStatement( 	
+					"SELECT getSampleRights(vuserid:=?,vsample:=?)");
+			pStmt.setInt(1,userID);
+			pStmt.setInt(2,sampleID);
+			privilege = dBconn.getSingleStringValue(pStmt);
 			pStmt.close();
-
-			pStmt= DBconn.conn.prepareStatement("DELETE FROM o_integer_data WHERE ot_parameter_id=? AND objectid=?");
-		   	pStmt.setInt(1, id);
-		   	pStmt.setInt(2,sampleid);
-		   	pStmt.executeUpdate();
-			pStmt.close();
-
-
+		    
+			
+			if (privilege.equals("w")){
+	 
+		    
+			    int type=-1;
+				pStmt= dBconn.conn.prepareStatement( 			
+						 "SELECT paramdef.datatype FROM Ot_parameters otp \n"
+						+"JOIN paramdef ON otp.definition=paramdef.id \n"
+						+"WHERE otp.id=?");
+			   	pStmt.setInt(1, id);
+			   	JSONObject answer=dBconn.jsonObjectFromPreparedStmt(pStmt);
+				type= answer.getInt("datatype");
+				pStmt.close();
 	
-			// differentiate according to type
-			if (jsonIn.getString("value").length()>0) {
-
-			switch (type) {
-	        case 1: {   pStmt= DBconn.conn.prepareStatement( 			// Integer values
-			   					 "INSERT INTO o_integer_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
-				        pStmt.setInt(1, sampleid);
-			   			pStmt.setInt(2, id);
-			   			pStmt.setInt(3, jsonIn.getInt("value"));
-			   			pStmt.setInt(4, userID);
-			   			break;
-			        }
-	        case 2: {   pStmt= DBconn.conn.prepareStatement( 			// Double values
-	   					 		"INSERT INTO o_float_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
-				        pStmt.setInt(1, sampleid);
-			   			pStmt.setInt(2, id);				        
-				        pStmt.setDouble(3, jsonIn.getDouble("value"));
-			   			pStmt.setInt(4, userID);
-	   					break;
-        			}
-	        case 3: {   pStmt= DBconn.conn.prepareStatement( 			// Measurement data
-						 		"INSERT INTO o_measurement_data (ObjectID, Ot_Parameter_ID, Value, "
-						 		+"Error, lastChange, lastUser) "
-						 		+"VALUES(?,?,?,?,NOW(),?) RETURNING ID");
-	        			pStmt.setInt(1, sampleid);
-	        			pStmt.setInt(2, id);
-	        			if (jsonIn.getString("value").contains("±")){
-							pStmt.setDouble(3, Double.parseDouble(jsonIn.getString("value").split("±")[0]));
-							pStmt.setDouble(4, Double.parseDouble(jsonIn.getString("value").split("±")[1]));
-	        			} else {
-	        				pStmt.setDouble(3, jsonIn.getDouble("value"));
-	        				pStmt.setDouble(4, 0);
-	        			}
-			   			pStmt.setInt(5, userID);
-						break;
-			        }
-	        case 4:  { pStmt= DBconn.conn.prepareStatement( 			// String data	
-				 		"INSERT INTO o_string_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
-				        pStmt.setInt(1, sampleid);
-				        pStmt.setInt(2, id);
-				        pStmt.setString(3, jsonIn.getString("value"));
-			   			pStmt.setInt(4, userID);
-					   break;
-			        }
-	        case 5: {  pStmt= DBconn.conn.prepareStatement( 			
-	        		 	"INSERT INTO o_string_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
-				        pStmt.setInt(1, sampleid);
-				        pStmt.setInt(2, id);
-				        pStmt.setString(3, jsonIn.getString("value"));
-			   			pStmt.setInt(4, userID);
-				   }
-			}
-			}
+				pStmt= dBconn.conn.prepareStatement("DELETE FROM o_integer_data WHERE ot_parameter_id=? AND objectid=?");
+			   	pStmt.setInt(1, id);
+			   	pStmt.setInt(2,sampleID);
+			   	pStmt.executeUpdate();
+				pStmt.close();
+	
+	
 		
-			pStmt.executeUpdate();
-			pStmt.close();
-			DBconn.closeDB();
+				// Differentiate according to type
+				if (jsonIn.getString("value").length()>0) {
+					switch (type) {
+				        case 1: pStmt= dBconn.conn.prepareStatement( 			// Integer values
+						   					 "INSERT INTO o_integer_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
+							    pStmt.setInt(1, sampleID);
+						   		pStmt.setInt(2, id);
+						   		pStmt.setInt(3, jsonIn.getInt("value"));
+						   		pStmt.setInt(4, userID);
+								pStmt.executeUpdate();
+								pStmt.close();
+						   		break;
+						        
+				        case 2: pStmt= dBconn.conn.prepareStatement( 			// Double values
+				   					 		"INSERT INTO o_float_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
+							    pStmt.setInt(1, sampleID);
+						   		pStmt.setInt(2, id);				        
+							    pStmt.setDouble(3, jsonIn.getDouble("value"));
+						   		pStmt.setInt(4, userID);
+								pStmt.executeUpdate();
+								pStmt.close();
+				   				break;
+			        			
+				        case 3: pStmt= dBconn.conn.prepareStatement( 			// Measurement data
+									 		"INSERT INTO o_measurement_data (ObjectID, Ot_Parameter_ID, Value, "
+									 		+"Error, lastChange, lastUser) "
+									 		+"VALUES(?,?,?,?,NOW(),?) RETURNING ID");
+				        		pStmt.setInt(1, sampleID);
+				        		pStmt.setInt(2, id);
+				        		if (jsonIn.getString("value").contains("±")){
+									pStmt.setDouble(3, Double.parseDouble(jsonIn.getString("value").split("±")[0]));
+									pStmt.setDouble(4, Double.parseDouble(jsonIn.getString("value").split("±")[1]));
+				        		} else {
+				        			pStmt.setDouble(3, jsonIn.getDouble("value"));
+				        			pStmt.setDouble(4, 0);
+				        		}
+						   		pStmt.setInt(5, userID);
+								pStmt.executeUpdate();
+								pStmt.close();
+								break;
+				        case 4: pStmt= dBconn.conn.prepareStatement( 			// String data	
+							 		"INSERT INTO o_string_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
+							    pStmt.setInt(1, sampleID);
+							    pStmt.setInt(2, id);
+							    pStmt.setString(3, jsonIn.getString("value"));
+						   		pStmt.setInt(4, userID);
+								pStmt.executeUpdate();
+								pStmt.close();
+								break;
+						        
+				        case 5: pStmt = dBconn.conn.prepareStatement( 			
+				        		 		"INSERT INTO o_string_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
+							    pStmt.setInt(1, sampleID);
+							    pStmt.setInt(2, id);
+							    pStmt.setString(3, jsonIn.getString("value"));
+						   		pStmt.setInt(4, userID);
+								pStmt.executeUpdate();
+								pStmt.close();
+					}
+				}
+			} else {
+				response.setStatus(401);
+			}
+			dBconn.closeDB();
 	} catch (SQLException e) {
-		System.err.println("SaveSampleParameter: More Problems with SQL query");
+		System.err.println("AddSampleParameter: More Problems with SQL query");
 		response.setStatus(404);
 	} catch (JSONException e){
-		System.err.println("SaveSampleParameter: More Problems creating JSON");
+		System.err.println("AddSampleParameter: More Problems creating JSON");
 		response.setStatus(404);
 	} catch (Exception e) {
-		System.err.println("SaveSampleParameter: More Strange Problems");
+		System.err.println("AddSampleParameter: More Strange Problems");
 		e.printStackTrace();
 		response.setStatus(404);
 	}

@@ -2,10 +2,12 @@ package unidaplan;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,27 +37,34 @@ import org.json.JSONObject;
 	    response.setCharacterEncoding("utf-8");
 		
 		try {	
-		 	DBconnection DBconn=new DBconnection();
-		    DBconn.startDB();	   
+		 	DBconnection dBconn=new DBconnection();
+		    dBconn.startDB();
+		    
+		    // check if admin
+			int admins=1;
+			if (userID>0 && Unidatoolkit.isMemberOfGroup(userID,admins, dBconn)){
+			
 		    PreparedStatement pstmt = null;
 		    
-		    // read parameters
-		    newPValueString=jsonIn.getString("value");
-		    parameterID=jsonIn.getInt("parameterid");
-		 	
-		 	// insert new Value into the database
-			pstmt= DBconn.conn.prepareStatement( 			
-					 "INSERT INTO possible_values (parameterid, position, string, lastchange, lastuser) "
-					+"VALUES(?,"
-					+ "(SELECT COALESCE (MAX(position)+1,1) FROM possible_values b WHERE b.parameterid=? ) "
-					+ ",?,NOW(),?)");
-			pstmt.setInt(1, parameterID);
-			pstmt.setInt(2, parameterID);
-			pstmt.setString(3, newPValueString);
-			pstmt.setInt(4, userID);
-			pstmt.executeUpdate();
-			pstmt.close();
-			DBconn.closeDB();
+			    // read parameters
+			    newPValueString=jsonIn.getString("value");
+			    parameterID=jsonIn.getInt("parameterid");
+			 	
+			 	// insert new Value into the database
+				pstmt= dBconn.conn.prepareStatement( 			
+						 "INSERT INTO possible_values (parameterid, position, string, lastchange, lastuser) "
+						+"VALUES(?,"
+						+ "(SELECT COALESCE (MAX(position)+1,1) FROM possible_values b WHERE b.parameterid=? ) "
+						+ ",?,NOW(),?)");
+				pstmt.setInt(1, parameterID);
+				pstmt.setInt(2, parameterID);
+				pstmt.setString(3, newPValueString);
+				pstmt.setInt(4, userID);
+				pstmt.executeUpdate();
+				pstmt.close();
+			}else{
+				dBconn.closeDB();
+			}
 
 
 		} catch (SQLException e) {

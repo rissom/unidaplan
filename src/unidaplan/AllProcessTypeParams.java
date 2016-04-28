@@ -26,11 +26,9 @@ public class AllProcessTypeParams extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
 		throws ServletException, IOException {
 		  
-		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
+//		Authentificator authentificator = new Authentificator();
+//		int userID=authentificator.GetUserID(request,response);
         JSONObject answer=new JSONObject();
-		userID=userID+1;
-		userID=userID-1;
 		request.setCharacterEncoding("utf-8");
 	    response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");

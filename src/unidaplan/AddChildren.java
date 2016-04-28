@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +24,8 @@ import org.json.JSONObject;
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
 	    String status = "ok";
+		String privilege = "n";
+
 
 	    JSONObject  jsonIn = null;	    
 	    try {
@@ -47,65 +50,80 @@ import org.json.JSONObject;
 	    
 		
 		try {	
-		 	DBconnection DBconn=new DBconnection();
-		    DBconn.startDB();	   
-		    PreparedStatement pstmt = null;
+		 	DBconnection dBconn=new DBconnection();
+		    dBconn.startDB();	   
+		    PreparedStatement pStmt = null;
 		    
-			if (jsonIn.has("children")){
-				JSONArray newChildren=(JSONArray) jsonIn.get("children");
-				pstmt= DBconn.conn.prepareStatement( 
-					"SELECT child FROM originates_from WHERE parent=?");
-				pstmt.setInt(1, sampleID);
-				JSONArray oldChildren=DBconn.jsonArrayFromPreparedStmt(pstmt);
-				ArrayList<Integer> assignedChildrenList = new ArrayList<Integer>();
-			 	ArrayList<Integer> newlyCreatedChildrenList = new ArrayList<Integer>();
-			 	ArrayList<Integer> newChildrenList = new ArrayList<Integer>();
-			 	ArrayList<Integer> childrenToDeleteList = new ArrayList<Integer>();
-
-		 	// create a List of already assigned Samples
-			for (int i=0;i<oldChildren.length();i++){ 
-				assignedChildrenList.add((Integer)((JSONObject)oldChildren.get(i)).getInt("child"));
+		    // check privileges
+	        pStmt = dBconn.conn.prepareStatement( 	
+					"SELECT getSampleRights(vuserid:=?,vsample:=?)");
+			pStmt.setInt(1,userID);
+			pStmt.setInt(2,sampleID);
+			privilege = dBconn.getSingleStringValue(pStmt);
+			pStmt.close();
+			if (privilege==null){
+				privilege="n";
 			}
-
-		 	
-		 	// insert database entries for not already assigned samples
-			pstmt= DBconn.conn.prepareStatement( 			
-					 "INSERT INTO originates_from VALUES(default,?,?,NOW(),?)");
-			for (int i=0;i<newChildren.length();i++){
-				int child=newChildren.getInt(i);
-				newChildrenList.add(child);
-				if (!assignedChildrenList.contains(child)){
-					newlyCreatedChildrenList.add(child);
-					pstmt.setInt(1, sampleID);
-					pstmt.setInt(2, child);					
-					pstmt.setInt(3, userID);
-					pstmt.addBatch();
-				}
-
-			}
-			pstmt.executeBatch();
-			pstmt.close();
-
-			// make a list of samples to delete
-			for (int i=0;i<oldChildren.length();i++){
-				if (!newChildrenList.contains(assignedChildrenList.get(i))){
-					childrenToDeleteList.add((Integer) assignedChildrenList.get(i));
-				}
-			}
-
-			// Delete the samples
-			pstmt= DBconn.conn.prepareStatement( 			
-					 "DELETE FROM originates_from WHERE child=? AND parent=?");
-			for(Integer child: childrenToDeleteList){
-				pstmt.setInt(1, child);
-				pstmt.setInt(2, sampleID);				
-				pstmt.addBatch();
-			} 
-			pstmt.executeBatch();
-			pstmt.close();}
+		    
 			
+			if (privilege.equals("w")){
+				if (jsonIn.has("children")){
+					JSONArray newChildren=(JSONArray) jsonIn.get("children");
+					pStmt= dBconn.conn.prepareStatement( 
+						"SELECT child FROM originates_from WHERE parent=?");
+					pStmt.setInt(1, sampleID);
+					JSONArray oldChildren=dBconn.jsonArrayFromPreparedStmt(pStmt);
+					ArrayList<Integer> assignedChildrenList = new ArrayList<Integer>();
+				 	ArrayList<Integer> newlyCreatedChildrenList = new ArrayList<Integer>();
+				 	ArrayList<Integer> newChildrenList = new ArrayList<Integer>();
+				 	ArrayList<Integer> childrenToDeleteList = new ArrayList<Integer>();
+	
+			 	// create a List of already assigned Samples
+				for (int i=0;i<oldChildren.length();i++){ 
+					assignedChildrenList.add((Integer)((JSONObject)oldChildren.get(i)).getInt("child"));
+				}
+	
+			 	
+			 	// insert database entries for not already assigned samples
+				pStmt= dBconn.conn.prepareStatement( 			
+						 "INSERT INTO originates_from VALUES(default,?,?,NOW(),?)");
+				for (int i=0;i<newChildren.length();i++){
+					int child=newChildren.getInt(i);
+					newChildrenList.add(child);
+					if (!assignedChildrenList.contains(child)){
+						newlyCreatedChildrenList.add(child);
+						pStmt.setInt(1, sampleID);
+						pStmt.setInt(2, child);					
+						pStmt.setInt(3, userID);
+						pStmt.addBatch();
+					}
+	
+				}
+				pStmt.executeBatch();
+				pStmt.close();
+	
+				// make a list of samples to delete
+				for (int i=0;i<oldChildren.length();i++){
+					if (!newChildrenList.contains(assignedChildrenList.get(i))){
+						childrenToDeleteList.add((Integer) assignedChildrenList.get(i));
+					}
+				}
+	
+				// Delete the samples
+				pStmt= dBconn.conn.prepareStatement( 			
+						 "DELETE FROM originates_from WHERE child=? AND parent=?");
+				for(Integer child: childrenToDeleteList){
+					pStmt.setInt(1, child);
+					pStmt.setInt(2, sampleID);				
+					pStmt.addBatch();
+				} 
+				pStmt.executeBatch();
+				pStmt.close();}
+			} else {
+				response.setStatus(401);
+			}
 			
-			DBconn.closeDB();
+			dBconn.closeDB();
 
 
 		} catch (SQLException e) {

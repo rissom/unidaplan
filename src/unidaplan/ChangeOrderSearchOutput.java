@@ -23,14 +23,16 @@ import org.json.JSONObject;
 		String status="ok";
 		int userID=authentificator.GetUserID(request,response);
 	    request.setCharacterEncoding("utf-8");
-	    String in = request.getReader().readLine();
+	    int searchID = 0;
+	   	String privilege="n";
 	    String table="";
 	    String type = "";
+	    PreparedStatement pStmt = null;
 	    JSONObject  jsonIn = null;
 	    JSONArray output = null;
 	    
 	    try {
-			  jsonIn = new JSONObject(in);
+			  jsonIn = new JSONObject(request.getReader().readLine());
 			  output = jsonIn.getJSONArray("output");
 			  type   = jsonIn.getString("type");
 		} catch (JSONException e) {
@@ -44,26 +46,46 @@ import org.json.JSONObject;
 		    // Initialize Database
 			DBconnection dBconn=new DBconnection();
 		    dBconn.startDB();	
-		    PreparedStatement pStmt = null;
 		    
-		   
 		    switch (type) {
 			    case "o"  : table="osearchoutput";  break;
 			    case "p"  : table="psearchoutput";  break;
 			    case "po" : table="posearchoutput"; break;
 		    }		    
 
-	    	for (int i=0;i<output.length();i++){
-	    		JSONObject parameter=output.getJSONObject(i);
-	    		pStmt= dBconn.conn.prepareStatement( 			
-						 "UPDATE "+table+" SET (position,lastuser)=(?,?) WHERE id=?");
-			   	pStmt.setInt(1, parameter.getInt("position"));
-			   	pStmt.setInt(2, userID);
-			   	pStmt.setInt(3, parameter.getInt("outputid"));
-//				pStmt.addBatch();  // Does not work. I don't know why.
-				pStmt.executeUpdate();				
-	    	}
+		    // Check privileges
+		    int outputid = output.getJSONObject(0).getInt("outputid");
+		    pStmt = dBconn.conn.prepareStatement( 	
+					"SELECT search FROM "+table+" WHERE id=?");
+			pStmt.setInt(1,outputid);
+			searchID = dBconn.getSingleIntValue(pStmt);
 			pStmt.close();
+		    
+		    pStmt = dBconn.conn.prepareStatement( 	
+					"SELECT getExperimentRights(vuserid:=?,vexperimentid:=?)");
+			pStmt.setInt(1,userID);
+			pStmt.setInt(2,searchID);
+			privilege = dBconn.getSingleStringValue(pStmt);
+			pStmt.close();
+						
+			if (privilege.equals("w")){
+		    
+		   
+			   
+		    	for (int i=0;i<output.length();i++){
+		    		JSONObject parameter = output.getJSONObject(i);
+		    		pStmt= dBconn.conn.prepareStatement( 			
+							 "UPDATE "+table+" SET (position,lastuser)=(?,?) WHERE id=?");
+				   	pStmt.setInt(1, parameter.getInt("position"));
+				   	pStmt.setInt(2, userID);
+				   	pStmt.setInt(3, parameter.getInt("outputid"));
+	//				pStmt.addBatch();  // Does not work. I don't know why.
+					pStmt.executeUpdate();				
+		    	}
+				pStmt.close();
+			} else{
+				response.setStatus(401);
+			}
 			dBconn.closeDB();
 		} catch (JSONException e) {
 			System.err.println("ChangeOrderSearchOutput: Error");

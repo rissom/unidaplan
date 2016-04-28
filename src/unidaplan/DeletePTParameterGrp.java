@@ -2,6 +2,7 @@ package unidaplan;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,8 +15,13 @@ import javax.servlet.http.HttpServletResponse;
 	  public void doDelete(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {		
 	    
-//		Authentificator authentificator = new Authentificator();
-//		int userID=authentificator.GetUserID(request,response);
+		Authentificator authentificator = new Authentificator();
+		int userID=authentificator.GetUserID(request,response);
+		
+		DBconnection dBconn = null;
+	    PreparedStatement pStmt = null;
+
+		
 		request.setCharacterEncoding("utf-8");
 	    String status="ok";
 	    int id=0;
@@ -29,16 +35,19 @@ import javax.servlet.http.HttpServletResponse;
 
 
 	    try {
-	    // Delete the user to the database	    
-	 	DBconnection DBconn=new DBconnection();
-	    DBconn.startDB();	   
-	    PreparedStatement pstmt = null;
-			pstmt= DBconn.conn.prepareStatement( 			
-					"DELETE FROM p_parametergrps WHERE id=? \n");
-		   	pstmt.setInt(1, id);
-		   	pstmt.executeUpdate();
-			pstmt.close();
-			DBconn.closeDB();
+		    // Delete the user to the database	    
+		 	dBconn=new DBconnection();
+		    dBconn.startDB();	   
+		    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+				pStmt= dBconn.conn.prepareStatement( 			
+						"DELETE FROM p_parametergrps WHERE id=? \n");
+			   	pStmt.setInt(1, id);
+			   	pStmt.executeUpdate();
+				pStmt.close();
+		    } else{
+		    	response.setStatus(401);
+		    }
+			dBconn.closeDB();
 		} catch (SQLException e) {
 			System.err.println("DeletePTParameterGrp: Problems with SQL query");
 			status="SQL Error; DeletePTParameterGrp";

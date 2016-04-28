@@ -30,41 +30,41 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
         var defered=$q.defer();
 			var promise = restfactory.GET("experiment?id="+id);
 	    	promise.then(function(rest) {
-    	    	thisController.experiment = rest.data.experiment;
-    	    	thisController.strings = rest.data.strings;
-    			thisController.experiment.namef=function(){
-    				return key2string.key2string(thisController.experiment.name,thisController.strings);
+    	    	var experiment = rest.data.experiment;
+    	    	var strings = rest.data.strings;
+    			experiment.namef=function(){
+    				return key2string.key2string(experiment.name,strings);
     			};
-    			angular.forEach(thisController.experiment.parameters, function(parameter) {
+    			angular.forEach(experiment.parameters, function(parameter) {
     				parameter.namef=function(){
-    					return key2string.key2string(parameter.stringkeyname,thisController.strings);
+    					return key2string.key2string(parameter.stringkeyname,strings);
     				};
     				parameter.nameLang=function(lang){				
-    					return key2string.key2stringWithLangStrict(parameter.stringkeyname,thisController.strings,lang);
+    					return key2string.key2stringWithLangStrict(parameter.stringkeyname,strings,lang);
     				};
      				parameter.unitf=function(){
-    					return key2string.unitf(parameter.stringkeyunit,thisController.strings);
+    					return key2string.unitf(parameter.unit,strings);
     				};
     				parameter.unitLang=function(lang){				
-    					return key2string.key2stringWithLangStrict(parameter.stringkeyunit,thisController.strings,lang);
+    					return key2string.key2stringWithLangStrict(parameter.unit,strings,lang);
     				};
     				if (parameter.datatype==="date") {
     					parameter.newDate=new Date(parameter.value);
     					parameter.date=new Date(parameter.value);
     				}
     			});
-    			angular.forEach(thisController.experiment.samples, function(sample){
+    			angular.forEach(experiment.samples, function(sample){
     				if (sample.note!==undefined) {
-    					sample.trnote=key2string.key2string(sample.note,thisController.strings);
+    					sample.trnote=key2string.key2string(sample.note,strings);
     				}
     				angular.forEach(sample.pprocesses, function(pprocess){
     					if (pprocess.note){
-    						pprocess.trnote=key2string.key2string(pprocess.note,thisController.strings);
+    						pprocess.trnote=key2string.key2string(pprocess.note,strings);
     					}
     				});
     			});
-    			thisController.pushExperiment(thisController.experiment);
-    	    	defered.resolve(thisController.experiment);
+    			thisController.pushExperiment(experiment);
+    	    	defered.resolve(experiment);
 	    	}, function(rest) {    	    		
 	    		console.log("Error loading experiment");
 	    		defered.reject({"error":"Error loading experiment"});

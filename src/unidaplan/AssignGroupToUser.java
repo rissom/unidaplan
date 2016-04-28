@@ -49,29 +49,35 @@ import org.json.JSONObject;
 	    
 		
 		try {
-		    dBconn.startDB();	   
+		    dBconn.startDB();
+		    int admins = 1;
+		 	if (Unidatoolkit.isMemberOfGroup(userID, admins, dBconn)){
 
-			// delete old entries
-			pStmt=dBconn.conn.prepareStatement(
-					"DELETE FROM groupmemberships WHERE userid=?");
-			pStmt.setInt(1,id);
-			pStmt.executeUpdate();
-			pStmt.close();
-			
-		
-			// Insert new members into database
-			if (groups.length()>0){
-				pStmt= dBconn.conn.prepareStatement( 			
-						 "INSERT INTO groupmemberships (groupid,userid,lastuser) VALUES (?,?,?)");
-				for (int i=0;i<groups.length();i++){
-					pStmt.setInt(1,groups.getInt(i));
-					pStmt.setInt(2,id);
-					pStmt.setInt(3,userID);
-					pStmt.addBatch();
-				}
-				pStmt.executeBatch();
+
+				// delete old entries
+				pStmt=dBconn.conn.prepareStatement(
+						"DELETE FROM groupmemberships WHERE userid=?");
+				pStmt.setInt(1,id);
+				pStmt.executeUpdate();
 				pStmt.close();
-			}
+				
+			
+				// Insert new members into database
+				if (groups.length()>0){
+					pStmt= dBconn.conn.prepareStatement( 			
+							 "INSERT INTO groupmemberships (groupid,userid,lastuser) VALUES (?,?,?)");
+					for (int i=0;i<groups.length();i++){
+						pStmt.setInt(1,groups.getInt(i));
+						pStmt.setInt(2,id);
+						pStmt.setInt(3,userID);
+						pStmt.addBatch();
+					}
+					pStmt.executeBatch();
+					pStmt.close();
+				}
+		 	} else {
+		 		response.setStatus(401);
+		 	}
 			
 			
 		} catch (SQLException e) {

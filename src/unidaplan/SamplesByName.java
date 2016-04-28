@@ -4,13 +4,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,7 +18,7 @@ import org.json.JSONObject;
  * gets up to 20 Samples with a name close to the String given in the argument "name"
  * of the type given in the argument "type"
  */
-@WebServlet("/Samples_by_name")
+
 public class SamplesByName extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -31,9 +28,6 @@ public class SamplesByName extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
-//		System.out.println("userID: "+userID);
-		userID=userID+1; // TODO remove me!
-		userID=userID-1;
 		request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
 	    JSONObject  jsonIn = null;	 
@@ -45,19 +39,15 @@ public class SamplesByName extends HttpServlet {
 		}
 		response.setContentType("application/json");
         response.setCharacterEncoding("utf-8");
-	 	DBconnection DBconn=new DBconnection();
+	 	DBconnection dBconn=new DBconnection();
 	 	String name="";
-		try{
-			name=request.getParameter("name");
-		} catch (Exception e1) {
-			System.err.print("no type ID or name given!");
-		} 
 	    PrintWriter out = response.getWriter();
-	    PreparedStatement pstmt = null;
+	    PreparedStatement pStmt = null;
 		
 	    try {
-		 	DBconn.startDB();
+		 	dBconn.startDB();
 		 	JSONArray typeArray=jsonIn.getJSONArray("sampletypes");
+		 	name = jsonIn.getString("name");
 		 	if (typeArray.length()>0){
 		 		String query="SELECT  samplenames.id AS sampleid, samplenames.name, samplenames.typeid "
 		    		   		+"FROM samplenames " 
@@ -68,10 +58,29 @@ public class SamplesByName extends HttpServlet {
 		    	   query += sep+typeArray.getInt(i);
 		    	   sep=",";
 		 		}
-		 		query+= "}'::int[]) "
-		    		   	+"ORDER BY samplenames.name " 
-		    		   	+"LIMIT 20 ";
-		 		samplelist=DBconn.jsonfromquery(query); 
+		 		query+= "}'::int[]) ";
+		 		
+		 		if (jsonIn.getString("privilege").equals("r")){
+			 		query += " AND (   getSampleRights(?,samplenames.id) = 'w'  "
+			 			   + "      OR getSampleRights(?,samplenames.id) = 'r') ";
+			 	}
+		 		
+		 		if (jsonIn.getString("privilege").equals("w")){
+			 		query += " AND getSampleRights(?,samplenames.id) = 'w' ";
+			 	}
+		 			
+		 		query += "ORDER BY samplenames.name " 
+		    		   + "LIMIT 20 ";
+		 		pStmt=dBconn.conn.prepareStatement(query);
+		 		if (jsonIn.getString("privilege").equals("r")){
+			 		pStmt.setInt(1,userID);
+		 			pStmt.setInt(2,userID);
+		 		}
+		 		if (jsonIn.getString("privilege").equals("w")){
+			 		pStmt.setInt(1,userID);
+		 		}
+		 		samplelist=dBconn.jsonArrayFromPreparedStmt(pStmt);
+		 		pStmt.close();
 		 	}
 		} catch (SQLException  eS) {
 			System.err.println("SQL Error in Sample by name");
@@ -81,19 +90,19 @@ public class SamplesByName extends HttpServlet {
 			System.err.println("Misc Error in Sample by name");
 		} finally {
         try {
-          if (samplelist.length()>0) {
-        	  out.println(samplelist.toString());
-	      }
-	      else {	
-	    	  out.println("[]");}   
-          if (pstmt != null) { pstmt.close(); }
+        	if (samplelist.length()>0) {
+        		out.println(samplelist.toString());
+        	}
+        	else {	
+        		out.println("[]");
+        	}   
         }
         catch (Exception e2) {
     	   e2.printStackTrace();
           // log this error
         }
         finally{		       
-    	   if (DBconn.conn != null) { DBconn.closeDB(); } // close the database
+    	   if (dBconn.conn != null) { dBconn.closeDB(); } // close the database
         }
 		}    
 	}

@@ -49,18 +49,25 @@ public class DeleteParameter extends HttpServlet {
 		
 	    try {
 	    	PreparedStatement pstmt = null; 	
-		 	DBconnection DBconn=new DBconnection(); // New connection to the database
-		 	DBconn.startDB();
+		 	DBconnection dBconn=new DBconnection(); // New connection to the database
+		 	dBconn.startDB();
 		 	
-		 	if (processID>0){			
-				// delete the process
-		        pstmt = DBconn.conn.prepareStatement(	
-		        	"DELETE FROM paramdef WHERE id=?");
-				pstmt.setInt(1,processID);
-				pstmt.executeUpdate();
-				pstmt.close();
+			if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+		 	
+			 	if (processID>0){			
+					// delete the process
+			        pstmt = dBconn.conn.prepareStatement(	
+			        	"DELETE FROM paramdef WHERE id=?");
+					pstmt.setInt(1,processID);
+					pstmt.executeUpdate();
+					pstmt.close();
+				}
+			} else {
+				response.setStatus(401);
 			}
-		 	DBconn.closeDB();  // close the database 
+			
+		 	dBconn.closeDB();  // close the database
+		 	
 	    } catch (SQLException eS) {
 			System.err.println("Delete Process: SQL Error");
 			status="error: SQL error";

@@ -27,7 +27,6 @@ public class DeleteGroup extends HttpServlet {
 	    String status="ok";
 		int groupID;
 
-		int admins=1;
 	 	
 		// get Parameter for id
 		try{
@@ -43,7 +42,7 @@ public class DeleteGroup extends HttpServlet {
 	    	PreparedStatement pstmt = null; 	
 		 	DBconnection dBconn=new DBconnection(); // New connection to the database
 		 	dBconn.startDB();
-			if (Unidatoolkit.isMemberOfGroup(userID, admins, dBconn)){
+			if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
 			 	if (groupID>0){			
 					// delete the process
 			        pstmt = dBconn.conn.prepareStatement(	
@@ -52,6 +51,8 @@ public class DeleteGroup extends HttpServlet {
 					pstmt.executeUpdate();
 					pstmt.close();
 				}
+			} else {
+				response.setStatus(401);
 			}
 		 	dBconn.closeDB();  // close the database }
 	    } catch (SQLException eS) {

@@ -42,7 +42,7 @@ import org.json.JSONObject;
 	 	DBconnection dBconn=new DBconnection();
 	    try {  
 		    dBconn.startDB();
-		    if (Unidatoolkit.isMemberOfGroup(userID, 1, dBconn)){
+		    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
 				pStmt = dBconn.conn.prepareStatement(
 						"SELECT "
 					  + "fullname, " 

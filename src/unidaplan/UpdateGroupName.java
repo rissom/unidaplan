@@ -33,18 +33,23 @@ import org.json.JSONObject;
 	    
 		
 		try {
-		    dBconn.startDB();	   
+		    dBconn.startDB();
+		    
+		    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
 		
-			// create database entry for the new name
-			pStmt= dBconn.conn.prepareStatement( 			
-					 "UPDATE groups "
-					+"SET (name, lastchange, lastuser) = (?,NOW(),?) "
-					+"WHERE id=?");
-			pStmt.setString(1, jsonIn.getString("name"));
-			pStmt.setInt(2,userID);
-			pStmt.setInt(3, jsonIn.getInt("id"));
-			pStmt.executeUpdate();
-			pStmt.close();
+				// create database entry for the new name
+				pStmt= dBconn.conn.prepareStatement( 			
+						 "UPDATE groups "
+						+"SET (name, lastchange, lastuser) = (?,NOW(),?) "
+						+"WHERE id=?");
+				pStmt.setString(1, jsonIn.getString("name"));
+				pStmt.setInt(2,userID);
+				pStmt.setInt(3, jsonIn.getInt("id"));
+				pStmt.executeUpdate();
+				pStmt.close();
+		    } else {
+		    	response.setStatus(401);
+		    }
 			
 		} catch (SQLException e) {
 			System.err.println("UpdateGroupName: Problems with SQL query");

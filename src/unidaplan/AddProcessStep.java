@@ -25,32 +25,49 @@ import org.json.JSONObject;
 		request.setCharacterEncoding("utf-8");
 	    int experimentID=0;
 	    int expProcessID=0;
-
-
-	  	  	try{
-	  	  		experimentID=Integer.parseInt(request.getParameter("expsample")); 
-	  	  		expProcessID=Integer.parseInt(request.getParameter("pprocess")); 
-	  	  	}
-	  	  	catch (Exception e1) {
-	  	  		System.err.print("AddProcessStep: Parameters missing!");
-	  	  	}
+	    PreparedStatement pStmt = null;
 	    String status="ok";
+	   	String privilege="n";
+
+
+
+
+  	  	try{
+  	  		experimentID=Integer.parseInt(request.getParameter("expsample")); 
+  	  		expProcessID=Integer.parseInt(request.getParameter("pprocess")); 
+  	  	}
+  	  	catch (Exception e1) {
+  	  		System.err.print("AddProcessStep: Parameters missing!");
+  	  	}
 
 	    try {
 	    // Delete the user to the database	    
-	 	DBconnection DBconn=new DBconnection();
-	    DBconn.startDB();	   
-	    PreparedStatement pstmt = null;
-			pstmt= DBconn.conn.prepareStatement( 			
+	 	DBconnection dBconn=new DBconnection();
+	    dBconn.startDB();	   
+	    
+	    // Check privileges
+	    pStmt = dBconn.conn.prepareStatement( 	
+				"SELECT getExperimentRights(vuserid:=?,vexperimentid:=?)");
+		pStmt.setInt(1,userID);
+		pStmt.setInt(2,experimentID);
+		privilege = dBconn.getSingleStringValue(pStmt);
+		pStmt.close();
+		
+		if (privilege.equals("w")){
+	    
+			pStmt= dBconn.conn.prepareStatement( 			
 					"INSERT INTO exp_plan_steps VALUES(default,?,?,"+
 					"(SELECT recipe FROM exp_plan_processes WHERE exp_plan_processes.id=?),NULL,NOW(),?);");
-		   	pstmt.setInt(1, expProcessID);
-		   	pstmt.setInt(2, experimentID);
-		   	pstmt.setInt(3, experimentID);
-		   	pstmt.setInt(4, userID);
-		   	pstmt.executeUpdate();
-			pstmt.close();
-			DBconn.closeDB();
+		   	pStmt.setInt(1, expProcessID);
+		   	pStmt.setInt(2, experimentID);
+		   	pStmt.setInt(3, experimentID);
+		   	pStmt.setInt(4, userID);
+		   	pStmt.executeUpdate();
+			pStmt.close();
+		} else{
+			response.setStatus(401);
+		}
+			dBconn.closeDB();
 		} catch (SQLException e) {
 			System.err.println("AddProcessStep: Problems with SQL query");
 			status="SQL Error; AddProcessStep";

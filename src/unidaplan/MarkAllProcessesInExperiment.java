@@ -21,6 +21,9 @@ import org.json.JSONObject;
 	    
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
+	    PreparedStatement pStmt = null;
+	   	String privilege="n";
+		
 		request.setCharacterEncoding("utf-8");
 	    int processID=0;
 	    int experimentID=0;
@@ -34,25 +37,39 @@ import org.json.JSONObject;
 	    String status="ok";
 
 	    try {
-	    // Delete the user to the database	    
-	 	DBconnection DBconn=new DBconnection();
-	    DBconn.startDB();	   
-	    PreparedStatement pstmt = null;
-			pstmt= DBconn.conn.prepareStatement( 			
-				"INSERT INTO exp_plan_steps (exp_plan_pr, recipe, expp_s_id, note, lastuser) "
-				+"SELECT exp_plan_processes.id AS exp_plan_pr, "
-				+" exp_plan_processes.recipe, expp_samples.id AS expp_s_id, exp_plan_processes.note, ? "
-				+"FROM expp_samples "
-				+"JOIN exp_plan_processes ON (expp_samples.expp_id=exp_plan_processes.expp_id) " 
-				+"LEFT JOIN exp_plan_steps ON (exp_plan_steps.expp_s_id=expp_samples.id ) " 
-				+" AND (exp_plan_steps.exp_plan_pr=exp_plan_processes.id) "
-				+"WHERE expp_samples.expp_id=? AND exp_plan_processes.id=? AND exp_plan_steps.id IS NULL");
-		   	pstmt.setInt(1, userID);
-		   	pstmt.setInt(2, experimentID);
-		   	pstmt.setInt(3, processID);
-		   	pstmt.executeUpdate();
-			pstmt.close();
-			DBconn.closeDB();
+		 	DBconnection dBconn=new DBconnection();
+		    dBconn.startDB();
+		    
+		    // Check privileges
+		    pStmt = dBconn.conn.prepareStatement( 	
+					"SELECT getExperimentRights(vuserid:=?,vexperimentid:=?)");
+			pStmt.setInt(1,userID);
+			pStmt.setInt(2,experimentID);
+			System.out.println(pStmt.toString());
+			privilege = dBconn.getSingleStringValue(pStmt);
+			pStmt.close();
+			
+			if (privilege.equals("w")){	    
+		    
+				pStmt= dBconn.conn.prepareStatement( 			
+					"INSERT INTO exp_plan_steps (exp_plan_pr, recipe, expp_s_id, note, lastuser) "
+					+"SELECT exp_plan_processes.id AS exp_plan_pr, "
+					+" exp_plan_processes.recipe, expp_samples.id AS expp_s_id, exp_plan_processes.note, ? "
+					+"FROM expp_samples "
+					+"JOIN exp_plan_processes ON (expp_samples.expp_id=exp_plan_processes.expp_id) " 
+					+"LEFT JOIN exp_plan_steps ON (exp_plan_steps.expp_s_id=expp_samples.id ) " 
+					+" AND (exp_plan_steps.exp_plan_pr=exp_plan_processes.id) "
+					+"WHERE expp_samples.expp_id=? AND exp_plan_processes.id=? AND exp_plan_steps.id IS NULL");
+			   	pStmt.setInt(1, userID);
+			   	pStmt.setInt(2, experimentID);
+			   	pStmt.setInt(3, processID);
+			   	pStmt.executeUpdate();
+				pStmt.close();
+				
+			}else{
+				response.setStatus(401);
+			}
+			dBconn.closeDB();
 		} catch (SQLException e) {
 			System.err.println("MarkAllProcessesInExperiment: Problems with SQL query");
 			status="SQL Error; MarkAllProcessesInExperiment";

@@ -19,13 +19,18 @@ import org.json.JSONObject;
 	  public void doPost(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {		
 	    
-//		Authentificator authentificator = new Authentificator();
-//		int userID=authentificator.GetUserID(request,response);
-		request.setCharacterEncoding("utf-8");
-	    int id=0;
+		Authentificator authentificator = new Authentificator();
+		int userID=authentificator.GetUserID(request,response);
+	    int sampleInExpID=0;
+	    int experimentID=0;
 	    int newSampleId=0;
+	    PreparedStatement pStmt = null;
+	    String privilege = "n";
+
+	    
+		request.setCharacterEncoding("utf-8");
 	  	  	try{
-	  	  		id=Integer.parseInt(request.getParameter("id")); 
+	  	  		sampleInExpID=Integer.parseInt(request.getParameter("id")); 
 	  	  		newSampleId=Integer.parseInt(request.getParameter("sampleid"));
 	  	  	}
 	  	  	catch (Exception e1) {
@@ -34,17 +39,38 @@ import org.json.JSONObject;
 	    String status="ok";
 
 	    try {
-	    // Delete the user to the database	    
-	 	DBconnection DBconn=new DBconnection();
-	    DBconn.startDB();	   
-	    PreparedStatement pstmt = null;
-			pstmt= DBconn.conn.prepareStatement( 			
-					"UPDATE expp_samples SET sample=? WHERE id=?");
-		   	pstmt.setInt(1, newSampleId);
-		   	pstmt.setInt(2, id);
-		   	pstmt.executeUpdate();
-			pstmt.close();
-			DBconn.closeDB();
+		    // Connect to database	    
+		 	DBconnection dBconn=new DBconnection();
+		    dBconn.startDB();
+		    
+		    
+		    // get Experiment ID
+		    pStmt = dBconn.conn.prepareStatement( 	
+					"SELECT expp_id FROM expp_samples WHERE id=?");
+			pStmt.setInt(1,sampleInExpID);
+			experimentID = dBconn.getSingleIntValue(pStmt);
+			pStmt.close();
+	 		
+	 		// check privileges
+		    pStmt = dBconn.conn.prepareStatement( 	
+					"SELECT getExperimentRights(vuserid:=?,vexperimentid:=?)");
+			pStmt.setInt(1,userID);
+			pStmt.setInt(2,experimentID);
+			privilege = dBconn.getSingleStringValue(pStmt);
+			pStmt.close();
+		    
+			if (privilege.equals("w")){
+				pStmt= dBconn.conn.prepareStatement( 			
+						"UPDATE expp_samples SET sample=? WHERE id=?");
+			   	pStmt.setInt(1, newSampleId);
+			   	pStmt.setInt(2, sampleInExpID);
+			   	pStmt.executeUpdate();
+				pStmt.close();
+			} else{
+				response.setStatus(401);
+			}
+			dBconn.closeDB();
+
 		} catch (SQLException e) {
 			System.err.println("ReplaceSampleInExperiment: Problems with SQL query");
 			status="SQL Error; ReplaceSampleInExperiment";
@@ -60,7 +86,7 @@ import org.json.JSONObject;
 	    try {
 	        JSONObject answer = new JSONObject();
 			answer.put("status", status);
-			answer.put("id", id);
+			answer.put("id", sampleInExpID);
 			out.println(answer.toString());
 		} catch (JSONException e) {
 			System.err.println("ReplaceSampleInExperiment: Problems creating JSON answer");

@@ -1,8 +1,6 @@
 package unidaplan;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -24,53 +22,59 @@ public class ImportCSV extends HttpServlet {
 		    request.setCharacterEncoding("utf-8");
 		    response.setCharacterEncoding("utf-8");
 		    PrintWriter out = response.getWriter();
+		 	DBconnection dBconn=new DBconnection();
 		    Authentificator authentificator = new Authentificator();
 			int userID=authentificator.GetUserID(request,response);
-		
-			String status = "ok";
-		   	int paramgrpID=0;
-	        
-			String in = request.getReader().readLine();
-			JSONObject  jsonIn = null;
-			String file="";
-			try {
-				jsonIn = new JSONObject(in);
-		    	file = "uploads/"+jsonIn.getString("file");
-			} catch (JSONException e) {
-				System.err.println("UpdateSampleTypeData: Input is not valid JSON");
+		   	
+	 		try {
+				dBconn.startDB();
+			} catch (Exception e1) {
+				System.err.println("ImportCSV: Error connecting to database");
+				e1.printStackTrace();
 			}
-		    
-
-
-		    	
-		    BufferedReader CSVFile = new BufferedReader(new FileReader(file));
-
-	        String dataRow = CSVFile.readLine(); // Read the first line of data.
-	        // The while checks to see if the data is null. If it is, we've hit
-	        //  the end of the file. If not, process the data.
-	        String sep1="";
-	        out.print("{\"data\":[");
-	        
-	        while (dataRow != null){
-	            String[] dataArray = dataRow.split(";");
-	            out.print(sep1+"[\"");
-	            String seperator="";
-	            for (String item:dataArray) {
-			        out.print(seperator+item);
-			        seperator="\",\"";
-			    }
-	            out.print("\"]");
-	            sep1=",";
-	            out.println(); // Print the data line.
-	            dataRow = CSVFile.readLine(); // Read next line of data.
-	        }
-
-	        // Close the file once all data has been read.
-	        CSVFile.close();
-
-	        // End the printout with a blank line.
-	        out.println("]}");
-
+	 		
+	 		
+		   	if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+		   		
+		   		// Upload a .csv file
+				String in = request.getReader().readLine();
+				JSONObject  jsonIn = null;
+				String file="";
+				try {
+					jsonIn = new JSONObject(in);
+			    	file = "uploads/"+jsonIn.getString("file");
+				} catch (JSONException e) {
+					System.err.println("UpdateSampleTypeData: Input is not valid JSON");
+				}
+			    	
+			    BufferedReader CSVFile = new BufferedReader(new FileReader(file));
+	
+		        String dataRow = CSVFile.readLine(); // Read the first line of data.
+		        // The while checks to see if the data is null. If it is, we've hit
+		        //  the end of the file. If not, process the data.
+		        String sep1="";
+		        out.print("{\"data\":[");
+		        
+		        while (dataRow != null){
+		            String[] dataArray = dataRow.split(";");
+		            out.print(sep1+"[\"");
+		            String seperator="";
+		            for (String item:dataArray) {
+				        out.print(seperator+item);
+				        seperator="\",\"";
+				    }
+		            out.print("\"]");
+		            sep1=",";
+		            out.println(); // Print the data line.
+		            dataRow = CSVFile.readLine(); // Read next line of data.
+		        }
+	
+		        // Close the file once all data has been read.
+		        CSVFile.close();
+	
+		        // End the printout with a blank line.
+		        out.println("]}");
+		   	}
 	    } //doGet()
 	}
 

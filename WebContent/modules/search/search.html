@@ -60,12 +60,13 @@
 <br/>
 <button class="btn btn-default"
 		ng-click="searchCtrl.startSearch()">
-	 {{'start search'|translate}}
+	 {{'Start search'|translate}}
 </button>
 
 <button class="btn btn-default"
-		ng-click="searchCtrl.editable">
-	 {{'edit search'|translate}}
+		ng-show="searchCtrl.editable"
+		ui-sref="editSearch({id:searchCtrl.searchid})">
+	 {{'Edit search'|translate}}
 </button>
 <br/>
 <br/>

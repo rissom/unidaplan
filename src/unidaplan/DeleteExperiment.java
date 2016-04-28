@@ -45,7 +45,7 @@ public class DeleteExperiment extends HttpServlet {
 		 	
 		 	if (experimentID>0){	
 		 		
-		 		  // check privileges
+		 		// check privileges
 			    pStmt = dBconn.conn.prepareStatement( 	
 						"SELECT getExperimentRights(vuserid:=?,vexperimentid:=?)");
 				pStmt.setInt(1,userID);

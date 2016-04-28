@@ -38,12 +38,16 @@ public class DeletePossibleValue extends HttpServlet {
 	    
 	    try {
 		    dBconn.startDB();
-	    	// get basic search data (id,name,owner,operation)
-			pStmt= dBconn.conn.prepareStatement( 	
-			    "DELETE FROM possible_values WHERE id=?");
-			pStmt.setInt(1, id);
-			pStmt.executeUpdate();
-			pStmt.close();   
+			if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+		    	// get basic search data (id,name,owner,operation)
+				pStmt= dBconn.conn.prepareStatement( 	
+				    "DELETE FROM possible_values WHERE id=?");
+				pStmt.setInt(1, id);
+				pStmt.executeUpdate();
+				pStmt.close();   
+			} else{
+				response.setStatus(401);
+			}
  		    dBconn.closeDB();  // close the database 
 	    } catch (SQLException eS) {
 			System.err.println("DeletePossibleValue: SQL Error");

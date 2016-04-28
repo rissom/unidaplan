@@ -19,8 +19,7 @@ public class DeleteSearch extends HttpServlet {
 		
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
-		userID=userID+1; // REMOVE ME!!!
-		userID=userID-1; // REMOVE ME!!!
+		String privilege = "n";
 		request.setCharacterEncoding("utf-8");
 	    String status="ok";
 		int searchID=-1;
@@ -38,18 +37,35 @@ public class DeleteSearch extends HttpServlet {
 	 	
 		
 	    try {
-			PreparedStatement pstmt = null; 	// Declare variables
-		 	DBconnection DBconn=new DBconnection(); // New connection to the database
-		 	DBconn.startDB();
+			PreparedStatement pStmt = null; 	// Declare variables
+		 	DBconnection dBconn=new DBconnection(); // New connection to the database
+		 	dBconn.startDB();
+		 	
+		 	
+		 	
 		 	if (searchID>0){			
-				// delete the search
-		        pstmt = DBconn.conn.prepareStatement(	
-		        	"DELETE FROM searches WHERE id=?");
-				pstmt.setInt(1,searchID);
-				pstmt.executeUpdate();
-				pstmt.close();
+		 		
+		 		// Check privileges
+			    pStmt = dBconn.conn.prepareStatement( 	
+						"SELECT getExperimentRights(vuserid:=?,vexperimentid:=?)");
+				pStmt.setInt(1,userID);
+				pStmt.setInt(2,searchID);
+				privilege = dBconn.getSingleStringValue(pStmt);
+				pStmt.close();
+							
+				if (privilege.equals("w")){
+		 		
+					// delete the search
+			        pStmt = dBconn.conn.prepareStatement(	
+			        	"DELETE FROM searches WHERE id=?");
+					pStmt.setInt(1,searchID);
+					pStmt.executeUpdate();
+					pStmt.close();
+				} else {
+					response.setStatus(401);
+				}
 			}
- 		   DBconn.closeDB();  // close the database 
+ 		   dBconn.closeDB();  // close the database 
 
 	    } catch (SQLException eS) {
 			System.err.println("DeleteSearch: SQL Error");

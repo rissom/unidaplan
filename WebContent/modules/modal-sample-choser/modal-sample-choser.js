@@ -2,7 +2,7 @@
 'use strict';
 
 
-function modalSampleChoser(avSampleTypeService,$translate,$scope,$uibModalInstance,restfactory,types,samples,except,buttonLabel,mode,sampleService) {
+function modalSampleChoser(avSampleTypeService,$translate,$scope,$uibModalInstance,types,samples,except,buttonLabel,mode,sampleService) {
 
 	var thisController=this;
 	
@@ -90,13 +90,13 @@ function modalSampleChoser(avSampleTypeService,$translate,$scope,$uibModalInstan
 	
 	
 	// get a bunch of fitting samples. Remove Samples in except.
-	this.loadSamples=function(){
-		var details={}
-		details.sampletypes=this.selectedTypesVar;	
-		var name="";
-		if (thisController.userinput!==undefined){name=thisController.userinput}
-			var promise=sampleService.getSamplesByName(name,details);
-			promise.then(function(data){
+	this.loadSamples=function(){	
+		var name = thisController.userinput||"";
+		var promise=sampleService.getSamplesByName(name,this.selectedTypesVar,'a');
+		// possible values for privilege (3rd parameter): "r"-> read or write; "w"-> write; "a" -> all
+		
+		promise.then(
+			function(data){
 				var tempSamples=[];
 				for(var i=0; i<data.data.length; i++){
 					var inExceptionList=false;
@@ -216,6 +216,6 @@ function modalSampleChoser(avSampleTypeService,$translate,$scope,$uibModalInstan
 
         
 angular.module('unidaplan').controller('modalSampleChoser',['avSampleTypeService','$translate','$scope','$uibModalInstance',
-                            'restfactory','types','samples','except','buttonLabel','mode','sampleService',modalSampleChoser]);
+                            'types','samples','except','buttonLabel','mode','sampleService',modalSampleChoser]);
 
 })();

@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -15,10 +13,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 @MultipartConfig
 
@@ -30,16 +24,11 @@ import org.json.JSONObject;
 	      throws ServletException, IOException {		
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
-		DBconnection dBconn=null;
+	 	DBconnection dBconn=new DBconnection();
 
-		int id = -1;
-		String status="ok";
 	    request.setCharacterEncoding("utf-8");
 		response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
-	    
-	    
-//	    UploadS3.uploadFileToS3();
 	    
 	    
 	    // path to upload directory

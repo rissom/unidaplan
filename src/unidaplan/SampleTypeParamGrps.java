@@ -27,8 +27,6 @@ public class SampleTypeParamGrps extends HttpServlet {
 		  
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
-		userID=userID+1;
-		userID=userID-1;
 		int sampleTypeID=0;
 		request.setCharacterEncoding("utf-8");
 	    response.setContentType("application/json");
@@ -51,78 +49,85 @@ public class SampleTypeParamGrps extends HttpServlet {
 		 	
 	    try{
 		 	dBconn.startDB();
- 			pStmt = dBconn.conn.prepareStatement(	
-			   "SELECT objecttypes.id, objecttypes.position, otgrp, objecttypes.string_key, "
- 			  +"description, objecttypes.lastuser "
-			  +"FROM objecttypes "
-			  +"WHERE objecttypes.id=?");
-	 		pStmt.setInt(1, sampleTypeID);
- 			sampleType=dBconn.jsonObjectFromPreparedStmt(pStmt); 
- 			// get ResultSet from the database using the query
- 			pStmt.close();
- 			if (sampleType.has("string_key")){
- 				stringkeys.add(Integer.toString(sampleType.getInt("string_key")));
- 			}
- 			if (sampleType.has("description")){
- 				stringkeys.add(Integer.toString(sampleType.getInt("description")));
- 			}
-           	
- 			// get all objecttypesgrps
-           	pStmt = dBconn.conn.prepareStatement(
-     		  	   "SELECT id, position, name FROM objecttypesgrp");
-			sampleTypeGrps=dBconn.jsonArrayFromPreparedStmt(pStmt); 
-			// get ResultSet from the database using the query
-			if (sampleTypeGrps.length()>0) {
-           		for (int j=0; j<sampleTypeGrps.length();j++) {
-           			stringkeys.add(Integer.toString(sampleTypeGrps.getJSONObject(j).getInt("name")));
-           		}
-           	}		
-           	
-			// get all parametergroups for this sampletype
-   			pStmt = dBconn.conn.prepareStatement(
-		  	   "SELECT ot_parametergrps.id,ot_parametergrps.pos,ot_parametergrps.stringkey, "
-   				+"count(ot_parameters.id)=0 AS deletable "
-   				+"FROM ot_parametergrps "
-				+"LEFT JOIN ot_parameters ON ot_parameters.parametergroup=ot_parametergrps.id "
-				+"WHERE (ot_parametergrps.ot_id=?) "
-				+"GROUP BY ot_parametergrps.id"); 
-   			pStmt.setInt(1, sampleTypeID);
-   			parameterGrps=dBconn.jsonArrayFromPreparedStmt(pStmt); 
-
-           	if (parameterGrps.length()>0) {
-           		for (int j=0; j<parameterGrps.length();j++) {
-           			stringkeys.add(Integer.toString(parameterGrps.getJSONObject(j).getInt("stringkey")));
-           		}
-           	}
-           	
-        	
-			// get the titleparameters
-   			pStmt = dBconn.conn.prepareStatement(
-	   			"SELECT "
-				+"otp.id, "
-				+"COALESCE (otp.stringkeyname, pd.stringkeyname) AS name, "
-				+"COALESCE (otp.description, pd.description) AS description, "
-				+"format, pos "
-				+"FROM  ot_parameters otp "
-				+"JOIN paramdef pd ON (otp.definition=pd.ID) "
-				+"WHERE otp.ObjecttypesID=? AND otp.ID_FIELD=true "); 
-   			pStmt.setInt(1, sampleTypeID);
-   			titleParameters=dBconn.jsonArrayFromPreparedStmt(pStmt); 
-
-           	if (titleParameters.length()>0) {
-           		for (int j=0; j<titleParameters.length();j++) {
-           			stringkeys.add(Integer.toString(titleParameters.getJSONObject(j).getInt("name")));
-           			stringkeys.add(Integer.toString(titleParameters.getJSONObject(j).getInt("description")));
-           		}
-           	}
-     
-	        JSONObject answer=new JSONObject();
-	        answer=sampleType;
-	        answer.put("titleparameters",titleParameters);
-	        answer.put("sampletypegrps", sampleTypeGrps);
-	        answer.put("parametergrps",parameterGrps);
-	        answer.put("strings", dBconn.getStrings(stringkeys));
-	        out.println(answer.toString());
+		 	
+		 	// check if admin
+		 	if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+		 	
+	 			pStmt = dBconn.conn.prepareStatement(	
+				   "SELECT objecttypes.id, objecttypes.position, otgrp, objecttypes.string_key, "
+	 			  +"description, objecttypes.lastuser "
+				  +"FROM objecttypes "
+				  +"WHERE objecttypes.id=?");
+		 		pStmt.setInt(1, sampleTypeID);
+	 			sampleType=dBconn.jsonObjectFromPreparedStmt(pStmt); 
+	 			// get ResultSet from the database using the query
+	 			pStmt.close();
+	 			if (sampleType.has("string_key")){
+	 				stringkeys.add(Integer.toString(sampleType.getInt("string_key")));
+	 			}
+	 			if (sampleType.has("description")){
+	 				stringkeys.add(Integer.toString(sampleType.getInt("description")));
+	 			}
+	           	
+	 			// get all objecttypesgrps
+	           	pStmt = dBconn.conn.prepareStatement(
+	     		  	   "SELECT id, position, name FROM objecttypesgrp");
+				sampleTypeGrps=dBconn.jsonArrayFromPreparedStmt(pStmt); 
+				// get ResultSet from the database using the query
+				if (sampleTypeGrps.length()>0) {
+	           		for (int j=0; j<sampleTypeGrps.length();j++) {
+	           			stringkeys.add(Integer.toString(sampleTypeGrps.getJSONObject(j).getInt("name")));
+	           		}
+	           	}		
+	           	
+				// get all parametergroups for this sampletype
+	   			pStmt = dBconn.conn.prepareStatement(
+			  	   "SELECT ot_parametergrps.id,ot_parametergrps.pos,ot_parametergrps.stringkey, "
+	   				+"count(ot_parameters.id)=0 AS deletable "
+	   				+"FROM ot_parametergrps "
+					+"LEFT JOIN ot_parameters ON ot_parameters.parametergroup=ot_parametergrps.id "
+					+"WHERE (ot_parametergrps.ot_id=?) "
+					+"GROUP BY ot_parametergrps.id"); 
+	   			pStmt.setInt(1, sampleTypeID);
+	   			parameterGrps=dBconn.jsonArrayFromPreparedStmt(pStmt); 
+	
+	           	if (parameterGrps.length()>0) {
+	           		for (int j=0; j<parameterGrps.length();j++) {
+	           			stringkeys.add(Integer.toString(parameterGrps.getJSONObject(j).getInt("stringkey")));
+	           		}
+	           	}
+	           	
+	        	
+				// get the titleparameters
+	   			pStmt = dBconn.conn.prepareStatement(
+		   			"SELECT "
+					+"otp.id, "
+					+"COALESCE (otp.stringkeyname, pd.stringkeyname) AS name, "
+					+"COALESCE (otp.description, pd.description) AS description, "
+					+"format, pos "
+					+"FROM  ot_parameters otp "
+					+"JOIN paramdef pd ON (otp.definition=pd.ID) "
+					+"WHERE otp.ObjecttypesID=? AND otp.ID_FIELD=true "); 
+	   			pStmt.setInt(1, sampleTypeID);
+	   			titleParameters=dBconn.jsonArrayFromPreparedStmt(pStmt); 
+	
+	           	if (titleParameters.length()>0) {
+	           		for (int j=0; j<titleParameters.length();j++) {
+	           			stringkeys.add(Integer.toString(titleParameters.getJSONObject(j).getInt("name")));
+	           			stringkeys.add(Integer.toString(titleParameters.getJSONObject(j).getInt("description")));
+	           		}
+	           	}
+	     
+		        JSONObject answer=new JSONObject();
+		        answer=sampleType;
+		        answer.put("titleparameters",titleParameters);
+		        answer.put("sampletypegrps", sampleTypeGrps);
+		        answer.put("parametergrps",parameterGrps);
+		        answer.put("strings", dBconn.getStrings(stringkeys));
+		        out.println(answer.toString());
+		 	}else{
+		 		response.setStatus(401);
+		 	}
 	    } catch (SQLException eS) {
 			System.err.println("SampleTypeParameters: SQL Error");
 		} catch (Exception e) {
