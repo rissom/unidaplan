@@ -41,7 +41,6 @@ var dateParameter = function() {
 			
 			this.update= function(){
 				$scope.parameter.editing=false; 
-//				var oldValue=$scope.parameter.value;
 				$scope.parameter.value=$scope.parameter.newDate;
 				$scope.parameter.date=$scope.parameter.newDate;
 				$scope.parameter.tz=new Date().getTimezoneOffset();
@@ -57,7 +56,13 @@ var dateParameter = function() {
 					this.newValue=this.dateString;
 				}
 			}	  
-						
+					
+			this.keyDown = function(keyCode) {
+				if (keyCode===9) {		// Tab key pressed
+					tc.update();
+				}
+			}
+			
 		},
 		controllerAs: 'dateParamCtrl'
 	};

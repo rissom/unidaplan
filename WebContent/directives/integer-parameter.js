@@ -26,13 +26,19 @@ var integerParameter = function() {
 			this.keyUp = function(keyCode) {
 				if (keyCode===13) {				// Return key pressed
 					$scope.parameter.editing=false; 
-					var oldValue=$scope.parameter.value;
 					$scope.parameter.value=this.newValue;
 					$scope.pupdate({parameter:$scope.parameter});
-//					$scope.pupdate();
 				}
 				if (keyCode===27) {		// Escape key pressed
 					$scope.parameter.editing=false;			
+				}
+			}
+			
+			this.keyDown = function(keyCode) {
+				if (keyCode===9) {		// Tab key pressed
+					$scope.parameter.editing=false; 
+					$scope.parameter.value=this.newValue;
+					$scope.pupdate({parameter:$scope.parameter});
 				}
 			}
 						

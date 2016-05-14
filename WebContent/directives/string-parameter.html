@@ -3,6 +3,7 @@
 </span>
 <input 						   
 	ng-keyup="stringParamCtrl.keyUp($event.keyCode)"
+	ng-keydown="stringParamCtrl.keyDown($event.keyCode)"
 	ng-show="parameter.editing" type="text"
     ng-model="stringParamCtrl.newValue">
 <span ng-show="parameter.unit">

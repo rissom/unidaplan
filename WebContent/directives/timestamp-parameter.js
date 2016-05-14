@@ -61,7 +61,13 @@ var timestampParameter = function() {
 				if (keyCode===27) {		// Escape key pressed
 					$scope.parameter.editing=false;			
 				}
-			}	  
+			}
+			
+			this.keyDown = function(keyCode) {
+				if (keyCode===9) {		// Tab key pressed
+					tc.update();
+				}
+			}
 						
 		},
 		controllerAs: 'timestampParamCtrl'

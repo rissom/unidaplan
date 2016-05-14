@@ -35,6 +35,17 @@ var stringParameter = function() {
 					$scope.parameter.editing=false;			
 				}
 			}
+			
+			
+			
+			this.keyDown = function(keyCode) {
+				if (keyCode===9) {		// Tab key pressed
+					$scope.parameter.editing=false; 
+					$scope.parameter.value=thisController.newValue;
+					$scope.pupdate({parameter:$scope.parameter});	
+				}
+			}
+			
 						
 		},
 		controllerAs: 'stringParamCtrl'

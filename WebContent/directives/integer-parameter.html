@@ -6,6 +6,7 @@
 </span>
 <input 						   
 	ng-keyup="integerParamCtrl.keyUp($event.keyCode)"
+	ng-keydown="integerParamCtrl.keyDown($event.keyCode)"
 	ng-show="parameter.editing" 
 	type="number"
     ng-model="integerParamCtrl.newValue">

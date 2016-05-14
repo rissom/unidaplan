@@ -3,6 +3,7 @@
 	</span>
 	<input 						   
 		ng-keyup="emailParamCtrl.keyUp($event.keyCode)"
+		ng-keydown="emailParamCtrl.keyDown($event.keyCode)"
 		ng-show="parameter.editing" type="email" 
 	    ng-model="emailParamCtrl.newValue">
 </div>   

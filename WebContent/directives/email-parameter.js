@@ -37,6 +37,14 @@ var emailParameter = function() {
 				}
 			}
 						
+			this.keyDown = function(keyCode) {
+				if (keyCode===9) {		// Tab key pressed
+					$scope.parameter.editing=false; 
+					$scope.parameter.value=this.newValue;
+					$scope.pupdate({parameter:$scope.parameter});
+				}
+			}
+			
 		},
 		controllerAs: 'emailParamCtrl'
 	};
