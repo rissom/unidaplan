@@ -75,7 +75,14 @@ public class DeleteSampleType extends HttpServlet {
 				}
 		 
 	 			try {
-				 	if (sampleTypeID>0){			
+				 	if (sampleTypeID>0){
+				 		// delete the parameters
+				        pStmt = dBconn.conn.prepareStatement(	
+				        	"DELETE FROM ot_parameters WHERE objecttypesid=?");
+						pStmt.setInt(1,sampleTypeID);
+						pStmt.executeUpdate();
+						pStmt.close();
+						
 						// delete the sampletype
 				        pStmt = dBconn.conn.prepareStatement(	
 				        	"DELETE FROM objecttypes WHERE id=?");
