@@ -552,7 +552,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 	        	    function(userService){
 	        	   	    return userService.getUsers();
 	                }
-			 }
+			}
         });
     
     })
