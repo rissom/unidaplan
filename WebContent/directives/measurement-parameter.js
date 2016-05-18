@@ -28,13 +28,21 @@ var measurementParameter = function() {
 				this.newError = this.error;
 			}
 			
+			this.keyDown = function(keyCode) {
+				if (keyCode===9) {		// Tab key pressed
+					$scope.parameter.editing=false; 
+					$scope.parameter.value=this.newValue;
+					$scope.parameter.error=this.newError;
+					$scope.pupdate({parameter:$scope.parameter});
+				}
+			}
+			
 			this.keyUp = function(keyCode) {
 				if (keyCode===13) {				// Return key pressed
 					$scope.parameter.editing=false;
 					$scope.parameter.value=this.newValue;
 					$scope.parameter.error=this.newError;
 					$scope.pupdate({parameter:$scope.parameter});
-//					$scope.pupdate();
 				}
 				if (keyCode===27) {		// Escape key pressed
 					$scope.parameter.editing=false;
