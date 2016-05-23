@@ -88,7 +88,12 @@ import org.json.JSONObject;
 				datatype= answer.getInt("datatype");			
 				
 				// delete old values.
-				String[] tables={"","o_integer_data","o_float_data","o_measurement_data","o_string_data","o_string_data","o_string_data","o_timestamp_data","o_integer_data","o_timestamp_data","o_string_data"};
+				String[] tables = {"","o_integer_data","o_float_data",
+								   "o_measurement_data","o_string_data",
+								   "o_string_data","o_string_data",
+								   "o_timestamp_data","o_integer_data",
+								   "o_timestamp_data","o_string_data",
+								   "o_string_data"};
 				pStmt= dBconn.conn.prepareStatement( 			
 						 "DELETE FROM "+tables[datatype]+" "
 						+"WHERE ot_parameter_id=? AND objectid=?");
@@ -106,6 +111,7 @@ import org.json.JSONObject;
 			} catch (Exception e) {
 				System.err.println("SaveSampleParameter: Strange Problems");
 				status="Strange Problems";
+				e.printStackTrace();
 			}
 			
 			// differentiate according to type

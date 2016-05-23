@@ -226,7 +226,7 @@ import org.json.JSONObject;
 					
 				pStmt= dBconn.conn.prepareStatement(
 						"SELECT ot_parameters.id, \n"
-						+"position, \n"
+						+"osearchoutput.position, \n"
 						+"COALESCE (ot_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname, \n"
 						+"paramdef.datatype, \n"
 						+"osearchoutput.id AS outputid, \n"
@@ -239,7 +239,7 @@ import org.json.JSONObject;
 						+"UNION ALL \n"
 						+" \n"
 						+"SELECT p_parameters.id, \n" 
-						+"position, \n"
+						+"psearchoutput.position, \n"
 						+"COALESCE (p_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname, \n" 
 						+"paramdef.datatype, \n"
 						+"psearchoutput.id AS outputid, \n"
@@ -252,7 +252,7 @@ import org.json.JSONObject;
 						+"UNION ALL \n"
 						+"\n"
 						+"SELECT po_parameters.id, \n" 
-						+"position, \n"
+						+"posearchoutput.position, \n"
 						+"po_parameters.stringkeyname, \n"
 						+"paramdef.datatype, \n"
 						+"posearchoutput.id AS outputid, \n" 
