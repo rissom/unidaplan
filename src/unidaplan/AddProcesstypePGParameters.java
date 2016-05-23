@@ -27,7 +27,7 @@ import org.json.JSONObject;
 	    
 	    authentificator = new Authentificator();
 	    request.setCharacterEncoding("utf-8");
-		userID=authentificator.GetUserID(request,response);
+		userID = authentificator.GetUserID(request,response);
 	    String in = request.getReader().readLine();
 	    
 	    try {
@@ -39,9 +39,9 @@ import org.json.JSONObject;
 	    response.setCharacterEncoding("utf-8");
 	    
 	    // get the id
-	    int parameterGrpID=0;
+	    int parameterGrpID = 0;
 	    int processTypeID = 0;
-	    JSONArray ids=null;
+	    JSONArray ids = null;
 
 	    try {
 			 parameterGrpID=jsonIn.getInt("parametergroupid");
@@ -67,8 +67,17 @@ import org.json.JSONObject;
 		    
 				for (int i=0; i<ids.length();i++){
 					pStmt= dBconn.conn.prepareStatement( 			
-							 "INSERT INTO p_parameters (ProcesstypeID,Parametergroup,compulsory,ID_Field,Hidden,pos,definition,StringKeyName,lastUser)"
-							 + " VALUES(?,?,False,False,False,"
+							   "INSERT INTO p_parameters ("
+							 + "ProcesstypeID,"
+							 + "Parametergroup,"
+							 + "compulsory,"
+							 + "ID_Field,"
+							 + "Hidden,"
+							 + "pos,"
+							 + "definition,"
+							 + "StringKeyName,"
+							 + "lastUser) "
+							 + "VALUES(?,?,False,False,False,"
 							 + "(SELECT COALESCE ((SELECT max(p2.pos)+1 FROM p_parameters p2 WHERE p2.parametergroup=?),1)),"
 							 + "?,(SELECT stringkeyname FROM paramdef WHERE paramdef.id=?),?)");
 				   	pStmt.setInt(1, processTypeID);

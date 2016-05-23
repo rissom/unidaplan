@@ -19,21 +19,37 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 	
 	
 	
-	this.addPTParameterGrp = function(processTypeID,position,name){
-		var temp={"processtypeid":processTypeID,"position":position,"name":name};
+	this.addPTParameterGrp = function(processTypeID,position){
+		var temp={"processtypeid":processTypeID,"position":position};
 		return restfactory.POST("add-pt-parameter-grp",temp);
 	};
 	
 	
 	
-	this.changeOrderPTParameters=function(newPositions){
+	this.addProcesstypeSRParameters = function(processTypeID,chosenParams,name){
+		var temp={
+				processtypeid : processTypeID,
+				name : name, 
+				parameterids:chosenParams};
+		return restfactory.POST("add-pt-sr-parameter",temp);
+	};
+	
+	
+	
+	this.changeOrderPTParameters = function(newPositions){
 		return restfactory.PUT("change-order-pt-parameters",newPositions);
 	};
 	
 
 	
-	this.deletePTParameter=function(id){
-		return restfactory.DELETE("delete-PT-Parameter?id="+id);
+	this.deletePTParameter = function(id){
+		return restfactory.DELETE("delete-pt-parameter?id="+id);
+	};
+	
+	
+	
+	this.deletePTSRParameter = function(id){
+		return restfactory.DELETE("delete-pt-sr-parameter?id="+id);
 	};
 	
 	
@@ -44,9 +60,16 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 	
 	
 	
-	this.exPosPTParamGrp=function(id1,pos1,id2,pos2){
-		var jsonObj={"id1":id1, "id2":id2, "pos1":pos1, "pos2":pos2};
+	this.exPosPTParamGrp = function(id1,pos1,id2,pos2){
+		var jsonObj = {id1:id1, id2:id2, pos1:pos1, pos2:pos2};
 		return restfactory.POST ("exchange-pos-pt-parameter-grp",jsonObj);
+	};
+	
+	
+	
+	this.exPosPTSRParams = function(id1,pos1,id2,pos2){
+		var jsonObj = {id1:id1, id2:id2, pos1:pos1, pos2:pos2};
+		return restfactory.POST ("exchange-pos-pt-sr-parameter",jsonObj);
 	};
 	
 	
@@ -77,6 +100,44 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 		return processTypeName; 
 	};
 
+	
+	
+	this.getSinglePOParameter = function(parameterID){
+        var defered=$q.defer();
+    	var promise = restfactory.GET("single-po-parameter?parameterid="+parameterID);
+    	promise.then(function(rest) {
+	    	var parameter = rest.data;
+	    	var strings = rest.data.strings;
+	    	if (parameter.parametergroupname){
+	    		parameter.pgnamef=function(){
+	    			return (key2string.key2string(parameter.parametergroupname,strings));
+	    		};
+	    	}
+	    	parameter.processtypenamef = function(){
+				return (key2string.key2string(parameter.processtypename,strings));
+			};
+		    parameter.namef=function(){
+					return (key2string.key2string(parameter.name,strings));
+				};
+			parameter.nameLang=function(lang){
+					return (key2string.key2stringWithLangStrict(parameter.name,strings,lang));
+				};
+			parameter.descf=function(){
+					return (key2string.key2string(parameter.description,strings));
+				};
+			parameter.descLang=function(lang){
+					return (key2string.key2stringWithLangStrict(parameter.description,strings,lang));
+				};
+			parameter.unitLang=function(lang){
+					return (key2string.key2stringWithLangStrict(parameter.stringkeyunit,strings,lang));
+				};
+	        defered.resolve(parameter);
+    	}, function(rest) {
+    		console.log("Error loading processtype-parameter");
+    	});
+		return defered.promise;
+	};
+	
 	
 	
 	this.getSinglePTypeParameter = function(parameterID){
@@ -162,23 +223,37 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 	    var promise = restfactory.GET("process-type-param-grps?processtypeid="+processTypeID);
 	    promise.then(function(rest) {
 	    	thisController.processType = rest.data;
-	    	thisController.strings = rest.data.strings;
+	    	var strings = rest.data.strings;
 	    	thisController.processType.nameLang=function(lang){
-    			return (key2string.key2stringWithLangStrict(thisController.processType.name,thisController.strings,lang));
+    			return (key2string.key2stringWithLangStrict(thisController.processType.name,strings,lang));
 	    	};
 	    	thisController.processType.descLang=function(lang){
-    			return (key2string.key2stringWithLangStrict(thisController.processType.description,thisController.strings,lang));
+    			return (key2string.key2stringWithLangStrict(thisController.processType.description,strings,lang));
 	    	};
+	    	
+	    	// get parameter groups
 	    	angular.forEach(thisController.processType.parametergrps,function(ptgrp) {
 	    		ptgrp.namef=function(){
-	    			return (key2string.key2string(ptgrp.stringkey,thisController.strings));
+	    			return (key2string.key2string(ptgrp.stringkey,strings));
 	    		};
 	    		ptgrp.nameLang=function(lang){
-	    			return (key2string.key2stringWithLangStrict(ptgrp.stringkey,thisController.strings,lang));
+	    			return (key2string.key2stringWithLangStrict(ptgrp.stringkey,strings,lang));
 	    		};
 	    		ptgrp.actions=[{action:"edit",name:$translate.instant("edit")},
 	    		               {action:"delete",name:$translate.instant("delete"),disabled:!ptgrp.deletable}];	    		
 	         });
+	    	
+	    	// get sample related parameters
+	    	angular.forEach(thisController.processType.samplerparams,function(sparam) {
+	    		sparam.namef = function(){
+	    			return (key2string.key2string(sparam.stringkey,strings));
+	    		};
+	    		sparam.nameLang = function(lang){
+	    			return (key2string.key2stringWithLangStrict(sparam.stringkey,strings,lang));
+	    		};
+	    		sparam.actions=[{action:"edit",name:$translate.instant("edit")},
+	    		               {action:"delete",name:$translate.instant("delete"),disabled:!sparam.deletable}];	    
+	    	});
 	    	defered.resolve(thisController.processType);	
 		    }, function(rest) {
 			console.log("Error loading processtypes");
@@ -232,6 +307,13 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 	this.updateParameter = function (parameter){
 		return restfactory.PUT("update-pt-parameter",parameter);
 	};
+	
+	
+	
+	this.updatePOParameter = function (parameter){
+		return restfactory.PUT("update-po-parameter",parameter);
+	};
+	
 	
 
 	

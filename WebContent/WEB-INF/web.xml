@@ -20,6 +20,17 @@
   </servlet-mapping>
   
   <servlet>
+    <description>AddPTSRParameter</description>
+    <display-name>AddPTSRParameter</display-name>
+    <servlet-name>AddPTSRParameter</servlet-name>
+    <servlet-class>unidaplan.AddPTSRParameter</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddPTSRParameter</servlet-name>
+    <url-pattern>/add-pt-sr-parameter</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
     <description>AddSampletypeParameters</description>
     <display-name>AddSampletypeParameters</display-name>
     <servlet-name>AddSampletypeParameters</servlet-name>
@@ -511,6 +522,7 @@
     <servlet-name>DeleteSampleFromExperiment</servlet-name>
     <url-pattern>/delete-sample-from-experiment</url-pattern>
   </servlet-mapping>
+  
   <servlet>
     <description>ReplaceSampleInExperiment</description>
     <display-name>ReplaceSampleInExperiment</display-name>
@@ -521,6 +533,7 @@
     <servlet-name>ReplaceSampleInExperiment</servlet-name>
     <url-pattern>/replace-sample-in-experiment</url-pattern>
   </servlet-mapping>
+  
   <servlet>
     <description>AddSampleToExperiment</description>
     <display-name>AddSampleToExperiment</display-name>
@@ -531,6 +544,7 @@
     <servlet-name>AddSampleToExperiment</servlet-name>
     <url-pattern>/add-sample-to-experiment</url-pattern>
   </servlet-mapping>
+  
   <servlet>
     <description>DeleteProcessFromExperiment</description>
     <display-name>DeleteProcessFromExperiment</display-name>
@@ -541,6 +555,18 @@
     <servlet-name>DeleteProcessFromExperiment</servlet-name>
     <url-pattern>/delete-process-from-experiment</url-pattern>
   </servlet-mapping>
+  
+   <servlet>
+    <description>ExchangePosPTSRParameter</description>
+    <display-name>ExchangePosPTSRParameter</display-name>
+    <servlet-name>ExchangePosPTSRParameter</servlet-name>
+    <servlet-class>unidaplan.ExchangePosPTSRParameter</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ExchangePosPTSRParameter</servlet-name>
+    <url-pattern>/exchange-pos-pt-sr-parameter</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
     <description>AddProcessToExperiment</description>
     <display-name>AddProcessToExperiment</display-name>
@@ -793,6 +819,17 @@
     <servlet-name>SingleSTParameter</servlet-name>
     <url-pattern>/single-st-parameter</url-pattern>
   </servlet-mapping>
+   
+  <servlet>
+    <description>gives data for one sample parameter definition</description>
+    <display-name>SinglePOParameter</display-name>
+    <servlet-name>SinglePOParameter</servlet-name>
+    <servlet-class>unidaplan.SinglePOParameter</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SinglePOParameter</servlet-name>
+    <url-pattern>/single-po-parameter</url-pattern>
+  </servlet-mapping>
   
   <servlet>
     <description>UpdateSearchOutput</description>
@@ -874,17 +911,6 @@
   </servlet-mapping>
   
   <servlet>
-    <description>DeletePTParameter</description>
-    <display-name>DeletePTParameter</display-name>
-    <servlet-name>DeletePTParameter</servlet-name>
-    <servlet-class>unidaplan.DeletePTParameter</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>DeletePTParameter</servlet-name>
-    <url-pattern>/delete-PT-Parameter</url-pattern>
-  </servlet-mapping>
-  
-  <servlet>
     <description>ChangeOrderPTParameters</description>
     <display-name>ChangeOrderPTParameters</display-name>
     <servlet-name>ChangeOrderPTParameters</servlet-name>
@@ -895,6 +921,27 @@
     <url-pattern>/change-order-pt-parameters</url-pattern>
   </servlet-mapping>
   
+  <servlet>
+    <description>DeletePTParameter</description>
+    <display-name>DeletePTParameter</display-name>
+    <servlet-name>DeletePTParameter</servlet-name>
+    <servlet-class>unidaplan.DeletePTParameter</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeletePTParameter</servlet-name>
+    <url-pattern>/delete-pt-parameter</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>DeletePTSRParameter</description>
+    <display-name>DeletePTSRParameter</display-name>
+    <servlet-name>DeletePTSRParameter</servlet-name>
+    <servlet-class>unidaplan.DeletePTSRParameter</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeletePTSRParameter</servlet-name>
+    <url-pattern>/delete-pt-sr-parameter</url-pattern>
+  </servlet-mapping>
   
   <servlet>
     <description>ReorderPossibleValues</description>
@@ -982,6 +1029,17 @@
   <servlet-mapping>
     <servlet-name>UpdatePTParamGrp</servlet-name>
     <url-pattern>/update-pt-paramgrp</url-pattern>
+  </servlet-mapping>
+  
+   <servlet>
+    <description>UpdatePOParameter</description>
+    <display-name>UpdatePOParameter</display-name>
+    <servlet-name>UpdatePOParameter</servlet-name>
+    <servlet-class>unidaplan.UpdatePOParameter</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdatePOParameter</servlet-name>
+    <url-pattern>/update-po-parameter</url-pattern>
   </servlet-mapping>
       
   <servlet>

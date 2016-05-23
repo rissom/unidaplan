@@ -84,7 +84,11 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 	        resolve:{
 	        	processType: function(avProcessTypeService,$stateParams){
         	   	    	return avProcessTypeService.getPTypeParamGrps($stateParams.processTypeID);
-        	   	    }
+        	   	    },
+        	   	avParameters: 
+ 		        	function(parameterService){
+ 			   	    	return parameterService.getParameters();
+ 			   	    }
 			}
         })
         
@@ -94,9 +98,14 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 	        templateUrl: 'modules/admin-processes/edit-pt-params.html',
 	        controller:"editPtParamsController as editPtParamsCtrl",
 	        resolve:{
-	        	parameterGrp: function(avProcessTypeService,$stateParams){
+	        	parameterGrp: 
+	        		function(avProcessTypeService,$stateParams){
         	   	    	return avProcessTypeService.getPTypeParams($stateParams.paramGrpID);
         	   	    },
+        	   	ptypes: 
+        	   		function(avProcessTypeService){
+    	   	    		return avProcessTypeService.getProcessTypes();
+    	   	    	},
 		        avParameters: 
 		        	function(parameterService){
 			   	    	return parameterService.getParameters();
@@ -167,6 +176,20 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 	        	parameter: 
 	        		function(avSampleTypeService,$stateParams){
     	   	    		return avSampleTypeService.getSingleSTypeParameter($stateParams.parameterID);
+    	   	    	}
+			}
+        })
+        
+        
+        
+        .state('editSinglePOParameter', {
+        	url: '/edit-single-po-parameter/{parameterID:int}',
+	        templateUrl: 'modules/admin-processes/edit-single-po-parameter.html',
+	        controller:"editSinglePOParameterController as editSinglePOParameterCtrl",
+	        resolve:{
+	        	parameter: 
+	        		function(avProcessTypeService,$stateParams){
+    	   	    		return avProcessTypeService.getSinglePOParameter($stateParams.parameterID);
     	   	    	}
 			}
         })

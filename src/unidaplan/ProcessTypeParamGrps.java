@@ -40,8 +40,9 @@ public class ProcessTypeParamGrps extends HttpServlet {
 	  	  		e1.printStackTrace();
 	  	  	}
 		PreparedStatement pStmt = null; 	// Declare variables
-	    JSONObject processType= null;
-	    JSONArray parameterGrps= null;		
+	    JSONObject processType = null;
+	    JSONArray parameterGrps = null;	
+	    JSONArray sampleRParams = null;
 	    JSONArray processTypeGrps= null;
 	 	DBconnection dBconn=new DBconnection(); // New connection to the database
 	 	ArrayList<String> stringkeys = new ArrayList<String>(); 
@@ -86,9 +87,40 @@ public class ProcessTypeParamGrps extends HttpServlet {
 	           			stringkeys.add(Integer.toString(parameterGrps.getJSONObject(j).getInt("stringkey")));
 	           		}
 	           	}
+	           	
+	           	
+	           	// get sample related process parameters (untested)
+	           	pStmt = dBconn.conn.prepareStatement(
+		   				"SELECT "
+						+"po_parameters.id, "
+						+"compulsory, "
+						+"hidden, "
+						+"position, "
+						+"definition, "
+						+"COALESCE(po_parameters.stringkeyname,paramdef.stringkeyname ) AS stringkey, "
+						+"NOT "
+						+"( "
+						+"	   EXISTS (SELECT 1 FROM po_string_data      WHERE po_string_data.po_parameter_id     =po_parameters.id) "
+						+"	OR EXISTS (SELECT 1 FROM po_float_data       WHERE po_float_data.po_parameter_id      =po_parameters.id) "
+						+"	OR EXISTS (SELECT 1 FROM po_integer_data     WHERE po_integer_data.po_parameter_id    =po_parameters.id) "
+						+"	OR EXISTS (SELECT 1 FROM po_timestamp_data   WHERE po_timestamp_data.po_parameter_id  =po_parameters.id) "
+						+"	OR EXISTS (SELECT 1 FROM po_measurement_data WHERE po_measurement_data.po_parameter_id=po_parameters.id) "
+						+") AS deletable "
+						+"FROM po_parameters "
+						+"JOIN paramdef ON paramdef.id=po_parameters.definition "
+						+"WHERE processtypeid = ?");
+		   		pStmt.setInt(1, processTypeID);
+		   		sampleRParams = dBconn.jsonArrayFromPreparedStmt(pStmt); // get ResultSet from the database using the query
+		
+	           	if (sampleRParams.length()>0) {
+	           		for (int j=0; j<sampleRParams.length();j++) {
+	           			stringkeys.add(Integer.toString(sampleRParams.getJSONObject(j).getInt("stringkey")));
+	           		}
+	           	}
 	     
 		        JSONObject answer=new JSONObject();
 		        answer=processType;
+		        answer.put("samplerparams",sampleRParams);
 		        answer.put("processtypegrps", processTypeGrps);
 		        answer.put("parametergrps",parameterGrps);
 		        answer.put("strings", dBconn.getStrings(stringkeys));

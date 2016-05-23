@@ -1,7 +1,7 @@
 (function(){
   'use strict';
 
-function editPtParamsController($state,$uibModal,$stateParams,$translate,avParameters,restfactory,processService,parameterGrp,languages,avProcessTypeService){
+function editPtParamsController($state,$uibModal,$stateParams,$translate,avParameters,ptypes,restfactory,processService,parameterGrp,languages,avProcessTypeService){
   
   var thisController=this;
   
@@ -42,6 +42,7 @@ function editPtParamsController($state,$uibModal,$stateParams,$translate,avParam
   
   
   
+  
   this.getGrpName=function(grp,lang){
 	  key2string.key2stringWithLangStrict(grp.name,thisController.strings,lang);
   };
@@ -66,12 +67,18 @@ function editPtParamsController($state,$uibModal,$stateParams,$translate,avParam
   
   
   
-  this.editNL2= function(parameter){
+  this.editNL2 = function(parameter){
 	  thisController.editmode=true;
 	  parameter.editNL2=true;
 	  parameter.newParameterNameL2=parameter.nameLang(thisController.lang2key);
 	  activeParameter=parameter;
   };
+  
+  
+  
+  this.getPTName = function(ptypeid){
+	  return avProcessTypeService.getProcessType({processtype:thisController.processtype},ptypes);
+  }
   
   
   
@@ -202,6 +209,6 @@ function editPtParamsController($state,$uibModal,$stateParams,$translate,avParam
 };
 
 angular.module('unidaplan').controller('editPtParamsController', ['$state','$uibModal','$stateParams','$translate',
-       'avParameters','restfactory','processService','parameterGrp','languages','avProcessTypeService',editPtParamsController]);
+       'avParameters','ptypes','restfactory','processService','parameterGrp','languages','avProcessTypeService',editPtParamsController]);
 
 })();
