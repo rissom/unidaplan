@@ -26,7 +26,8 @@ var emailParameter = function() {
 			this.newValue=$scope.parameter.value;
 
 			this.keyUp = function(keyCode) {
-				if (keyCode===13) {				// Return key pressed
+				if (keyCode===13 && $scope.emailparameter.$valid ) {	
+					// Return key pressed + email valid
 					$scope.parameter.editing=false; 
 					var oldValue=$scope.parameter.value;
 					$scope.parameter.value=thisController.newValue;
