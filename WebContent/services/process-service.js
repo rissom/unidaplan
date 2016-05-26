@@ -67,7 +67,22 @@ var processService = function (restfactory,$q,$translate,key2string) {
 						parameter.newDate=new Date(parameter.value);
 					}
 				});
-			});   	
+			});
+			angular.forEach(thisController.process.fields, function(field) {
+				field.namef = function(){
+					return key2string.key2string(field.stringkeyname,strings);
+				};
+				if (field.description){
+					field.descriptionf = function(){
+						return key2string.key2string(field.description,strings);
+					};
+				};
+				if (field.unit){
+					field.unitf = function(){
+						return key2string.key2string(field.unit,strings); 
+					};
+				};
+			});
 			thisController.pushProcess(thisController.process);
 	    	defered.resolve(thisController.process);
     	}, function(rest) {    	    		
@@ -136,8 +151,26 @@ var processService = function (restfactory,$q,$translate,key2string) {
 		return restfactory.DELETE("delete-process?id="+id);
 	};
 	
-
 	
+
+  	this.savePOParameter = function(parameter) {
+  		console.log ("parameter:",parameter)
+  		var json = {parameterid:parameter.parameterid, opid:parameter.opid, value:parameter.value};
+		if ("date" in parameter) {
+			json.date=parameter.date;
+			json.tz=parameter.tz;
+		}
+		if ("time" in parameter) {
+			json.time=parameter.time;
+		}
+		if ("error" in parameter) {
+			json.error=parameter.error;
+		} 
+  		return restfactory.POST("save-po-parameter",json);
+  	}
+  	
+	
+  	
 	this.saveParameter = function(processid,parameter) {
 		var json={processid:processid, parameterid:parameter.id, value:parameter.value};
 		if ("date" in parameter) {

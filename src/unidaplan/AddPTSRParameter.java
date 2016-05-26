@@ -59,23 +59,6 @@ import org.json.JSONObject;
 	    	//check if admin
 	    	int admins=1;
 			if (userID>0 && Unidatoolkit.isMemberOfGroup(userID,admins, dBconn)){
-	    	
-				
-//				if (jsonIn.has("name")){
-//					 JSONObject name = jsonIn.getJSONObject("name");
-//					 String [] names = JSONObject.getNames(name);
-//					 stringKeyName = dBconn.createNewStringKey(name.getString(names[0]));
-//					 for (int i=0; i<names.length; i++){
-//						 dBconn.addString(stringKeyName,names[i],name.getString(names[i]));
-//					 }
-//				 }else
-//				 {
-//					 status="error: no name given";
-//					 response.setStatus(404);
-//				 }
-	
-					 
-		
 			   	
 				for (int i=0; i<ids.length();i++){
 
@@ -86,18 +69,15 @@ import org.json.JSONObject;
 							+ "compulsory,"
 							+ "definition, "
 							+ "position, "
-							+ "stringkeyname, "
 							+ "lastuser) "
 							+ "VALUES (?,?,?, "
 							+ "(SELECT COALESCE ((SELECT max(po2.position)+1 FROM po_parameters po2 WHERE po2.processtypeid=?),1)), "
-							+ "(SELECT stringkeyname FROM paramdef WHERE paramdef.id=?), "
 							+ "?)");
 				   	pStmt.setInt(1, processTypeID);
 				   	pStmt.setBoolean (2,compulsory);
 				   	pStmt.setInt(3, ids.getInt(i));
 				   	pStmt.setInt(4, processTypeID);
-				   	pStmt.setInt(5, ids.getInt(i));
-				   	pStmt.setInt(6, userID);
+				   	pStmt.setInt(5, userID);
 				   	pStmt.executeUpdate();
 				   	pStmt.close();
 				}

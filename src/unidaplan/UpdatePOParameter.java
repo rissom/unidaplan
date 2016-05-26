@@ -50,9 +50,9 @@ import org.json.JSONObject;
 	    
 		if (jsonIn.has("name")){
 		    try{
-				 newName=jsonIn.getJSONObject("name");
-				 language=JSONObject.getNames(newName)[0];
-				 value=newName.getString(language);
+				 newName = jsonIn.getJSONObject("name");
+				 language = JSONObject.getNames(newName)[0];
+				 value = newName.getString(language);
 			} catch (JSONException e) {
 				System.err.println("UpdatePOParameter: Error parsing ID-Field or comment");
 				response.setStatus(404);
@@ -64,19 +64,28 @@ import org.json.JSONObject;
 			try {
 			    dBconn.startDB();	   
 				// find the stringkey
-				pStmt=dBconn.conn.prepareStatement(
+				pStmt = dBconn.conn.prepareStatement(
 						"SELECT stringkeyname FROM po_parameters WHERE id=?");
 				pStmt.setInt(1,parameterID);
-				int stringKey=dBconn.getSingleIntValue(pStmt);
+				int stringKey = dBconn.getSingleIntValue(pStmt);
 				pStmt.close();
 				
 				// delete old entries in the same language
-				pStmt=dBconn.conn.prepareStatement(
-						"DELETE FROM stringtable WHERE language=? AND string_key=?");
-				pStmt.setString(1,language);
-				pStmt.setInt(2,stringKey);
-				pStmt.executeUpdate();
-				pStmt.close();
+				if (stringKey == 0){
+					stringKey = dBconn.createNewStringKey(value);
+					pStmt = dBconn.conn.prepareStatement(
+							"UPDATE po_parameters SET stringkeyname=?  WHERE id=?");
+					pStmt.setInt(1, stringKey);
+					pStmt.setInt(2, parameterID);
+					pStmt.executeUpdate();
+				}else{
+					pStmt = dBconn.conn.prepareStatement(
+							"DELETE FROM stringtable WHERE language=? AND string_key=?");
+					pStmt.setString(1,language);
+					pStmt.setInt(2,stringKey);
+					pStmt.executeUpdate();
+					pStmt.close();
+				} 
 				
 			
 				// create database entry for the new name
@@ -92,6 +101,7 @@ import org.json.JSONObject;
 				
 			} catch (SQLException e) {
 				System.err.println("UpdatePOParameter: Problems with SQL query");
+				e.printStackTrace();
 				status="SQL error";
 			} catch (Exception e) {
 				System.err.println("UpdatePOParameter: some error occured");

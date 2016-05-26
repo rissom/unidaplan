@@ -37,11 +37,25 @@ ng-class="{'1':'ok','2':'att','3':'failed'}[processCtrl.process.status]" >&nbsp;
 
 
 <h4>{{'Samples in process'|translate}}</h4>
-<span ng-repeat="sample in processCtrl.process.samples | orderBy:['trtype','name']">
-	<a ui-sref="sample({sampleID:sample.sampleid})">
-		{{processCtrl.getType(sample)}} {{sample.name}}</a><br/></span>
-<br />
-<br />
+<table class="table" style="width:auto">
+<thead>
+	<tr>
+		<td> {{'sample'|translate}}</td>
+		<td ng-repeat="field in processCtrl.process.fields"> {{field.namef()}} </td>
+	<tr>
+</thead>
+<tbody>
+	<tr ng-repeat="sample in processCtrl.process.samples | orderBy:['trtype','name']">
+		<td>
+			<a ui-sref="sample({sampleID:sample.sampleid})">
+				{{processCtrl.getType(sample)}} {{sample.name}}</a><br/></span>
+		</td>
+		<td ng-repeat="p in sample.parameters" ng-dblclick="p.editing=true"> 
+		 	<tparameter parameter = "p" pupdate="processCtrl.pupdate(parameter)"></tparameter>
+		</td>
+	</tr>
+</tbody>
+</table>
 <button class="btn btn-default" ng-click="processCtrl.openDialog()">
 	{{'Add/Remove samples'|translate}}
 </button>

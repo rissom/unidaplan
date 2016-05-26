@@ -29,7 +29,15 @@ function process($state,$stateParams,$translate,avSampleTypeService,types,$uibMo
 		promise.then (function(){reload()});
 	}
 	
-
+	
+	// add opid-field to all sample related parameters
+	for (var i = 0; i<this.process.samples.length; i++){
+		for (var j = 0; j<this.process.samples[i].parameters.length; j++){
+			this.process.samples[i].parameters[j].opid = this.process.samples[i].opid
+			this.process.samples[i].parameters[j].unit = this.process.fields[j].unit;
+			this.process.samples[i].parameters[j].unitf = this.process.fields[j].unitf;
+		}
+	}
   
 	this.openDialog = function () {
 	  
@@ -144,6 +152,14 @@ function process($state,$stateParams,$translate,avSampleTypeService,types,$uibMo
 		promise.then(function(){reload();});
   	};
   
+  	
+  	
+  	this.pupdate = function(parameter) {
+  		console.log("parameter",parameter)
+  		var promise = processService.savePOParameter(parameter);
+		promise.then(function(){reload();});
+  	}
+  	
   	
 	
 	this.upload = function(element) {

@@ -150,6 +150,17 @@
     <servlet-name>SaveSampleParameter</servlet-name>
     <url-pattern>/save-sample-parameter</url-pattern>
   </servlet-mapping>
+    
+  <servlet>
+    <description>Save a parameter for a sample</description>
+    <display-name>SavePOParameter</display-name>
+    <servlet-name>SavePOParameter</servlet-name>
+    <servlet-class>unidaplan.SavePOParameter</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SavePOParameter</servlet-name>
+    <url-pattern>/save-po-parameter</url-pattern>
+  </servlet-mapping>
   
   <servlet>
     <description>Change the status of an experiment</description>

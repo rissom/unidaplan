@@ -44,12 +44,13 @@ public class Process extends HttpServlet {
 		request.setCharacterEncoding("utf-8");
 		response.setCharacterEncoding("utf-8");
 		PrintWriter out = response.getWriter();
-		DBconnection dBconn=new DBconnection();
-		String privilege="n";
-		int processID=1;
-  	  	int processTypeID=1;
-  	  	int pnumber=0;
-  	  	JSONArray parametergrps=null;
+		DBconnection dBconn = new DBconnection();
+		String privilege = "n";
+		int processID = 1;
+  	  	int processTypeID = 1;
+  	  	int pnumber = 0;
+  	  	JSONArray parametergrps = null;
+  	  	JSONArray fields = null;
   	  	
   	  	try  {
   	  		processID=Integer.parseInt(request.getParameter("id")); 
@@ -112,9 +113,9 @@ public class Process extends HttpServlet {
 	  	  		pStmt.setInt(1, processID);
 	  	  		jsProcess= dBconn.jsonObjectFromPreparedStmt(pStmt);
 	  	  		if (jsProcess.length()>0) {
-	  	  			processTypeID=jsProcess.getInt("processtype");
-	  	  			pnumber=jsProcess.getInt("pnumber");
-	  	  			found=true;
+	  	  			processTypeID = jsProcess.getInt("processtype");
+	  	  			pnumber = jsProcess.getInt("pnumber");
+	  	  			found = true;
 	  	  			stringkeys.add(Integer.toString(jsProcess.getInt("pt_string_key")));
 	  	  		}else{
 	  	  			System.err.println("no such process");
@@ -144,7 +145,7 @@ public class Process extends HttpServlet {
 					+ "ORDER BY p_number LIMIT 1");
 					pStmt.setInt(1,pnumber);
 					pStmt.setInt(2,processTypeID);
-					JSONObject next= dBconn.jsonObjectFromPreparedStmt(pStmt);
+					JSONObject next = dBconn.jsonObjectFromPreparedStmt(pStmt);
 					if (next.length()>0) {
 					jsProcess.put("next",next); } 
 				} catch (SQLException e) {
@@ -193,13 +194,13 @@ public class Process extends HttpServlet {
 					parametergrps=dBconn.jsonArrayFromPreparedStmt(pStmt);
 					pStmt.close();
 				} catch (SQLException e) {
-					System.out.println("Problems with SQL query for parameters");
+					System.err.println("Problems with SQL query for parameters");
 					e.printStackTrace();
 				} catch (JSONException e){
-					System.out.println("Problems creating JSON for parameters");
+					System.err.println("Problems creating JSON for parameters");
 					e.printStackTrace();
 				} catch (Exception e) {
-					System.out.println("Strange Problems with the parameters");
+					System.err.println("Strange Problems with the parameters");
 					e.printStackTrace();
 				}
 				
@@ -318,26 +319,100 @@ public class Process extends HttpServlet {
 				}
 		    
 		    
-			    // get the assigned objects:
+			    // get sample related parameters
 			    try{
 			    	pStmt = dBconn.conn.prepareStatement(
-			    	"SELECT sp.sampleid, sn.name, sn.typeid  FROM samplesinprocess sp "
-			    	+"JOIN samplenames sn ON sp.sampleid=sn.id "
-			    	+"WHERE ProcessID=?");
+			    	  "SELECT " 
+			    	 +"COALESCE(po_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname, "
+			    	 +"COALESCE(po_parameters.description,paramdef.description) AS description, "
+			    	 +"  po_parameters.id, "
+					 +"	 hidden, "
+					 +"  compulsory, "
+					 +"  position, "
+					 +"  paramdef.stringkeyunit AS unit, "
+					 +"  paramdef.datatype, "
+					 +"  paramdef.format, "
+					 +"  paramdef.regex, "
+					 +"  paramdef.min, "
+					 +"  paramdef.max "
+					 +"FROM po_parameters "
+					 +"JOIN paramdef ON po_parameters.definition=paramdef.id "
+					 +"WHERE processtypeid = (SELECT processtypesid FROM processes WHERE id=?) "
+					 +"ORDER BY position ");
 			    	pStmt.setInt(1,processID);
-					JSONArray samples=dBconn.jsonArrayFromPreparedStmt(pStmt);
-					jsProcess.put("samples",samples);
-						
-				} catch (SQLException e) {
-					System.out.println("Problems with SQL query for parameters");
+					fields = dBconn.jsonArrayFromPreparedStmt(pStmt);
+					if (fields.length()>0){
+						for (int i=0 ; i<fields.length(); i++){
+							JSONObject field = fields.getJSONObject(i);
+			  	  			stringkeys.add(Integer.toString(field.getInt("description")));
+			  	  			stringkeys.add(Integer.toString(field.getInt("stringkeyname")));
+			  	  			if (field.has("unit")){
+			  	  				stringkeys.add(Integer.toString(field.getInt("unit")));
+			  	  			}
+						}
+					}
+					
+					jsProcess.put("fields",fields);
+			    } catch (SQLException e) {
+					System.err.println("Problems with SQL query for parameters");
 					e.printStackTrace();
 				} catch (JSONException e){
-					System.out.println("Problems creating JSON for parameters");
+					System.err.println("Problems creating JSON for parameters");
 					e.printStackTrace();
 				} catch (Exception e) {
-					System.out.println("Strange Problems with the parameters");
+					System.err.println("Strange Problems with the parameters");
 					e.printStackTrace();
 				}	  	
+			    
+			    // get the assigned objects 
+			    try{
+			    	pStmt = dBconn.conn.prepareStatement(
+			    	  "SELECT sp.sampleid, sn.name, sn.typeid, sp.id AS opid  "
+			    	+ "FROM samplesinprocess sp "
+			    	+ "JOIN samplenames sn ON sp.sampleid=sn.id "
+			    	+ "WHERE ProcessID = ?");
+			    	pStmt.setInt(1,processID);
+					JSONArray samples=dBconn.jsonArrayFromPreparedStmt(pStmt);
+					
+					
+				// get all corresponding sample related parameters
+					for (int i=0; i<samples.length(); i++ ){
+						JSONObject sample = samples.getJSONObject(i);
+				    	pStmt = dBconn.conn.prepareStatement(
+				    			"SELECT "
+				    			+ "asp.value, "
+				    			+ "paramdef.datatype, "
+				    			+ "pop.id AS parameterid "
+				    			+"FROM po_parameters pop "
+				    			+"LEFT JOIN acc_srp_parameters asp "
+				    			+"		ON asp.opid = ? AND asp.po_parameter_id=pop.id "
+				    			+"JOIN paramdef ON paramdef.id = pop.definition "
+				    			+"ORDER BY pop.position");
+				    	pStmt.setInt(1, sample.getInt("opid"));
+						JSONArray poParameters = dBconn.jsonArrayFromPreparedStmt(pStmt);
+						for (int j=0; j<poParameters.length(); j++ ){
+							JSONObject p = poParameters.getJSONObject(j);
+							if (p.has("datatype")){
+								int dt = p.getInt("datatype");
+								poParameters.getJSONObject(j).put("datatype", Unidatoolkit.Datatypes[dt]);
+							}
+						}
+						sample.put("parameters", poParameters);
+				    }
+					
+					jsProcess.put("samples",samples);
+
+				} catch (SQLException e) {
+					System.err.println("Problems with SQL query for parameters");
+					e.printStackTrace();
+				} catch (JSONException e){
+					System.err.println("Problems creating JSON for parameters");
+					e.printStackTrace();
+				} catch (Exception e) {
+					System.err.println("Strange Problems with the parameters");
+					e.printStackTrace();
+				}	  	
+			    
 		  	
 		    
 				// Find all corresponding files
@@ -382,4 +457,4 @@ public class Process extends HttpServlet {
   	  	}
 	dBconn.closeDB();
   }
-}
+};
