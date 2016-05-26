@@ -308,13 +308,13 @@ public class Process extends HttpServlet {
 					}	
 					jsProcess.put("parametergroups",parametergrps);
 				} catch (SQLException e) {
-					System.out.println("Problems with SQL query for parameters");
+					System.err.println("Problems with SQL query for parameters");
 					e.printStackTrace();
 				} catch (JSONException e){
-					System.out.println("Problems creating JSON for parameters");
+					System.err.println("Problems creating JSON for parameters");
 					e.printStackTrace();
 				} catch (Exception e) {
-					System.out.println("Strange Problems with the parameters");
+					System.err.println("Strange Problems with the parameters");
 					e.printStackTrace();
 				}
 		    

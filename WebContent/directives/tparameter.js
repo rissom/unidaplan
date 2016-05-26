@@ -14,8 +14,9 @@
 var tparameter = function() {
 	return {
 		restrict: 'E',
-		template: '{{parameter}}',
+		templateUrl: "directives/tparameter.html",
 		scope:{
+			pupdate:'&',
 			parameter:'='
 		},
 		controller: function(){},

@@ -28,9 +28,9 @@
 		<tr>
 			<td> {{'object'|translate}} </td>
 			<td ng-repeat="col in resultCtrl.result.headings" ng-click="resultCtrl.sortBy($index)">
-				<span ng-show="resultCtrl.currentSortColumn==$index && resultCtrl.currentSortDirection== 1">&#9660;</span>&nbsp;
-				<span ng-show="resultCtrl.currentSortColumn==$index && resultCtrl.currentSortDirection==-1">&#9650;</span>&nbsp;
-			 	{{col.namef()}} {{col.unitf()?'(':''}}{{col.unitf()}}{{col.unitf()?')':''}}
+			 	{{col.namef()}} {{col.unitf()?'(':''}}{{col.unitf()}}{{col.unitf()?')':''}}&nbsp;
+				<span ng-show="resultCtrl.currentSortColumn==$index && resultCtrl.currentSortDirection== 1">&#9660;</span>
+				<span ng-show="resultCtrl.currentSortColumn==$index && resultCtrl.currentSortDirection==-1">&#9650;</span>
 			</td>
 		</tr>
 	</thead>
@@ -38,7 +38,7 @@
 		<tr ng-repeat="row in resultCtrl.result.data">
 			<td> <a ui-sref="sample({sampleID:row.id})">{{resultCtrl.getType(row.type)}} {{row.name}} </a> </td>
 			<td ng-repeat="col in row.rowdata track by $index">
-			 	<tparameter parameter="col"></tparameter>
+			 	{{col}}
 			</td>
 		</tr>
 	</tbody>
@@ -61,7 +61,7 @@
 		<tr ng-repeat="row in resultCtrl.result.data">
 			<td> <a ui-sref="process({processID:row.id})">{{resultCtrl.getProcessType(row.type)}} {{row.name}} </a> </td>
 			<td ng-repeat="col in row.rowdata track by $index">
-			 	<tparameter parameter="col"></tparameter>
+			 	{{col}}
 			</td>
 		</tr>
 	</tbody>
@@ -84,7 +84,7 @@
 		<tr ng-repeat="row in resultCtrl.result.data">
 			<td> <a ui-sref="process({processID:row.id})">{{resultCtrl.getProcessType(row.type)}} {{row.name}} </a> </td>
 			<td ng-repeat="col in row.rowdata track by $index">
-			 	<tparameter parameter="col"></tparameter>
+			 	{{col}}
 			</td>
 		</tr>
 	</tbody>

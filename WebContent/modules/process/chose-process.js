@@ -21,7 +21,6 @@ function choseProcessController(restfactory,$state,ptypes,avProcessTypeService){
 	this.choseProcess = function() {
 		var promise = restfactory.GET("process-by-number?number="+thisController.pnumber+"&type="+thisController.processType.id);
 		promise.then( function(rest){
-			console.log(rest.data);
 			$state.go('process',{processID:rest.data.processid});	
 			},function(){
 				console.log("Error");
