@@ -43,12 +43,13 @@ import org.json.JSONObject;
 		    PreparedStatement pStmt = null;
 		    dBconn.startDB();
 		    
+		    // check privileges
 		    pStmt = dBconn.conn.prepareStatement("SELECT getSearchRights(vuserid:=?,vsearchid:=?)");
 		    pStmt.setInt(1,userID);
 		    pStmt.setInt(2,searchID);
-		    String rights=dBconn.getSingleStringValue(pStmt);
+		    String privilege = dBconn.getSingleStringValue(pStmt);
 		    
-		    if (rights.equals("w")){
+		    if (privilege.equals("w")){
 		    	
 				String table="";
 				String column="";

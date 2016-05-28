@@ -50,24 +50,34 @@ import org.json.JSONObject;
 	    try {  
 		    dBconn.startDB();
 	    	// get basic search data (id,name,owner,operation)
-
+		    
+		    
+		    // check privileges
+		    pStmt = dBconn.conn.prepareStatement("SELECT getSearchRights(vuserid:=?,vsearchid:=?)");
+		    pStmt.setInt(1,userID);
+		    pStmt.setInt(2,searchID);
+		    String privilege = dBconn.getSingleStringValue(pStmt);
+		    
+		    if (privilege.equals("w")){
 			
-			// get the searchparameters according to searchtype
-			for (int i=0; i<parameter.length();i++){
-				switch (jsonIn.getString("type")){
-					case "o" : table="searchobject";  col="otparameter";break;
-					case "p" : table="searchprocess"; col="pparameter"; break;
-					case "op" : table="searchpo";  	  col="poparameter"; break;
+				// get the searchparameters according to searchtype
+				for (int i=0; i<parameter.length();i++){
+					switch (jsonIn.getString("type")){
+						case "o" : table="searchobject";  col="otparameter";break;
+						case "p" : table="searchprocess"; col="pparameter"; break;
+						case "op" : table="searchpo";  	  col="poparameter"; break;
+					}
+					pStmt= dBconn.conn.prepareStatement("INSERT INTO "+table+
+							" (search,"+col+",lastchange,lastuser) VALUES (?,?,NOW(),?)");
+					pStmt.setInt(1, searchID);
+					pStmt.setInt(2, parameter.getInt(i));
+					pStmt.setInt(3, userID);
+					pStmt.executeUpdate();
+					pStmt.close();
 				}
-				pStmt= dBconn.conn.prepareStatement("INSERT INTO "+table+
-						" (search,"+col+",lastchange,lastuser) VALUES (?,?,NOW(),?)");
-				pStmt.setInt(1, searchID);
-				pStmt.setInt(2, parameter.getInt(i));
-				pStmt.setInt(3, userID);
-				pStmt.executeUpdate();
-				pStmt.close();
+		    } else {
+				response.setStatus(401);
 			}
-			
 		} catch (SQLException e) {
 			System.err.println("UpdateSearchParam: Problems with SQL query");
 			status="SQL error";

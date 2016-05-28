@@ -2,10 +2,12 @@ package unidaplan;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -17,9 +19,11 @@ import org.json.JSONObject;
 	      throws ServletException, IOException {		
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
+	    PreparedStatement pStmt = null;
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
 	    String status = "ok";
+	    String privilege = "n";
 
 	    JSONObject  jsonIn = null;	
 	    int searchID = -1;
@@ -36,8 +40,8 @@ import org.json.JSONObject;
 
 	    // get the input parameters
 	    try {
-	         operation=jsonIn.getBoolean("operation");
-	         searchID=jsonIn.getInt("searchid");
+	         operation = jsonIn.getBoolean("operation");
+	         searchID = jsonIn.getInt("searchid");
 		} catch (JSONException e) {
 			System.err.println("UpdateSearchOperation: Error parsing ID-Field or comment");
 			response.setStatus(404);
@@ -47,15 +51,27 @@ import org.json.JSONObject;
 	    
 		
 		try {
-		    dBconn.startDB();   
-			PreparedStatement pStmt= dBconn.conn.prepareStatement( 			
-					 "UPDATE searches SET (operation,lastuser)=(?,?) WHERE id=?");
-			pStmt.setBoolean(1,operation);
-			pStmt.setInt(2,userID);
-			pStmt.setInt(3, searchID);
-			pStmt.executeUpdate();
+		    dBconn.startDB();
+		    
+		    // Check privileges
+		    pStmt = dBconn.conn.prepareStatement( 	
+					"SELECT getSearchRights(vuserid:=?,vsearchid:=?)");
+			pStmt.setInt(1,userID);
+			pStmt.setInt(2,searchID);
+			privilege = dBconn.getSingleStringValue(pStmt);
 			pStmt.close();
-			
+						
+			if (privilege.equals("w")){
+
+		    
+				pStmt= dBconn.conn.prepareStatement( 			
+						 "UPDATE searches SET (operation,lastuser)=(?,?) WHERE id=?");
+				pStmt.setBoolean(1,operation);
+				pStmt.setInt(2,userID);
+				pStmt.setInt(3, searchID);
+				pStmt.executeUpdate();
+				pStmt.close();
+			}
 			
 		} catch (SQLException e) {
 			System.err.println("UpdateSearchOperation: Problems with SQL query");

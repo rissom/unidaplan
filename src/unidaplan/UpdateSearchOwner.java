@@ -2,10 +2,12 @@ package unidaplan;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,7 +18,7 @@ import org.json.JSONObject;
 	  public void doPut(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {		
 		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
+		int userID = authentificator.GetUserID(request,response);
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
 	    String status = "ok";
@@ -41,20 +43,31 @@ import org.json.JSONObject;
 			response.setStatus(404);
 		}
 	    
-	 	DBconnection dBconn=new DBconnection(); // initialize database
+	 	DBconnection dBconn = new DBconnection(); // initialize database
 	    PreparedStatement pStmt = null;
 	    
 		
 		try {
 		    dBconn.startDB();	   
 
-		    // find the stringkey
-			pStmt=dBconn.conn.prepareStatement(
-				"UPDATE searches SET owner=? WHERE searches.id=?");
-			pStmt.setInt(1,newOwner);
-			pStmt.setInt(2,searchID);
-			pStmt.executeUpdate();
-			pStmt.close();			
+		    // check privileges
+		    pStmt = dBconn.conn.prepareStatement("SELECT getSearchRights(vuserid:=?,vsearchid:=?)");
+		    pStmt.setInt(1,userID);
+		    pStmt.setInt(2,searchID);
+		    String privilege = dBconn.getSingleStringValue(pStmt);
+		    
+		    if (privilege.equals("w")){
+		    
+			    // find the stringkey
+				pStmt=dBconn.conn.prepareStatement(
+					"UPDATE searches SET owner=? WHERE searches.id=?");
+				pStmt.setInt(1,newOwner);
+				pStmt.setInt(2,searchID);
+				pStmt.executeUpdate();
+				pStmt.close();			
+			} else {
+				response.setStatus(401);
+			}
 		} catch (SQLException e) {
 			System.err.println("UpdateSearchOwner: Problems with SQL query");
 			response.setStatus(404);

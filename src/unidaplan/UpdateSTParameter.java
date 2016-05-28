@@ -60,27 +60,33 @@ import org.json.JSONObject;
 
 			try {
 			    dBconn.startDB();	   
-				// find the stringkey
-				pStmt=dBconn.conn.prepareStatement(
-						"SELECT stringkeyname FROM ot_parameters WHERE id=?");
-				pStmt.setInt(1,parameterID);
-				int stringKey=dBconn.getSingleIntValue(pStmt);
-				pStmt.close();
-				if (stringKey<1)
-				{
+			    
+			    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+			    
+					// find the stringkey
 					pStmt=dBconn.conn.prepareStatement(
-							"SELECT stringkeyname FROM paramdef WHERE id="
-							+ "(SELECT definition FROM ot_parameters WHERE id=?)");
+							"SELECT stringkeyname FROM ot_parameters WHERE id=?");
 					pStmt.setInt(1,parameterID);
-					int key=dBconn.getSingleIntValue(pStmt);
-					stringKey=dBconn.copyStringKey(key,userID,value); // new Stringkey with value as description, old entries are copyied
-					pStmt=dBconn.conn.prepareStatement(
-							"UPDATE ot_parameters SET stringkeyname = ? WHERE id=?");
-					pStmt.setInt(1,stringKey);
-					pStmt.setInt(2,parameterID);
-					pStmt.executeUpdate();
-				}
-				dBconn.addString(stringKey, language, value);
+					int stringKey=dBconn.getSingleIntValue(pStmt);
+					pStmt.close();
+					if (stringKey<1)
+					{
+						pStmt=dBconn.conn.prepareStatement(
+								"SELECT stringkeyname FROM paramdef WHERE id="
+								+ "(SELECT definition FROM ot_parameters WHERE id=?)");
+						pStmt.setInt(1,parameterID);
+						int key=dBconn.getSingleIntValue(pStmt);
+						stringKey=dBconn.copyStringKey(key,userID,value); // new Stringkey with value as description, old entries are copyied
+						pStmt=dBconn.conn.prepareStatement(
+								"UPDATE ot_parameters SET stringkeyname = ? WHERE id=?");
+						pStmt.setInt(1,stringKey);
+						pStmt.setInt(2,parameterID);
+						pStmt.executeUpdate();
+					}
+					dBconn.addString(stringKey, language, value);
+			    } else {
+			    	response.setStatus(401);
+			    }
 
 				
 			} catch (SQLException e) {
@@ -109,42 +115,47 @@ import org.json.JSONObject;
 
 			try {
 			    dBconn.startDB();	   
-				// find the stringkey
-				pStmt=dBconn.conn.prepareStatement(
-						"SELECT description FROM ot_parameters WHERE id=?");
-				pStmt.setInt(1,parameterID);
-				int stringKey=dBconn.getSingleIntValue(pStmt);
-				pStmt.close();
+			    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+	
+					// find the stringkey
+					pStmt=dBconn.conn.prepareStatement(
+							"SELECT description FROM ot_parameters WHERE id=?");
+					pStmt.setInt(1,parameterID);
+					int stringKey=dBconn.getSingleIntValue(pStmt);
+					pStmt.close();
+					
+					if (stringKey<1) { // no string key in database
+						if (newDescription.length()>0){	 //  and new value is not empty
+							pStmt=dBconn.conn.prepareStatement( // copy strings from parent type
+									"SELECT description FROM paramdef WHERE id="
+									+ "(SELECT definition FROM ot_parameters WHERE id=?)");
+							pStmt.setInt(1,parameterID);
+							int key=dBconn.getSingleIntValue(pStmt);
+							stringKey=dBconn.copyStringKey(key,userID,value); // new Stringkey with value as description, old entries are copyied
+							pStmt=dBconn.conn.prepareStatement(
+									"UPDATE ot_parameters SET description = ? WHERE id=?");
+							pStmt.setInt(1,stringKey);
+							pStmt.setInt(2,parameterID);
+							pStmt.executeUpdate();
+							dBconn.addStringSet(stringKey,newDescription);
+						}
+					} else { // there is a stringkey
+						if (newDescription.length()>0){
+							dBconn.addStringSet(stringKey,newDescription);
+						} else {
+							dBconn.removeStringKey(stringKey);
+							pStmt=dBconn.conn.prepareStatement(
+									"UPDATE ot_parameters SET description = ? WHERE id=?");
+							pStmt.setNull(1,java.sql.Types.INTEGER);
+							pStmt.setInt(2,parameterID);
+							pStmt.executeUpdate();
+							pStmt.close();
+						}
+					}
+				} else {
+			    	response.setStatus(401);
+			    }
 				
-				if (stringKey<1) { // no string key in database
-					if (newDescription.length()>0){	 //  and new value is not empty
-						pStmt=dBconn.conn.prepareStatement( // copy strings from parent type
-								"SELECT description FROM paramdef WHERE id="
-								+ "(SELECT definition FROM ot_parameters WHERE id=?)");
-						pStmt.setInt(1,parameterID);
-						int key=dBconn.getSingleIntValue(pStmt);
-						stringKey=dBconn.copyStringKey(key,userID,value); // new Stringkey with value as description, old entries are copyied
-						pStmt=dBconn.conn.prepareStatement(
-								"UPDATE ot_parameters SET description = ? WHERE id=?");
-						pStmt.setInt(1,stringKey);
-						pStmt.setInt(2,parameterID);
-						pStmt.executeUpdate();
-						dBconn.addStringSet(stringKey,newDescription);
-					}
-				} else { // there is a stringkey
-					if (newDescription.length()>0){
-						dBconn.addStringSet(stringKey,newDescription);
-					} else {
-						dBconn.removeStringKey(stringKey);
-						pStmt=dBconn.conn.prepareStatement(
-								"UPDATE ot_parameters SET description = ? WHERE id=?");
-						pStmt.setNull(1,java.sql.Types.INTEGER);
-						pStmt.setInt(2,parameterID);
-						pStmt.executeUpdate();
-						pStmt.close();
-					}
-				}
-			
 			} catch (SQLException e) {
 				System.err.println("UpdateSTParameter: Problems with SQL query");
 				e.printStackTrace();
@@ -159,15 +170,19 @@ import org.json.JSONObject;
 		
 		if (jsonIn.has("compulsory")){
 			try {
-			    dBconn.startDB();	   
-				Boolean compulsory=jsonIn.getBoolean("compulsory");
-				pStmt=dBconn.conn.prepareStatement(
-						"UPDATE ot_parameters SET (compulsory,lastchange,lastuser)=(?,NOW(),?) WHERE id=?");
-				pStmt.setBoolean(1, compulsory);
-				pStmt.setInt(2,userID);
-				pStmt.setInt(3,parameterID);				
-				pStmt.executeUpdate();
-				pStmt.close();	
+			    dBconn.startDB();	
+			    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+					Boolean compulsory=jsonIn.getBoolean("compulsory");
+					pStmt=dBconn.conn.prepareStatement(
+							"UPDATE ot_parameters SET (compulsory,lastchange,lastuser)=(?,NOW(),?) WHERE id=?");
+					pStmt.setBoolean(1, compulsory);
+					pStmt.setInt(2,userID);
+					pStmt.setInt(3,parameterID);				
+					pStmt.executeUpdate();
+					pStmt.close();	
+				} else {
+			    	response.setStatus(401);
+			    }
 			} catch (SQLException e){
 				System.err.println("UpdateSTParameter: SQL error reading compulsory field");
 				status="SQL error, compulsory field";
@@ -184,15 +199,19 @@ import org.json.JSONObject;
 		
 		if (jsonIn.has("hidden")){
 			try {
-			    dBconn.startDB();	   
-				Boolean hidden=jsonIn.getBoolean("hidden");
-				pStmt=dBconn.conn.prepareStatement(
-						"UPDATE ot_parameters SET (hidden,lastchange,lastuser)=(?,NOW(),?) WHERE id=?");
-				pStmt.setBoolean(1, hidden);
-				pStmt.setInt(2,userID);
-				pStmt.setInt(3,parameterID);
-				pStmt.executeUpdate();
-				pStmt.close();	
+			    dBconn.startDB();
+			    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+					Boolean hidden=jsonIn.getBoolean("hidden");
+					pStmt=dBconn.conn.prepareStatement(
+							"UPDATE ot_parameters SET (hidden,lastchange,lastuser)=(?,NOW(),?) WHERE id=?");
+					pStmt.setBoolean(1, hidden);
+					pStmt.setInt(2,userID);
+					pStmt.setInt(3,parameterID);
+					pStmt.executeUpdate();
+					pStmt.close();
+			    } else {
+			    	response.setStatus(401);
+			    }
 			} catch (SQLException e){
 				System.err.println("UpdateSTParameter: SQL error reading hidden field");
 				status="SQL error, hidden field";
@@ -209,16 +228,21 @@ import org.json.JSONObject;
 		
 		if (jsonIn.has("id_field")){
 			try {
-			    dBconn.startDB();	   
-				Boolean idField=jsonIn.getBoolean("id_field");
-				if (idField){
-					pStmt=dBconn.conn.prepareStatement(
-							"UPDATE ot_parameters SET (id_field,parametergroup,lastuser)=(TRUE,NULL,?) WHERE id=?");
-					pStmt.setInt(1,userID);
-					pStmt.setInt(2,parameterID);	
-				} 
-				pStmt.executeUpdate();
-				pStmt.close();	
+			    dBconn.startDB();
+			    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+
+					Boolean idField=jsonIn.getBoolean("id_field");
+					if (idField){
+						pStmt=dBconn.conn.prepareStatement(
+								"UPDATE ot_parameters SET (id_field,parametergroup,lastuser)=(TRUE,NULL,?) WHERE id=?");
+						pStmt.setInt(1,userID);
+						pStmt.setInt(2,parameterID);	
+					} 
+					pStmt.executeUpdate();
+					pStmt.close();	
+			    } else {
+			    	response.setStatus(401);
+			    }
 			} catch (SQLException e){
 				System.err.println("UpdateSTParameter: SQL error reading id_field");
 				status="SQL error, id_field";

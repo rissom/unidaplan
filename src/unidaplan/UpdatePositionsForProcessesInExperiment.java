@@ -20,11 +20,10 @@ import org.json.JSONException;
 	      throws ServletException, IOException {		
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
-		userID=userID+1;
-		userID=userID-1;
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
 	    String status = "ok";
+		String privilege = "n";
 
 	    JSONArray  jsonIn = null;	    
 	    try {
@@ -37,20 +36,40 @@ import org.json.JSONException;
 		response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
 
-	 	DBconnection DBconn=new DBconnection();
-	    PreparedStatement pstmt = null;
+	 	DBconnection dBconn=new DBconnection();
+	    PreparedStatement pStmt = null;
 	    
 		
 		try {	
-		    DBconn.startDB();	   
-			pstmt= DBconn.conn.prepareStatement(  
-					"UPDATE exp_plan_processes SET position=? WHERE id=?");
-				for (int i=0; i<jsonIn.length();i++){
-					pstmt.setInt(1, jsonIn.getJSONObject(i).getInt("position"));
-					pstmt.setInt(2, jsonIn.getJSONObject(i).getInt("id"));
-					pstmt.addBatch();
-				}
-			pstmt.executeBatch();
+		    dBconn.startDB();
+			for (int i=0; i<jsonIn.length();i++){
+				
+				// get corresponding experimentID
+				pStmt = dBconn.conn.prepareStatement(  
+							"SELECT expp_id FROM exp_plan_processes WHERE id=?");
+				pStmt.setInt(1, jsonIn.getJSONObject(i).getInt("id"));
+				int experimentID = dBconn.getSingleIntValue(pStmt);
+				pStmt.close();
+
+			    
+			    // check privileges
+			    pStmt = dBconn.conn.prepareStatement( 	
+						"SELECT getExperimentRights(vuserid:=?,vexperimentid:=?)");
+				pStmt.setInt(1,userID);
+				pStmt.setInt(2,experimentID);
+				privilege = dBconn.getSingleStringValue(pStmt);
+				pStmt.close();
+					
+				if (privilege.equals("w")){
+					pStmt = dBconn.conn.prepareStatement(  
+						"UPDATE exp_plan_processes SET position=? WHERE id=?");
+					pStmt.setInt(1, jsonIn.getJSONObject(i).getInt("position"));
+					pStmt.setInt(2, jsonIn.getJSONObject(i).getInt("id"));
+					pStmt.executeUpdate();
+				} else {
+			    	response.setStatus(401);
+			    }
+			}
 
 
 		} catch (SQLException e) {
@@ -64,7 +83,7 @@ import org.json.JSONException;
 			status="error";
 		}	
 		
-		DBconn.closeDB();
+		dBconn.closeDB();
 
 		
     // tell client that everything is fine

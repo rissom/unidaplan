@@ -20,7 +20,7 @@ import org.json.JSONObject;
 		
 		Authentificator authentificator = new Authentificator();
 		String status="ok";
-		int userID=authentificator.GetUserID(request,response);
+		int userID = authentificator.GetUserID(request,response);
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
 	    JSONObject  jsonIn = null;
@@ -40,45 +40,51 @@ import org.json.JSONObject;
 	    int stringkey=0;
 	    String newValue = null;
 	    String lang = null;
-		DBconnection dBconn=new DBconnection();
 	    PreparedStatement pStmt = null;
 
+		DBconnection dBconn=new DBconnection();
+
+
 	    try {
-		    dBconn.startDB();	   
-			objectTypeID=jsonIn.getInt("sampletypeid");
-			String field=jsonIn.getString("field");
-			lang=jsonIn.getString("lang");
-			newValue=jsonIn.getString("newvalue");
-			
-			pStmt= dBconn.conn.prepareStatement( 			
-					 "SELECT string_key,description FROM objecttypes WHERE objecttypes.id=?");
-			pStmt.setInt(1,  objectTypeID);
-			JSONObject sampleType=dBconn.jsonObjectFromPreparedStmt(pStmt);
-//			System.out.println("st: "+sampleType);
-			
-			if (field.equalsIgnoreCase("name")) { 
-				stringkey=sampleType.getInt("string_key");
-				dBconn.addString(stringkey, lang, newValue);
-			}
-			
-			if (field.equalsIgnoreCase("description")){
-				if (sampleType.has("description")){
-					// if a stringkey exists: try to get id of stringtable field.
-					stringkey=sampleType.getInt("description");
-					dBconn.addString(stringkey, lang, newValue);
-				}else{
-					// We have no stringkey
-					stringkey=dBconn.createNewStringKey(newValue);
-					dBconn.addString(stringkey, lang, newValue);
-					pStmt= dBconn.conn.prepareStatement( 			
-							 "UPDATE objecttypes SET description=? WHERE id=?");
-					pStmt.setInt(1, stringkey);
-					pStmt.setInt(2, objectTypeID);
-					pStmt.executeUpdate();
-					pStmt.close();
-				} 	   
-			}
+		    dBconn.startDB();
+		    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){		    
+
+				objectTypeID=jsonIn.getInt("sampletypeid");
+				String field=jsonIn.getString("field");
+				lang=jsonIn.getString("lang");
+				newValue=jsonIn.getString("newvalue");
 				
+				pStmt= dBconn.conn.prepareStatement( 			
+						 "SELECT string_key,description FROM objecttypes WHERE objecttypes.id=?");
+				pStmt.setInt(1,  objectTypeID);
+				JSONObject sampleType=dBconn.jsonObjectFromPreparedStmt(pStmt);
+	//			System.out.println("st: "+sampleType);
+				
+				if (field.equalsIgnoreCase("name")) { 
+					stringkey=sampleType.getInt("string_key");
+					dBconn.addString(stringkey, lang, newValue);
+				}
+				
+				if (field.equalsIgnoreCase("description")){
+					if (sampleType.has("description")){
+						// if a stringkey exists: try to get id of stringtable field.
+						stringkey=sampleType.getInt("description");
+						dBconn.addString(stringkey, lang, newValue);
+					}else{
+						// We have no stringkey
+						stringkey=dBconn.createNewStringKey(newValue);
+						dBconn.addString(stringkey, lang, newValue);
+						pStmt= dBconn.conn.prepareStatement( 			
+								 "UPDATE objecttypes SET description=? WHERE id=?");
+						pStmt.setInt(1, stringkey);
+						pStmt.setInt(2, objectTypeID);
+						pStmt.executeUpdate();
+						pStmt.close();
+					} 	   
+				}
+		    } else {
+		    	response.setStatus(401);
+		    }
 			dBconn.closeDB();
 			
 			

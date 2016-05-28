@@ -2,10 +2,12 @@ package unidaplan;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,18 +35,24 @@ import org.json.JSONObject;
 	    
 		
 		try {
-		    dBconn.startDB();	   
+		    dBconn.startDB();
+		    
+		    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+
 		
-			// create database entry for the new name
-			pStmt= dBconn.conn.prepareStatement( 			
-					 "UPDATE possible_values "
-					+"SET (string, lastchange, lastuser) = (?,NOW(),?) "
-					+"WHERE id=?");
-			pStmt.setString(1, jsonIn.getString("newvalue"));
-			pStmt.setInt(2,userID);
-			pStmt.setInt(3, jsonIn.getInt("id"));
-			pStmt.executeUpdate();
-			pStmt.close();
+				// create database entry for the new name
+				pStmt= dBconn.conn.prepareStatement( 			
+						 "UPDATE possible_values "
+						+"SET (string, lastchange, lastuser) = (?,NOW(),?) "
+						+"WHERE id=?");
+				pStmt.setString(1, jsonIn.getString("newvalue"));
+				pStmt.setInt(2,userID);
+				pStmt.setInt(3, jsonIn.getInt("id"));
+				pStmt.executeUpdate();
+				pStmt.close();
+		    } else {
+		    	response.setStatus(401);
+		    }
 			
 		} catch (SQLException e) {
 			System.err.println("UpdateSearchName: Problems with SQL query");

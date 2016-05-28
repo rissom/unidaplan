@@ -57,46 +57,57 @@ import org.json.JSONObject;
 	 	DBconnection dBconn=new DBconnection();
 	    try{   
 		    dBconn.startDB();
+		    
+		    // check privileges
+		    pStmt = dBconn.conn.prepareStatement("SELECT getSearchRights(vuserid:=?,vsearchid:=?)");
+		    pStmt.setInt(1,userID);
+		    pStmt.setInt(2,searchID);
+		    String privilege = dBconn.getSingleStringValue(pStmt);
+		    
+		    if (privilege.equals("w")){
 
-		    // delete existing rights
-		    pStmt= dBconn.conn.prepareStatement("DELETE FROM rightssearchgroups WHERE searchid=?");
-		    pStmt.setInt(1, searchID);
-		    pStmt.executeUpdate();
-		    pStmt.close();
-		    
-		    pStmt= dBconn.conn.prepareStatement("DELETE FROM rightssearchuser WHERE searchid=?");
-		    pStmt.setInt(1, searchID);
-		    pStmt.executeUpdate();
-		    pStmt.close();
-	 	
-		    // Insert new rights
-		    
-		    // for groups
-		    if (groups!=null){
-			    pStmt= dBconn.conn.prepareStatement("INSERT INTO rightssearchgroups (groupid,searchid,permission,lastuser) "
-			    		+ "VALUES  (?,?,'r',?)");
-			    for (int i=0; i<groups.length(); i++){
-			    	 pStmt.setInt(1, groups.getInt(i));
-			    	 pStmt.setInt(2, searchID);
-			    	 pStmt.setInt(3, userID);
-			    	 pStmt.addBatch();
-			    }
-			    pStmt.executeBatch();
+			    // delete existing rights
+			    pStmt= dBconn.conn.prepareStatement("DELETE FROM rightssearchgroups WHERE searchid=?");
+			    pStmt.setInt(1, searchID);
+			    pStmt.executeUpdate();
 			    pStmt.close();
-		    }
-		    
-		    if (users!=null){
-			    // for users
-			    pStmt= dBconn.conn.prepareStatement("INSERT INTO rightssearchuser (userid,searchid,permission,lastuser) "
-			    		+ "VALUES  (?,?,'r',?)");
-			    for (int i=0; i<users.length(); i++){
-			    	 pStmt.setInt(1, users.getInt(i));
-			    	 pStmt.setInt(2, searchID);
-			    	 pStmt.setInt(3, userID);
-			    	 pStmt.addBatch();
+			    
+			    pStmt= dBconn.conn.prepareStatement("DELETE FROM rightssearchuser WHERE searchid=?");
+			    pStmt.setInt(1, searchID);
+			    pStmt.executeUpdate();
+			    pStmt.close();
+		 	
+			    // Insert new rights
+			    
+			    // for groups
+			    if (groups!=null){
+				    pStmt= dBconn.conn.prepareStatement("INSERT INTO rightssearchgroups (groupid,searchid,permission,lastuser) "
+				    		+ "VALUES  (?,?,'r',?)");
+				    for (int i=0; i<groups.length(); i++){
+				    	 pStmt.setInt(1, groups.getInt(i));
+				    	 pStmt.setInt(2, searchID);
+				    	 pStmt.setInt(3, userID);
+				    	 pStmt.addBatch();
+				    }
+				    pStmt.executeBatch();
+				    pStmt.close();
 			    }
-			    pStmt.executeBatch();
-		    }
+			    
+			    if (users!=null){
+				    // for users
+				    pStmt= dBconn.conn.prepareStatement("INSERT INTO rightssearchuser (userid,searchid,permission,lastuser) "
+				    		+ "VALUES  (?,?,'r',?)");
+				    for (int i=0; i<users.length(); i++){
+				    	 pStmt.setInt(1, users.getInt(i));
+				    	 pStmt.setInt(2, searchID);
+				    	 pStmt.setInt(3, userID);
+				    	 pStmt.addBatch();
+				    }
+				    pStmt.executeBatch();
+			    }
+		    } else {
+				response.setStatus(401);
+			}
 		   
 	    } catch (SQLException e) {
 			System.err.println("UpdateSearchRights: Problems with SQL query");

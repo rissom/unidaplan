@@ -86,7 +86,6 @@ import org.json.JSONObject;
 	
 		 	
 		 	try {	
-			    dBconn.startDB();	   
 			    // Select p_parameter id
 			    pStmt = dBconn.conn.prepareStatement( 			
 						 "SELECT pp.id FROM processes "
@@ -130,6 +129,8 @@ import org.json.JSONObject;
 				System.err.println("SaveSampleParameter: Strange Problems");
 				status="Strange Problems";
 			}
+	    } else {
+	    	response.setStatus(401);
 	    }
 		
 		dBconn.closeDB();

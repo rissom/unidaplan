@@ -58,36 +58,38 @@ import org.json.JSONObject;
 				response.setStatus(404);
 			}
 		   
-	
-		    
-			
 			try {
-			    dBconn.startDB();	   
-				// find the stringkey
-				pStmt=dBconn.conn.prepareStatement(
-						"SELECT stringkeyname FROM p_parameters WHERE id=?");
-				pStmt.setInt(1,parameterID);
-				int stringKey=dBconn.getSingleIntValue(pStmt);
-				pStmt.close();
-				
-				// delete old entries in the same language
-				pStmt=dBconn.conn.prepareStatement(
-						"DELETE FROM stringtable WHERE language=? AND string_key=?");
-				pStmt.setString(1,language);
-				pStmt.setInt(2,stringKey);
-				pStmt.executeUpdate();
-				pStmt.close();
-				
-			
-				// create database entry for the new name
-				pStmt= dBconn.conn.prepareStatement( 			
-						 "INSERT INTO stringtable VALUES(default,?,?,?,NOW(),?)");
-				pStmt.setInt(1,stringKey);
-				pStmt.setString(2, language);
-				pStmt.setString(3, value);
-				pStmt.setInt(4,userID);
-				pStmt.executeUpdate();
-				pStmt.close();
+			    dBconn.startDB();
+			    
+			    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+
+					// find the stringkey
+					pStmt=dBconn.conn.prepareStatement(
+							"SELECT stringkeyname FROM p_parameters WHERE id=?");
+					pStmt.setInt(1,parameterID);
+					int stringKey=dBconn.getSingleIntValue(pStmt);
+					pStmt.close();
+					
+					// delete old entries in the same language
+					pStmt=dBconn.conn.prepareStatement(
+							"DELETE FROM stringtable WHERE language=? AND string_key=?");
+					pStmt.setString(1,language);
+					pStmt.setInt(2,stringKey);
+					pStmt.executeUpdate();
+					pStmt.close();
+					
+					// create database entry for the new name
+					pStmt= dBconn.conn.prepareStatement( 			
+							 "INSERT INTO stringtable VALUES(default,?,?,?,NOW(),?)");
+					pStmt.setInt(1,stringKey);
+					pStmt.setString(2, language);
+					pStmt.setString(3, value);
+					pStmt.setInt(4,userID);
+					pStmt.executeUpdate();
+					pStmt.close();
+			    } else {
+			    	response.setStatus(401);
+			    }
 				
 				
 			} catch (SQLException e) {
@@ -102,13 +104,18 @@ import org.json.JSONObject;
 		if (jsonIn.has("compulsory")){
 			try {
 			    dBconn.startDB();	
-				boolean compulsory=jsonIn.getBoolean("compulsory");
-				pStmt=dBconn.conn.prepareStatement(
-						"UPDATE p_parameters SET compulsory=? WHERE id=?");
-				pStmt.setBoolean(1, compulsory);
-				pStmt.setInt(2,parameterID);
-				pStmt.executeUpdate();
-				pStmt.close();	
+			    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+
+					boolean compulsory=jsonIn.getBoolean("compulsory");
+					pStmt=dBconn.conn.prepareStatement(
+							"UPDATE p_parameters SET compulsory=? WHERE id=?");
+					pStmt.setBoolean(1, compulsory);
+					pStmt.setInt(2,parameterID);
+					pStmt.executeUpdate();
+					pStmt.close();	
+			    } else {
+			    	response.setStatus(401);
+			    }
 			} catch (SQLException e){
 				System.err.println("UpdatePTParameter: SQL error reading compulsory field");
 				status="SQL error, compulsory field";
@@ -137,43 +144,47 @@ import org.json.JSONObject;
 			}
 
 			try {
-			    dBconn.startDB();	   
-				// find the stringkey
-				pStmt=dBconn.conn.prepareStatement(
-						"SELECT description FROM p_parameters WHERE id=?");
-				pStmt.setInt(1,parameterID);
-				int stringKey=dBconn.getSingleIntValue(pStmt);
-				pStmt.close();
-				
-				if (stringKey<1) { // no string key in database
-					if (newDescription.length()>0){	 //  and new value is not empty
-						pStmt=dBconn.conn.prepareStatement( // copy strings from parent type
-								"SELECT description FROM paramdef WHERE id="
-								+ "(SELECT definition FROM p_parameters WHERE id=?)");
-						pStmt.setInt(1,parameterID);
-						int key=dBconn.getSingleIntValue(pStmt);
-						stringKey=dBconn.copyStringKey(key,userID,value); // new Stringkey with value as description, old entries are copyied
-						pStmt=dBconn.conn.prepareStatement(
-								"UPDATE p_parameters SET description = ? WHERE id=?");
-						pStmt.setInt(1,stringKey);
-						pStmt.setInt(2,parameterID);
-						pStmt.executeUpdate();
-						dBconn.addStringSet(stringKey,newDescription);
-					}
-				} else { // there is a stringkey
-					if (newDescription.length()>0){
-						dBconn.addStringSet(stringKey,newDescription);
-					} else {
-						dBconn.removeStringKey(stringKey);
-						pStmt=dBconn.conn.prepareStatement(
-								"UPDATE p_parameters SET description = ? WHERE id=?");
-						pStmt.setNull(1,java.sql.Types.INTEGER);
-						pStmt.setInt(2,parameterID);
-						pStmt.executeUpdate();
-						pStmt.close();
-					}
-				}
+			    dBconn.startDB();
+			    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
 
+				   	// find the stringkey
+					pStmt=dBconn.conn.prepareStatement(
+							"SELECT description FROM p_parameters WHERE id=?");
+					pStmt.setInt(1,parameterID);
+					int stringKey=dBconn.getSingleIntValue(pStmt);
+					pStmt.close();
+					
+					if (stringKey<1) { // no string key in database
+						if (newDescription.length()>0){	 //  and new value is not empty
+							pStmt=dBconn.conn.prepareStatement( // copy strings from parent type
+									"SELECT description FROM paramdef WHERE id="
+									+ "(SELECT definition FROM p_parameters WHERE id=?)");
+							pStmt.setInt(1,parameterID);
+							int key=dBconn.getSingleIntValue(pStmt);
+							stringKey=dBconn.copyStringKey(key,userID,value); // new Stringkey with value as description, old entries are copyied
+							pStmt=dBconn.conn.prepareStatement(
+									"UPDATE p_parameters SET description = ? WHERE id=?");
+							pStmt.setInt(1,stringKey);
+							pStmt.setInt(2,parameterID);
+							pStmt.executeUpdate();
+							dBconn.addStringSet(stringKey,newDescription);
+						}
+					} else { // there is a stringkey
+						if (newDescription.length()>0){
+							dBconn.addStringSet(stringKey,newDescription);
+						} else {
+							dBconn.removeStringKey(stringKey);
+							pStmt=dBconn.conn.prepareStatement(
+									"UPDATE p_parameters SET description = ? WHERE id=?");
+							pStmt.setNull(1,java.sql.Types.INTEGER);
+							pStmt.setInt(2,parameterID);
+							pStmt.executeUpdate();
+							pStmt.close();
+						}
+					}		
+				} else {
+			    	response.setStatus(401);
+			    }
 				
 			} catch (SQLException e) {
 				System.err.println("UpdateSTParameter: Problems with SQL query");
@@ -190,14 +201,19 @@ import org.json.JSONObject;
 		
 		if (jsonIn.has("hidden")){
 			try {
-			    dBconn.startDB();	   
-				boolean hidden=jsonIn.getBoolean("hidden");
-				pStmt=dBconn.conn.prepareStatement(
-						"UPDATE p_parameters SET hidden=? WHERE id=?");
-				pStmt.setBoolean(1, hidden);
-				pStmt.setInt(2,parameterID);
-				pStmt.executeUpdate();
-				pStmt.close();	
+			    dBconn.startDB();	
+			    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+
+					boolean hidden=jsonIn.getBoolean("hidden");
+					pStmt=dBconn.conn.prepareStatement(
+							"UPDATE p_parameters SET hidden=? WHERE id=?");
+					pStmt.setBoolean(1, hidden);
+					pStmt.setInt(2,parameterID);
+					pStmt.executeUpdate();
+					pStmt.close();	
+			    } else {
+			    	response.setStatus(401);
+			    }
 			} catch (SQLException e){
 				System.err.println("UpdatePTParameter: SQL error reading hidden field");
 				status="SQL error, hidden field";

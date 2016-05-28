@@ -59,7 +59,7 @@ import org.json.JSONObject;
 			    
 			    // Check privileges
 			    pStmt = dBconn.conn.prepareStatement( 	
-						"SELECT getExperimentRights(vuserid:=?,vexperimentid:=?)");
+						"SELECT getSearchRights(vuserid:=?,vsearchid:=?)");
 				pStmt.setInt(1,userID);
 				pStmt.setInt(2,searchID);
 				privilege = dBconn.getSingleStringValue(pStmt);
@@ -85,7 +85,7 @@ import org.json.JSONObject;
 					}
 					pStmt.executeBatch();
 					pStmt.close();
-				}else{
+				} else {
 					response.setStatus(401);
 				}
 			} catch (JSONException e) {

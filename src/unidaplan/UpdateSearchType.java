@@ -2,6 +2,7 @@ package unidaplan;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -46,29 +47,41 @@ import org.json.JSONObject;
 		}
 
 	 	DBconnection dBconn=new DBconnection();
-	    	 	
 	 	
-	    // update type
 	    try{
 		    dBconn.startDB();
-		    pStmt= dBconn.conn.prepareStatement(
-		    		"SELECT owner FROM searches WHERE id=?");
-		    pStmt.setInt(1, searchID);
-		    int owner= dBconn.getSingleIntValue(pStmt);
-		    pStmt.close();
-		    int admins=1;
-		    if (userID==owner || Unidatoolkit.isMemberOfGroup(userID,admins,dBconn)){
+	 	
+		 	 // check privileges
+		    pStmt = dBconn.conn.prepareStatement("SELECT getSearchRights(vuserid:=?,vsearchid:=?)");
+		    pStmt.setInt(1,userID);
+		    pStmt.setInt(2,searchID);
+		    String privilege = dBconn.getSingleStringValue(pStmt);
+		    
+		    if (privilege.equals("w")){	 	
+		 	
+			    // update type
+		 
+			    
 			    pStmt= dBconn.conn.prepareStatement(
-			    		"UPDATE searches SET (type,lastchange,lastuser)=(?,NOW(),?) WHERE id=?");
-			    pStmt.setInt(1, newType);
-			    pStmt.setInt(2, userID);
-			    pStmt.setInt(3, searchID);
-			    pStmt.executeUpdate();
+			    		"SELECT owner FROM searches WHERE id=?");
+			    pStmt.setInt(1, searchID);
+			    int owner= dBconn.getSingleIntValue(pStmt);
 			    pStmt.close();
-			    
-			    //TODO: Delete all criteria and output parameters
-			    
-		    }
+			    int admins=1;
+			    if (userID==owner || Unidatoolkit.isMemberOfGroup(userID,admins,dBconn)){
+				    pStmt= dBconn.conn.prepareStatement(
+				    		"UPDATE searches SET (type,lastchange,lastuser)=(?,NOW(),?) WHERE id=?");
+				    pStmt.setInt(1, newType);
+				    pStmt.setInt(2, userID);
+				    pStmt.setInt(3, searchID);
+				    pStmt.executeUpdate();
+				    pStmt.close();
+				    
+				    //TODO: Delete all criteria and output parameters
+			    }
+		    } else {
+				response.setStatus(401);
+			}
 	    } catch (SQLException e) {
 			System.err.println("UpdateSearchType: Problems with SQL query for deletion");
 			status="error";
@@ -76,6 +89,7 @@ import org.json.JSONObject;
 			System.err.println("UpdateSearchType: Strange Problems deleting old parameter");
 			status="error";
 		}
+	   
 		
 			
 		try{

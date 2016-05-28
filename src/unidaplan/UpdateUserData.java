@@ -56,7 +56,7 @@ public class UpdateUserData extends HttpServlet {
 			    PreparedStatement pStmt = null;
 			    dBconn.startDB();
 			    
-			  	if (dataUserID==userID || Unidatoolkit.isMemberOfGroup(userID, 1, dBconn)){
+			  	if (dataUserID==userID || Unidatoolkit.userHasAdminRights(userID, dBconn)){
 
 				    
 				    // update preferred language
@@ -116,7 +116,9 @@ public class UpdateUserData extends HttpServlet {
 					   	pStmt.executeUpdate();
 				    }
 				  
-			  	}
+			  	} else {
+			    	response.setStatus(401);
+			    }
 			    dBconn.closeDB();
 				
 			} catch (SQLException e) {

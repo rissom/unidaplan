@@ -49,15 +49,13 @@ import org.json.JSONObject;
 			response.setStatus(404);
 		}
 	    
-	 	DBconnection dBconn=new DBconnection();
+	 	DBconnection dBconn = new DBconnection();
 	    PreparedStatement pStmt = null;
 	    
 		
-		try {
-		    dBconn.startDB();	   
-		    
+		try {		    
+			
 		    // check privileges
-		    
 	        dBconn.startDB();
 	        pStmt= dBconn.conn.prepareStatement( 	
 					"  SELECT exp_plan_processes.expp_id FROM exp_plan_steps "
