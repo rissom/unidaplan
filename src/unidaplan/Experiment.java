@@ -259,6 +259,10 @@ public class Experiment extends HttpServlet {
 								break;
 							case 8:
 								datatype = "checkbox";
+								if (tParam.has("value")) {
+									Boolean v = tParam.getString("value").equals("1");
+									tParam.put("value", v);								
+								}
 								break;
 							case 9:
 								datatype = "timestamp";

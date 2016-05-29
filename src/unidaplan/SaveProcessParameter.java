@@ -212,7 +212,7 @@ import org.json.JSONObject;
 			    			pStmt.setInt(2, parameterID); 
 					    	pStmt.setString(3, jsonIn.getString("value"));
 					    	pStmt.setInt(4, userID);
-					    	id=dBconn.getSingleIntValue(pStmt);
+					    	id = dBconn.getSingleIntValue(pStmt);
 					   		pStmt.close();
 			    		}
 			    		break;
@@ -228,8 +228,23 @@ import org.json.JSONObject;
 		        			pStmt.setTimestamp(3, (Timestamp) ts);
 		        			pStmt.setInt(4, jsonIn.getInt("tz")); //Timezone in Minutes
 		        			pStmt.setInt(5, userID);
+					    	id = dBconn.getSingleIntValue(pStmt);
+					   		pStmt.close();
 		        		}
 					    break;
+					    
+		        case 8:	if (jsonIn.has("value") && !jsonIn.isNull("value") ){
+    				pStmt= dBconn.conn.prepareStatement( 			// Boolean is saved as integer
+    						"INSERT INTO p_integer_data (ProcessID, P_Parameter_ID, "
+    						+"Value, lastUser) VALUES(?,?,?,?) RETURNING ID");
+		   			pStmt.setInt(1, processID);
+			        pStmt.setInt(2, parameterID);
+		   			pStmt.setInt(3, jsonIn.getBoolean("value")?1:0);
+		   			pStmt.setInt(4, userID);
+		   			id = dBconn.getSingleIntValue(pStmt);
+		   	   		pStmt.close();
+    			}
+	   			break;
 				   
 		        case 9: if (jsonIn.has("value") && !jsonIn.isNull("date")){ 
 		        			pStmt= dBconn.conn.prepareStatement( 			// Timestamp data	
@@ -243,6 +258,8 @@ import org.json.JSONObject;
 		        			pStmt.setNull(3, java.sql.Types.TIMESTAMP);
 		        			pStmt.setInt(4, jsonIn.getInt("tz")); //Timezone in Minutes
 		        			pStmt.setInt(5, userID);
+		        			id = dBconn.getSingleIntValue(pStmt);
+				   	   		pStmt.close();
 		       			}
 					    break;
 		        case 10: if (jsonIn.has("value") && !jsonIn.isNull("value")){ 
@@ -252,6 +269,8 @@ import org.json.JSONObject;
 					       	pStmt.setInt(2, parameterID);
 					       	pStmt.setString(3, jsonIn.getString("value"));
 					       	pStmt.setInt(4, userID);
+					    	id = dBconn.getSingleIntValue(pStmt);
+				   	   		pStmt.close();
 		        		}
 						break;
 		        case 11: if (jsonIn.has("value") && !jsonIn.isNull("value")){ 
@@ -261,6 +280,8 @@ import org.json.JSONObject;
 		        			pStmt.setInt(2, parameterID);
 		        			pStmt.setString(3, jsonIn.getString("value"));
 		        			pStmt.setInt(4, userID);
+		        			id = dBconn.getSingleIntValue(pStmt);
+				   	   		pStmt.close();
 			        	}
 						break; // completely unnecessary
 		        
@@ -274,7 +295,7 @@ import org.json.JSONObject;
 			out.println(myResponse.toString());
 		} catch (SQLException e) {
 			System.err.println("SaveProcessParameter: More Problems with SQL query");
-			status="error";
+			status = "error";
 			e.printStackTrace();
 		} catch (JSONException e){
 			System.err.println("SaveProcessParameter: More Problems creating JSON");

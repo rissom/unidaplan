@@ -23,6 +23,10 @@
 	<date-parameter parameter=parameter pupdate="pupdate({parameter:parameter})">
 	</date-parameter>
 </div>
+<div ng-if="parameter.datatype=='checkbox'">
+	<checkbox-parameter parameter=parameter pupdate="pupdate({parameter:parameter})">
+	</checkbox-parameter>
+</div>
 <div ng-if="parameter.datatype=='timestamp'">
 	<timestamp-parameter parameter=parameter pupdate="pupdate({parameter:parameter})">
 	</timestamp-parameter>

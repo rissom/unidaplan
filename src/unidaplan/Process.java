@@ -283,6 +283,10 @@ public class Process extends HttpServlet {
 						      		case 7: tParam.put("datatype","date");
 						      				break;
 						      		case 8: tParam.put("datatype","checkbox"); 
+								      		if (tParam.has("value")){
+												Boolean v = tParam.getString("value").equals("1");
+												tParam.put("value", v);
+											}
 						      				break;
 						      		case 9: tParam.put("datatype","timestamp");
 						      				break;
@@ -291,15 +295,6 @@ public class Process extends HttpServlet {
 						      		default: tParam.put("datatype","undefined"); 
 						      				break;	    
 					      		}
-						      	if (datatype==6) {	// chooser 
-						      			pStmt= dBconn.conn.prepareStatement(
-						      					"SELECT string FROM possible_values "
-						      					+"WHERE parameterid=? ORDER BY position");
-						      			pStmt.setInt(1, tParam.getInt("definition"));
-						      			JSONArray pvalues=dBconn.ArrayFromPreparedStmt(pStmt);
-						      			tParam.put("possiblevalues", pvalues);
-						      			pStmt.close();
-				      				}
 							    prmgrpprms.put(tParam);
 					      		}
 					      	}
@@ -382,6 +377,7 @@ public class Process extends HttpServlet {
 				    			"SELECT "
 				    			+ "asp.value, "
 				    			+ "paramdef.datatype, "
+				    			+ "pop.definition, "
 				    			+ "pop.id AS parameterid "
 				    			+"FROM po_parameters pop "
 				    			+"LEFT JOIN acc_srp_parameters asp "
@@ -394,8 +390,22 @@ public class Process extends HttpServlet {
 							JSONObject p = poParameters.getJSONObject(j);
 							if (p.has("datatype")){
 								int dt = p.getInt("datatype");
-								poParameters.getJSONObject(j).put("datatype", Unidatoolkit.Datatypes[dt]);
+								p.put("datatype", Unidatoolkit.Datatypes[dt]);
 							}
+							if (p.getString("datatype").equals("chooser")) {	// chooser 
+				      			pStmt= dBconn.conn.prepareStatement(
+				      					"SELECT string FROM possible_values "
+				      					+"WHERE parameterid=? ORDER BY position");
+				      			pStmt.setInt(1, p.getInt("definition"));
+				      			JSONArray pvalues=dBconn.ArrayFromPreparedStmt(pStmt);
+				      			p.put("possiblevalues", pvalues);
+				      			pStmt.close();
+		      				}
+							if (p.getString("datatype").equals("checkbox") && p.has("value")) {	// checkbox 
+								Boolean v = p.getString("value").equals("1");
+				      			p.put("value", v);
+				      			pStmt.close();
+		      				}
 						}
 						sample.put("parameters", poParameters);
 				    }

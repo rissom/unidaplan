@@ -201,12 +201,12 @@ public class Showsample extends HttpServlet {
 					      					int x=Integer.parseInt(tParam.getString("value"));
 					      					tParam.remove("value");
 						      				tParam.put("value", x);
-					      				}
+					      	}
 				      		if (datatype==2 && tParam.has("value")) {	 
 						      				double y=Double.parseDouble(tParam.getString("value"));
 						      				tParam.remove("value");
 						      				tParam.put("value", y);
-					      				}
+					      	}
 				      		if (datatype==6) {	// chooser 
 				      			pStmt = dBconn.conn.prepareStatement(
 				      					"SELECT string FROM possible_values "
@@ -215,6 +215,10 @@ public class Showsample extends HttpServlet {
 				      			JSONArray pvalues=dBconn.ArrayFromPreparedStmt(pStmt);
 				      			tParam.put("possiblevalues", pvalues);
 				      			pStmt.close();
+		      				}
+				      		if (datatype==8 && tParam.has("value")) {	 
+									Boolean v = tParam.getString("value").equals("1");
+									tParam.put("value", v);								
 		      				}
 				      		if (datatype>3 && tParam.has("unit")) {	 
 			      				tParam.remove("unit");

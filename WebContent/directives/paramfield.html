@@ -9,6 +9,10 @@
 				<integer-parameter parameter=parameter pupdate="pupdate({parameter:parameter})">
 				</integer-parameter>
 			</div>
+			<div ng-if="parameter.datatype=='checkbox'">
+				<checkbox-parameter parameter=parameter pupdate="pupdate({parameter:parameter})">
+				</checkbox-parameter>
+			</div>
 			<div ng-if="parameter.datatype=='float'">
 				<float-parameter parameter=parameter pupdate="pupdate({parameter:parameter})">
 				</float-parameter>

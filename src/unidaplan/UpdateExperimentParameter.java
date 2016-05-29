@@ -236,10 +236,10 @@ public class UpdateExperimentParameter extends HttpServlet {
 						
 		        case 8: if (jsonIn.has("value") && !jsonIn.isNull("value")){  //   8: checkbox,
 		   		  	pStmt= dBconn.conn.prepareStatement( 			
-		   		  			"INSERT INTO expp_integer_data (objectid,ot_parameter_id,value,lastchange,lastUser) VALUES (?,?,?,NOW(),?)");
+		   		  			"INSERT INTO expp_integer_data (expp_id,expp_param,value,lastUser) VALUES (?,?,?,?)");
 	    			pStmt.setInt(1, expID);
 	    			pStmt.setInt(2, expParamID);
-		   		  	pStmt.setString(3, jsonIn.getString("value"));
+		   		  	pStmt.setInt(3, jsonIn.getBoolean("value")?1:0);
 		   		  	pStmt.setInt(4, userID);
 	    			pStmt.executeUpdate();
 	    			pStmt.close();
@@ -248,7 +248,7 @@ public class UpdateExperimentParameter extends HttpServlet {
 		        
 		        case 9: if (jsonIn.has("date") && !jsonIn.isNull("date")){  //   9: timestamp,
 			   	  	pStmt= dBconn.conn.prepareStatement( 			
-			   	  			"INSERT INTO expp_timestamp_data (objectid,ot_parameter_id,value,tz,lastchange,lastUser) VALUES (?,?,?,?,NOW(),?)");
+			   	  			"INSERT INTO expp_timestamp_data (objectid,ot_parameter_id,value,tz,lastUser) VALUES (?,?,?,?,?)");
 			   		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
 					SimpleDateFormat sqldf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 					java.sql.Timestamp ts = java.sql.Timestamp.valueOf(sqldf.format(sdf.parse(jsonIn.getString("date"))));		   
@@ -264,7 +264,7 @@ public class UpdateExperimentParameter extends HttpServlet {
 		    
 		        case 10: if (jsonIn.has("value") && !jsonIn.isNull("value")){
 	    			pStmt= dBconn.conn.prepareStatement( 			// 10: URL
-	    					"INSERT INTO expp_string_data (objectid,ot_parameter_id,value,lastchange,lastUser) VALUES (?,?,?,NOW(),?)");
+	    					"INSERT INTO expp_string_data (objectid,ot_parameter_id,value,lastUser) VALUES (?,?,?,?)");
 	    			pStmt.setInt(1, expID);
 	    			pStmt.setInt(2, expParamID);
 	    			pStmt.setString(3, jsonIn.getString("value"));
@@ -276,7 +276,7 @@ public class UpdateExperimentParameter extends HttpServlet {
 		        
 		        case 11: if (jsonIn.has("value") && !jsonIn.isNull("value")){ // 11: email
 	    			pStmt= dBconn.conn.prepareStatement( 			
-	    					"INSERT INTO expp_string_data (objectid,ot_parameter_id,value,lastchange,lastUser) VALUES (?,?,?,NOW(),?)");
+	    					"INSERT INTO expp_string_data (objectid,ot_parameter_id,value,lastUser) VALUES (?,?,?,?)");
 	    			pStmt.setInt(1, expID);
 	    			pStmt.setInt(2, expParamID);
 	    			pStmt.setString(3, jsonIn.getString("value"));

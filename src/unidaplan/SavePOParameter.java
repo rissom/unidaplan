@@ -218,7 +218,7 @@ import org.json.JSONObject;
 				   		  			"INSERT INTO po_integer_data (opid,po_parameter_id,value,lastUser) VALUES (?,?,?,?)");
 		        			pStmt.setInt(1, opid);
 		        			pStmt.setInt(2, popid);
-				   		  	pStmt.setString(3, jsonIn.getString("value"));
+				   		  	pStmt.setInt(3, jsonIn.getBoolean("value")?1:0);
 				   		  	pStmt.setInt(4, userID);
 		        			pStmt.executeUpdate();
 		        			pStmt.close();
