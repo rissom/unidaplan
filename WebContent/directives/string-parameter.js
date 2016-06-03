@@ -21,14 +21,14 @@ var stringParameter = function() {
 		},
 		controller: function($scope){
 			
-			var thisController=this;
+			var thisController = this;
 
-			this.newValue=$scope.parameter.value;
+			this.newValue = $scope.parameter.data ? $scope.parameter.data.value : "";
 			
 			this.keyUp = function(keyCode) {
 				if (keyCode===13) {				// Return key pressed
 					$scope.parameter.editing=false; 
-					$scope.parameter.value=thisController.newValue;
+					$scope.parameter.data = {value:thisController.newValue};
 					$scope.pupdate({parameter:$scope.parameter});
 				}
 				if (keyCode===27) {		// Escape key pressed
@@ -40,8 +40,8 @@ var stringParameter = function() {
 			
 			this.keyDown = function(keyCode) {
 				if (keyCode===9) {		// Tab key pressed
-					$scope.parameter.editing=false; 
-					$scope.parameter.value=thisController.newValue;
+					$scope.parameter.editing = false; 
+					$scope.parameter.data.value = thisController.newValue;
 					$scope.pupdate({parameter:$scope.parameter});	
 				}
 			}

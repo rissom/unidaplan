@@ -177,18 +177,18 @@ public class DBconnection  {
 	  JSONArray result = null;
 	  ResultSet queryResult=null;
 	  	  try {
-		          if (pStmt==null) {
-			          System.err.println("DBconnection: prepared statement null! " );
-		          }
-		          queryResult = pStmt.executeQuery();
+	          if (pStmt==null) {
+		          System.err.println("DBconnection: prepared statement null! " );
+	          }
+	          queryResult = pStmt.executeQuery();
           if (queryResult==null) {
         	  System.err.println("DBconnection: statement result null! ");
         	  result=new JSONArray();
           } else {
-        	  result = new JSONArray();        
+        	  result = new JSONArray();
               while (queryResult.next()) {
                   result.put(queryResult.getObject(1));
-              }        	  
+              }
         	  queryResult.close();
           }     
           pStmt.close();
@@ -625,10 +625,13 @@ public class DBconnection  {
             for (int i = 1; i <= columns; i++) {
             	int dataType = rsmd.getColumnType(i);
             	if (dataType==1111){
-            		JSONObject tempObject = new JSONObject (rs.getString(i));
-	                obj=tempObject;
+            		JSONObject tempObject = null;
+            		if (rs.getString(i)!=null) {
+            			tempObject = new JSONObject (rs.getString(i));
+            		}
+	                obj.put(rs.getMetaData().getColumnLabel(i), tempObject);
             	}else{
-	            	Object tempObject=rs.getObject(i);
+	            	Object tempObject = rs.getObject(i);
 	                obj.put(rs.getMetaData().getColumnLabel(i), tempObject);
                 }
             }

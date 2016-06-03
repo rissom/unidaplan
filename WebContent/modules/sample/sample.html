@@ -1,14 +1,15 @@
 <!-- Heading with sample name -->
 <h3>{{sampleCtrl.getType({typeid:sampleCtrl.typeid})}} 
-	<span ng-repeat="tparameter in sampleCtrl.titleparameters | orderBy: 'pos'"
-		  ng-dblclick="tparameter.editing=sampleCtrl.editable; newValue=tparameter.value">
-		<span ng-hide="tparameter.editing">{{tparameter.value|trailingzeros:tparameter.maxdigits}}
+	<span ng-repeat   = "tparameter in sampleCtrl.titleparameters | orderBy: 'pos'"
+		  ng-dblclick = "tparameter.editing = sampleCtrl.editable; newValue = tparameter.data.value">
+		<span ng-hide = "tparameter.editing">
+			{{("0000"+tparameter.data.value).substr(-tparameter.format.length,tparameter.format.length)}}
 		</span>
 		<input 						   
-			ng-keyup="sampleCtrl.keyUp($event.keyCode,newValue,tparameter)"
-			ng-show="tparameter.editing" type="text"
-		    ng-model="newValue" 
-		    ng-blur="tparameter.editing=false">
+			ng-keyup = "sampleCtrl.keyUp($event.keyCode,newValue,tparameter)"
+			ng-show  = "tparameter.editing" type="text"
+		    ng-model = "newValue" 
+		    ng-blur  = "tparameter.editing = false">
 		{{$last?'':'-'}}  <!-- Delimiter for name is '-' -->
 	</span>
 </h3>

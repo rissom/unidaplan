@@ -78,28 +78,10 @@ public class DeleteSample extends HttpServlet {
 					
 					if (DeletionPossible){  // Really deleting the sample (OMG!)
 				        pStmt = dBconn.conn.prepareStatement(	
-						"DELETE FROM o_float_data WHERE objectid=?"); 
+						"DELETE FROM sampledata WHERE objectid=?"); 
 						pStmt.setInt(1,sampleID);
 						pStmt.executeUpdate();
 						pStmt.close();	    
-						
-						pStmt = dBconn.conn.prepareStatement(	
-						"DELETE FROM o_measurement_data WHERE objectid=?"); 
-						pStmt.setInt(1,sampleID);
-						pStmt.executeUpdate();
-						pStmt.close();
-						
-				        pStmt = dBconn.conn.prepareStatement(	
-						"DELETE FROM o_string_data WHERE objectid=?"); 
-						pStmt.setInt(1,sampleID);
-						pStmt.executeUpdate();
-						pStmt.close();
-						
-				        pStmt = dBconn.conn.prepareStatement(	
-						"DELETE FROM o_integer_data WHERE objectid=?"); 
-						pStmt.setInt(1,sampleID);
-						pStmt.executeUpdate();
-						pStmt.close();
 						
 				        pStmt = dBconn.conn.prepareStatement(	
 						"DELETE FROM originates_from WHERE parent=? OR child=?");

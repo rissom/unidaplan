@@ -1,8 +1,9 @@
 <div>
-<span ng-hide="parameter.editing">{{parameter.value}}
+<span ng-hide="parameter.editing">{{parameter.data.value}}
 </span>
 <select 						   
 	ng-show="parameter.editing"
+	ng-blur = "chooserParamCtrl.blur()"
     ng-model="chooserParamCtrl.newValue"
     ng-options="item for item in parameter.possiblevalues"
     ng-change="chooserParamCtrl.update()"

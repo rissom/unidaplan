@@ -1,8 +1,7 @@
 <div>
-<span ng-hide="parameter.editing">{{parameter.value}}
-	<span ng-show="parameter.unit && parameter.value && parameter.value!=''">
-		{{parameter.unitf()}}
-	</span>
+<span ng-if="!parameter.editing">{{parameter.data.value}}</span>
+<span ng-if="!parameter.editing && parameter.unit && parameter.data.value && parameter.data.value!=''">
+	{{parameter.unitf()}}
 </span>
 <input 						   
 	ng-keyup="integerParamCtrl.keyUp($event.keyCode)"

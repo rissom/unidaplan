@@ -1,12 +1,14 @@
 <div>
-<span ng-hide="parameter.editing">{{parameter.value}}
+<span ng-if = "!parameter.editing">
+	{{parameter.data.value}}
 </span>
 <input 						   
-	ng-keyup="stringParamCtrl.keyUp($event.keyCode)"
-	ng-keydown="stringParamCtrl.keyDown($event.keyCode)"
-	ng-show="parameter.editing" type="text"
-    ng-model="stringParamCtrl.newValue">
-<span ng-show="parameter.unit">
+	ng-keyup = "stringParamCtrl.keyUp($event.keyCode)"
+	ng-keydown = "stringParamCtrl.keyDown($event.keyCode)"
+	ng-show = "parameter.editing" 
+    ng-model = "stringParamCtrl.newValue"
+   	type = "text" />
+<span ng-show = "parameter.unit">
 	{{parameter.unitf()}}
 </span>
 </div>

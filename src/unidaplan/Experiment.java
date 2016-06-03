@@ -156,17 +156,22 @@ public class Experiment extends HttpServlet {
 	
 							// get finished Processes for a sample
 							pStmt = dBconn.conn
-									.prepareStatement("SELECT samplesinprocess.processid, processes.processtypesid as processtype, ptd.value AS date, n.value AS number, "
-											+ "n2.value AS status "
+									.prepareStatement(
+											  "SELECT "
+											+ "samplesinprocess.processid, "
+											+ "processes.processtypesid AS processtype, "
+											+ "ptd.data->>'date' AS date, "
+											+ "(n.data->>'value')::integer AS number, "
+											+ "(n2.data->>'value')::integer AS status "
 											+ "FROM samplesinprocess "
-											+ "JOIN processes ON (processes.id=samplesinprocess.processid) "
-											+ "JOIN processtypes ON (processes.processtypesid=processtypes.id) "
+											+ "JOIN processes ON (processes.id = samplesinprocess.processid) "
+											+ "JOIN processtypes ON (processes.processtypesid = processtypes.id) "
 											+ "JOIN p_parameters pp ON (pp.definition=10) " // date
 											+ "JOIN p_parameters pp2 ON (pp2.definition=8) " // number
 											+ "JOIN p_parameters pp3 ON (pp3.definition=1) " // status
-											+ "JOIN p_timestamp_data ptd ON (ptd.processID=samplesinprocess.processid AND ptd.P_Parameter_ID=pp.id) "
-											+ "JOIN p_integer_data n ON (n.ProcessID=samplesinprocess.processid AND n.P_Parameter_ID=pp2.id) "
-											+ "JOIN p_integer_data n2 ON (n2.ProcessID=samplesinprocess.processid AND n2.P_Parameter_ID=pp3.id) "
+											+ "JOIN processdata ptd ON (ptd.processID = samplesinprocess.processid AND ptd.parameterID = pp.id) "
+											+ "JOIN processdata n ON (n.ProcessID = samplesinprocess.processid AND n.parameterID = pp2.id) "
+											+ "JOIN processdata n2 ON (n2.ProcessID = samplesinprocess.processid AND n2.parameterID = pp3.id) "
 											+ "WHERE sampleid=?");
 							pStmt.setInt(1,
 									samples.getJSONObject(i).getInt("sampleid"));
@@ -193,20 +198,21 @@ public class Experiment extends HttpServlet {
 	
 					// Query the parameters
 					pStmt = dBconn.conn
-							.prepareStatement("SELECT "
+							.prepareStatement(
+									  "SELECT "
 									+ "  expp_param.id, "
 									+ "  expp_param.definition, "
 									+ "  expp_param.pos, "
 									+ "  expp_param.stringkeyname, "
-									+ "  value, "
+									+ "  ed.data, "
 									+ "  st.description, "
 									+ "  paramdef.datatype, "
 									+ "  paramdef.stringkeyunit AS unit "
 									+ "FROM expp_param "
 									+ "JOIN paramdef ON (paramdef.id=expp_param.definition) "
-									+ "LEFT JOIN acc_expp_parameters a ON  "
-									+ "(a.expp_id=expp_param.exp_plan_id AND a.id=expp_param.id ) "
-									+ "JOIN String_key_table st ON st.id=expp_param.stringkeyname "
+									+ "LEFT JOIN experimentdata ed ON  "
+									+ "(ed.experimentid = expp_param.exp_plan_id AND ed.parameterid = expp_param.id ) "
+									+ "JOIN String_key_table st ON st.id = expp_param.stringkeyname "
 									+ "WHERE expp_param.exp_plan_id=? AND hidden=false "
 									+ "ORDER BY pos ");
 					pStmt.setInt(1, id);
@@ -221,61 +227,21 @@ public class Experiment extends HttpServlet {
 								stringkeys.add(Integer.toString(tParam
 										.getInt("unit")));
 							}
-							String datatype = "undefined";
-							switch (tParam.getInt("datatype")) {
-							case 1:
-								datatype = "integer";
-								String value = tParam.getString("value");
-								tParam.remove("value");
-								tParam.put("value",Integer.parseInt(value));
-								break;
-							case 2:
-								datatype = "float";
-								String floatvalue = tParam.getString("value");
-								tParam.remove("value");
-								tParam.put("value",Double.parseDouble(floatvalue));
-								break;
-							case 3:
-								datatype = "measurement";
-								break;
-							case 4:
-								datatype = "string";
-								break;
-							case 5:
-								datatype = "long string";
-								break;
-							case 6:
-								datatype = "chooser";
-								pStmt = dBconn.conn.prepareStatement(
+							int datatype = tParam.getInt("datatype");
+							if (datatype==6) {	// chooser 
+				      			pStmt = dBconn.conn.prepareStatement(
 				      					"SELECT string FROM possible_values "
 				      					+"WHERE parameterid=? ORDER BY position");
-					      		pStmt.setInt(1, tParam.getInt("definition"));
-					      		JSONArray pvalues=dBconn.ArrayFromPreparedStmt(pStmt);
-					      		tParam.put("possiblevalues", pvalues);
-					      		pStmt.close();
-								break;
-							case 7:
-								datatype = "date";
-								break;
-							case 8:
-								datatype = "checkbox";
-								if (tParam.has("value")) {
-									Boolean v = tParam.getString("value").equals("1");
-									tParam.put("value", v);								
-								}
-								break;
-							case 9:
-								datatype = "timestamp";
-								break;
-							case 10:
-								datatype = "URL";
-								break;
-							default:
-								datatype = "undefined";
-								break;
-							}
+				      			pStmt.setInt(1, tParam.getInt("definition"));
+				      			JSONArray pvalues=dBconn.ArrayFromPreparedStmt(pStmt);
+				      			tParam.put("possiblevalues", pvalues);
+				      			pStmt.close();
+		      				}
+							if (datatype>3 && tParam.has("unit")) {	 
+			      				tParam.remove("unit");
+		      				}
 							parameters.getJSONObject(i).remove("datatype");
-							parameters.getJSONObject(i).put("datatype", datatype);
+							parameters.getJSONObject(i).put("datatype", Unidatoolkit.Datatypes[datatype]);
 						}
 						experiment.put("parameters", parameters);
 					}

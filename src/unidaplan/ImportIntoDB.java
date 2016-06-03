@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -27,7 +28,7 @@ public class ImportIntoDB extends HttpServlet {
 	DBconnection dBconn;
 	int userID;
 	
-		void saveValueSample(String value,int id, int sampleid){
+		void saveValueSample(String value,int parameterid, int sampleid){
 		    try {
 			    // look up the datatype in database
 		    	dBconn.startDB();
@@ -37,111 +38,80 @@ public class ImportIntoDB extends HttpServlet {
 						 "SELECT paramdef.datatype FROM Ot_parameters otp "
 						+"JOIN paramdef ON otp.definition=paramdef.id "
 						+"WHERE otp.id=?");
-			   	pStmt.setInt(1, id);
+			   	pStmt.setInt(1, parameterid);
 			   	type=dBconn.getSingleIntValue(pStmt);
 //			   	System.out.println(pStmt.toString());
-				pStmt.close();				
+				pStmt.close();
+				JSONObject data = new JSONObject();
 		
 				// differentiate according to type
 				if (value.length()>0) {
 
 					switch (type) {
-			        case 1: pStmt= dBconn.conn.prepareStatement( 			// Integer values
-					   					 "INSERT INTO o_integer_data VALUES(DEFAULT,?,?,?,NOW(),?)");
-					   		pStmt.setInt(2, id);
-					   		pStmt.setInt(3, Integer.valueOf(value));
-					   		pStmt.setInt(4, userID);
+			        case 1: data.put("value", Integer.valueOf(value));
 					   		break;
 
-			        case 2: pStmt= dBconn.conn.prepareStatement( 			// Double values
-			   					 		"INSERT INTO o_float_data VALUES(DEFAULT,?,?,?,NOW(),?)");
-					   		pStmt.setInt(2, id);				        
-						    pStmt.setDouble(3, Double.valueOf(value));
-					   		pStmt.setInt(4, userID);
+			        case 2: data.put("value", Double.valueOf(value));
 			   				break;
 		        			
-			        case 3: pStmt= dBconn.conn.prepareStatement( 			// Measurement data
-								 		"INSERT INTO o_measurement_data (ObjectID, Ot_Parameter_ID, Value, "
-								 		+"Error, lastChange, lastUser) "
-								 		+"VALUES(?,?,?,?,NOW(),?)");
-			        		pStmt.setInt(2, id);
-			        		if (value.contains("±")){
-								pStmt.setDouble(3, Double.valueOf(value.split("±")[0]));
-								pStmt.setDouble(4, Double.valueOf(value.split("±")[1]));
+			        case 3: if (value.contains("±")){
+			        			data.put("value", Double.valueOf(value.split("±")[0]));
+				        		data.put("error", Double.valueOf(value.split("±")[1]));
 			        		} else {
-			        			pStmt.setDouble(3, Double.valueOf(value));
-			        			pStmt.setDouble(4, 0);
+			        			data.put("value", Double.valueOf(value.split("±")[0]));
+				        		data.put("error", 0);
 			        		}
 					   		pStmt.setInt(5, userID);
 							break;
 					        
-			        case 4: pStmt= dBconn.conn.prepareStatement( 			// String data	
-						 		"INSERT INTO o_string_data VALUES(DEFAULT,?,?,?,NOW(),?)");
-						    pStmt.setInt(2, id);
-						    pStmt.setString(3, value);
-					   		pStmt.setInt(4, userID);
-							break;
+			        case 4: data.put("value", value);
+			        		break;
 					        
-			        case 5: pStmt= dBconn.conn.prepareStatement( 			
-			        		 	"INSERT INTO o_string_data VALUES(DEFAULT,?,?,?,NOW(),?)");
-						    pStmt.setInt(2, id);
-						    pStmt.setString(3, value);
-					   		pStmt.setInt(4, userID);
-					   		break;
+			        case 5: data.put("value", value);
+						    break;
 						   
-			        case 6: pStmt= dBconn.conn.prepareStatement( 			
-		        		 	"INSERT INTO o_string_data VALUES(DEFAULT,?,?,?,NOW(),?)");
-					        pStmt.setInt(2, id);
-					        pStmt.setString(3, value);
-				   			pStmt.setInt(4, userID);
+			        case 6: data.put("value", value);
 				   			break;
 					   
-			        case 7: pStmt= dBconn.conn.prepareStatement( 			// date
-		        		 	"INSERT INTO o_timestamp_data VALUES(DEFAULT,?,?,?,NOW(),?)");
-					        pStmt.setInt(2, id);
-					        pStmt.setString(3, value);
-				   			pStmt.setInt(4, userID);
+			        case 7: // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+						    LocalDate date = LocalDate.parse(value); // , formatter);
+//						    System.out.println(date); // 2010-01-02
+			        		data.put("date", date);
 				   			break;
 					   
-			        case 8: pStmt= dBconn.conn.prepareStatement( 			// checkbox
-		        		 		"INSERT INTO o_integer_data VALUES(DEFAULT,?,?,?,NOW(),?)");
-					        pStmt.setInt(2, id);
-					        Integer iValue=0;
-					        if (value.equals("1")  || value.equalsIgnoreCase("true") || 
-					        		value.equalsIgnoreCase("yes")  || value.equalsIgnoreCase("ja")) {
-					        	iValue=1;
+			        case 8: Boolean bit = false;
+					        if (value.equals("1")  || value.contains("t") || 
+					        		value.contains("y")  || value.contains("j")) {
+					        	bit = true;
 					        }
-					        pStmt.setInt(2, id);
-					        pStmt.setInt(3, iValue);
-				   			pStmt.setInt(4, userID);
-				   			break;
+			        		data.put("value", bit);
+			   				break;
+					       
 					   
-			        case 9: pStmt= dBconn.conn.prepareStatement( 			// date
-		        		 		"INSERT INTO o_timestamp_data VALUES(DEFAULT,?,?,?,NOW(),?)");
-					        pStmt.setInt(2, id);
-					        pStmt.setString(3, value);
-				   			pStmt.setInt(4, userID);
+			        case 9: // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+						    LocalDate date2 = LocalDate.parse(value); // , formatter);
+	//					    System.out.println(date); // 2010-01-02
+			        		data.put("date", date2);
 				   			break;
 					  
-			        case 10: pStmt= dBconn.conn.prepareStatement( 			
-		        		 		"INSERT INTO o_string_data VALUES(DEFAULT,?,?,?,NOW(),?)");
-					        pStmt.setInt(2, id);
-					        pStmt.setString(3, value);
-				   			pStmt.setInt(4, userID);
-				   			break;
+			        case 10: data.put("value", value);
+				   			 break;
 					   
-			        case 11: pStmt= dBconn.conn.prepareStatement( 			
-		        		 		"INSERT INTO o_string_data VALUES(DEFAULT,?,?,?,NOW(),?)");
-					        pStmt.setInt(2, id);
-					        pStmt.setString(3, value);
-				   			pStmt.setInt(4, userID);
+			        case 11: data.put("value", value);
 				   			break;
 					   
 					}
-			        pStmt.setInt(1, sampleid);
+					pStmt= dBconn.conn.prepareStatement( 			// Integer values
+							"INSERT INTO sampledata (objectid,ot_parameter_id,data,lastUser) VALUES (?,?,?,?)");
+					pStmt.setInt(1, sampleid);
+					pStmt.setInt(2, parameterid);
+		   		  	pStmt.setObject(3, data, java.sql.Types.OTHER);
+		   		  	pStmt.setInt(4, userID);
 					pStmt.executeUpdate();
 					pStmt.close();
+					dBconn.closeDB();
 				}
+				
 				
 		} catch (SQLException e) {
 			System.err.println("SaveSampleParameter: More Problems with SQL query");

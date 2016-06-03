@@ -62,15 +62,7 @@ public class SingleSTParameter extends HttpServlet {
 		     		  	  +"LEFT JOIN  objecttypes ON (objecttypes.id=ot_parameters.objecttypesid)  "
 		     		  	  +"LEFT JOIN "
 					  	  +"( "
-						  +"  SELECT count(a.id),ot_parameter_id FROM o_integer_data a GROUP BY ot_parameter_id "
-						  +"  UNION ALL "
-						  +"  SELECT count(b.id),ot_parameter_id FROM o_float_data b GROUP BY ot_parameter_id	"
-						  +"  UNION ALL "
-					      +"  SELECT count(c.id),ot_parameter_id FROM o_string_data c GROUP BY ot_parameter_id "
-						  +"  UNION ALL "
-					      +"  SELECT count(d.id),ot_parameter_id FROM o_measurement_data d GROUP BY ot_parameter_id "
-						  +"  UNION ALL "
-						  +"  SELECT count(e.id),ot_parameter_id FROM o_timestamp_data e GROUP BY ot_parameter_id "
+						  +"  SELECT count(a.id),ot_parameter_id FROM sampledata a GROUP BY ot_parameter_id "
 						  +") AS blabla ON blabla.ot_parameter_id=ot_parameters.id "
 						  +"WHERE ot_parameters.id=?");
 				pStmt.setInt(1, parameterID);

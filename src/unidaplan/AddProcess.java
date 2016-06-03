@@ -3,6 +3,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+//import java.text.DateFormat;
+//import java.text.SimpleDateFormat;
+//import java.util.Date;
+//import java.util.TimeZone;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -27,14 +31,25 @@ public class AddProcess extends HttpServlet {
 	    response.setCharacterEncoding("utf-8");
 	    
 	    // get the processTypeID
-	    int processTypeID=-1;
-	   	int lastProcessID=0;
+	    int processTypeID = -1;
+	   	int lastProcessID = 1;
 	   	int timeZone=120;
 	   	String privilege="n";
-	   	
+	    String in = request.getReader().readLine();
+	    JSONObject jsonIn = null;
+	    String date = null;
+	    
 	    try {
-			 processTypeID=Integer.parseInt(request.getParameter("processtypeid")); 
-			 timeZone=Integer.parseInt(request.getParameter("timezone")); 
+			jsonIn = new JSONObject(in);
+		} catch (JSONException e) {
+			System.err.println("AddProcessType: Input is not valid JSON");
+			status="input error";
+		}
+		
+	    try {
+			 processTypeID = jsonIn.getInt("processtypeid"); 
+			 timeZone = jsonIn.getInt("tz");
+			 date = jsonIn.getString("date");
 		} catch (Exception e) {
 			System.err.println("AddProcess: Error parsing type ID");
 			response.setStatus(404);
@@ -60,47 +75,55 @@ public class AddProcess extends HttpServlet {
 			if (privilege.equals("w")){
 				
 				// find the current maximum of process number parameter
-				pStmt= dBconn.conn.prepareStatement( 	
-				"SELECT n.value as maximum, pp.id AS parameterid "
-				+"FROM processes "
-				+"JOIN p_integer_data n ON (n.ProcessID=processes.ID) "
-				+"JOIN p_parameters pp ON (pp.id=n.P_Parameter_ID AND pp.id_field=true) "
-				+"WHERE (processes.ProcesstypesID=?) "
-				+"ORDER BY n.value DESC "
-				+"LIMIT 1");
+				pStmt = dBconn.conn.prepareStatement( 	
+						  "SELECT "
+						+ " p_number AS maximum "
+						+ "FROM pnumbers "
+						+ "WHERE (pnumbers.processtype = ?) "
+						+ "ORDER BY p_number DESC "
+						+ "LIMIT 1");
 			   	pStmt.setInt(1, processTypeID);
-			   	JSONObject answer=dBconn.jsonObjectFromPreparedStmt(pStmt);
-			   	if (answer.has("maximum")){
-			   		lastProcessID= answer.getInt("maximum");
-			   	}
+			   	lastProcessID = dBconn.getSingleIntValue(pStmt);
+			   	if (lastProcessID < 1) { lastProcessID = 1;};
 				pStmt.close();
 	
-				pStmt= dBconn.conn.prepareStatement( 			
-						 "INSERT INTO processes values(default, ?, NOW(), ?) RETURNING id");
+				// Create new database entry
+				pStmt = dBconn.conn.prepareStatement( 			
+						 "INSERT INTO processes (processtypesid, lastuser) "
+					   + "VALUES (?, ?) "
+					   + "RETURNING id");
 			   	pStmt.setInt(1, processTypeID);
 			   	pStmt.setInt(2, userID);
-			   	JSONObject newProcessID=dBconn.jsonObjectFromPreparedStmt(pStmt);
+				id = dBconn.getSingleIntValue(pStmt);
 			   	pStmt.close();
-				id= newProcessID.getInt("id");
+
 	
 		   	
 				// write processnumber 
-		    	pStmt= dBconn.conn.prepareStatement("INSERT INTO p_integer_data VALUES(default, ?,"
-		    			+ " (SELECT id FROM P_Parameters WHERE definition=8 AND processtypeid=?), ?, NOW(),?)");
+		    	pStmt = dBconn.conn.prepareStatement(
+		    			  "INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser) "
+		    			+ "VALUES( "
+		    			+ " ?,"
+		    			+ " (SELECT id FROM P_Parameters WHERE definition=8 AND processtypeid=?),"
+		    			+ " ?, ?)");
 		    	pStmt.setInt(1, id);
 		    	pStmt.setInt(2, processTypeID);
-		    	pStmt.setInt(3, lastProcessID+1);
+		    	pStmt.setObject(3,new JSONObject().put("value",lastProcessID+1),java.sql.Types.OTHER);
 		    	pStmt.setInt(4, userID);
 		    	pStmt.executeUpdate();
 		    	pStmt.close();
 				
 		    	
-				// set status to "ok" 
-		    	pStmt= dBconn.conn.prepareStatement("INSERT INTO p_integer_data VALUES(default, ?,"
-		    			+ " (SELECT id FROM P_Parameters WHERE definition=1 AND processtypeid=?), ?, NOW(),?)");
+				// set status to "ok" // TODO: should be undefined
+		    	pStmt = dBconn.conn.prepareStatement(
+		    			  "INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser) "
+		    			+ "VALUES ( "
+		    			+ "  ?, "
+		    			+ "  (SELECT id FROM P_Parameters WHERE definition=1 AND processtypeid=?), "
+		    			+ "  ?, ?)");
 		    	pStmt.setInt(1, id);
 		    	pStmt.setInt(2, processTypeID);
-		    	pStmt.setInt(3, 1);
+		    	pStmt.setObject(3, new JSONObject().put("value",1), java.sql.Types.OTHER);
 		    	pStmt.setInt(4, userID);
 		    	pStmt.executeUpdate();
 		    	pStmt.close();
@@ -116,13 +139,26 @@ public class AddProcess extends HttpServlet {
 			   	
 			   	
 				// set date parameter to now
-		    	pStmt= dBconn.conn.prepareStatement("INSERT INTO p_timestamp_data VALUES(default,?,?,NOW(),?,NOW(),?)");
+		    	pStmt = dBconn.conn.prepareStatement(
+		    			  "INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser) "
+		    			+ "VALUES (?,?,?,?)");
+		    	
+//		    	TimeZone tz = TimeZone.getTimeZone("UTC");
+//		    	DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ");
+//		    	df.setTimeZone(tz);
+//		    	String nowAsISO = df.format(new Date());
+		    	JSONObject data = new JSONObject().put("date", date);
 		    	pStmt.setInt(1, id);
 		    	pStmt.setInt(2, dateID);
-		    	pStmt.setInt(3, timeZone);
+		    	pStmt.setObject(3, data, java.sql.Types.OTHER);
 		    	pStmt.setInt(4, userID);
 		    	pStmt.executeUpdate();
 		    	pStmt.close();
+		    	
+		    	pStmt = dBconn.conn.prepareStatement(	
+	   	   				"REFRESH MATERIALIZED VIEW pnumbers");
+	   	   		pStmt.executeUpdate();
+	   	   		pStmt.close();
 		    	
 			} else {
 				response.setStatus(401);
@@ -134,6 +170,7 @@ public class AddProcess extends HttpServlet {
 			System.err.println("AddProcess: Problems with SQL query2");
 			status="SQL error";
 		} catch (JSONException e){
+			e.printStackTrace();
 			System.err.println("AddProcess: Problems creating JSON later");
 			status="JSON error";
 		} catch (Exception e) {

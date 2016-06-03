@@ -21,33 +21,30 @@ var measurementParameter = function() {
 		},
 		controller: function($scope){
 			
-			if ($scope.parameter.value!=undefined) {
-				this.value=parseFloat($scope.parameter.value.split("±")[0]);
-				this.error=parseFloat($scope.parameter.value.split("±")[1]);
-				this.newValue = this.value;
-				this.newError = this.error;
+			if ($scope.parameter.data != undefined) {
+				this.newValue = $scope.parameter.data.value;
+				this.newError = $scope.parameter.data.error;
 			}
 			
 			this.keyDown = function(keyCode) {
 				if (keyCode===9) {		// Tab key pressed
-					$scope.parameter.editing=false; 
-					$scope.parameter.value=this.newValue;
-					$scope.parameter.error=this.newError;
+					$scope.parameter.editing = false; 
+					$scope.parameter.data.value = this.newValue;
+					$scope.parameter.data.error = this.newError;
 					$scope.pupdate({parameter:$scope.parameter});
 				}
 			}
 			
 			this.keyUp = function(keyCode) {
 				if (keyCode===13) {				// Return key pressed
-					$scope.parameter.editing=false;
-					$scope.parameter.value=this.newValue;
-					$scope.parameter.error=this.newError;
+					$scope.parameter.editing = false;
+					$scope.parameter.data = {"value" : this.newValue, "error" : this.newError};
 					$scope.pupdate({parameter:$scope.parameter});
 				}
 				if (keyCode===27) {		// Escape key pressed
-					$scope.parameter.editing=false;
-					this.newValue=this.value;
-					this.newError=this.error;
+					$scope.parameter.editing = false;
+					this.newValue = $scope.parameter.data.value;
+					this.newError = $scope.parameter.data.error;
 				}
 			}
 						

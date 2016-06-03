@@ -42,12 +42,12 @@ import org.json.JSONObject;
 	    try {  
 		    dBconn.startDB();
 			pStmt= dBconn.conn.prepareStatement( 	
-					"SELECT p_integer_data.processid FROM p_integer_data "
-					+"JOIN p_parameters pp ON (p_integer_data.p_parameter_id=pp.id AND id_field=true) "
-					+"WHERE processtypeid=? AND p_integer_data.value=?"); 
+					"SELECT processdata.processid FROM processdata "
+					+"JOIN p_parameters pp ON (processdata.parameterid=pp.id AND id_field=true) "
+					+"WHERE processtypeid=? AND processdata.data->>'value'=?"); 
 			pStmt.setInt(1, processType);
-			pStmt.setInt(2, processNumber);
-			int processID=dBconn.getSingleIntValue(pStmt);
+			pStmt.setString(2, ""+processNumber);
+			int processID = dBconn.getSingleIntValue(pStmt);
 			pStmt.close();
 			
 			// check privileges
@@ -67,6 +67,7 @@ import org.json.JSONObject;
 			
     	} catch (SQLException e) {
     		System.err.println("ProcessByNumber: Problems with SQL query");
+    		e.printStackTrace();
     	} catch (JSONException e) {
 			System.err.println("ProcessByNumber: JSON Problem while getting Stringkeys");
     	} catch (Exception e2) {

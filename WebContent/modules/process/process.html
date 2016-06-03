@@ -1,11 +1,14 @@
 <h3 ng-dblclick="processCtrl.editNumber=true">{{processCtrl.process.fprocesstype()}} <span ng-hide="processCtrl.editNumber">{{processCtrl.process.pnumber}}</span>
+
+
 <input 						   
 	ng-keyup="processCtrl.keyUpNumber($event.keyCode)"
-	ng-show="processCtrl.editNumber" 
-	type="number"
-    ng-model="processCtrl.newNumber">
+	ng-show="processCtrl.editNumber"
+    ng-model="processCtrl.newNumber"
+    type="number">
 <br />
 </h3>
+
 
 
 
@@ -115,4 +118,4 @@ ng-class="{'1':'ok','2':'att','3':'failed'}[processCtrl.process.status]" >&nbsp;
 			</td>
 		</tr>
 	</table>
-<p/>
+<p/> 

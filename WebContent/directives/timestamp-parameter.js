@@ -27,9 +27,9 @@ var timestampParameter = function() {
 			var tc=this;
 			
 			
-			if ("value" in $scope.parameter){
-				tc.timestamp = new Date($scope.parameter.value);
-				tc.newTimestamp = new Date($scope.parameter.value);
+			if ("data" in $scope.parameter){
+				tc.timestamp = new Date($scope.parameter.data.date);
+				tc.newTimestamp = new Date($scope.parameter.data.date);
 			}
 			
 		
@@ -47,10 +47,11 @@ var timestampParameter = function() {
 			
 			this.update= function(){
 				tc.timestamp=tc.newTimestamp;
-				$scope.parameter.date=tc.timestamp;
-				$scope.parameter.value = tc.timestamp.toISOString();
-				$scope.parameter.tz=new Date().getTimezoneOffset();
-				$scope.parameter.editing=false; 
+				$scope.parameter.date = tc.timestamp;
+				$scope.parameter.tz = new Date().getTimezoneOffset();
+				$scope.parameter.data = { date : tc.timestamp.toISOString(), 
+										  tz : $scope.parameter.tz};
+				$scope.parameter.editing = false; 
 				$scope.pupdate({parameter:$scope.parameter});
 			}
 			

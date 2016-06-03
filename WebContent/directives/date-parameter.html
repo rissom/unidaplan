@@ -1,20 +1,20 @@
 <div>
-	<span ng-hide="parameter.editing">{{dateParamCtrl.getDateString()}}
+	<span ng-hide = "parameter.editing">{{dateParamCtrl.getDateString()}}
 	</span>    
 	<input 
-		ng-show="parameter.editing"
-		type="date" 
+		ng-show = "parameter.editing"
+		type = "date" 
 		uib-datepicker-popup 
-		ng-model="parameter.newDate"
-		is-open="status.opened"
-		ng-keyup="dateParamCtrl.keyUp($event.keyCode)"
-		ng-keydown="dateParamCtrl.keyDown($event.keyCode)"
-	 	datepicker-options="dateOptions"
-	 	close-text="Close">
+		ng-model = "dateParamCtrl.newDate"
+		is-open = "status.opened"
+		ng-keyup = "dateParamCtrl.keyUp($event.keyCode)"
+		ng-keydown = "dateParamCtrl.keyDown($event.keyCode)"
+	 	datepicker-options = "dateOptions"
+	 	close-text = "Close">
 	
-	<button ng-show="parameter.editing"
-			class="btn btn-default"
-			ng-click="dateParamCtrl.update()">
-		ok
+	<button ng-show = "parameter.editing"
+			class = "btn btn-default"
+			ng-click = "dateParamCtrl.update()">
+		{{'ok'|translate}}
 	</button>
 </div>

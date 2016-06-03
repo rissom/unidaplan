@@ -21,22 +21,26 @@ var chooserParameter = function() {
 		},
 		controller: function($scope){
 			
-			var thisController=this;
+			var thisController = this;
 
-			this.newValue=$scope.parameter.value;
+			this.newValue = $scope.parameter.data ? $scope.parameter.data.value : "";
+						
+			this.blur = function(){
+				$scope.parameter.editing = false;
+			}
 			
 			this.keyUp = function(keyCode) {
-				if (keyCode===13) {				// Return key pressed
+				if (keyCode === 13) {				// Return key pressed
 					thisController.update();
 				}
-				if (keyCode===27) {		// Escape key pressed
+				if (keyCode === 27) {		// Escape key pressed
 					$scope.parameter.editing=false;			
 				}
 			}
 			
 			this.update = function() {
-				$scope.parameter.editing=false; 
-				$scope.parameter.value=thisController.newValue;
+				$scope.parameter.editing = false; 
+				$scope.parameter.data = {value:thisController.newValue};
 				$scope.pupdate({parameter:$scope.parameter});
 			}
 						

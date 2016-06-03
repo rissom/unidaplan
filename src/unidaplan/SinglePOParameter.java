@@ -63,13 +63,7 @@ public class SinglePOParameter extends HttpServlet {
 	 					+"JOIN paramdef ON (definition=paramdef.id) " 
 	 					+"LEFT JOIN  processtypes ON (processtypes.id=po_parameters.processtypeid) "  
 	 					+"LEFT JOIN ( "
-	 					+"	SELECT count(a.id),po_parameter_id FROM po_integer_data a GROUP BY po_parameter_id "   
-	 					+"	UNION ALL 	"
-	 					+"	SELECT count(b.id),po_parameter_id FROM po_float_data b GROUP BY po_parameter_id	UNION ALL " 	
-	 					+"	SELECT count(c.id),po_parameter_id FROM po_string_data c GROUP BY po_parameter_id   "
-	 					+"	UNION ALL 	"
-	 					+"	SELECT count(d.id),po_parameter_id FROM po_measurement_data d GROUP BY po_parameter_id "   
-	 					+"	UNION ALL 	SELECT count(e.id),po_parameter_id FROM po_timestamp_data e GROUP BY po_parameter_id " 
+	 					+"	SELECT count(a.id),parameterid FROM spdata a GROUP BY po_parameter_id "   
 	 					+") AS blabla ON blabla.po_parameter_id=po_parameters.id "
 	 					+"WHERE po_parameters.id=?");
 				pStmt.setInt(1, parameterID);

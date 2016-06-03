@@ -111,8 +111,9 @@ import org.json.JSONObject;
 				// List of titleparameters of type String:
 				pStmt= dBconn.conn.prepareStatement( 	
 				"SELECT ot_parameters.id,sdata.value FROM ot_parameters " 
-				+"JOIN o_string_data sdata ON sdata.ot_parameter_id=ot_parameters.id "
-				+"WHERE ID_Field=true AND sdata.objectid=? ORDER BY pos DESC");
+				+"JOIN sampledata sdata ON sdata.ot_parameter_id = ot_parameters.id "
+				+"JOIN paramdef pd ON pd.id = ot_parameters.definition "
+				+"WHERE ID_Field = true AND sdata.objectid = ? AND pd.datatype = 4 ORDER BY pos DESC");
 			   	pStmt.setInt(1, lastSampleID);
 			   	JSONArray lastTitleStrParameters=dBconn.jsonArrayFromPreparedStmt(pStmt);
 				pStmt.close();
@@ -122,7 +123,7 @@ import org.json.JSONObject;
 		        for (int i=0; i<lastTitleStrParameters.length();i++){   
 		        	JSONObject parameter=(JSONObject) lastTitleStrParameters.get(i);
 		        	pStmt= dBconn.conn.prepareStatement(
-		        			"INSERT INTO o_string_data (objectid,ot_parameter_id,value,lastchange,lastuser)"
+		        			"INSERT INTO sampledata (objectid,ot_parameter_id,value,lastchange,lastuser)"
 		        			+ " VALUES(?,?,?,NOW(),?);");
 		        	pStmt.setInt(1, id);
 		        	pStmt.setInt(2, parameter.getInt("id"));

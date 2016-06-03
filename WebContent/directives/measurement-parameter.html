@@ -1,24 +1,25 @@
 <div>
-<span ng-hide="parameter.editing">{{parameter.value}}
-	<span ng-if="parameter.unit && parameter.value && parameter.value!=''">
-		{{parameter.unitf()}}
-	</span>
+<span ng-if = "!parameter.editing">{{parameter.data.value}} </span>
+<span ng-if = "!parameter.editing && parameter.data.error">± {{parameter.data.error}}</span>
+<span ng-if = "!parameter.editing && parameter.unit && parameter.data.value && parameter.data.value!=''">
+	{{parameter.unitf()}}
 </span>
 <input 						   
-	ng-show="parameter.editing" 
-	type="number"
-    ng-model="measurementParamCtrl.newValue"
-    ng-keyup="measurementParamCtrl.keyUp($event.keyCode)">
+	ng-show = "parameter.editing" 
+	type = "number"
+    ng-model = "measurementParamCtrl.newValue"
+    ng-keyup = "measurementParamCtrl.keyUp($event.keyCode)">
  
-<span ng-show="parameter.editing">±</span>
+<span ng-show = "parameter.editing">±</span>
 <input 						   
-	ng-show="parameter.editing" 
-	type="number"
-    ng-model="measurementParamCtrl.newError"
-    ng-keyup="measurementParamCtrl.keyUp($event.keyCode)"
-    ng-keydown="measurementParamCtrl.keyDown($event.keyCode)">
+	ng-show = "parameter.editing" 
+	type = "number"
+	min = "0"
+    ng-model = "measurementParamCtrl.newError"
+    ng-keyup = "measurementParamCtrl.keyUp($event.keyCode)"
+    ng-keydown = "measurementParamCtrl.keyDown($event.keyCode)">
     
-<span ng-show="parameter.editing">
+<span ng-show = "parameter.editing">
 	{{parameter.unitf()}}
 </span>
 

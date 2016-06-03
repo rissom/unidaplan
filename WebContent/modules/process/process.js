@@ -148,7 +148,7 @@ function process($state,$stateParams,$translate,avSampleTypeService,types,$uibMo
 	
   
   	this.setStatus=function(){
-  		var promise=processService.setStatus(processData,thisController.newStatus.index);
+  		var promise = processService.setStatus(processData,thisController.newStatus.index);
 		promise.then(function(){reload();});
   	};
   

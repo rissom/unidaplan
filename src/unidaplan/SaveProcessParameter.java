@@ -22,12 +22,12 @@ import org.json.JSONObject;
 	      throws ServletException, IOException {
 		
 		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
+		int userID = authentificator.GetUserID(request,response);
 	    request.setCharacterEncoding("utf-8");
 	    String privilege = "n";
-	    String status="ok";
+	    String status = "ok";
 	    String in = request.getReader().readLine();
-	    JSONObject  jsonIn = null;	    
+	    JSONObject jsonIn = null;	    
 	    try {
 			  jsonIn = new JSONObject(in);
 		} catch (JSONException e) {
@@ -39,9 +39,9 @@ import org.json.JSONObject;
 	    PreparedStatement pStmt;
 
 	    // get the id
-	    int processID=0;
-	    int parameterID=-1;
-	    int datatype=-1;
+	    int processID = 0;
+	    int parameterID = -1;
+	    int datatype = -1;
 	    
 	    try {
 			processID=jsonIn.getInt("processid");	
@@ -86,16 +86,14 @@ import org.json.JSONObject;
 						+"JOIN paramdef ON pp.definition=paramdef.id \n"
 						+"WHERE pp.id=?");
 			   	pStmt.setInt(1, parameterID);
-			   	JSONObject answer=dBconn.jsonObjectFromPreparedStmt(pStmt);
+			   	JSONObject answer = dBconn.jsonObjectFromPreparedStmt(pStmt);
 			   	pStmt.close();
-				datatype= answer.getInt("datatype");			
-				
+				datatype= answer.getInt("datatype");						
 	
 				// delete the old values.
-				String[] tables={"","p_integer_data","p_float_data","p_measurement_data","p_string_data","p_string_data","p_string_data","p_timestamp_data","p_integer_data","p_timestamp_data","p_string_data"};
 				pStmt= dBconn.conn.prepareStatement( 			
-						 "DELETE FROM "+tables[datatype]+" "
-						+"WHERE p_parameter_id=? AND processid=?");
+						 "DELETE FROM processdata "
+						+"WHERE parameterid=? AND processid=?");
 			   	pStmt.setInt(1, parameterID);
 			   	pStmt.setInt(2, processID);
 			   	pStmt.executeUpdate();
@@ -121,7 +119,7 @@ import org.json.JSONObject;
 						+"JOIN paramdef ON p.definition=paramdef.id "
 						+"WHERE p.id=?");
 			   	pStmt.setInt(1, parameterID);
-			   	JSONObject answer=dBconn.jsonObjectFromPreparedStmt(pStmt);
+			   	JSONObject answer = dBconn.jsonObjectFromPreparedStmt(pStmt);
 				type= answer.getInt("datatype");
 			} catch (SQLException e) {
 				System.err.println("SaveProcessParameter: Problems with SQL query");
@@ -134,180 +132,119 @@ import org.json.JSONObject;
 				status="error";
 			}
 			
-			pStmt=null; // fooling eclipse to not show warnings
+			pStmt = null; // fooling eclipse to not show warnings
 			
 			int id=0; // id of the newly created value
 			// differentiate according to type
 			try {	
-				switch (type) {
-				case 1:	if (jsonIn.has("value") && !jsonIn.isNull("value") ){
-	        				pStmt= dBconn.conn.prepareStatement( 			// Integer values
-	        						"INSERT INTO p_integer_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
-				   			pStmt.setInt(1, processID);
-					        pStmt.setInt(2, parameterID);
-				   			pStmt.setInt(3, jsonIn.getInt("value"));
-				   			pStmt.setInt(4, userID);
-				   			id=dBconn.getSingleIntValue(pStmt);
-				   	   		pStmt.close();
-	        			}
-			   			break;
-				        
-		        case 2:	if (jsonIn.has("value") && !jsonIn.isNull("value")){ // Double values
-		        			pStmt= dBconn.conn.prepareStatement( 	
-					         "INSERT INTO p_float_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
-					        pStmt.setInt(1, processID);
-				   			pStmt.setInt(2, parameterID);
-	        				pStmt.setDouble(3, jsonIn.getDouble("value"));		
-					        pStmt.setInt(4, userID);
-					        id=dBconn.getSingleIntValue(pStmt);
-					   		pStmt.close();
-					   	}
-	   					break;
-	        			
-		        case 3:	if (jsonIn.has("value") && !jsonIn.isNull("value")){   
-		        			pStmt= dBconn.conn.prepareStatement( 			// Measurement data
-					         "INSERT INTO p_measurement_data VALUES(DEFAULT,?,?,?,?,NOW(),?) RETURNING ID");
-							pStmt.setInt(1, processID);
-							pStmt.setInt(2, parameterID);
-				   			pStmt.setDouble(3, jsonIn.getDouble("value"));
-							if (jsonIn.has("error") && !jsonIn.isNull("error")){
-								pStmt.setDouble(4, jsonIn.getDouble("error"));
-							} else {
-								pStmt.setNull(4,java.sql.Types.DOUBLE);
+				JSONObject data = new JSONObject();
+				if (jsonIn.has("data")){
+					JSONObject inData = jsonIn.getJSONObject("data");
+					switch (type) {
+			        case 1:	if (inData.has("value") && !inData.isNull("value")){  // Integer values
+			        			data.put("value", inData.getInt("value"));
+			        		}
+					   		break;
+					   		
+			        case 2: if (inData.has("value") && !inData.isNull("value")){  // Floating point data
+	        					data.put("value", inData.getDouble("value"));
+			        		}
+			   				break;
+		        			
+			        case 3: if (inData.has("value") && !inData.isNull("value")){  	// Measurement data
+    							data.put("value", inData.getDouble("value"));
+			        			if (inData.has("error")){
+		        					data.put("error", inData.getDouble("error"));
+			        			}
+			        		}
+							break;
+					        
+			        case 4: if (inData.has("value") && !inData.isNull("value")){  // String data
+			        			data.put("value", inData.getString("value"));
+			        		}
+			        		break;
+					        
+			        case 5: if (inData.has("value") && !inData.isNull("value")){    // String data again
+	        					data.put("value", inData.getString("value"));
+	        				}
+							break;
+						    
+			        case 6: if (inData.has("value") && !inData.isNull("value")){   //  6: chooser, (saves as a string)
+	        					data.put("value", inData.getString("value"));
+	        				}
+							break;
+							
+			        case 7: if (inData.has("date") && !inData.isNull("date")){   //   7: date,
+		     		   		  	
+//		     		   		  	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+//		     		   		  	SimpleDateFormat sqldf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+//		     		   		  	java.sql.Timestamp ts = java.sql.Timestamp.valueOf(sqldf.format(sdf.parse(jsonIn.getString("date"))));	
+			        			data.put("tz",  inData.getInt("tz"));
+		     		   		  	data.put("date", inData.getString("date"));
+			        		}
+		     		   		break;
+		     			    
+			        case 8: if (inData.has("value") && !inData.isNull("value")){  //   8: checkbox,
+			        			data.put("value", inData.getBoolean("value"));
 							}
-							pStmt.setInt(5, userID);
-							id=dBconn.getSingleIntValue(pStmt);
-					   		pStmt.close();
-	        			}
-						break;
-						
-		        case 4: if (jsonIn.has("value") && !jsonIn.isNull("value")){ 
-		        			pStmt= dBconn.conn.prepareStatement( 			// String data	
-		        					"INSERT INTO p_string_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
-		        			pStmt.setInt(1, processID);
-		        			pStmt.setInt(2, parameterID);
-		        			pStmt.setString(3, jsonIn.getString("value"));
-		        			pStmt.setInt(4, userID);
-		        			id=dBconn.getSingleIntValue(pStmt);
-					   		pStmt.close();
-		        		}
-		        		break;
-				        
-		        case 5:	if (jsonIn.has("value") && !jsonIn.isNull("value")){ //String
-		        			pStmt= dBconn.conn.prepareStatement(
-		        					"INSERT INTO p_string_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
-		        			pStmt.setInt(1, processID);
-		        			pStmt.setInt(2, parameterID); 
-					    	pStmt.setString(3, jsonIn.getString("value"));
-					    	pStmt.setInt(4, userID);
-					    	id=dBconn.getSingleIntValue(pStmt);
-					   		pStmt.close();
-		        		}
-		        		break;
-		        		
-		        case 6:	if (jsonIn.has("value") && !jsonIn.isNull("value")){ //String
-			    			pStmt= dBconn.conn.prepareStatement(
-			    					"INSERT INTO p_string_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
-			    			pStmt.setInt(1, processID);
-			    			pStmt.setInt(2, parameterID); 
-					    	pStmt.setString(3, jsonIn.getString("value"));
-					    	pStmt.setInt(4, userID);
-					    	id = dBconn.getSingleIntValue(pStmt);
-					   		pStmt.close();
-			    		}
-			    		break;
-					   
-		        case 7:	if (jsonIn.has("value") && !jsonIn.isNull("date")){ // Date 
-		        			pStmt= dBconn.conn.prepareStatement( 				
-		        					"INSERT INTO p_timestamp_data VALUES (default,?,?,?,?,NOW(),?) RETURNING ID");
-		        			pStmt.setInt(1, processID);
-		        			pStmt.setInt(2, parameterID);
-		        			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
-		        			SimpleDateFormat sqldf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-		        			java.sql.Timestamp ts = java.sql.Timestamp.valueOf(sqldf.format(sdf.parse(jsonIn.getString("date"))));
-		        			pStmt.setTimestamp(3, (Timestamp) ts);
-		        			pStmt.setInt(4, jsonIn.getInt("tz")); //Timezone in Minutes
-		        			pStmt.setInt(5, userID);
-					    	id = dBconn.getSingleIntValue(pStmt);
-					   		pStmt.close();
-		        		}
-					    break;
+					   		break;
+					        
+			        case 9: if (inData.has("date") && !inData.isNull("date")){  //   9: timestamp,
+//						   		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+//								SimpleDateFormat sqldf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+//								java.sql.Timestamp ts = java.sql.Timestamp.valueOf(sqldf.format(sdf.parse(jsonIn.getString("date"))));		   
+								data.put("tz",  inData.getInt("tz"));
+		     		   		  	data.put("date", inData.getString("date"));
+			        		}
+						   	break;
 					    
-		        case 8:	if (jsonIn.has("value") && !jsonIn.isNull("value") ){
-    				pStmt= dBconn.conn.prepareStatement( 			// Boolean is saved as integer
-    						"INSERT INTO p_integer_data (ProcessID, P_Parameter_ID, "
-    						+"Value, lastUser) VALUES(?,?,?,?) RETURNING ID");
-		   			pStmt.setInt(1, processID);
-			        pStmt.setInt(2, parameterID);
-		   			pStmt.setInt(3, jsonIn.getBoolean("value")?1:0);
-		   			pStmt.setInt(4, userID);
-		   			id = dBconn.getSingleIntValue(pStmt);
+			        case 10: if (inData.has("value") && !inData.isNull("value")){ // URL
+					        	data.put("value", inData.getString("value"));
+			        		}
+			        		break;
+					        
+			        case 11: if (inData.has("value") && !inData.isNull("value")){ // e-mail
+			        			data.put("value", inData.getString("value"));
+			        		} 
+		        		break;
+					} // end of switch Statement
+					pStmt = dBconn.conn.prepareStatement(	
+							"INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser) "
+							+ "VALUES (?, ?, ?, ?)  RETURNING ID"); 
+        			pStmt.setInt(1, processID);
+        			pStmt.setInt(2, parameterID);
+		   		  	pStmt.setObject(3, data, java.sql.Types.OTHER);
+        			pStmt.setInt(4, userID);
+        			id = dBconn.getSingleIntValue(pStmt);
 		   	   		pStmt.close();
-    			}
-	   			break;
-				   
-		        case 9: if (jsonIn.has("value") && !jsonIn.isNull("date")){ 
-		        			pStmt= dBconn.conn.prepareStatement( 			// Timestamp data	
-		        					"INSERT INTO p_timestamp_data VALUES (default,?,?,?,?,NOW(),?) RETURNING ID");
-		        			pStmt.setInt(1, processID);
-		        			pStmt.setInt(2, parameterID);
-		        			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
-		        			SimpleDateFormat sqldf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-		        			java.sql.Timestamp ts = java.sql.Timestamp.valueOf(sqldf.format(sdf.parse(jsonIn.getString("date"))));
-		        			pStmt.setTimestamp(3, (Timestamp) ts);
-		        			pStmt.setNull(3, java.sql.Types.TIMESTAMP);
-		        			pStmt.setInt(4, jsonIn.getInt("tz")); //Timezone in Minutes
-		        			pStmt.setInt(5, userID);
-		        			id = dBconn.getSingleIntValue(pStmt);
-				   	   		pStmt.close();
-		       			}
-					    break;
-		        case 10: if (jsonIn.has("value") && !jsonIn.isNull("value")){ 
-		        	 		pStmt= dBconn.conn.prepareStatement( 			// URL
-		        	 				"INSERT INTO p_string_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
-		        	 		pStmt.setInt(1, processID);
-					       	pStmt.setInt(2, parameterID);
-					       	pStmt.setString(3, jsonIn.getString("value"));
-					       	pStmt.setInt(4, userID);
-					    	id = dBconn.getSingleIntValue(pStmt);
-				   	   		pStmt.close();
-		        		}
-						break;
-		        case 11: if (jsonIn.has("value") && !jsonIn.isNull("value")){ 
-		        			pStmt= dBconn.conn.prepareStatement( 			// e-mail	
-		        					"INSERT INTO p_string_data VALUES(DEFAULT,?,?,?,NOW(),?) RETURNING ID");
-		        			pStmt.setInt(1, processID);
-		        			pStmt.setInt(2, parameterID);
-		        			pStmt.setString(3, jsonIn.getString("value"));
-		        			pStmt.setInt(4, userID);
-		        			id = dBconn.getSingleIntValue(pStmt);
-				   	   		pStmt.close();
-			        	}
-						break; // completely unnecessary
-		        
-				} // end of switch statement
+		   	   		
+		   	   		pStmt = dBconn.conn.prepareStatement(	
+		   	   				"REFRESH MATERIALIZED VIEW pnumbers");
+		   	   		pStmt.executeUpdate();
+		   	   		pStmt.close();
+				}
 			
-		    // tell client that everything is fine
-		    PrintWriter out = response.getWriter();
-		    JSONObject myResponse= new JSONObject();
-		    myResponse.put("status", status);
-		    myResponse.put("id", id);
-			out.println(myResponse.toString());
-		} catch (SQLException e) {
-			System.err.println("SaveProcessParameter: More Problems with SQL query");
-			status = "error";
-			e.printStackTrace();
-		} catch (JSONException e){
-			System.err.println("SaveProcessParameter: More Problems creating JSON");
-			e.printStackTrace();
-			System.err.println(pStmt.toString());
-			status="error";
-		} catch (Exception e) {
-			System.err.println("SaveProcessParameter: More Strange Problems");
-			System.err.println(pStmt.toString());
-			e.printStackTrace();
-			status="error";
-		}
+			    // tell client that everything is fine
+			    PrintWriter out = response.getWriter();
+			    JSONObject myResponse= new JSONObject();
+			    myResponse.put("status", status);
+			    myResponse.put("id", id);
+				out.println(myResponse.toString());
+			} catch (SQLException e) {
+				System.err.println("SaveProcessParameter: More Problems with SQL query");
+				status = "error";
+				e.printStackTrace();
+			} catch (JSONException e){
+				System.err.println("SaveProcessParameter: More Problems creating JSON");
+				e.printStackTrace();
+				System.err.println(pStmt.toString());
+				status="error";
+			} catch (Exception e) {
+				System.err.println("SaveProcessParameter: More Strange Problems");
+				System.err.println(pStmt.toString());
+				e.printStackTrace();
+				status="error";
+			}
 	    } else {
 	    	response.setStatus(401);
 	    }

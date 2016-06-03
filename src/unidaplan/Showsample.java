@@ -115,10 +115,19 @@ public class Showsample extends HttpServlet {
 	    	
 		//get the title parameters
 		try {
-			pStmt= dBconn.conn.prepareStatement( 	 
-			   "SELECT * FROM acc_sample_parameters WHERE id_field=true AND objectid=?");		
+			pStmt = dBconn.conn.prepareStatement( 	 
+			   "SELECT "
+			 + "sd.ot_parameter_id AS parameterid, "
+			 + "data, "
+			 + "pd.datatype, " 
+			 + "pd.format, "
+			 + "COALESCE (op.stringkeyname, pd.stringkeyname) AS name_key "
+			 + "FROM sampledata sd "
+			 + "JOIN ot_parameters op ON op.id = sd.ot_parameter_id "
+			 + "JOIN paramdef pd ON pd.id = op.definition "
+			 + "WHERE id_field = true AND sd.objectid = ?");		
 			pStmt.setInt(1,sampleID);
-			JSONArray titleparameters=dBconn.jsonArrayFromPreparedStmt(pStmt);
+			JSONArray titleparameters = dBconn.jsonArrayFromPreparedStmt(pStmt);
 			if (titleparameters.length()>0) {
 				jsSample.put("titleparameters",titleparameters);
 		      	for (int i=0; i<titleparameters.length();i++) {
@@ -152,13 +161,12 @@ public class Showsample extends HttpServlet {
 			//get the parameters
 			pStmt= dBconn.conn.prepareStatement( 
 			   "SELECT "
-			  +"op.id, "
+			  +"op.id AS pid, "
 			  +"op.parametergroup, "
 	 		  +"op.compulsory, "
 	 		  +"op.pos, "
-	 		  +"COALESCE (op.stringkeyname,paramdef.stringkeyname) AS name_key,  "
-	 		  +"pid, "
-	 		  +"a.value, "
+	 		  +"COALESCE (op.stringkeyname,paramdef.stringkeyname) AS namekey,  "
+	 		  +"sd.data, "
 	 		  +"ot_parametergrps.id AS pgrpid, "
 	 		  +"ot_parametergrps.stringkey as paramgrpkey, "
 	 		  +"COALESCE (op.description, paramdef.description) AS description, "
@@ -170,13 +178,12 @@ public class Showsample extends HttpServlet {
 			  +"FROM ot_parameters op "
 			  +"JOIN ot_parametergrps ON (op.Parametergroup=ot_parametergrps.ID) "
 			  +"JOIN paramdef ON (paramdef.id=op.definition) "
-			  +"LEFT JOIN acc_sample_parameters a ON "
-			  +"(a.objectid=? AND a.id=op.id AND hidden=FALSE) "
+			  +"LEFT JOIN sampledata sd ON "
+			  +"(sd.objectid=? AND sd.ot_parameter_id=op.id AND hidden=FALSE) "
 			  +"WHERE (op.objecttypesID=? AND op.id_field=false AND op.hidden=false)");
 			pStmt.setInt(1,sampleID);
 			pStmt.setInt(2,typeid);
-//			System.err.println("pstmt: "+pstmt.toString());
-			JSONArray parameters=dBconn.jsonArrayFromPreparedStmt(pStmt);
+			JSONArray parameters = dBconn.jsonArrayFromPreparedStmt(pStmt);
 			if (parameters.length()>0 && parametergrps!=null && parametergrps.length()>0) {
 				for (int j=0;j<parametergrps.length();j++){
 					JSONArray prmgrpprms=new JSONArray();
@@ -184,8 +191,7 @@ public class Showsample extends HttpServlet {
 		      		stringkeys.add(Integer.toString(prmgrp.getInt("paramgrpkey")));				
 			      	for (int i=0; i<parameters.length();i++) {
 			      		JSONObject tParam=(JSONObject) parameters.get(i);
-	
-			      		stringkeys.add(Integer.toString(tParam.getInt("name_key")));
+			      		stringkeys.add(Integer.toString(tParam.getInt("namekey")));
 			      		if (tParam.has("parametergroup")&&
 			      			tParam.getInt("parametergroup")==prmgrp.getInt("parametergroup")){		      			
 				      		if (tParam.has("unit")){ 
@@ -197,16 +203,6 @@ public class Showsample extends HttpServlet {
 			      			int datatype=tParam.getInt("datatype");
 				      		tParam.remove("datatype");
 					      	tParam.put("datatype",Unidatoolkit.Datatypes[datatype]); 
-				      		if (datatype==1 && tParam.has("value")) {				      		
-					      					int x=Integer.parseInt(tParam.getString("value"));
-					      					tParam.remove("value");
-						      				tParam.put("value", x);
-					      	}
-				      		if (datatype==2 && tParam.has("value")) {	 
-						      				double y=Double.parseDouble(tParam.getString("value"));
-						      				tParam.remove("value");
-						      				tParam.put("value", y);
-					      	}
 				      		if (datatype==6) {	// chooser 
 				      			pStmt = dBconn.conn.prepareStatement(
 				      					"SELECT string FROM possible_values "
@@ -216,11 +212,7 @@ public class Showsample extends HttpServlet {
 				      			tParam.put("possiblevalues", pvalues);
 				      			pStmt.close();
 		      				}
-				      		if (datatype==8 && tParam.has("value")) {	 
-									Boolean v = tParam.getString("value").equals("1");
-									tParam.put("value", v);								
-		      				}
-				      		if (datatype>3 && tParam.has("unit")) {	 
+				      		if (datatype>3 && tParam.has("unit")) {
 			      				tParam.remove("unit");
 		      				}
 		      				tParam.remove("definition");
@@ -247,28 +239,32 @@ public class Showsample extends HttpServlet {
 	    	
 		// find all corresponding processes + timestamp
 		try {
-			pStmt= dBconn.conn.prepareStatement( 
-			   "SELECT samplesinprocess.processid, processes.processtypesid as processtype, ptd.value AS date, "
-			  +"n.value AS number, n2.value AS status "
-			  +"FROM samplesinprocess "
-			  +"JOIN processes ON (processes.id=samplesinprocess.processid) " 
-			  +"JOIN processtypes ON (processes.processtypesid=processtypes.id) "  
-			  +"JOIN p_parameters pp ON (pp.definition=10) "   // date
-			  +"JOIN p_parameters pp2 ON (pp2.definition=8) "  // number
-			  +"JOIN p_parameters pp3 ON (pp3.definition=1) "  // status
-			  +"JOIN p_timestamp_data ptd ON (ptd.processID=samplesinprocess.processid AND ptd.P_Parameter_ID=pp.id) "
-			  +"JOIN p_integer_data n ON (n.ProcessID=samplesinprocess.processid AND n.P_Parameter_ID=pp2.id) "
-			  +"JOIN p_integer_data n2 ON (n2.ProcessID=samplesinprocess.processid AND n2.P_Parameter_ID=pp3.id) " 
-			  +"WHERE sampleid=?");
+			pStmt = dBconn.conn.prepareStatement( 
+			   "SELECT "
+			   + "samplesinprocess.processid, "
+			   + "processes.processtypesid AS processtype, "
+			   + "ptd.data->>'date' AS date, "
+			   + "(n1.data->>'value')::integer AS number, "
+			   + "(n2.data->>'value')::integer AS status "
+			   + "FROM samplesinprocess "
+			   + "JOIN processes ON (processes.id=samplesinprocess.processid) " 
+			   + "JOIN processtypes ON (processes.processtypesid=processtypes.id) "  
+			   + "JOIN p_parameters pp ON (pp.definition = 10) "   // date
+			   + "JOIN p_parameters pp2 ON (pp2.definition = 8) "  // number
+			   + "JOIN p_parameters pp3 ON (pp3.definition = 1) "  // status
+			   + "JOIN processdata ptd ON (ptd.processID = samplesinprocess.processid AND ptd.parameterID = pp.id) "
+			   + "JOIN processdata n1 ON (n1.ProcessID = samplesinprocess.processid AND n1.parameterID = pp2.id) "
+			   + "JOIN processdata n2 ON (n2.ProcessID = samplesinprocess.processid AND n2.parameterID = pp3.id) " 
+			   + "WHERE sampleid=?");
 			pStmt.setInt(1,sampleID);
-			JSONArray processes=dBconn.jsonArrayFromPreparedStmt(pStmt);
+			JSONArray processes = dBconn.jsonArrayFromPreparedStmt(pStmt);
 	//	   	String validToString = jsToken.optString("token_valid_to");
 	//	   	Timestamp validToDate = Timestamp.valueOf(validToString); 
 			if (processes.length()>0) { // TODO: Why not directly? Timestamp???
 				JSONArray processes2 = new JSONArray();
 		      	for (int i=0; i<processes.length();i++) {	      		
-		      		JSONObject tempObj=(JSONObject) processes.get(i);
-		      		JSONObject tempObj2=new JSONObject();
+		      		JSONObject tempObj = (JSONObject) processes.get(i);
+		      		JSONObject tempObj2 = new JSONObject();
 		      		int number= ((JSONObject) processes.get(i)).getInt("number");
 		      		tempObj2.put("number",number);
 		      		int ptype= ((JSONObject) processes.get(i)).getInt("processtype");
@@ -277,9 +273,8 @@ public class Showsample extends HttpServlet {
 		      		tempObj2.put("processid",processid);
 		      		int status= ((JSONObject) processes.get(i)).getInt("status");
 		      		tempObj2.put("status",status);
-		    	   	String dateString = tempObj.optString("date");
-		    	   	Timestamp date = Timestamp.valueOf(dateString); 	    	   	
-		      		tempObj2.put("date", date.getTime());	      		
+		    	   	String dateString = tempObj.getString("date");
+		      		tempObj2.put("date", dateString);	      		
 		      		processes2.put(tempObj2);
 		      	}
 				jsSample.put("processes",processes2);

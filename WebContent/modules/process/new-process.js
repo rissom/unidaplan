@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-function newProcessController(restfactory,$state,ptypes,avProcessTypeService){
+function newProcessController(restfactory,$state,ptypes,avProcessTypeService,processService){
 	
 	var thisController = this;
 	
@@ -19,8 +19,8 @@ function newProcessController(restfactory,$state,ptypes,avProcessTypeService){
 
 		
 	this.addProcess = function() {
-		var d=new Date();
-		var promise = restfactory.POST("add-process?processtypeid="+this.processType.id+"&timezone="+d.getTimezoneOffset());
+		
+		var promise = processService.addProcess(this.processType.id);
 		promise.then(function(rest){
 			if (rest.data.status=="ok") {
 				$state.go('process',{processID:rest.data.id})
@@ -41,6 +41,6 @@ function newProcessController(restfactory,$state,ptypes,avProcessTypeService){
 
 
 angular.module('unidaplan').controller('newProcessController',['restfactory','$state','ptypes',
-                                                               'avProcessTypeService',newProcessController]);
+                              'avProcessTypeService','processService',newProcessController]);
 
 })();

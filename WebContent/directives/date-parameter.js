@@ -19,31 +19,31 @@ var dateParameter = function() {
 			pupdate:'&',
 			parameter: '='
 		},
+		controllerAs: 'dateParamCtrl',
 		controller: function($scope){
+						
+			var tc = this;
 			
-			var tc=this;
-			
-			if ("value" in $scope.parameter){
-				tc.date = new Date($scope.parameter.value);
-				tc.newDate = new Date($scope.parameter.value);
+			if ("data" in $scope.parameter){
+				tc.date = new Date($scope.parameter.data.date);
+				tc.newDate = new Date($scope.parameter.data.date);
 			}
 			
 			
 			
 			this.getDateString = function(){
-				tc.newValue   = tc.date;
 				if (tc.date){
 					return tc.date.toLocaleDateString();
-				}
+				} 
 				return '-'; // return '-' if no timestamp is defined.
 			}
 			
 			
-			this.update= function(){
-				$scope.parameter.editing=false; 
-				$scope.parameter.value=$scope.parameter.newDate;
-				$scope.parameter.date=$scope.parameter.newDate;
-				$scope.parameter.tz=new Date().getTimezoneOffset();
+			this.update = function(){
+				$scope.parameter.editing = false;
+				$scope.parameter.data = {date : tc.newDate, tz: new Date().getTimezoneOffset() };
+				$scope.parameter.date = tc.newDate;
+				$scope.parameter.tz = new Date().getTimezoneOffset();
 				$scope.pupdate({parameter:$scope.parameter});
 			}
 			
@@ -53,7 +53,7 @@ var dateParameter = function() {
 				}
 				if (keyCode===27) {		// Escape key pressed
 					$scope.parameter.editing=false;	
-					this.newValue=this.dateString;
+					this.newValue = this.dateString;
 				}
 			}	  
 					
@@ -64,7 +64,6 @@ var dateParameter = function() {
 			}
 			
 		},
-		controllerAs: 'dateParamCtrl'
 	};
 };
     

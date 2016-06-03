@@ -95,31 +95,20 @@ function sampleController(sample,$state,$stateParams,$uibModal,$filter,types,sam
 	
 	
 	this.keyUp = function(keyCode,newValue,parameter) {
-		if (keyCode===13) {				// Return key pressed
-			parameter.editing=false; 
-			var oldValue=parameter.value;
-			parameter.value=newValue;
+		if (keyCode === 13) {				// Return key pressed
+			parameter.editing = false; 
+			var oldValue = parameter.data.value;
+			parameter.data.value = newValue;
 			var res;
-			  if (parameter.pid) {
-				res = sampleService.saveParameter(sample.id,parameter);
-				res.then(function() {
-						},
-						function() {
-							parameter.value=oldValue;
-							console.log('error');
-							console.log(data);
-						}
-				);
-			 } else {
-				res = sampleService.addSampleParameter(sample.id,parameter);
-				res.then(function(data) {
-						},function(data) {
-							parameter.value=oldValue;
-							console.log('error');
-							console.log(data);
-						}
-				);
-			 }
+			res = sampleService.saveParameter(sample.id,
+					{pid : parameter.parameterid,
+					 data : {value:parameter.data.value}});
+			res.then(function() { reload(); },
+					 function() {
+						parameter.data.value = oldValue;
+						console.log('error');
+					}
+			);
 		}
 		if (keyCode===27) {		// Escape key pressed
 			parameter.editing=false;			

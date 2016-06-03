@@ -109,7 +109,7 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 				};
 				angular.forEach(paramgrp.parameter, function(parameter) {
 					parameter.namef=function(){
-						return key2string.key2string(parameter.name_key,strings);
+						return key2string.key2string(parameter.namekey,strings);
 					};
 					if (parameter.parametergroup){
 						parameter.grpnamef=function(){
@@ -171,13 +171,10 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 	
 
 	this.saveParameter = function(sampleid,parameter) {
-		var json={sampleid:sampleid, parameterid:parameter.id, value:parameter.value};
+		var json = {sampleid:sampleid, parameterid:parameter.pid, data:parameter.data};
 		if ("date" in parameter) {
 			json.date=parameter.date;
 			json.tz=parameter.tz;
-		}
-		if ("time" in parameter) {
-			json.time=parameter.time;
 		}
 		if ("error" in parameter) {
 			json.error=parameter.error;

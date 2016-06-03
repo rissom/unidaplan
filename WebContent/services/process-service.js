@@ -5,12 +5,6 @@ var processService = function (restfactory,$q,$translate,key2string) {
 	// restfactory is a wrapper for $html.
 
 	var thisController=this;
-
-	
-	
-	this.setStatus = function(process,status){
-		return this.saveParameter(process.id,{id:process.statuspid,value:status});
-	};
 	
 	
 	
@@ -19,6 +13,14 @@ var processService = function (restfactory,$q,$translate,key2string) {
 	};
 	
 	
+	this.addProcess = function(processtype){
+		var d = new Date();
+		var json = {processtypeid : processtype,
+					tz : d.getTimezoneOffset(),
+					date : d }
+		return restfactory.POST("add-process",json);
+	}
+
 	
 	this.addProcessType = function(process){
 		return restfactory.POST("add-process-type",process);
@@ -30,6 +32,13 @@ var processService = function (restfactory,$q,$translate,key2string) {
 	this.deleteFile = function(fileID){
 		return restfactory.DELETE("delete-file?fileid="+fileID)
 	}
+	
+	
+	
+	// delete a processtype
+	this.deleteProcessType = function(id){
+		return restfactory.DELETE("delete-process-type?id="+id);
+	};
 
 	
 	
@@ -155,16 +164,13 @@ var processService = function (restfactory,$q,$translate,key2string) {
 
   	this.savePOParameter = function(parameter) {
   		console.log ("parameter:",parameter)
-  		var json = {parameterid:parameter.parameterid, opid:parameter.opid, value:parameter.value};
-		if ("date" in parameter) {
-			json.date=parameter.date;
-			json.tz=parameter.tz;
+  		var json = {parameterid:parameter.parameterid, opid:parameter.opid, data:{value:parameter.data.value}};
+  		if ("date" in parameter.data) {
+			json.data.date = parameter.data.date;
+			json.data.tz = parameter.data.tz;
 		}
-		if ("time" in parameter) {
-			json.time=parameter.time;
-		}
-		if ("error" in parameter) {
-			json.error=parameter.error;
+		if ("error" in parameter.data) {
+			json.data.error = parameter.data.error;
 		} 
   		return restfactory.POST("save-po-parameter",json);
   	}
@@ -172,26 +178,21 @@ var processService = function (restfactory,$q,$translate,key2string) {
 	
   	
 	this.saveParameter = function(processid,parameter) {
-		var json={processid:processid, parameterid:parameter.id, value:parameter.value};
-		if ("date" in parameter) {
-			json.date=parameter.date;
-			json.tz=parameter.tz;
+		var json = {processid:processid, parameterid:parameter.id, data:{value:parameter.data.value}};
+		if ("date" in parameter.data) {
+			json.data.date = parameter.data.date;
+			json.data.tz = parameter.data.tz;
 		}
-		if ("time" in parameter) {
-			json.time=parameter.time;
-		}
-		if ("error" in parameter) {
-			json.error=parameter.error;
+		if ("error" in parameter.data) {
+			json.data.error = parameter.data.error;
 		} 
 		return restfactory.POST('save-process-parameter',json);
 	};
-
 	
 	
 	
-	// delete a processtype
-	this.deleteProcessType = function(id){
-		return restfactory.DELETE("delete-process-type?id="+id);
+	this.setStatus = function(process,status){
+		return this.saveParameter(process.id,{id:process.statuspid,data:{value:status}});
 	};
 	
 	
