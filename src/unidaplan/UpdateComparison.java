@@ -23,7 +23,7 @@ import org.json.JSONObject;
 	    String in = request.getReader().readLine();
 		String privilege = "n";
 	    String status = "ok";
-	    String table="";
+	    String table = "";
 
 	    JSONObject jsonIn = null;
 	    int searchID = -1;
@@ -35,10 +35,11 @@ import org.json.JSONObject;
 	    try {
 			 jsonIn = new JSONObject(in);
 	         searchID=jsonIn.getInt("searchid");
-			 id=jsonIn.getInt("id");
-			 comparison=jsonIn.getInt("comparison");
+			 id = jsonIn.getInt("id");
+			 comparison = jsonIn.getInt("comparison");
 		} catch (JSONException e) {
 			System.err.println("UpdateComparison: Error parsing ID-Field or comment");
+			e.printStackTrace();
 			response.setStatus(404);
 		}
 	    
@@ -87,12 +88,11 @@ import org.json.JSONObject;
 					  		  table ="searchpo";
 							  break;
 				}
-				pStmt= dBconn.conn.prepareStatement(query);
+				pStmt = dBconn.conn.prepareStatement(query);
 				pStmt.setInt(1,searchID);
 				pStmt.setInt(2,id);
 				datatype = dBconn.getSingleIntValue(pStmt);
 				
-				// possible comparators: 1:< , 2:> , 3:=, 4:not, 5:contains
 				switch (datatype){  
 					case 1: // integer,
 						if (comparison<1 || comparison>4) { status="error: illegal comparator";}
@@ -104,13 +104,13 @@ import org.json.JSONObject;
 						if (comparison<1 || comparison>4) { status="error: illegal comparator";}
 						break;
 					case 4: // string
-						if (comparison<3 || comparison>5) { status="error: illegal comparator";}
+						if (comparison<2 || comparison>6) { status="error: illegal comparator";}
 						break;
 					case 5: // long string 
-						if (comparison<3 || comparison>5) { status="error: illegal comparator";}
+						if (comparison<2 || comparison>6) { status="error: illegal comparator";}
 						break;
 					case 6: // chooser
-						if (comparison<3 || comparison>4) { status="error: illegal comparator";}
+						if (comparison<2 || comparison>6) { status="error: illegal comparator";}
 						break;
 					case 7: // date
 						if (comparison<1 || comparison>4) { status="error: illegal comparator";}
@@ -122,10 +122,10 @@ import org.json.JSONObject;
 						if (comparison<1 || comparison>4) { status="error: illegal comparator";}
 						break;
 					case 10: // url
-						if (comparison<3 || comparison>5) { status="error: illegal comparator";}
+						if (comparison<2 || comparison>6) { status="error: illegal comparator";}
 						break;
 					case 11: // email
-						if (comparison<3 || comparison>5) { status="error: illegal comparator";}
+						if (comparison<2 || comparison>6) { status="error: illegal comparator";}
 						break;
 					default: 
 						status="error:unknown datatype";

@@ -441,6 +441,17 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
         })
         
         
+        .state('processRecipes',{
+        	url: '/process-recipes',
+			templateUrl: 'modules/process/process-recipes.html',
+			controller: 'processRecipesController as processRecipesCtrl',
+			resolve:{
+				ptypes: function(avProcessTypeService){
+		   	    	return avProcessTypeService.getProcessTypes();
+		   	    }
+			}
+        })
+        
         .state('recentSamples', {
 			url: '/recentsamples',
 			templateUrl: 'modules/sample/recent-samples.html',

@@ -4,8 +4,6 @@ import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -23,36 +21,25 @@ import org.json.JSONObject;
 	  public void doPost(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {
 		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
+		int userID = authentificator.GetUserID(request,response);
 		if (userID>0) {
 		JSONArray parameters = null;
 		JSONArray sResults = null;
 		JSONArray samplenames = null;
 		int type;
-		String status="ok";
+		String status = "ok";
 		PreparedStatement pStmt;
 		ArrayList<String> stringkeys = new ArrayList<String>(); 
 		JSONObject search = null;
 	    request.setCharacterEncoding("utf-8");
 	    response.setCharacterEncoding("utf-8");
 	    PrintWriter out = response.getWriter();
-	 	DBconnection dBconn=new DBconnection();
+	 	DBconnection dBconn = new DBconnection();
 	    JSONArray inSampleParams = new JSONArray();
 	    JSONArray inProcessParams = new JSONArray();
 	    JSONObject result = new JSONObject();
-	    int searchID=-1;
-	    String output="json";
-	    
-	    
-	    // Create a set of the datatypes which are stored as strings
-	    Set<Integer> stringTypes = new HashSet<Integer>();
-	    stringTypes.add(4);
-	    stringTypes.add(5);
-	    stringTypes.add(6);
-	    stringTypes.add(10);
-	    stringTypes.add(11);
-
-	 
+	    int searchID = -1;
+	    String output = "json";
 	  	
 	  	request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
@@ -61,6 +48,7 @@ import org.json.JSONObject;
 			  jsonIn = new JSONObject(in);
 		} catch (JSONException e) {
 			response.setStatus(404);
+			e.printStackTrace();
 			System.err.println("Result: Input is not valid JSON");
 			status="no parameters for performing search";
 		}
@@ -69,7 +57,7 @@ import org.json.JSONObject;
 	    
 	  	if (status=="ok"){ 
 	    try {  
-	    	searchID =jsonIn.getInt("searchid");
+	    	searchID = jsonIn.getInt("searchid");
 	    	if (jsonIn.has("output")){
 	    		output = jsonIn.getString("output");
 	    	}
@@ -79,6 +67,7 @@ import org.json.JSONObject;
 	    } catch (JSONException e) {
 			System.err.println("Result: input parameters are missing");
     		response.setStatus(404);
+    		e.printStackTrace();
 			status="searchid is missing";
 		}}
 	    
@@ -108,9 +97,8 @@ import org.json.JSONObject;
 					 +"JOIN ot_parameters ON (ot_parameters.id=otparameter) "
 					 +"JOIN paramdef ON (paramdef.id=ot_parameters.definition) "
 					 +"WHERE search=?";
-			String[] otables= {"o_integer_data","o_float_data","o_measurement_data","o_string_data","o_timestamp_data"};
 			
-			pStmt= dBconn.conn.prepareStatement(query);
+			pStmt = dBconn.conn.prepareStatement(query);
 			pStmt.setInt(1,searchID);
 			parameters = dBconn.jsonArrayFromPreparedStmt(pStmt);
 		
@@ -133,21 +121,18 @@ import org.json.JSONObject;
 					if (inSampleParams.getJSONObject(j).getInt("pid")==parameter.getInt("pid")) {
 						parameter.put("comparison", inSampleParams.getJSONObject(j).getInt("comparison"));
 						parameter.put("value", inSampleParams.getJSONObject(j).getString("value"));
+						datatype = parameter.getInt("datatype");
+						parameter.put("datatype",Unidatoolkit.Datatypes[datatype]);
 					}
 				}
 				stringkeys.add(Integer.toString(parameter.getInt("stringkeyname")));
-				datatype=parameter.getInt("datatype");
-
-				String colon="";
-			    
-				if (stringTypes.contains(datatype)){colon="'";}
-				String value=parameter.getString("value");
-				String notPrefix="";
-				if (parameter.getInt("comparison")==4){ notPrefix="NOT ";}
-				if (parameter.getInt("comparison")==5){value="%"+value+"%";}
-				resultQuery+=" JOIN "+otables[datatype-1]+" s"+i+" ON (s"+i+".objectid=samples.id AND s"
-						+i+".ot_parameter_id="+parameter.getInt("pid")+" AND "+notPrefix+"s"+i+".value "+
-						Unidatoolkit.comparators[parameter.getInt("comparison")-1]+colon+value+colon+") \n";
+			    				
+				resultQuery+=" JOIN sampledata s"+i+" ON (s"+i+".objectid = samples.id AND s"
+						+i+".ot_parameter_id="+parameter.getInt("pid")+" AND compare(val := s"+i+".data, " 
+//						Unidatoolkit.comparators[parameter.getInt("comparison")-1]+value+") \n"
+				+ "datatype:='" + parameter.getString("datatype") + "', "
+				+ "comparator:=" + parameter.getInt("comparison") + ", "
+				+ "comval:='" + parameter.getString("value") + "')) ";
 			}
 			
 			
@@ -163,33 +148,27 @@ import org.json.JSONObject;
 				  );
 			pStmt.setInt(1,searchID);
 			parameters = dBconn.jsonArrayFromPreparedStmt(pStmt);
-
-
-			String[] pptables= {"p_integer_data","p_float_data","p_measurement_data","p_string_data","p_timestamp_data"};
 			
 
 			for (int i=0; i<parameters.length();i++){
-				JSONObject parameter=parameters.getJSONObject(i);
+				JSONObject parameter = parameters.getJSONObject(i);
 				// find corresponding inParameter
-				for (int j=0; j<parameters.length();j++){
-					if (inProcessParams.getJSONObject(j).getInt("pid")==parameter.getInt("pid")) {
+				for (int j=0; j<parameters.length(); j++){
+					if (inProcessParams.getJSONObject(j).getInt("pid") == parameter.getInt("pid")) {
 						parameter.put("comparison", inProcessParams.getJSONObject(j).getInt("comparison"));
 						parameter.put("value", inProcessParams.getJSONObject(j).getString("value"));
 					}
 				}
 				stringkeys.add(Integer.toString(parameter.getInt("stringkeyname")));
-				datatype=parameter.getInt("datatype");
+				datatype = parameter.getInt("datatype");
+				parameter.put("datatype",Unidatoolkit.Datatypes[datatype]);
 
-				String colon="";  // String type datatypes have to be quoted.
-				if (stringTypes.contains(datatype)){colon="'";}
-				String value=parameter.getString("value");
-				String notPrefix="";
-				if (parameter.getInt("comparison")==4){ notPrefix="NOT ";}
-				if (parameter.getInt("comparison")==5){value="%"+value+"%";}
-				resultQuery += " JOIN "+pptables[datatype-1]+" p"+i+" ON p"+i+".processid=processes.id AND p"
-							   +i+".p_parameter_id="+parameter.getInt("pid")+" AND"+
-							   notPrefix+" p"+i+".value "+Unidatoolkit.comparators[parameter.getInt("comparison")-1]+
-							   colon+value+colon;
+				resultQuery += " JOIN processdata p" + i + " ON (p" + i + ".processid = processes.id AND p"
+							   + i + ".parameterid=" + parameter.getInt("pid") + " AND "
+							   + "compare (val:= p"+i+".data, "
+							   + "datatype:='" + parameter.getString("datatype") + "', "
+							   + "comparator:=" + parameter.getInt("comparison") + ", "
+							   + "comval:='" + parameter.getString("value") + "')) ";
 			}
 
 			resultQuery +=	"), \n"
@@ -214,10 +193,10 @@ import org.json.JSONObject;
 					+"sampledata AS ( \n"
 					+"	SELECT  \n"
 					+"		sampleid,  \n"
-					+"		array_to_json(array_agg(asp.value ORDER BY position)) AS sampledata \n"
+					+"		array_to_json(array_agg(asp.data->'value' ORDER BY position)) AS sampledata \n"
 					+"		FROM dsamples \n"
 					+"		LEFT JOIN osearchoutput oso ON oso.search=? \n"
-					+"		LEFT JOIN acc_sample_parameters  asp ON (asp.id=oso.otparameter AND asp.objectid=dsamples.sampleid) \n"
+					+"		LEFT JOIN sampledata asp ON (asp.id=oso.otparameter AND asp.objectid=dsamples.sampleid) \n"
 					+"	GROUP BY dsamples.sampleid \n"
 					+"	ORDER BY max(oso.position) \n"
 					+"), \n"
@@ -228,42 +207,41 @@ import org.json.JSONObject;
 					+"		max(dprocesses.processid) AS process, \n"
 					+"		max(pnumbers.processtype) AS processtype, \n"
 					+"		max(pnumbers.p_number) AS processnumber, \n"
-					+"		array_to_json(array_agg(app.value ORDER BY position)) AS processdata \n"
+					+"		array_to_json(array_agg(app.data->'value' ORDER BY position)) AS processdata \n"
 					+"		FROM dprocesses  \n"
 					+"  JOIN pnumbers ON pnumbers.id = dprocesses.processid"
 					+"	LEFT JOIN psearchoutput pso ON pso.search=? \n"
-					+"	LEFT JOIN acc_process_parameters app ON (app.ppid=pso.pparameter AND app.processid=dprocesses.processid) \n"
+					+"	LEFT JOIN processdata app ON (app.parameterid=pso.pparameter AND app.processid=dprocesses.processid) \n"
 					+"	GROUP BY dprocesses.processid \n"
 					+") \n"
 					+" \n"
 					+"-- MAIN QUERY -- \n"
 					+"-- composes a JSON-Object for every sample with an Array of JSON Objects for every process \n"
-					+"SELECT json_build_object( \n"
-					+"		  'sampleid',psamples.sampleid, \n"
-					+"		  'sampletype',(array_agg(sn.typeid))[1], \n"
-					+" 		  'samplename',(array_agg(sn.name))[1], \n"
-					+"		  'sampledata',(array_agg(sd.sampledata))[1],  \n"
-					+"		  'processes',array_agg(json_build_object('process',processid,'processnumber',processnumber,'processtype',processtype,'processdata',processdata)) \n"
-					+"		) AS samples \n"
+					+"SELECT \n"
+					+"		  psamples.sampleid AS sampleid, \n"
+					+"		  (array_agg(sn.typeid))[1] AS sampletype, \n"
+					+" 		  (array_agg(sn.name))[1] AS samplename, \n"
+					+"		  (array_agg(sd.sampledata))[1] AS sampledata,  \n"
+					+"		  json_agg(json_build_object('process',processid,'processnumber', "
+					+"			processnumber,'processtype',processtype,'processdata', "
+					+"			processdata)) AS processes \n"
 					+"FROM psamples \n"
 					+"JOIN samplenames sn ON sn.id=psamples.sampleid \n"
 					+"JOIN sampledata sd ON sd.sampleid=psamples.sampleid \n"
 					+"JOIN processdata pd ON pd.process=processid \n"
 					+"GROUP BY psamples.sampleid \n";
 			
-			pStmt= dBconn.conn.prepareStatement(resultQuery);
+			pStmt = dBconn.conn.prepareStatement(resultQuery);
 			pStmt.setInt(1, searchID);
 			pStmt.setInt(2, searchID);
-//			System.out.println(pStmt.toString());
 			sResults = dBconn.jsonArrayFromPreparedStmt(pStmt);
-//			System.out.println(sResults.toString());
 			pStmt.close();
 			
 			
-			JSONArray headings= null;				
+			JSONArray headings = null;				
 				
 			//create headings
-			pStmt= dBconn.conn.prepareStatement(
+			pStmt = dBconn.conn.prepareStatement(
 				"SELECT "
 				+"'object' AS type,"
 				+"ot_parameters.id,"

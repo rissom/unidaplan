@@ -154,7 +154,7 @@ public class DBconnection  {
 		          queryResult = pStmt.executeQuery();
           if (queryResult==null) {
         	  System.err.println("DBconnection: statement result null! ");
-        	  result=new JSONArray();
+        	  result = new JSONArray();
           } else {
         	  result = table2json(queryResult);
         	  queryResult.close();
@@ -347,7 +347,7 @@ public class DBconnection  {
   
   
   public int addString(int key, String lang,String input) throws Exception {
-	  PreparedStatement pStmt=conn.prepareStatement("DELETE FROM stringtable WHERE language=? AND string_key=?");
+	  PreparedStatement pStmt = conn.prepareStatement("DELETE FROM stringtable WHERE language=? AND string_key=?");
 	  pStmt.setString(1, lang);
 	  pStmt.setInt(2, key);
 	  pStmt.executeUpdate();
@@ -627,9 +627,17 @@ public class DBconnection  {
             	if (dataType==1111){
             		JSONObject tempObject = null;
             		if (rs.getString(i)!=null) {
-            			tempObject = new JSONObject (rs.getString(i));
+            			String jString = rs.getString(i);
+            			if (jString.substring(0, 1) != null){
+                			if (jString.substring(0, 1).equals("[")){
+                    			JSONArray tempArray = new JSONArray (rs.getString(i));
+            	                obj.put(rs.getMetaData().getColumnLabel(i), tempArray);
+                			} else {
+                    			tempObject = new JSONObject (rs.getString(i));
+            	                obj.put(rs.getMetaData().getColumnLabel(i), tempObject);
+                    		}
+            			};
             		}
-	                obj.put(rs.getMetaData().getColumnLabel(i), tempObject);
             	}else{
 	            	Object tempObject = rs.getObject(i);
 	                obj.put(rs.getMetaData().getColumnLabel(i), tempObject);

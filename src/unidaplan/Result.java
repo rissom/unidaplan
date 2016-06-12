@@ -40,8 +40,9 @@ import org.json.JSONObject;
 	    JSONArray inParams = new JSONArray();
 	    JSONObject result = new JSONObject();
 	    int id=-1;
-	    String operationString="AND";
-	    String output="json";
+	    String operationString = "AND";
+	    String output = "json";
+	    int datatype = 0;
 
 	 
 	  	
@@ -78,12 +79,13 @@ import org.json.JSONObject;
 		    // check if the user is allowed to see this data: (1. userrights, 2. grouprights, 3. admin
 		    pStmt= dBconn.conn.prepareStatement( 	
 			    "SELECT EXISTS( "
-			    + "SELECT 1 FROM rightssearchuser WHERE searchid=1 AND userid=? AND (permission='w' OR permission='r')) "
+			    + "SELECT 1 FROM rightssearchuser WHERE searchid = 1 AND userid = ? "
+			    + "  AND (permission = 'w' OR permission='r')) "
 		    	+ "OR EXISTS ( "
 		    	+ "SELECT 1 FROM rightssearchgroups rg "
-		    	+ "JOIN groupmemberships gm ON (rg.groupid=gm.groupid AND gm.userid=?) "
+		    	+ "JOIN groupmemberships gm ON (rg.groupid = gm.groupid AND gm.userid = ?) "
 				+ "WHERE searchid=1 AND (permission='w' OR permission='r'))"
-				+ "OR EXISTS (SELECT 1 FROM groupmemberships WHERE groupid=1 AND userid=?)");
+				+ "OR EXISTS (SELECT 1 FROM groupmemberships WHERE groupid = 1 AND userid = ?)");
 			pStmt.setInt(1, userID);
 			pStmt.setInt(2, userID);
 			pStmt.setInt(3, userID);
@@ -95,9 +97,10 @@ import org.json.JSONObject;
 		    
 		    
 	    	// get basic search data (id,name,owner,operation)
-			pStmt= dBconn.conn.prepareStatement( 	
-			    "SELECT operation,type FROM searches "
-			   +"WHERE id=?");
+			pStmt = dBconn.conn.prepareStatement( 	
+				      "SELECT operation, type "
+				    + "FROM searches "
+				    + "WHERE id=?");
 			pStmt.setInt(1, id);
 			search=dBconn.jsonObjectFromPreparedStmt(pStmt);
 	    	operationString = search.getBoolean("operation")?"AND":"OR";
@@ -105,40 +108,32 @@ import org.json.JSONObject;
 			
 			// get the searchparameters according to searchtype from the database
 			String query="";
-			String[] ptables = null;
-			String parameterTable="";
 			type=search.getInt("type");
 			switch (type){
 				case 1:   // sample search
 					query = "SELECT otparameter AS pid, comparison, value, "
-					  		 +"COALESCE(ot_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname, "
+					  		 +"COALESCE(ot_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname, \n"
 							 +"paramdef.datatype "
 							 +"FROM searchobject "
 							 +"JOIN ot_parameters ON (ot_parameters.id=otparameter) "
 							 +"JOIN paramdef ON (paramdef.id=ot_parameters.definition) "
 							 +"WHERE search=?";
-					String[] otables= {"o_integer_data","o_float_data","o_measurement_data","o_string_data","o_timestamp_data"};
-					ptables = otables;
 					break;
 				case 2:   // process search
 					query = "SELECT pparameter AS pid, comparison, value, "
-					  		 +"p_parameters.stringkeyname,p_parameters.stringkeyname,paramdef.datatype "
+					  		 +"p_parameters.stringkeyname,p_parameters.stringkeyname,paramdef.datatype \n"
 							 +"FROM searchprocess "
 							 +"JOIN p_parameters ON (p_parameters.id=pparameter) "
 							 +"JOIN paramdef ON (paramdef.id=p_parameters.definition) "
 							 +"WHERE search=?";
-					String[] pptables= {"p_integer_data","p_float_data","p_measurement_data","p_string_data","p_timestamp_data"};
-					ptables = pptables; // Warum kann man keine Arraykonstanten definieren???
 					break;
 				case 3:   // sample specific processparameter
 					query = "SELECT poparameter AS pid, poparameter, comparison, value, "
-					 		 +"po_parameters.stringkeyname,po_parameters.stringkeyname,paramdef.datatype "
+					 		 +"po_parameters.stringkeyname,po_parameters.stringkeyname,paramdef.datatype \n"
 							 +"FROM searchpo "
 							 +"JOIN po_parameters ON (po_parameters.id=poparameter) "
 							 +"JOIN paramdef ON (paramdef.id=po_parameters.definition) "
 							 +"WHERE search=?";
-					String[] potables= {"po_integer_data","po_float_data","po_measurement_data","po_string_data","po_timestamp_data"};
-					ptables = potables;
 					break;
 			}
 			pStmt= dBconn.conn.prepareStatement(query);
@@ -147,65 +142,65 @@ import org.json.JSONObject;
 			String idString="";
 			String idString2="";
 			String tString="";
+			String datatable;
 			switch (type){
 			case 1:   // sample search
-				query="SELECT samples.id FROM samples ";
+				query="SELECT samples.id \n FROM samples ";
 				tString="samples";
 				idString= "objectid";
 				idString2="ot_parameter_id";
+				datatable = "sampledata";
 				break;
 			case 2:  // process search
-				query="SELECT processes.id FROM processes ";
+				query="SELECT processes.id \n FROM processes ";
 				tString="processes";
 				idString= "processid";
-				idString2="p_parameter_id";
+				idString2="parameterid";
+				datatable = "processdata";
 				break;
 			default : // sample specific processparameter
-				tString="processes";
-				query="SELECT processes.id FROM processes ";
-				idString= "processid";
-				idString2="po_parameter_id";
+				tString = "processes";
+				query = "SELECT processes.id FROM processes ";
+				idString = "processid";
+				idString2 = "parameterid";
+				datatable = "spdata";
 			}
 			String where="";
-			int datatype;
-			String[] comparators= {"<",">","=","= ","LIKE "};
 
-			for (int i=0; i<parameters.length();i++){
-				JSONObject parameter=parameters.getJSONObject(i);
+			for (int i = 0; i < parameters.length(); i++){
+				JSONObject parameter = parameters.getJSONObject(i);
 				// find corresponding inParameter
-				for (int j=0; j<parameters.length();j++){
-					if (inParams.getJSONObject(j).getInt("pid")==parameter.getInt("pid")) {
+				for (int j = 0; j < parameters.length(); j++){
+					if (inParams.getJSONObject(j).getInt("pid") == parameter.getInt("pid")) {
 						parameter.put("comparison", inParams.getJSONObject(j).getInt("comparison"));
 						parameter.put("value", inParams.getJSONObject(j).getString("value"));
 					}
 				}
 				stringkeys.add(Integer.toString(parameter.getInt("stringkeyname")));
-				datatype=parameter.getInt("datatype");
+				datatype = parameter.getInt("datatype");
+				parameter.put("datatype",Unidatoolkit.Datatypes[datatype]);
 
-				String colon="";
 			    Set<Integer> set = new HashSet<Integer>();
 	            set.add(4);
 	            set.add(5);
 	            set.add(6);
 	            set.add(10);
 	            set.add(11);
-				if (set.contains(datatype)){colon="'";}
-				String value=parameter.getString("value");
-				String notPrefix="";
-				if (parameter.getInt("comparison")==4){ notPrefix="NOT ";}
-				if (parameter.getInt("comparison")==5){value="%"+value+"%";}
-				parameterTable= ptables[datatype-1];
-				query=query+" JOIN "+parameterTable+" p"+i+" ON p"+i+"."+idString+"="+tString+".id AND p"
-						+i+"."+idString2+"="+parameter.getInt("pid");
-				if (i>0) {where+=" "+operationString;}
-				where=where+notPrefix+" p"+i+".value "+comparators[parameter.getInt("comparison")-1]+
-						colon+value+colon;
-			}
-			query += " WHERE "+ where +" GROUP BY "+tString+".id";
 
-			pStmt= dBconn.conn.prepareStatement(query);
+				query += " JOIN " + datatable + " p" + i + " ON p" + i + "." + idString + "=" + 
+						 tString + ".id AND p" + i + "." + idString2 + "=" + parameter.getInt("pid");
+				if (i>0) {
+					where += " " + operationString + " ";
+				}
+				where += "compare (val:= p"+i+".data, "
+						+ "datatype:='" + parameter.getString("datatype") + "', "
+						+ "comparator:=" + parameter.getInt("comparison") + ", "
+						+ "comval:='" + parameter.getString("value") + "') ";
+			}
+			query += " WHERE "+ where +" GROUP BY " + tString + ".id";
+//			System.out.println(query);
+			pStmt = dBconn.conn.prepareStatement(query);
 			sResults = dBconn.jsonArrayFromPreparedStmt(pStmt);
-//			System.out.println(pStmt.toString());
 			pStmt.close();
 			
 			
@@ -214,8 +209,8 @@ import org.json.JSONObject;
 
 			
 			// get data for samples
-			if (sResults!=null && type==1){
-				query="SELECT id,name,typeid FROM samplenames WHERE id=ANY('{";
+			if (sResults != null && type == 1){
+				query = "SELECT id,name,typeid FROM samplenames WHERE id = ANY('{";
 				StringBuilder buff = new StringBuilder(); // join numbers with commas
 				String sep = "";
 				for (int i=0; i<sResults.length();i++){
@@ -223,7 +218,7 @@ import org.json.JSONObject;
 					buff.append(sResults.getJSONObject(i).getInt("id"));
 					sep = ",";
 				}
-				query+= buff.toString() + "}'::int[])";
+				query += buff.toString() + "}'::int[])";
 				pStmt= dBconn.conn.prepareStatement(query);
 				samplenames = dBconn.jsonArrayFromPreparedStmt(pStmt);
 
@@ -244,8 +239,8 @@ import org.json.JSONObject;
 				headings = dBconn.jsonArrayFromPreparedStmt(pStmt);
 				JSONObject heading = new JSONObject(); 
 				if (headings.length()>0){
-					for (int i=0;i<headings.length();i++){
-						heading=headings.getJSONObject(i);
+					for (int i=0; i<headings.length(); i++){
+						heading = headings.getJSONObject(i);
 						if (heading.has("stringkeyname")){
 							stringkeys.add(Integer.toString(heading.getInt("stringkeyname")));
 						}
@@ -255,7 +250,7 @@ import org.json.JSONObject;
 						if (heading.has("stringkeyunit") && heading.getInt("datatype")>3){
 							heading.remove("stringkeyunit");
 						}
-						heading.remove("datatype");
+						heading.put("datatype",Unidatoolkit.Datatypes[heading.getInt("datatype")]);
 					}
 				}
 				pStmt.close();
@@ -278,50 +273,62 @@ import org.json.JSONObject;
 
 				for (int i=0; i<headings.length();i++){
 					valuebuff.append(",");
-					valuebuff.append("p"+i+".value");
+//					System.out.println (headings.getJSONObject(i).toString());
+					String dt = headings.getJSONObject(i).getString("datatype");
+					if (dt.equals("date") || dt.equals("timestamp")){
+						valuebuff.append("p" + i + ".data->>'date'");
+					} else {		
+						valuebuff.append("p" + i + ".data->>'value'");
+					}
 					
-					joins  += "LEFT JOIN acc_sample_parameters p"+i+" ON samples.id=p"+i+".objectid AND p"+i+".id="+
-							headings.getJSONObject(i).getInt("id")+" \n";
+					joins  += "LEFT JOIN sampledata p" + i + " ON samples.id = p" + i +
+							  ".objectid AND p" + i + ".ot_parameter_id=" +
+							  headings.getJSONObject(i).getInt("id") + " \n";
 				}
 				
-				query = "SELECT sn.id,sn.name,typeid"+ valuebuff.toString()+" FROM samples "+ joins +
-						"LEFT JOIN samplenames sn ON sn.id=samples.id "+
+				query = "SELECT sn.id,sn.name,typeid" + valuebuff.toString()+" FROM samples " + joins +
+						"LEFT JOIN samplenames sn ON sn.id = samples.id "+
 						"WHERE samples.id = ANY('{"+samBuff.toString()+"}'::int[])";
-				pStmt= dBconn.conn.prepareStatement(query);
+//				System.out.println(query);
+				pStmt = dBconn.conn.prepareStatement(query);
 				data = dBconn.getSearchTable(pStmt);
 			}
 				
 			
 			// get data for processes
-			if (sResults!=null && type==2){
-				query="SELECT id,p_number,processtype FROM pnumbers WHERE id=ANY('{";
+			if (sResults != null && type == 2){
+				query = "SELECT id, p_number, processtype FROM pnumbers WHERE id = ANY('{";
 				StringBuilder buff = new StringBuilder(); // join numbers with commas
 				String sep = "";
-				for (int i=0; i<sResults.length();i++){
+				for (int i = 0; i < sResults.length(); i++){
 					buff.append(sep);
 					buff.append(sResults.getJSONObject(i).getInt("id"));
 					sep = ",";
 				}
-				query+= buff.toString() + "}'::int[])";
-				pStmt= dBconn.conn.prepareStatement(query);
+				query += buff.toString() + "}'::int[])";
+				pStmt = dBconn.conn.prepareStatement(query);
 				samplenames = dBconn.jsonArrayFromPreparedStmt(pStmt);
 
 				
 				//create headings
 				pStmt= dBconn.conn.prepareStatement(
-						"  SELECT p_parameters.id,p_parameters.stringkeyname, "
-						+ "paramdef.stringkeyunit FROM searches "
+						"  SELECT "
+						+ "  p_parameters.id,"
+						+ "  p_parameters.stringkeyname, "
+						+ "  paramdef.stringkeyunit,"
+						+ "  paramdef.datatype "
+						+ "FROM searches "
 						+ "JOIN psearchoutput ON psearchoutput.search = searches.id "
-						+ "JOIN p_parameters ON p_parameters.id=pparameter "
-						+ "JOIN paramdef ON p_parameters.definition=paramdef.id "
-						+ "WHERE searches.id=? "
+						+ "JOIN p_parameters ON p_parameters.id = pparameter "
+						+ "JOIN paramdef ON p_parameters.definition = paramdef.id "
+						+ "WHERE searches.id = ? "
 						+ "ORDER BY psearchoutput.position");
 				pStmt.setInt(1, id);
 				headings = dBconn.jsonArrayFromPreparedStmt(pStmt);
 				JSONObject heading = new JSONObject(); 
-				if (headings.length()>0){
-					for (int i=0;i<headings.length();i++){
-						heading=headings.getJSONObject(i);
+				if (headings.length() > 0){
+					for (int i = 0; i < headings.length(); i++){
+						heading = headings.getJSONObject(i);
 						if (heading.has("stringkeyname")){
 							stringkeys.add(Integer.toString(heading.getInt("stringkeyname")));
 						}
@@ -336,7 +343,7 @@ import org.json.JSONObject;
 				// build process Array
 				StringBuilder samBuff = new StringBuilder(); // join numbers with commas
 				sep = "";
-				for (int i=0; i<sResults.length();i++){
+				for (int i = 0; i < sResults.length(); i++){
 					samBuff.append(sep);
 					samBuff.append(sResults.getJSONObject(i).getInt("id"));
 					sep = ",";
@@ -348,18 +355,25 @@ import org.json.JSONObject;
 				StringBuilder valuebuff = new StringBuilder(); // comma separated params for Select
 
 
-				for (int i=0; i<headings.length();i++){
+				for (int i = 0; i < headings.length(); i++){
 					valuebuff.append(",");
-					valuebuff.append("p"+i+".value");
+					datatype = headings.getJSONObject(i).getInt("datatype");
+					String dt = Unidatoolkit.Datatypes[datatype];
+
+					if (dt.equals("date") || dt.equals("timestamp")){
+						valuebuff.append("p" + i + ".data->>'date'");
+					} else {		
+						valuebuff.append("p" + i + ".data->>'value'");
+					}
 					
-					joins  += "LEFT JOIN acc_process_parameters p"+i+" ON processes.id=p"+i+".processid AND p"+i+".ppid="+
-							headings.getJSONObject(i).getInt("id")+" \n";
+					joins  += "LEFT JOIN processdata p" + i + " ON processes.id = p" + i + ".processid AND p" 
+								+i+".parameterid = " + headings.getJSONObject(i).getInt("id")+" \n";
 				}
 				
 				query = "SELECT pn.id,pn.p_number,processtypesid"+ valuebuff.toString()+" FROM processes "+ joins +
-						"LEFT JOIN pnumbers pn ON pn.id=processes.id "+
+						"LEFT JOIN pnumbers pn ON pn.id = processes.id "+
 						"WHERE processes.id = ANY('{"+samBuff.toString()+"}'::int[])";
-				pStmt= dBconn.conn.prepareStatement(query);
+				pStmt = dBconn.conn.prepareStatement(query);
 				data = dBconn.getSearchTable(pStmt);
 
 			}

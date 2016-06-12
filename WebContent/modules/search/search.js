@@ -18,21 +18,29 @@ function searchController(restfactory,$state,$stateParams,$translate,
 	
 	this.pparameters = search.pparameters;
 	
-	var allComparators = [{index:1,label:"<"},{index:2,label:">"},{index:3,label:"="},{index:4,label:"not"},{index:5,label:$translate.instant("contains")}];
 	
-	this.comparators={ 	
-			integer		: allComparators.slice(0,4), 
-			float 		: allComparators.slice(0,4),
- 			measurement : allComparators.slice(0,4),
- 			string		: allComparators.slice(2),
- 			longstring	: allComparators.slice(2),
- 			chooser		: allComparators.slice(2),
- 			date		: allComparators.slice(0,4),
- 			checkbox	: allComparators.slice(2),
- 			timestamp	: allComparators.slice(0,4),
- 			URL			: allComparators.slice(2),
- 			email		: allComparators.slice(2)
-		};
+	var allComparators = [{index:0,label:"<"},
+	                      {index:1,label:"<="},
+	                      {index:2,label:"="},
+	                      {index:3,label:">="},
+	                      {index:4,label:">"},
+	                      {index:5,label:"!="},
+	                      {index:6,label:$translate.instant("contains")}];
+	
+
+	
+	this.comparators={ 	integer		:  allComparators.slice(0,6), 
+ 						float 		:  allComparators.slice(0,6),
+			 			measurement :  allComparators.slice(0,6),
+			 			string		: [allComparators[6],allComparators[2],allComparators[5]],
+			 			longstring	:  allComparators.slice(4),
+			 			chooser		:  allComparators.slice(4),
+			 			date		:  allComparators.slice(0,6),
+			 			checkbox	: [allComparators[2],allComparators[5]],
+			 			timestamp	:  allComparators.slice(0,6),
+			 			URL			: [allComparators[6],allComparators[2],allComparators[5]],
+			 			email		: [allComparators[6],allComparators[2],allComparators[5]]
+					};
 	
 	this.search=search;
 	  
@@ -54,11 +62,10 @@ function searchController(restfactory,$state,$stateParams,$translate,
 	 	  
 	this.editFieldNL2 = false;
 		
-	var types=[
-	           $translate.instant('all objects'),
-	           $translate.instant('all processes'),
-	           $translate.instant('all objects in a specific process'),
-	           $translate.instant('all objects with processes')];
+	var types = ['all samples',
+	             'all processes',
+	             'all samples in a specific process',
+	             'all samples with processes'];
 	
 	var modeAnd=$translate.instant('all of the following');
 	
@@ -144,7 +151,7 @@ function searchController(restfactory,$state,$stateParams,$translate,
 	
 	
 	this.type = function() {
-		return types[search.type-1];
+		return $translate.instant(types[search.type-1]);
 	}
 	
 	

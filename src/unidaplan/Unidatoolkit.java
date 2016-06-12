@@ -75,7 +75,7 @@ public class Unidatoolkit {
     
     
     
-    public static String[] comparators={"<",">","=","= ","LIKE "};
+    public static String[] comparators={"<","<=","=",">=",">","=","!=","LIKE "};
     
     
     public static int copyStringEntry(int stringKey, int userID, DBconnection dBconn){

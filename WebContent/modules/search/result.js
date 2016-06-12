@@ -55,8 +55,9 @@ function resultController(restfactory,result,$state,$translate,$stateParams,avSa
 	
 	
 	
-	if (result.type==4){
-		this.sampleDataLength=result.samples[0].sampledata.length;
+	if (result.type === 4){
+		console.log ("result",result);
+		this.sampleDataLength = result.samples[0].sampledata.length;
 		this.processedArray=this.processArray();
 	}
 	
