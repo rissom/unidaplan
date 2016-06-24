@@ -30,7 +30,7 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 	{id:4,name:$translate.instant('sample/process')}];
 
 	
-	this.searchType=searchData.type;
+	this.searchType = searchData.type;
 	
 	this.mode = searchData.operation;
 		
@@ -43,7 +43,7 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 //	
 	this.languages = languages;
 	
-	this.search=searchData;
+	this.search = searchData;
 		
 	this.ooutput=$filter('filter')(searchData.output,{type:'o'});
 	
@@ -77,18 +77,23 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 	 	  
 	this.editFieldNL2 = false;
 
-	this.groups = [$translate.instant('public'),$translate.instant('only me')];
-	//	this.groups += alle meine Projektgruppen
-	
 	this.users = users;
 	
-	var allComparators = [{index:0,label:"<"},
-	                      {index:1,label:"<="},
-	                      {index:2,label:"="},
-	                      {index:3,label:">="},
-	                      {index:4,label:">"},
-	                      {index:5,label:"!="},
-	                      {index:6,label:$translate.instant("contains")}];
+	angular.forEach(this.search.rights.groups,function(group){ // attach names to groups
+		group.name = groups.filter(function(gr){return gr.id == group.id})[0].name;
+	});
+	
+	angular.forEach(this.search.rights.users,function(user){ // attach names to users
+		user.name = users.filter(function(usr){return usr.id == user.id})[0].fullname;
+	});
+	
+	var allComparators = [{index:0, label:"<"},
+	                      {index:1, label:"<="},
+	                      {index:2, label:"="},
+	                      {index:3, label:">="},
+	                      {index:4, label:">"},
+	                      {index:5, label:"!="},
+	                      {index:6, label:$translate.instant("contains")}];
 	
 
 	
@@ -244,12 +249,12 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 	
 		
 	this.changeOwner = function() {
-		var promise=searchService.changeOwner(searchData,thisController.newOwner);
+		var promise = searchService.changeOwner(searchData,thisController.newOwner);
 		promise.then(function(){
 			reload();
 		},function(){
 			console.log("error");
-			thisController.editOwner=false;
+			thisController.editOwner = false;
 		});
 	};
 
@@ -319,7 +324,7 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 	}
 	
 	
-	this.down=function(index,type){
+	this.down = function(index,type){
 		if (type=='o'){
 			exchangePositions (thisController.ooutput, index, index+1);
 			var promise = searchService.changeOrder(thisController.search.id,thisController.ooutput,type);
@@ -337,8 +342,8 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 		thisController.editFieldNL1 = (field=="NL1");
 		thisController.editFieldNL2 = (field=="NL2");
 		thisController.editOwner = (field=="owner");
-		thisController.newNameL1=thisController.nameL1;
-		thisController.newNameL2=thisController.nameL2;
+		thisController.newNameL1 = thisController.nameL1;
+		thisController.newNameL2 = thisController.nameL2;
 	};
 		
 	
@@ -350,9 +355,9 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 
 	
 	this.getOwner = function(){
-		var username="unknown";
+		var username = "unknown";
 		angular.forEach(users,function(user){
-			if (user.id==searchData.owner){ 
+			if (user.id == searchData.owner){ 
 				username=user.fullname;
 			}
 		});
@@ -373,7 +378,7 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 	
 	
 	this.keyUp = function(keyCode,name,language) {
-		if (keyCode===13) {				// Return key pressed
+		if (keyCode === 13) {				// Return key pressed
 			var promise=searchService.updateSearchName(searchData.id,name, language);	
 			promise.then(function(){
 				reload();
@@ -381,7 +386,7 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 				console.log("error");
 			});
 		}
-		if (keyCode===27) {		// Escape key pressed
+		if (keyCode === 27) {		// Escape key pressed
 			  thisController.editmode=false;
 		}
 	};
@@ -398,21 +403,22 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 		    resolve: {
 		    	users 		: function() { return users; },
 		    	chosenUsers : function() { 
-		    						var cUsers=[]; 
-		    						if (searchData.rights.users){
-		    							for (var i=0; i<searchData.rights.users.length;i++){
-		    								for (var j=0; j<users.length;j++){
-		    									if (searchData.rights.users[i].id==users[j].id){
+		    						var cUsers = []; 
+		    						if (searchData.rights && searchData.rights.users){
+		    							for (var i = 0; i < searchData.rights.users.length; i++){
+		    								for (var j = 0; j < users.length; j++){
+		    									if (searchData.rights.users[i].id == users[j].id){
 		    										cUsers.push(users[j]);
 		    									}
 		    								}
 		    							}
 		    						}
+		    						console.log(cUsers)
 	    							return cUsers;
 		    				  },
 		    	chosenGroups : function() { 
 									var cGroups=[]; 
-									if (searchData.rights.groups){
+									if (searchData.rights && searchData.rights.groups){
 		    							for (var i=0; i<searchData.rights.groups.length;i++){
 		    								for (var j=0; j<groups.length;j++){
 		    									if (searchData.rights.groups[i].id==groups[j].id){
@@ -449,9 +455,9 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 
 	
 	
-	this.showParamGrp=function(parameter){
-		for (var i=0;i<thisController.paramGroups.length;i++){
-			if (parameter.parametergroup===thisController.paramGroups[i].id){
+	this.showParamGrp = function(parameter){
+		for (var i = 0; i < thisController.paramGroups.length; i++){
+			if (parameter.parametergroup === thisController.paramGroups[i].id){
 				return this.paramGroups[i].namef();
 			}
 		}
@@ -460,8 +466,8 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 
 	
 	
-	this.up=function(index,type){
-		if (type=='o'){
+	this.up = function(index,type){
+		if (type === 'o'){
 			exchangePositions(thisController.ooutput,index-1,index);
 			var promise = searchService.changeOrder(thisController.search.id,thisController.ooutput,type);
 			promise.then(function(){reload()},function(){console.log("error")})
@@ -475,18 +481,18 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 	
 	
 	
-	this.valueKeyUp=function(keyCode,newValue,parameter,type){
-		if (keyCode===13 || keyCode==12) {				// Return or tab key pressed
+	this.valueKeyUp = function(keyCode,newValue,parameter,type){
+		if (keyCode === 13 || keyCode === 12) {				// Return or tab key pressed
 			var promise = searchService.updateSearchParamValue(thisController.search.id,parameter.id,newValue,type);
-			promise.then(function(){reload();});
+			promise.then( function(){ reload(); } );
 		}
 	}
     
     
-    var reload=function() {
+    var reload = function() {
     	var current = $state.current;
     	var params = angular.copy($stateParams);
-    	params.newSearch=false;
+    	params.newSearch = false;
     	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
     };
 }  

@@ -40,7 +40,40 @@ function editPtParamsController($state,$uibModal,$stateParams,$translate,avParam
   this.av=avParameters;
     
   
+
+  this.addParameter = function () {
+	  var modalInstance = $uibModal.open({
+	    animation: false,
+	    templateUrl: 'modules/modal-parameter-choser/modal-parameter-choser.html',
+	    controller: 'modalParameterChoser as mParameterChoserCtrl',
+	    resolve: {
+	    	mode		   : function(){return 'immediate'; },
+	    	avParameters   : function(){return avParameters; },
+	    	parameters     : function(){return []; }
+		}
+	  });
+	  
+	  modalInstance.result.then(function (result) {  // get the new Parameterlist + Info if it has changed from Modal.  
+    	  if (result.chosen.length>0){
+    		  var promise=avProcessTypeService.AddProcesstypePGParameters(thisController.processtype,
+    				  parameterGrp.id,result.chosen);
+    		  promise.then(function(){reload();});		    	  
+    	  }
+	    }, function () {
+	      console.log('Strange Error: Modal dismissed at: ' + new Date());
+	    });
+  };
   
+  
+
+  this.down=function(index){  // exchange two parameter positions
+	  var newPositions=[];
+	  newPositions.push({"id":thisController.parameters[index].id,"position":thisController.parameters[index+1].pos});
+	  newPositions.push({"id":thisController.parameters[index+1].id,"position":thisController.parameters[index].pos});
+	  var promise = avProcessTypeService.changeOrderPTParameters(newPositions);
+	  promise.then(function(){reload()},function(){console.log("error")})
+  };
+
   
   
   this.getGrpName=function(grp,lang){
@@ -82,6 +115,43 @@ function editPtParamsController($state,$uibModal,$stateParams,$translate,avParam
   
   
   
+  this.keyUp = function(keyCode,name,language) {
+	if (keyCode===13) {				// Return key pressed
+		var promise=avProcessTypeService.updateParamGrp(name, language, parameterGrp.id);
+		promise.then(function(){reload();},function(){console.log("error")});
+	}
+	if (keyCode===27) {		// Escape key pressed
+		  thisController.editmode=false;
+	}
+  };
+  
+
+  
+  this.keyUpParameter = function(keyCode,parameter) {
+	  if (keyCode===13) {				// Return key pressed
+		  console.log("Return pressed");
+		  thisController.submitParameter();
+	  }
+	  if (keyCode===27) {		// Escape key pressed
+		  parameter.editNL1=false;
+		  parameter.editNL2=false;
+	  }
+  };
+  
+  
+  
+  this.performAction=function(parameter,action){
+	  if (action.action==="delete" && !action.disabled) {
+		  var promise = avProcessTypeService.deletePTParameter(parameter.id);
+		  promise.then(function(){reload()},function(){console.log("error")});
+	  }
+	  if (action.action==="edit") {
+			$state.go('editSinglePTParameter',{parameterID:parameter.id});
+	  }
+  };
+  
+  
+  
   this.setHidden=function(parameter){
 	  var tempParameter={ parameterid : parameter.id,
 			  			  hidden : parameter.hidden};
@@ -115,80 +185,7 @@ function editPtParamsController($state,$uibModal,$stateParams,$translate,avParam
  	  promise.then(function(){reload()},function(){console.log("error")})
   };
   
-  
  
-  
-  this.performAction=function(parameter,action){
-	  if (action.action==="delete" && !action.disabled) {
-		  var promise = avProcessTypeService.deletePTParameter(parameter.id);
-		  promise.then(function(){reload()},function(){console.log("error")});
-	  }
-	  if (action.action==="edit") {
-			$state.go('editSinglePTParameter',{parameterID:parameter.id});
-	  }
-  };
-  
-  
-  
-  this.addParameter = function () {
-	  var modalInstance = $uibModal.open({
-	    animation: false,
-	    templateUrl: 'modules/modal-parameter-choser/modal-parameter-choser.html',
-	    controller: 'modalParameterChoser as mParameterChoserCtrl',
-	    resolve: {
-	    	mode		   : function(){return 'immediate'; },
-	    	avParameters   : function(){return avParameters; },
-	    	parameters     : function(){return []; }
-		}
-	  });
-	  
-	  modalInstance.result.then(function (result) {  // get the new Parameterlist + Info if it has changed from Modal.  
-    	  if (result.chosen.length>0){
-    		  var promise=avProcessTypeService.AddProcesstypePGParameters(thisController.processtype,
-    				  parameterGrp.id,result.chosen);
-    		  promise.then(function(){reload();});		    	  
-    	  }
-	    }, function () {
-	      console.log('Strange Error: Modal dismissed at: ' + new Date());
-	    });
-  };
-	
-  
-  
-  this.keyUp = function(keyCode,name,language) {
-	if (keyCode===13) {				// Return key pressed
-		var promise=avProcessTypeService.updateParamGrp(name, language, parameterGrp.id);
-		promise.then(function(){reload();},function(){console.log("error")});
-	}
-	if (keyCode===27) {		// Escape key pressed
-		  thisController.editmode=false;
-	}
-  };
-
-  
-  
-  this.keyUpParameter = function(keyCode,parameter) {
-	  if (keyCode===13) {				// Return key pressed
-		  console.log("Return pressed");
-		  thisController.submitParameter();
-	  }
-	  if (keyCode===27) {		// Escape key pressed
-		  parameter.editNL1=false;
-		  parameter.editNL2=false;
-	  }
-  };
-  
-  
-  
-  this.down=function(index){  // exchange two parameter positions
-	  var newPositions=[];
-	  newPositions.push({"id":thisController.parameters[index].id,"position":thisController.parameters[index+1].pos});
-	  newPositions.push({"id":thisController.parameters[index+1].id,"position":thisController.parameters[index].pos});
-	  var promise = avProcessTypeService.changeOrderPTParameters(newPositions);
-	  promise.then(function(){reload()},function(){console.log("error")})
-  };
-
-  
   
   this.up=function(index){  // exchange two parameter positions
 	  var newPositions=[];

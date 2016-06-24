@@ -3,16 +3,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-//import java.text.DateFormat;
-//import java.text.SimpleDateFormat;
-//import java.util.Date;
-//import java.util.TimeZone;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,8 +27,9 @@ public class AddProcess extends HttpServlet {
 	    // get the processTypeID
 	    int processTypeID = -1;
 	   	int lastProcessID = 1;
-	   	int timeZone=120;
-	   	String privilege="n";
+	   	int timeZone = 120;
+	   	int recipe = 0;
+	   	String privilege = "n";
 	    String in = request.getReader().readLine();
 	    JSONObject jsonIn = null;
 	    String date = null;
@@ -47,8 +42,11 @@ public class AddProcess extends HttpServlet {
 		}
 		
 	    try {
-			 processTypeID = jsonIn.getInt("processtypeid"); 
+			 processTypeID = jsonIn.getInt("processtypeid");
 			 timeZone = jsonIn.getInt("tz");
+			 if (jsonIn.has("recipe")){
+				 recipe = jsonIn.getInt("recipe");
+			 }
 			 date = jsonIn.getString("date");
 		} catch (Exception e) {
 			System.err.println("AddProcess: Error parsing type ID");
@@ -58,10 +56,12 @@ public class AddProcess extends HttpServlet {
 
 	    
 		try{
+			
 		    // create entry in the database	    
-		 	DBconnection dBconn=new DBconnection();
+		 	DBconnection dBconn = new DBconnection();
 		    dBconn.startDB();	   
 		    PreparedStatement pStmt = null;
+		    
 		    
 		    // check privilege
 		    pStmt = dBconn.conn.prepareStatement( 	
@@ -96,7 +96,6 @@ public class AddProcess extends HttpServlet {
 			   	pStmt.setInt(2, userID);
 				id = dBconn.getSingleIntValue(pStmt);
 			   	pStmt.close();
-
 	
 		   	
 				// write processnumber 
@@ -159,6 +158,26 @@ public class AddProcess extends HttpServlet {
 	   	   				"REFRESH MATERIALIZED VIEW pnumbers");
 	   	   		pStmt.executeUpdate();
 	   	   		pStmt.close();
+	   	   		
+	   	   		
+	   	   		// fill in default parameter values from recipe
+	   	   		if (recipe>0){
+			   	   	pStmt = dBconn.conn.prepareStatement(	
+				   	   	  "INSERT INTO processdata (processid, parameterid, data, lastuser) "
+			   	   		+ "SELECT "
+				   	 	+ "? AS processid, "
+				   	 	+ "parameterid, "
+				   	 	+ "data, "
+				   	 	+ "? AS lastuser " 
+			   	   		+ "FROM processrecipedata " 
+			   	   		+ "WHERE recipeid = ? ");
+			   	   	pStmt.setInt(1, id);
+			   	   	pStmt.setInt(2, userID);
+			   	   	pStmt.setInt(3, recipe);
+		   	   		pStmt.executeUpdate();
+	   	   		}
+
+	   	   		
 		    	
 			} else {
 				response.setStatus(401);

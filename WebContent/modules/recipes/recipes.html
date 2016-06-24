@@ -1,0 +1,47 @@
+<p />
+<p />
+<div ng-show = "recipesCtrl.type == 'process'">
+{{'Select processtype'|translate}}
+</div>
+<p />
+
+<select class = "form-control" 
+	style = "width:300px;"	
+	ng-model = "recipesCtrl.processType"
+	ng-options = "ptype.namef() group by ptype.group for ptype in recipesCtrl.processTypes">
+</select>
+<br />
+
+
+<p />
+<table class="table" ng-if="recipesCtrl.processType.recipes.length>0">
+	<thead class=parametertablehead>
+		<tr><td><b>Name</b></td>
+			<td><b>{{'action'|translate}}</b>
+		</tr>	
+	</thead>
+	<tbody>
+	<tr ng-repeat="recipe in recipesCtrl.processType.recipes">
+		<td>
+			{{recipe.namef()}}
+		</td>
+		<td>
+			<div class="dropdown" uib-dropdown on-toggle="toggled(open)">
+				<a class="dropdown-toggle" uib-dropdown-toggle>
+		  			{{'action'|translate}} &#x25BC;
+			    </a>
+			    <ul class="dropdown-menu">
+			    	<li ng-repeat="action in recipe.actions">
+			        	<a ng-click="recipesCtrl.performAction(action,recipe)">{{action.name}}</a>
+			        </li>
+			    </ul>
+	  		</div>
+		</td>
+	</tr>
+	</tbody>
+</table>
+<p />
+<p />
+<button type="button" class="btn btn-default ng-binding ng-scope" ng-click="recipesCtrl.addRecipe()">
+					+  {{'Add recipe'|translate}}
+			</button>

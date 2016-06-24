@@ -18,10 +18,10 @@ import org.json.JSONObject;
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
 		String status="ok";
-	    int stringKeyName=0;
-	    int stringKeyDesc=0; 
-	    int position=0;
-	    int otgroup=1;
+	    int stringKeyName = 0;
+	    int stringKeyDesc = 0; 
+	    int position = 0;
+	    int otgroup = 1;
 	    PreparedStatement pStmt = null;
 	    JSONObject  jsonIn = null;
 	    
@@ -55,7 +55,7 @@ import org.json.JSONObject;
 					 for (int i=0; i<names.length; i++){
 						 dBconn.addString(stringKeyName,names[i],name.getString(names[i]));
 					 }
-				 }else{
+				 } else {
 					 System.out.println("no name exists");
 				 }
 				 if (jsonIn.has("description")){

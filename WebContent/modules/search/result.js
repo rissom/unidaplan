@@ -11,7 +11,8 @@ function resultController(restfactory,result,$state,$translate,$stateParams,avSa
 	this.currentSortDirection = 1;
 	
 	this.result = result;
-		
+	
+
 	
 	this.getType = function(type){
 		return avSampleTypeService.getType({typeid:type},types);
@@ -28,8 +29,8 @@ function resultController(restfactory,result,$state,$translate,$stateParams,avSa
 	this.processArray = function(){
 		
 		//create empty array with length of sampledata
-		var emptySampleData=[];
-		for (var i=0; i<result.samples[0].sampledata.length+1;i++){
+		var emptySampleData = [];
+		for (var i = 0; i < thisController.sampleDataLength; i++ ){
 			emptySampleData.push("");
 		}
 		
@@ -55,11 +56,7 @@ function resultController(restfactory,result,$state,$translate,$stateParams,avSa
 	
 	
 	
-	if (result.type === 4){
-		console.log ("result",result);
-		this.sampleDataLength = result.samples[0].sampledata.length;
-		this.processedArray=this.processArray();
-	}
+
 	
 	
 	
@@ -154,7 +151,14 @@ function resultController(restfactory,result,$state,$translate,$stateParams,avSa
     	}
     	
     }
-    	
+    
+    
+    // activate function:
+    
+	if (result.type === 4){
+		this.sampleDataLength = result.headings.filter(function(heading){return heading.type === 'object'}).length;
+		this.processedArray = this.processArray();
+	}
 }  
 
 

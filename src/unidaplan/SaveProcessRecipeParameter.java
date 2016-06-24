@@ -3,8 +3,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -14,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-	public class SaveProcessParameter extends HttpServlet {
+	public class SaveProcessRecipeParameter extends HttpServlet {
 		private static final long serialVersionUID = 1L;
 
 	@Override
@@ -39,12 +37,12 @@ import org.json.JSONObject;
 	    PreparedStatement pStmt;
 
 	    // get the id
-	    int processID = 0;
+	    int processRecipeID = 0;
 	    int parameterID = -1;
 	    
 	    try {
-			processID=jsonIn.getInt("processid");	
-     		parameterID=jsonIn.getInt("parameterid");
+			processRecipeID = jsonIn.getInt("processid");	
+     		parameterID = jsonIn.getInt("parameterid");
 		} catch (JSONException e) {
 			System.err.println("SaveProcessParameter: Error parsing ID-Field");
 			status="error parsing ID-Field";
@@ -57,10 +55,10 @@ import org.json.JSONObject;
 		    dBconn.startDB();	   
 		    
 	        pStmt= dBconn.conn.prepareStatement( 	
-					"SELECT getProcessRights(vuserid:=?,vprocess:=?)");
+					"SELECT getProcessRecipeRights(vuserid:=?,vprocessrecipe:=?)");
 			pStmt.setInt(1,userID);
-			pStmt.setInt(2,processID);
-			privilege=dBconn.getSingleStringValue(pStmt);
+			pStmt.setInt(2,processRecipeID);
+			privilege = dBconn.getSingleStringValue(pStmt);
 			pStmt.close();
 		} catch (SQLException e) {
 			System.err.println("SaveSampleParameter: Problems with SQL query");
@@ -77,7 +75,25 @@ import org.json.JSONObject;
 			
 			
 	    if (privilege.equals("w")){
- 	    	    
+	    	
+	    	
+	    	  // delete old entries
+			try {	
+				pStmt= dBconn.conn.prepareStatement( 			
+						 "DELETE FROM processrecipedata "
+						 + "WHERE recipeid = ? AND parameterid = ?");
+			   	pStmt.setInt(1, processRecipeID);
+			   	pStmt.setInt(2, parameterID);
+			   	pStmt.executeUpdate();
+			} catch (SQLException e) {
+				System.err.println("SaveProcessParameter: Problems with SQL query");
+				status="error";
+			} catch (Exception e) {
+				System.err.println("SaveProcessParameter: Strange Problems");
+				status="error";
+			}
+	    	
+ 
 		    // look up the datatype in Database	    
 		    int type=-1;
 			try {	
@@ -101,7 +117,7 @@ import org.json.JSONObject;
 			
 			pStmt = null; // fooling eclipse to not show warnings
 			
-			int id = 0; // id of the newly created value
+			int id=0; // id of the newly created value
 			// differentiate according to type
 			try {	
 				JSONObject data = new JSONObject();
@@ -126,17 +142,17 @@ import org.json.JSONObject;
 			        		}
 							break;
 					        
-			        case 4: if (inData.has("value") && !inData.isNull("value")){  // String data
+			        case 4: if (inData.has("value") && !inData.isNull("value") && !inData.getString("value").equals("")){  // String data
 			        			data.put("value", inData.getString("value"));
 			        		}
 			        		break;
 					        
-			        case 5: if (inData.has("value") && !inData.isNull("value")){    // String data again
+			        case 5: if (inData.has("value") && !inData.isNull("value") && !inData.getString("value").equals("")){    // String data again
 	        					data.put("value", inData.getString("value"));
 	        				}
 							break;
 						    
-			        case 6: if (inData.has("value") && !inData.isNull("value")){   //  6: chooser, (saves as a string)
+			        case 6: if (inData.has("value") && !inData.isNull("value") && inData.getString("value")!=""){   //  6: chooser, (saves as a string)
 	        					data.put("value", inData.getString("value"));
 	        				}
 							break;
@@ -175,20 +191,19 @@ import org.json.JSONObject;
 			        		} 
 		        		break;
 					} // end of switch Statement
-					pStmt = dBconn.conn.prepareStatement(	
-							"INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser) "
-							+ "VALUES (?, ?, ?, ?)  RETURNING ID"); 
-        			pStmt.setInt(1, processID);
-        			pStmt.setInt(2, parameterID);
-		   		  	pStmt.setObject(3, data, java.sql.Types.OTHER);
-        			pStmt.setInt(4, userID);
-        			id = dBconn.getSingleIntValue(pStmt);
-		   	   		pStmt.close();
-		   	   		
-		   	   		pStmt = dBconn.conn.prepareStatement(	
-		   	   				"REFRESH MATERIALIZED VIEW pnumbers");
-		   	   		pStmt.executeUpdate();
-		   	   		pStmt.close();
+					
+					
+					if (data.length()>0){
+						pStmt = dBconn.conn.prepareStatement(	
+								"INSERT INTO processrecipedata (recipeid, parameterid, data, lastUser) "
+								+ "VALUES (?, ?, ?, ?)  RETURNING ID"); 
+	        			pStmt.setInt(1, processRecipeID);
+	        			pStmt.setInt(2, parameterID);
+			   		  	pStmt.setObject(3, data, java.sql.Types.OTHER);
+	        			pStmt.setInt(4, userID);
+	        			id = dBconn.getSingleIntValue(pStmt);
+			   	   		pStmt.close();
+					}
 				}
 			
 			    // tell client that everything is fine

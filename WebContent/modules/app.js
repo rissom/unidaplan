@@ -441,16 +441,45 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
         })
         
         
-        .state('processRecipes',{
-        	url: '/process-recipes',
-			templateUrl: 'modules/process/process-recipes.html',
-			controller: 'processRecipesController as processRecipesCtrl',
+         .state('processRecipe', {
+	    	url: '/recipes/processrecipe?:processID&:recipeID',
+	        templateUrl: 'modules/recipes/processrecipe.html',
+	        controller:"processRecipeController as pRecipeCtrl",
+	        resolve:{
+	            recipeData: 
+	            	function(processService,$stateParams){
+	        			return processService.getRecipe($stateParams.recipeID);
+	        	    },
+               	ptypes: function(avProcessTypeService){
+        	   	    	return avProcessTypeService.getProcessTypes();
+        	   	    },
+    	   	 	users:
+	        	    function(userService){
+        	   	    	return userService.getUsers();
+        	   		},
+        	   	groups:
+        	   		function(userService){
+        	   			return userService.getGroups();
+        	   		}
+			}
+        })
+        
+        
+        .state('recipes',{
+        	url: '/recipes?:type&:id',
+			templateUrl: 'modules/recipes/recipes.html',
+			controller: 'recipesController as recipesCtrl',
 			resolve:{
+				types: 
+	        	    function(avSampleTypeService){
+	        	   	    return avSampleTypeService.getSampleTypes();
+	                },
 				ptypes: function(avProcessTypeService){
 		   	    	return avProcessTypeService.getProcessTypes();
 		   	    }
 			}
         })
+        
         
         .state('recentSamples', {
 			url: '/recentsamples',

@@ -48,12 +48,12 @@ public class GetGroups extends HttpServlet {
 						+"FROM rightsprocesstypegroup "
 						+"GROUP BY groupid "
 						+") "
-						+"SELECT json_build_object('id',groups.id, 'name',groups.name, 'members',members, 'sampletypes',sampletypes, 'processtypes', processtypes) "
+						+"SELECT groups.id, groups.name, members, sampletypes, processtypes "
 						+"FROM groups "
 						+"LEFT JOIN members ON members.groupid=groups.id "
 						+"LEFT JOIN sampletypes st ON st.groupid=groups.id "
 						+"LEFT JOIN processtypes pt ON pt.groupid=groups.id ");
-				JSONArray groups=dBconn.jsonArrayFromPreparedStmt(pStmt);
+				JSONArray groups = dBconn.jsonArrayFromPreparedStmt(pStmt);
 				pStmt.close();
 				dBconn.closeDB();
 				out.println(groups.toString());

@@ -16,16 +16,8 @@
 <br /><br />
 
 {{'Groups'|translate}} 
-<br />	
-<!-- 
-<select multiple="multiple"
-		id="typeSelector"
-		style="width: 200px;"
-  		ng-model="mUserGroupChoserCtrl.selectedGroups" 
-  		ng-options="group as group.name for group in mUserGroupChoserCtrl.groups"
-  		size="5">
-</select> -->
 
+<br />	 
 <!--  list of fitting groups  -->
 <ul> 
  	<li ng-repeat="group in mUserGroupChoserCtrl.groups | filter:groupIsNotSelected | filter:{name:mUserGroupChoserCtrl.userinput} | orderBy: 'name'">
@@ -61,7 +53,7 @@
 	<span ng-show="mUserGroupChoserCtrl.chosenGroups.length>0">
 		{{'chosen groups'|translate}}:
 	</span>	
-	<p />
+	<p /> 
 	<div ng-repeat="cgroup in mUserGroupChoserCtrl.chosenGroups | orderBy: 'name'">
 		<a ng-click=mUserGroupChoserCtrl.removeGroup(cgroup)>
  			{{cgroup.name}}

@@ -4,29 +4,36 @@
 var processService = function (restfactory,$q,$translate,key2string) {
 	// restfactory is a wrapper for $html.
 
-	var thisController=this;
+	var thisController = this;
 	
 	
 	
-	this.setNumber = function(processid,number){
-		return restfactory.PUT("update-process-number",{number:number, processid:processid});
-	};
-	
-	
-	this.addProcess = function(processtype){
+	this.addProcess = function(processtype,recipe){
 		var d = new Date();
 		var json = {processtypeid : processtype,
 					tz : d.getTimezoneOffset(),
-					date : d }
+					date : d,
+					recipe : recipe}
 		return restfactory.POST("add-process",json);
 	}
+	
 
+	this.addProcessRecipe = function(name,processtype){
+		var newRecipe = {name : name, processtype : processtype};
+		return restfactory.POST("add-recipe",newRecipe);
+	}
+	
 	
 	this.addProcessType = function(process){
 		return restfactory.POST("add-process-type",process);
 	};
 	
 
+	this.changeOwner = function(recipeID, newOwnerID){
+		return restfactory.PUT("update-process-recipe-owner",{"recipeid":recipeID, "newowner":newOwnerID});
+	}
+	
+	
 	
 	// delete an attached file
 	this.deleteFile = function(fileID){
@@ -40,6 +47,13 @@ var processService = function (restfactory,$q,$translate,key2string) {
 		return restfactory.DELETE("delete-process-type?id="+id);
 	};
 
+	
+	
+	// delete a process recipe
+	this.deleteRecipe = function(id){
+		return restfactory.DELETE("delete-process-recipe?id="+id);
+	};
+	
 	
 	
 	this.getProcess = function(id) {
@@ -112,7 +126,7 @@ var processService = function (restfactory,$q,$translate,key2string) {
 			angular.forEach(parameters.parameters,function(parameter){
 				parameter.namef = function(){
 					return key2string.key2string(parameter.name,strings);
-				}				
+				}
 			});
 			angular.forEach(parameters.parametergrps,function(grp){
 				grp.namef = function(){
@@ -126,6 +140,59 @@ var processService = function (restfactory,$q,$translate,key2string) {
 	    return defered.promise;
 	}
 	
+	
+	
+	this.getRecipe = function(recipeID){
+		var defered = $q.defer();
+		var promise = restfactory.GET('/get-process-recipe?recipeid='+recipeID);
+		promise.then(function(rest) {			// getting the parameters
+			var strings = rest.data.strings;
+			angular.forEach(rest.data.parametergroups, function(paramgrp) {
+				paramgrp.grpnamef = function(){
+					return key2string.key2string(paramgrp.paramgrpkey,strings);
+				};
+				angular.forEach(paramgrp.parameter, function(parameter) {
+					parameter.namef = function(){
+						return key2string.key2string(parameter.stringkeyname,strings);
+					};
+					if (parameter.parametergroup){
+						parameter.grpnamef = function(){
+							return key2string.key2string(parameter.parametergrp_key,strings);
+						};
+					}
+					if (parameter.unit){
+						parameter.unitf = function(){
+							return key2string.key2string(parameter.unit,strings); 
+						};
+					}
+					if (parameter.datatype === "date" || parameter.datatype === "timestamp"){			
+						parameter.newDate = new Date(parameter.value);
+					}
+				});
+			});
+			rest.data.namef = function(){
+				return key2string.key2string(rest.data.name,strings);
+			}
+			rest.data.nameLang = function(lang){
+				return key2string.key2stringWithLangStrict(rest.data.name,strings,lang);
+			}
+				
+			defered.resolve(rest.data);
+		}, function () {
+			console.log("Error getting Parameters")
+		}); // promise.then
+	    return defered.promise;	
+	}
+	
+	
+	this.updateProcessRecipeName = function(id, newName, language){
+		var json = {'type':'process', 
+					'language':language,
+					'id':id,
+					'name':newName};
+		return restfactory.PUT('update-recipe-name',json);
+	}
+
 	
 	this.pushProcess = function(process){
 		var i;
@@ -161,6 +228,10 @@ var processService = function (restfactory,$q,$translate,key2string) {
 	};
 	
 	
+	this.deleteProcessRecipe = function(recipe){
+		return restfactory.DELETE("delete-recipe?id=",recipe.id);
+	}
+	
 
   	this.savePOParameter = function(parameter) {
   		console.log ("parameter:",parameter)
@@ -187,6 +258,26 @@ var processService = function (restfactory,$q,$translate,key2string) {
 			json.data.error = parameter.data.error;
 		} 
 		return restfactory.POST('save-process-parameter',json);
+	};
+	
+	
+	
+	this.saveProcessRecipeParameter = function(processid,parameter) {
+		var json = {processid:processid, parameterid:parameter.id, data:{value:parameter.data.value}};
+		if ("date" in parameter.data) {
+			json.data.date = parameter.data.date;
+			json.data.tz = parameter.data.tz;
+		}
+		if ("error" in parameter.data) {
+			json.data.error = parameter.data.error;
+		} 
+		return restfactory.POST('save-process-recipe-parameter',json);
+	};
+	
+	
+
+	this.setNumber = function(processid,number){
+		return restfactory.PUT("update-process-number",{number:number, processid:processid});
 	};
 	
 	

@@ -20,7 +20,7 @@ function newProcessController(restfactory,$state,ptypes,avProcessTypeService,pro
 		
 	this.addProcess = function() {
 		
-		var promise = processService.addProcess(this.processType.id);
+		var promise = processService.addProcess(this.processType.id, this.recipe);
 		promise.then(function(rest){
 			if (rest.data.status=="ok") {
 				$state.go('process',{processID:rest.data.id})

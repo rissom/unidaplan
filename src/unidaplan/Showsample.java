@@ -306,10 +306,10 @@ public class Showsample extends HttpServlet {
 	      		// get planned processes
 	      		pStmt= dBconn.conn.prepareStatement("SELECT expp_samples.expp_ID, eps.id AS process_step_id, "
 					+"epp.position AS processposition, epp.ptid AS processtype, eps.recipe, eps.note, " 
-					+"p_recipes.name as recipename " 
+					+"processrecipes.name as recipename " 
 					+"FROM expp_samples "
 					+"JOIN exp_plan_steps eps ON (eps.expp_s_ID=expp_samples.id) "
-					+"LEFT JOIN p_recipes ON (p_recipes.id=eps.recipe) " 
+					+"LEFT JOIN processrecipes ON (processrecipes.id=eps.recipe) " 
 					+"JOIN exp_plan_processes epp ON (epp.id=eps.exp_plan_pr) "
 					+"WHERE expp_samples.sample=? AND expp_samples.expp_id=? "
 					+"ORDER BY processposition");

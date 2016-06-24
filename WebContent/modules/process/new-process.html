@@ -2,34 +2,33 @@
 <p />
 {{'Select processtype'|translate}}<br />
 <p />
-<div class="col-md-6">
-	<select class="form-control" 
-		style="width:300px;"	
-		ng-model="newProcessCtrl.processType"
-		ng-options="ptype.namef() group by ptype.group for ptype in newProcessCtrl.processTypes" 	
-		ng-selected="$first">
+<div class = "col-md-6">
+	<select class = "form-control" 
+		style = "width:300px;"	
+		ng-model = "newProcessCtrl.processType"
+		ng-options = "ptype.namef() group by ptype.group for ptype in newProcessCtrl.processTypes" 	
+		ng-selected = "$first">
 	</select>
 </div>
-<div ng-show="newProcessCtrl.processType.recipes.length>0" class="col-md-6">
-	<select class="form-control" 
-		style="width:300px;"	
-		ng-model="newProcessCtrl.recipe"
-		ng-options="recipe.id as recipe.namef() for recipe in newProcessCtrl.processType.recipes" 	
-		ng-selected="$first">
-		<option value="">-- {{'without recipe'|translate}} --</option>
+<div ng-show = "newProcessCtrl.processType.recipes.length > 0" class = "col-md-6">
+	<select class = "form-control" 
+		style = "width : 300px;"	
+		ng-model = "newProcessCtrl.recipe"
+		ng-options = "recipe.id as recipe.namef() for recipe in newProcessCtrl.processType.recipes" 	
+		ng-selected = "$first">
+		<option value = "">-- {{'without recipe'|translate}} --</option>
 	</select>
 </div>
 
-	<p />
-	<p />
-	
+	<br />
 	<br />
 	<br />
 	
-<div class="col-md-6">	
-	<button class="btn btn-default"
-			ng-click="newProcessCtrl.addProcess()"
-			ng-class= "{disabled: !newProcessCtrl.processType}">
+	
+<div class = "col-md-6">	
+	<button class = "btn btn-default"
+			ng-click = "newProcessCtrl.addProcess()"
+			ng-class = "{disabled: !newProcessCtrl.processType}">
 		{{'Create Process'|translate}}
 	</button>	
 </div>

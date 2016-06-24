@@ -36,28 +36,7 @@
 		    {{parameter.namef()}} :
 		</td>
 		<td >
-			<span ng-hide="parameter.editing">{{experimentCtrl.showParam(parameter)}}
-			</span>
-			<input 						   
-				ng-keyup="experimentCtrl.keyUp($event.keyCode,parameter.newValue,parameter)"
-				ng-show="parameter.editing && parameter.datatype!='date'" 
-				type="text"
-			    ng-model="parameter.newValue"
-			    ng-blur="parameter.editing=false">
-			{{parameter.unitf()}}
-			<input 
-				ng-show="parameter.editing && parameter.datatype=='date'"
-				type="date" 
-				uib-datepicker-popup 
-				ng-model="parameter.newDate"
-	 			is-open="status.opened"
-	 		 	datepicker-options="dateOptions"
-	 		 	close-text="Close">
-	 		<button ng-show="parameter.editing && parameter.datatype==='date'"
-	 				class="btn btn-default"
-	 				ng-click="experimentCtrl.submitParameter(parameter)">
-	 			ok
-	 		</button>
+			<tparameter parameter = "parameter" pupdate="experimentCtrl.submitParameter(parameter)" ></tparameter>
 		</td>
 	</tr>
 	<tr ng-hide="experimentCtrl.editmode">

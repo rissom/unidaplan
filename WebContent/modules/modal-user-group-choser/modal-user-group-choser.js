@@ -29,8 +29,8 @@ function modalUserGroupChoser($scope,$translate,$uibModalInstance,groups,users,c
 				
 		
 	//activate function
-	$scope.userIsNotSelected=function(user){ // shows if a user is not already selected
-		var chosenUsers=thisController.chosenUsers;
+	$scope.userIsNotSelected = function(user){ // shows if a user is not already selected
+		var chosenUsers = thisController.chosenUsers;
 		var found=false;
 			angular.forEach(chosenUsers, function(cuser){
 				if (cuser.id==user.id){
@@ -41,16 +41,16 @@ function modalUserGroupChoser($scope,$translate,$uibModalInstance,groups,users,c
 	}
 	
 	
-	$scope.groupIsNotSelected=function(group){ // shows if a group is not already selected
-		var chosenGroups=thisController.chosenGroups;
-		var found=false;
+	$scope.groupIsNotSelected = function(group){ // shows if a group is not already selected
+		var chosenGroups = thisController.chosenGroups;
+		var found = false;
 		angular.forEach(chosenGroups, function(cgroup){
-			if (cgroup.id==group.id){
-				found=true;
+			if (cgroup.id == group.id){
+				found = true;
 			}
 		});
-		if (group.id==1){
-			found=true;
+		if (group.id == 1){
+			found = true;
 		}
 		return !found;
 	}

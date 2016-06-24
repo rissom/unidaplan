@@ -86,9 +86,15 @@ public class Experiment extends HttpServlet {
 				try {
 					// Get the default processes for this experiment
 					pStmt = dBconn.conn
-							.prepareStatement("SELECT exp_plan_processes.id, p_recipes.name AS recipename, position, ptid AS processtype, recipe, note "
+							.prepareStatement("SELECT "
+									+ "exp_plan_processes.id, "
+									+ "processrecipes.name AS recipename, "
+									+ "exp_plan_processes AS position, "
+									+ "ptid AS processtype, "
+									+ "recipe, "
+									+ "note "
 									+ "FROM exp_plan_processes "
-									+ "LEFT JOIN p_recipes ON (p_recipes.id=exp_plan_processes.recipe) "
+									+ "LEFT JOIN processrecipes ON (processrecipes.id=exp_plan_processes.recipe) "
 									+ "WHERE expp_id=? ORDER BY exp_plan_processes.position");
 					pStmt.setInt(1, id);
 					processes = dBconn.jsonArrayFromPreparedStmt(pStmt);
@@ -130,10 +136,10 @@ public class Experiment extends HttpServlet {
 							pStmt = dBconn.conn
 									.prepareStatement("SELECT eps.id as process_step_id, "
 											+ "epp.position AS processposition, epp.ptid AS processtype, eps.recipe, eps.note, "
-											+ "p_recipes.name AS recipename, epp.id AS eppprocess "
+											+ "processrecipes.name AS recipename, epp.id AS eppprocess "
 											+ "FROM exp_plan_steps eps "
 											+ "JOIN exp_plan_processes epp ON (epp.id=eps.exp_plan_pr) "
-											+ "LEFT JOIN p_recipes ON (p_recipes.id=eps.recipe) "
+											+ "LEFT JOIN processrecipes ON (processrecipes.id=eps.recipe) "
 											+ "WHERE eps.expp_s_id=? "
 											+ "ORDER BY processposition");
 							pStmt.setInt(1, samples.getJSONObject(i).getInt("id"));

@@ -47,12 +47,12 @@
 
 <!--  Case 2: search for a property/process -->
 <table ng-switch-when="2" class="table" >
-	<thead class=parametertablehead>
+	<thead class = parametertablehead>
 		<tr>
-			<td> {{'property'|translate}} </td>
+			<td> {{'process'|translate}} </td>
 			<td ng-repeat="col in resultCtrl.result.headings" ng-click="resultCtrl.sortBy($index)">
-				<span ng-show="resultCtrl.currentSortColumn==$index && resultCtrl.currentSortDirection== 1"> &#9660; </span>&nbsp;
-				<span ng-show="resultCtrl.currentSortColumn==$index && resultCtrl.currentSortDirection==-1"> &#9650; </span>&nbsp;
+				<span ng-show = "resultCtrl.currentSortColumn == $index && resultCtrl.currentSortDirection== 1"> &#9660; </span>&nbsp;
+				<span ng-show = "resultCtrl.currentSortColumn == $index && resultCtrl.currentSortDirection==-1"> &#9650; </span>&nbsp;
 			 	{{col.namef()}} {{col.unitf()?'(':''}}{{col.unitf()}}{{col.unitf()?')':''}}
 			</td>
 		</tr>
@@ -93,7 +93,7 @@
 
 <!--  Case 4: combined search for a property and a sample -->
 <table ng-switch-when="4" class="table" >
-	<thead class=parametertablehead>
+	<thead class = parametertablehead>
 		<tr>
 			<td> {{'object'|translate}} </td>
 			<td ng-repeat="col in resultCtrl.result.headings"  ng-click="resultCtrl.sortBy($index+1)">
@@ -108,7 +108,7 @@
 	 		<td ng-repeat="datacolumn in row track by $index">
 	 			<a ng-show="$index==0 && resultCtrl.processedArray[$parent.$index-1][0].id!=row[0].id" ui-sref="sample({sampleID:datacolumn.id})">{{resultCtrl.getType(datacolumn.type)}} {{datacolumn.name}}</a>
 	 			<!-- && resultCtrl.processedArray[$parent.$index-1][0].id!=datacolumn[0].id -->
-	 			<div ng-hide="$index==0 || ($index<resultCtrl.sampleDataLength && resultCtrl.processedArray[$parent.$index-1][0].id==row[0].id)">{{datacolumn}}</div>
+	 			<div ng-hide="$index==0 || ($index < resultCtrl.sampleDataLength+1 && resultCtrl.processedArray[$parent.$index-1][0].id==row[0].id)">{{datacolumn}}</div>
 	 		</td>		
 		</tr>
 	</tbody>

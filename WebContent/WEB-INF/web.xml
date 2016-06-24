@@ -31,6 +31,17 @@
   </servlet-mapping>
   
   <servlet>
+    <description>AddRecipe</description>
+    <display-name>AddRecipe</display-name>
+    <servlet-name>AddRecipe</servlet-name>
+    <servlet-class>unidaplan.AddRecipe</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddRecipe</servlet-name>
+    <url-pattern>/add-recipe</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
     <description>AddSampletypeParameters</description>
     <display-name>AddSampletypeParameters</display-name>
     <servlet-name>AddSampletypeParameters</servlet-name>
@@ -271,6 +282,17 @@
   </servlet-mapping>
   
   <servlet>
+    <description>DeleteProcessRecipe</description>
+    <display-name>DeleteProcessRecipe</display-name>
+    <servlet-name>DeleteProcessRecipe</servlet-name>
+    <servlet-class>unidaplan.DeleteProcessRecipe</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeleteProcessRecipe</servlet-name>
+    <url-pattern>/delete-process-recipe</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
     <description>Download a file</description>
     <display-name>FileDownload</display-name>
     <servlet-name>FileDownload</servlet-name>
@@ -312,6 +334,17 @@
   <servlet-mapping>
     <servlet-name>GetGroups</servlet-name>
     <url-pattern>/get-groups</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>Get process recipe</description>
+    <display-name>GetProcessRecipe</display-name>
+    <servlet-name>GetProcessRecipe</servlet-name>
+    <servlet-class>unidaplan.GetProcessRecipe</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GetProcessRecipe</servlet-name>
+    <url-pattern>/get-process-recipe</url-pattern>
   </servlet-mapping>
   
   <servlet>
@@ -1010,6 +1043,28 @@
   </servlet-mapping>
   
   <servlet>
+    <description>Change value for a Possible Value for chooser parameter type</description>
+    <display-name>SaveProcessRecipeParameter</display-name>
+    <servlet-name>SaveProcessRecipeParameter</servlet-name>
+    <servlet-class>unidaplan.SaveProcessRecipeParameter</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SaveProcessRecipeParameter</servlet-name>
+    <url-pattern>/save-process-recipe-parameter</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>update name of a recipe</description>
+    <display-name>UpdateRecipeName</display-name>
+    <servlet-name>UpdateRecipeName</servlet-name>
+    <servlet-class>unidaplan.UpdateRecipeName</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateRecipeName</servlet-name>
+    <url-pattern>/update-recipe-name</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <description>update rights of groups for sampletypes, processtypes,...</description>
     <display-name>UpdateGroupRights</display-name>
     <servlet-name>UpdateGroupRights</servlet-name>
@@ -1294,6 +1349,17 @@
   <servlet-mapping>
     <servlet-name>UpdateParameter</servlet-name>
     <url-pattern>/update-parameter</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>UpdateProcessRecipeOwner</description>
+    <display-name>UpdateProcessRecipeOwner</display-name>
+    <servlet-name>UpdateProcessRecipeOwner</servlet-name>
+    <servlet-class>unidaplan.UpdateProcessRecipeOwner</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateProcessRecipeOwner</servlet-name>
+    <url-pattern>/update-process-recipe-owner</url-pattern>
   </servlet-mapping>
   
   <servlet>
