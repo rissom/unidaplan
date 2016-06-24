@@ -1,15 +1,16 @@
 <div>
-<span ng-if="!parameter.editing">{{parameter.data.value}}</span>
-<span ng-if="!parameter.editing && parameter.unit && parameter.data.value && parameter.data.value!=''">
+<span ng-if = "!parameter.editing">{{parameter.data.value}}</span>
+<span ng-if = "!parameter.editing && parameter.unit && parameter.data.value && parameter.data.value!=''">
 	{{parameter.unitf()}}
 </span>
 <input 						   
-	ng-keyup="integerParamCtrl.keyUp($event.keyCode)"
-	ng-keydown="integerParamCtrl.keyDown($event.keyCode)"
-	ng-show="parameter.editing" 
-	type="number"
-    ng-model="integerParamCtrl.newValue">
-<span ng-show="parameter.editing">
+	ng-keyup = "integerParamCtrl.keyUp($event.keyCode)"
+	ng-keydown = "integerParamCtrl.keyDown($event.keyCode)"
+	ng-blur = "parameter.editing = false"
+	ng-show = "parameter.editing" 
+	type = "number"
+    ng-model = "integerParamCtrl.newValue">
+<span ng-show = "parameter.editing">
 	{{parameter.unitf()}}
 </span>
 </div>

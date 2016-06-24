@@ -2,7 +2,8 @@
 	<span ng-hide="parameter.editing"><a ng-href="mailto:{{parameter.value}}">{{parameter.value}}</a>
 	</span>
 	<form name="emailparameter">
-	<input 						   
+	<input
+		ng-blur = "parameter.editing = false"   
 		ng-keyup="emailParamCtrl.keyUp($event.keyCode)"
 		ng-keydown="emailParamCtrl.keyDown($event.keyCode)"
 		ng-show="parameter.editing" type="email" 

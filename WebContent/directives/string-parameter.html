@@ -5,9 +5,11 @@
 <input 						   
 	ng-keyup = "stringParamCtrl.keyUp($event.keyCode)"
 	ng-keydown = "stringParamCtrl.keyDown($event.keyCode)"
-	ng-show = "parameter.editing" 
+	ng-if = "parameter.editing" 
+	ng-blur = "parameter.editing = false"
     ng-model = "stringParamCtrl.newValue"
-   	type = "text" />
+   	type = "text" 
+   	 />
 <span ng-show = "parameter.unit">
 	{{parameter.unitf()}}
 </span>
