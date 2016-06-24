@@ -31,8 +31,8 @@ import org.json.JSONObject;
 		JSONArray sparameter = null;
 		JSONArray pparameter = null;
 		JSONArray output = null;
-		JSONArray userRights=null;
-		JSONArray groupRights=null;
+		JSONArray userRights = null;
+		JSONArray groupRights = null;
 		PreparedStatement pStmt;
 		ArrayList<String> stringkeys = new ArrayList<String>(); 
 		JSONObject search = null;
@@ -158,7 +158,7 @@ import org.json.JSONObject;
 								 +"JOIN po_parameters ON (po_parameters.id=poparameter) "
 								 +"JOIN paramdef ON (paramdef.id=po_parameters.definition) "
 								 +"WHERE search=?";
-						pStmt= dBconn.conn.prepareStatement(query);
+						pStmt = dBconn.conn.prepareStatement(query);
 						pStmt.setInt(1,searchID);
 						pparameter = dBconn.jsonArrayFromPreparedStmt(pStmt);
 						pStmt.close();
@@ -170,7 +170,7 @@ import org.json.JSONObject;
 								 +"JOIN p_parameters ON (p_parameters.id=pparameter) "
 								 +"JOIN paramdef ON (paramdef.id=p_parameters.definition) "
 								 +"WHERE search=?";
-						pStmt= dBconn.conn.prepareStatement(query);
+						pStmt = dBconn.conn.prepareStatement(query);
 						pStmt.setInt(1,searchID);
 						pparameter = dBconn.jsonArrayFromPreparedStmt(pStmt);
 						pStmt.close();
@@ -183,7 +183,7 @@ import org.json.JSONObject;
 								 +"JOIN ot_parameters ON (ot_parameters.id=otparameter) "
 								 +"JOIN paramdef ON (paramdef.id=ot_parameters.definition) "
 								 +"WHERE search=?";
-						pStmt= dBconn.conn.prepareStatement(query);
+						pStmt = dBconn.conn.prepareStatement(query);
 						pStmt.setInt(1, searchID);
 						sparameter = dBconn.jsonArrayFromPreparedStmt(pStmt);
 						pStmt.close();
@@ -224,7 +224,7 @@ import org.json.JSONObject;
 				
 				// get the outputparameters according to searchtype
 					
-				pStmt= dBconn.conn.prepareStatement(
+				pStmt = dBconn.conn.prepareStatement(
 						"SELECT ot_parameters.id, \n"
 						+"osearchoutput.position, \n"
 						+"COALESCE (ot_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname, \n"
@@ -271,18 +271,43 @@ import org.json.JSONObject;
 					stringkeys.add(Integer.toString(output.getJSONObject(i).getInt("stringkeyname")));	
 				}
 				
-				
 				if ((type==1 || type==4) && defaultObjecttype==0){  //get the first objecttype
-					pStmt= dBconn.conn.prepareStatement("SELECT id FROM objecttypes " 
+					pStmt = dBconn.conn.prepareStatement("SELECT id FROM objecttypes " 
 							+"LIMIT 1");
-					defaultObjecttype=dBconn.getSingleIntValue(pStmt);
+					defaultObjecttype = dBconn.getSingleIntValue(pStmt);
 				}
 				
 				if ((type==2 || type==4) && defaultProcesstype==0){  //get the first processtype
-					pStmt= dBconn.conn.prepareStatement("SELECT id FROM processtypes " 
+					pStmt = dBconn.conn.prepareStatement("SELECT id FROM processtypes " 
 							+"LIMIT 1");
-					defaultProcesstype=dBconn.getSingleIntValue(pStmt);
+					defaultProcesstype = dBconn.getSingleIntValue(pStmt);
 				}
+				
+				
+				// get search rights for groups:
+				pStmt = dBconn.conn.prepareStatement(
+						"SELECT " 
+						+ "groupid AS id, "
+						+ "permission " 
+						+ "FROM rightssearchgroups "
+						+ "WHERE searchid = ?");
+				pStmt.setInt(1, searchID);
+				groupRights = dBconn.jsonArrayFromPreparedStmt(pStmt);
+				pStmt.close();
+				
+				
+				
+				// get search rights for users:
+				pStmt = dBconn.conn.prepareStatement(
+						"SELECT " 
+						+ "userid AS id, "
+						+ "permission " 
+						+ "FROM rightssearchuser "
+						+ "WHERE searchid = ?");
+				pStmt.setInt(1, searchID);
+				userRights = dBconn.jsonArrayFromPreparedStmt(pStmt);
+				pStmt.close();
+				
 				
 				
 	    	} catch (SQLException e) {
@@ -302,14 +327,14 @@ import org.json.JSONObject;
 	    	} 
 		    
 		   try {
-			   JSONObject rights= new JSONObject(); 
-			   if (userRights!=null){
+			   JSONObject rights = new JSONObject(); 
+			   if (userRights != null){
 				   rights.put("users",userRights);
 			   }
-			   if (groupRights!=null){
+			   if (groupRights != null){
 				   rights.put("groups", groupRights);
 			   }
-			   if (!(rights.isNull("groups")&&rights.isNull("users"))){
+			   if (!(rights.isNull("groups") && rights.isNull("users"))){
 				   search.put("rights", rights);
 			   }
 			   if (pparameter!=null && pparameter.length()>0){
