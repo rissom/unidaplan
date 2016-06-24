@@ -127,12 +127,13 @@ import org.json.JSONObject;
 				}
 				stringkeys.add(Integer.toString(parameter.getInt("stringkeyname")));
 			    				
-				resultQuery+=" JOIN sampledata s"+i+" ON (s"+i+".objectid = samples.id AND s"
-						+i+".ot_parameter_id="+parameter.getInt("pid")+" AND compare(val := s"+i+".data, " 
+				resultQuery += " JOIN sampledata s" + i + " ON (s" + i + ".objectid = samples.id AND s"
+							   + i + ".ot_parameter_id =" + parameter.getInt("pid") 
+							   + " AND compare(val := s" + i + ".data, " 
 //						Unidatoolkit.comparators[parameter.getInt("comparison")-1]+value+") \n"
-				+ "datatype:='" + parameter.getString("datatype") + "', "
-				+ "comparator:=" + parameter.getInt("comparison") + ", "
-				+ "comval:='" + parameter.getString("value") + "')) ";
+				+ "datatype := '" + parameter.getString("datatype") + "', "
+				+ "comparator := " + parameter.getInt("comparison") + ", "
+				+ "comval := '" + parameter.getString("value") + "')) ";
 			}
 			
 			
@@ -140,11 +141,13 @@ import org.json.JSONObject;
 			
 			pStmt = dBconn.conn.prepareStatement(
 					  "SELECT pparameter AS pid, comparison, value, \n"
-			  		 +"p_parameters.stringkeyname,p_parameters.stringkeyname,paramdef.datatype \n"
-					 +"FROM searchprocess \n"
-					 +"JOIN p_parameters ON (p_parameters.id=pparameter) \n"
-					 +"JOIN paramdef ON (paramdef.id=p_parameters.definition) \n"
-					 +"WHERE search=? \n"
+			  		 + "p_parameters.stringkeyname, \n"
+			  		 + "p_parameters.stringkeyname, \n"
+			  		 + "paramdef.datatype \n"
+					 + "FROM searchprocess \n"
+					 + "JOIN p_parameters ON (p_parameters.id=pparameter) \n"
+					 + "JOIN paramdef ON (paramdef.id=p_parameters.definition) \n"
+					 + "WHERE search=? \n"
 				  );
 			pStmt.setInt(1,searchID);
 			parameters = dBconn.jsonArrayFromPreparedStmt(pStmt);
@@ -193,10 +196,10 @@ import org.json.JSONObject;
 					+"sampledata AS ( \n"
 					+"	SELECT  \n"
 					+"		sampleid,  \n"
-					+"		array_to_json(array_agg(asp.data->'value' ORDER BY position)) AS sampledata \n"
+					+"		array_to_json(array_agg(sd.data->'value' ORDER BY position)) AS sampledata \n"
 					+"		FROM dsamples \n"
 					+"		LEFT JOIN osearchoutput oso ON oso.search=? \n"
-					+"		LEFT JOIN sampledata asp ON (asp.id=oso.otparameter AND asp.objectid=dsamples.sampleid) \n"
+					+"		LEFT JOIN sampledata sd ON (sd.ot_parameter_id = oso.otparameter AND sd.objectid = dsamples.sampleid) \n"
 					+"	GROUP BY dsamples.sampleid \n"
 					+"	ORDER BY max(oso.position) \n"
 					+"), \n"
@@ -227,10 +230,10 @@ import org.json.JSONObject;
 					+"			processdata)) AS processes \n"
 					+"FROM psamples \n"
 					+"JOIN samplenames sn ON sn.id=psamples.sampleid \n"
-					+"JOIN sampledata sd ON sd.sampleid=psamples.sampleid \n"
-					+"JOIN processdata pd ON pd.process=processid \n"
+					+"JOIN sampledata sd ON sd.sampleid = psamples.sampleid \n"
+					+"JOIN processdata pd ON pd.process = processid \n"
 					+"GROUP BY psamples.sampleid \n";
-			
+
 			pStmt = dBconn.conn.prepareStatement(resultQuery);
 			pStmt.setInt(1, searchID);
 			pStmt.setInt(2, searchID);
@@ -257,7 +260,7 @@ import org.json.JSONObject;
 				+"SELECT "
 				+"'process' AS type, "
 				+"p_parameters.id, "
-				+"pso.position +100000, "
+				+"pso.position + 100000, "
 				+"COALESCE (p_parameters.stringkeyname,pa.stringkeyname) AS stringkeyname, " 
 				+"pa.stringkeyunit," 
 				+"pa.datatype " 
@@ -268,19 +271,19 @@ import org.json.JSONObject;
 				+"ORDER BY position");
 			pStmt.setInt(1, searchID);
 			pStmt.setInt(2, searchID);
-
 			headings = dBconn.jsonArrayFromPreparedStmt(pStmt);
+			
 			JSONObject heading = new JSONObject(); 
-				if (headings.length()>0){
-					for (int i=0;i<headings.length();i++){
+				if (headings.length() > 0){
+					for (int i = 0; i < headings.length(); i++){
 						heading=headings.getJSONObject(i);
 						if (heading.has("stringkeyname")){
 							stringkeys.add(Integer.toString(heading.getInt("stringkeyname")));
 						}
-						if (heading.has("stringkeyunit") && heading.getInt("datatype")<4){
+						if (heading.has("stringkeyunit") && heading.getInt("datatype") < 4){
 							stringkeys.add(Integer.toString(heading.getInt("stringkeyunit")));
 						}
-						if (heading.has("stringkeyunit") && heading.getInt("datatype")>3){
+						if (heading.has("stringkeyunit") && heading.getInt("datatype") > 3){
 							heading.remove("stringkeyunit");
 						}
 						heading.remove("datatype");

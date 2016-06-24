@@ -4,9 +4,6 @@ import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -72,12 +69,12 @@ import org.json.JSONObject;
 			status="searchid is missing";
 		}}
 	    
-	    if (status=="ok"){
+	    if (status == "ok"){
 	    try{
 
 		    dBconn.startDB();
 		    // check if the user is allowed to see this data: (1. userrights, 2. grouprights, 3. admin
-		    pStmt= dBconn.conn.prepareStatement( 	
+		    pStmt = dBconn.conn.prepareStatement( 	
 			    "SELECT EXISTS( "
 			    + "SELECT 1 FROM rightssearchuser WHERE searchid = 1 AND userid = ? "
 			    + "  AND (permission = 'w' OR permission='r')) "
@@ -136,7 +133,7 @@ import org.json.JSONObject;
 							 +"WHERE search=?";
 					break;
 			}
-			pStmt= dBconn.conn.prepareStatement(query);
+			pStmt = dBconn.conn.prepareStatement(query);
 			pStmt.setInt(1,id);
 			parameters = dBconn.jsonArrayFromPreparedStmt(pStmt);
 			String idString="";
@@ -145,17 +142,17 @@ import org.json.JSONObject;
 			String datatable;
 			switch (type){
 			case 1:   // sample search
-				query="SELECT samples.id \n FROM samples ";
-				tString="samples";
-				idString= "objectid";
-				idString2="ot_parameter_id";
+				query = "SELECT samples.id \n FROM samples ";
+				tString = "samples";
+				idString = "objectid";
+				idString2 = "ot_parameter_id";
 				datatable = "sampledata";
 				break;
 			case 2:  // process search
-				query="SELECT processes.id \n FROM processes ";
-				tString="processes";
-				idString= "processid";
-				idString2="parameterid";
+				query = "SELECT processes.id \n FROM processes ";
+				tString = "processes";
+				idString = "processid";
+				idString2 = "parameterid";
 				datatable = "processdata";
 				break;
 			default : // sample specific processparameter
@@ -165,7 +162,7 @@ import org.json.JSONObject;
 				idString2 = "parameterid";
 				datatable = "spdata";
 			}
-			String where="";
+			String where = "";
 
 			for (int i = 0; i < parameters.length(); i++){
 				JSONObject parameter = parameters.getJSONObject(i);
@@ -179,13 +176,6 @@ import org.json.JSONObject;
 				stringkeys.add(Integer.toString(parameter.getInt("stringkeyname")));
 				datatype = parameter.getInt("datatype");
 				parameter.put("datatype",Unidatoolkit.Datatypes[datatype]);
-
-			    Set<Integer> set = new HashSet<Integer>();
-	            set.add(4);
-	            set.add(5);
-	            set.add(6);
-	            set.add(10);
-	            set.add(11);
 
 				query += " JOIN " + datatable + " p" + i + " ON p" + i + "." + idString + "=" + 
 						 tString + ".id AND p" + i + "." + idString2 + "=" + parameter.getInt("pid");
@@ -259,19 +249,19 @@ import org.json.JSONObject;
 				// build sample Array
 				StringBuilder samBuff = new StringBuilder(); // join numbers with commas
 				sep = "";
-				for (int i=0; i<sResults.length();i++){
+				for (int i = 0; i < sResults.length(); i++){
 					samBuff.append(sep);
 					samBuff.append(sResults.getJSONObject(i).getInt("id"));
 					sep = ",";
 				}
 				
 				// build SELECT statement and JOIN statements
-				String joins="";
+				String joins = "";
 				sep = "";
 				StringBuilder valuebuff = new StringBuilder(); // comma separated params for Select
 
 
-				for (int i=0; i<headings.length();i++){
+				for (int i = 0; i < headings.length(); i++){
 					valuebuff.append(",");
 //					System.out.println (headings.getJSONObject(i).toString());
 					String dt = headings.getJSONObject(i).getString("datatype");
@@ -281,7 +271,7 @@ import org.json.JSONObject;
 						valuebuff.append("p" + i + ".data->>'value'");
 					}
 					
-					joins  += "LEFT JOIN sampledata p" + i + " ON samples.id = p" + i +
+					joins += "LEFT JOIN sampledata p" + i + " ON samples.id = p" + i +
 							  ".objectid AND p" + i + ".ot_parameter_id=" +
 							  headings.getJSONObject(i).getInt("id") + " \n";
 				}
