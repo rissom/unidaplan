@@ -8,7 +8,6 @@
 	ng-show = "parameter.editing" 
 	type = "number"
     ng-model = "measurementParamCtrl.newValue"
-    ng-blur = "parameter.editing = false"
     ng-keyup = "measurementParamCtrl.keyUp($event.keyCode)">
  
 <span ng-show = "parameter.editing">±</span>
@@ -17,7 +16,6 @@
 	type = "number"
 	min = "0"
     ng-model = "measurementParamCtrl.newError"
-    ng-blur = "parameter.editing = false"
     ng-keyup = "measurementParamCtrl.keyUp($event.keyCode)"
     ng-keydown = "measurementParamCtrl.keyDown($event.keyCode)">
     
