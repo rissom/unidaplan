@@ -1,26 +1,36 @@
 (function(){
 'use strict';
 
-function newSampleController(restfactory,$state,key2string,types){
+function newSampleController(restfactory,$state,$translate,sampleService,key2string,types){
 	
 	var thisController = this;
 	
 	this.sampletypes = types;
 	
 	this.strings = [];
+	
+	// activate function
+	angular.forEach(types, function(type){
+		if (typeof(type.recipes) != "undefined") {
+			type.recipes.unshift({
+				namef : function(){ return ( "-- " + $translate.instant("without recipe") + " --" ) },
+				id    : 0 
+			});
+		}
+	}) 
 			
 	
 	this.keyUp = function(keyCode,newValue,parameter) {
-		if (keyCode===13) {				// Return key pressed
+		if (keyCode === 13) {				// Return key pressed
 			this.addSample();
 		}
 	}
 
 		
 	this.addSample = function() {
-		var promise = restfactory.POST("add-sample?sampletypeid="+this.sampletype.id)
+		var promise = sampleService.addSample(this.sampletype.id, this.recipe.id);
 		promise.then(function(rest){
-			if (rest.data.status=="ok") {
+			if (rest.data.status == "ok") {
 				$state.go('sample',{sampleID:rest.data.id})
 			}
 		},function(){
@@ -34,6 +44,6 @@ function newSampleController(restfactory,$state,key2string,types){
 }  
 
 
-angular.module('unidaplan').controller('newSampleController',['restfactory','$state','key2string','types',newSampleController]);
+angular.module('unidaplan').controller('newSampleController',['restfactory','$state','$translate','sampleService','key2string','types',newSampleController]);
 
 })();

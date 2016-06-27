@@ -17,7 +17,7 @@ public class AddProcess extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {		
 		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
+		int userID = authentificator.GetUserID(request,response);
 		int id = -1;
 		String status="ok";
 	    request.setCharacterEncoding("utf-8");

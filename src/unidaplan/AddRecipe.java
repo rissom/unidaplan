@@ -67,11 +67,27 @@ import org.json.JSONObject;
 	   
 			if (userID > 0 && Unidatoolkit.userHasAdminRights(userID, dBconn)){
 			    PreparedStatement pStmt = null;
-			    pStmt = dBconn.conn.prepareStatement( 
-			    		"INSERT INTO processrecipes (name,processtype,position) "
-			    		+ "VALUES (?,?,?) RETURNING id");
-				pStmt.setInt(1, stringKeyName);
-				pStmt.setInt(2, jsonIn.getInt("processtype"));
+			    if (jsonIn.getString("type").equals("process")){
+				    pStmt = dBconn.conn.prepareStatement( 
+				    		"INSERT INTO processrecipes (name,processtype,position,owner) "
+				    		+ "VALUES (?,?,"
+				    		+ "(SELECT max(b.position)+1 FROM processrecipes b WHERE processtype = ?), ?)"
+				    		+ "RETURNING id");
+					pStmt.setInt(1, stringKeyName);
+					pStmt.setInt(2, jsonIn.getInt("processtype"));
+					pStmt.setInt(3, jsonIn.getInt("processtype"));
+					pStmt.setInt(4, userID);
+			    } else {
+			    	 pStmt = dBconn.conn.prepareStatement( 
+					    		"INSERT INTO samplerecipes (name,sampletype,position,owner) "
+					    		+ "VALUES (?,?,"
+					    		+ "(SELECT max(b.position)+1 FROM samplerecipes b WHERE sampletype = ?), ?) "
+					    		+ "RETURNING id");
+						pStmt.setInt(1, stringKeyName);
+						pStmt.setInt(2, jsonIn.getInt("sampletype"));
+						pStmt.setInt(3, jsonIn.getInt("sampletype"));
+						pStmt.setInt(4, userID);
+			    }
 				pStmt.setInt(3, userID);
 				newRecipeID = dBconn.getSingleIntValue(pStmt);
 			 	pStmt.close();

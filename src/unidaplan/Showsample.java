@@ -30,8 +30,8 @@ public class Showsample extends HttpServlet {
 	int userID=authentificator.GetUserID(request,response);
 	if (userID>0){
 	 	ArrayList<String> stringkeys = new ArrayList<String>(); 
-	 	Boolean deletable=false;
-	 	Boolean editable=false;
+	 	Boolean deletable = false;
+	 	Boolean editable = false;
 	    response.setContentType("application/json");
 	    request.setCharacterEncoding("utf-8");
 	    response.setCharacterEncoding("utf-8");
@@ -53,7 +53,7 @@ public class Showsample extends HttpServlet {
 	    // check privileges
 	    try{
 	        dBconn.startDB();
-	        pStmt= dBconn.conn.prepareStatement( 	
+	        pStmt = dBconn.conn.prepareStatement( 	
 					"SELECT getSampleRights(vuserid:=?,vsample:=?)");
 			pStmt.setInt(1,userID);
 			pStmt.setInt(2,sampleID);
@@ -73,19 +73,19 @@ public class Showsample extends HttpServlet {
 	        
 		if (editable || (privilege != null && privilege.equals("r"))){
 			try {
-		        pStmt= dBconn.conn.prepareStatement( 	
-						"SELECT objecttypesid FROM samples WHERE id=?");
+		        pStmt = dBconn.conn.prepareStatement( 	
+						"SELECT objecttypesid FROM samples WHERE id = ?");
 				pStmt.setInt(1,sampleID);
 				typeid=dBconn.getSingleIntValue(pStmt);
 				pStmt.close();
-				pStmt= dBconn.conn.prepareStatement( 	
-						"SELECT name FROM samplenames WHERE id=?");
+				pStmt = dBconn.conn.prepareStatement( 	
+						"SELECT name FROM samplenames WHERE id = ?");
 				pStmt.setInt(1,sampleID);
 				jsSample= dBconn.jsonObjectFromPreparedStmt(pStmt);
 				jsSample.put("id", sampleID);
 				jsSample.put("typeid", typeid);
-				pStmt= dBconn.conn.prepareStatement( 	
-				"SELECT string_key FROM objecttypes WHERE id=?");
+				pStmt = dBconn.conn.prepareStatement( 	
+				"SELECT string_key FROM objecttypes WHERE id = ?");
 				pStmt.setInt(1,typeid);
 				int stringkey= dBconn.jsonObjectFromPreparedStmt(pStmt).getInt("string_key");
 				stringkeys.add(Integer.toString(stringkey));
@@ -102,7 +102,7 @@ public class Showsample extends HttpServlet {
 	
 	    
 	    // Error if the sample is not found
-	    if (jsSample.length()==0) {
+	    if (jsSample.length() == 0) {
 	    	try {
 				jsSample.put("error", "sample not found");
 			    System.err.println("sample not found");
@@ -448,7 +448,7 @@ public class Showsample extends HttpServlet {
 	    		+"LIMIT 1 ");
 				pStmt.setInt(1,sampleID);
 				pStmt.setInt(2,sampleID); 
-				table= dBconn.jsonArrayFromPreparedStmt(pStmt);
+				table = dBconn.jsonArrayFromPreparedStmt(pStmt);
 				if (table.length()>0) {
 					jsSample.put("next",table.get(0)); }	
 			} catch (SQLException e) {
@@ -464,20 +464,20 @@ public class Showsample extends HttpServlet {
 			try{
 		        pStmt = dBconn.conn.prepareStatement(	
 		    	"SELECT processid, sampleid FROM samplesinprocess "
-		 		+"WHERE sampleid=?");
+		 		+"WHERE sampleid = ?");
 				pStmt.setInt(1,sampleID);
-				ResultSet resultset=pStmt.executeQuery();
+				ResultSet resultset = pStmt.executeQuery();
 				if (resultset.next()) {
-					deletable=false;
+					deletable = false;
 				}
 				pStmt.close();
 				
 				// Check if experiments with this sample exist
 		        pStmt = dBconn.conn.prepareStatement(	
-		        	"SELECT id FROM expp_samples WHERE sample=?");
+		        	"SELECT id FROM expp_samples WHERE sample = ?");
 				pStmt.setInt(1,sampleID);
-				resultset=pStmt.executeQuery();
-				if (resultset.next()) {deletable=false;}
+				resultset = pStmt.executeQuery();
+				if (resultset.next()) { deletable = false; }
 				pStmt.close();
 				jsSample.put("deletable", deletable);
 				jsSample.put("editable", editable);

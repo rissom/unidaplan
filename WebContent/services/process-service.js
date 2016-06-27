@@ -5,28 +5,31 @@ var processService = function (restfactory,$q,$translate,key2string) {
 	// restfactory is a wrapper for $html.
 
 	var thisController = this;
-	
-	
-	
+
+
+
 	this.addProcess = function(processtype,recipe){
 		var d = new Date();
-		var json = {processtypeid : processtype,
-					tz : d.getTimezoneOffset(),
-					date : d,
-					recipe : recipe}
+		var json = { processtypeid : processtype,
+					 tz : d.getTimezoneOffset(),
+					 date : d,
+					 recipe : recipe }
 		return restfactory.POST("add-process",json);
 	}
+
 	
 
-	this.addProcessRecipe = function(name,processtype){
-		var newRecipe = {name : name, processtype : processtype};
-		return restfactory.POST("add-recipe",newRecipe);
+	this.addProcessRecipe = function(name, processtype){
+		var newRecipe = { "name" : name, "processtype" : processtype, "type" : "process" };
+		return restfactory.POST("add-recipe", newRecipe);
 	}
+	
 	
 	
 	this.addProcessType = function(process){
 		return restfactory.POST("add-process-type",process);
 	};
+	
 	
 
 	this.changeOwner = function(recipeID, newOwnerID){

@@ -1,30 +1,37 @@
 <p />
 <p />
+<h3>{{'New Sample' | translate}}</h3>
+<br />
+
 {{'Select sampletype'|translate}}
-<p />
+<br />
 
-	<select class="form-control" 
-		style="width:300px;"	
-		ng-model="newSampleCtrl.sampletype"
-		ng-options="stype.namef() group by stype.group for stype in newSampleCtrl.sampletypes" 	
-		ng-selected="$first">
-	</select>
-
-
-<div ng-show="newSampleCtrl.sampletype.recipes" class="col-xs-6">
-	<select class="form-control" 
-		style="width:300px;"	
-		ng-model="newSampleCtrl.recipe"
-		ng-options="recipe.trname for recipe in newSampleCtrl.recipes" 	
-		ng-selected="$first">
+<div class = "col-md-6">
+	<select class = "form-control" 
+		style = "width:300px;"	
+		ng-model = "newSampleCtrl.sampletype"
+		ng-options = "stype.namef() group by stype.group for stype in newSampleCtrl.sampletypes" 	
+		ng-selected = "$first"
+		ng-change = "newSampleCtrl.recipe = newSampleCtrl.sampletype.recipes[0]">
 	</select>
 </div>
 
-	<p />
-	<p />
-	<button class="btn btn-default"
-			ng-click="newSampleCtrl.addSample()"
-			ng-class= "{disabled: !newSampleCtrl.sampletype}">
-		{{'Create Sample'|translate}}
-	</button>	
+
+<div ng-show="newSampleCtrl.sampletype.recipes" class="col-md-6">
+	<select class="form-control" 
+		style = "width:300px;"
+		ng-model = "newSampleCtrl.recipe"
+		ng-options = "recipe as recipe.namef() for recipe in newSampleCtrl.sampletype.recipes">
+	</select>
+</div>
+
+<br />
+<br />
+<br />
+
+<button class = "btn btn-default"
+		ng-click = "newSampleCtrl.addSample()"
+		ng-class = "{disabled: !newSampleCtrl.sampletype}">
+	{{'Create Sample'|translate}}
+</button>	
 

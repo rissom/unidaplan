@@ -1,38 +1,51 @@
 (function(){
 'use strict';
 
-function recipesController(restfactory,$state,$stateParams,$translate,ptypes,avProcessTypeService,processService){
+function recipesController(restfactory,$state,$stateParams,$translate,stypes,ptypes,avProcessTypeService,processService,sampleService){
 	
 	var thisController = this;
 	
 	this.processTypes = ptypes;
 	
+	this.sampleTypes = stypes;
+		
 	this.id = $stateParams.id;
-	
-	this.recipes = ptypes[0].recipes;
-	
+		
 	this.type = $stateParams.type || "process";
 		
 	this.strings = [];
 		
 	
 	
-	this.keyUp = function(keyCode,newValue,parameter) {
-		if (keyCode === 13) {				// Return key pressed
-			this.addProcessRecipe();
-		}
-	}
+//	this.keyUp = function(keyCode,newValue,parameter) {
+//		if (keyCode === 13) {				// Return key pressed
+//			if (type === 'process'){
+//				this.addProcessRecipe();
+//			} else {
+//				this.addSampleRecipe();
+//			}
+//		}
+//	}
 
 	
 	
 	this.addRecipe = function() {
-		var name = {en: "new Process Recipe", de : "neues Rezept"};
-		console.log ("pt:",thisController.processType);
-		var promise = processService.addProcessRecipe(name,thisController.processType.id);
+		var name;
+		if (this.type === 'process'){
+			name = {en: "new Process Recipe", de : "neues Prozessrezept"};
+			var promise = processService.addProcessRecipe(name,thisController.processType.id);
+		} else {
+			name = {en: "new Sample Recipe", de : "neues Probenrezept"};
+			var promise = sampleService.addSampleRecipe(name,thisController.processType.id);
+		}
 		promise.then(function(rest){
 			if (rest.data.status === "ok") {
 				console.log ("id:" + rest.data.id)
-				$state.go('processRecipe',{recipeID:rest.data.id})
+				if (thisController.type === 'process'){
+					$state.go('processRecipe',{recipeID:rest.data.id})
+				}else{
+					$state.go('sampleRecipe',{recipeID:rest.data.id})
+				}
 			}
 		},function(){
 			console.log ("failure")
@@ -50,9 +63,11 @@ function recipesController(restfactory,$state,$stateParams,$translate,ptypes,avP
 	
 	this.performAction = function(action,recipe){
 		switch (action.action){
-			case "edit"   :	$state.go('processRecipe',
-								{ processID : this.processType.id,
-								  recipeID  : recipe.id});
+			case "edit"   :  if (thisController.type === 'process'){
+								$state.go('processRecipe',{processID : this.processType.id, recipeID:recipe.id})
+							}else{
+								$state.go('sampleRecipe',{  sampleID : this.processType.id, recipeID:recipe.id})
+							};
 			break;
 			case "delete" :	this.deleteRecipe(recipe.id); break;
 		}
@@ -74,19 +89,43 @@ function recipesController(restfactory,$state,$stateParams,$translate,ptypes,avP
 				}];
 		});
 	});
+	angular.forEach(stypes, function(stype){
+		angular.forEach(stype.recipes, function(recipe){
+			recipe.actions = [{
+					action:"edit", 
+					name: $translate.instant("edit")
+				},{
+					action:"delete",
+					name: $translate.instant("delete")
+				}];
+		});
+	});
 	
 	
 	
-	// prefill selector
+	// prefill selector for processes
 	if (ptypes){
 		if ($stateParams.id) {
-			for (var i = 0; i<ptypes.length ; i++){
+			for (var i = 0; i < ptypes.length ; i++){
 				if (ptypes[i].id == $stateParams.id){
 					this.processType = ptypes[i];
 				}
 			}
 		} else {
 			this.processType = ptypes[0];
+		}
+	}
+	
+	// prefill selector for samples
+	if (stypes){
+		if ($stateParams.id) {
+			for (var i = 0; i < stypes.length ; i++){
+				if (stypes[i].id == $stateParams.id){
+					this.sampleType = stypes[i];
+				}
+			}
+		} else {
+			this.sampleType = stypes[0];
 		}
 	}
 	
@@ -102,7 +141,7 @@ function recipesController(restfactory,$state,$stateParams,$translate,ptypes,avP
 
 
 angular.module('unidaplan').controller('recipesController',['restfactory',
-                              '$state','$stateParams','$translate','ptypes',
-                              'avProcessTypeService','processService',recipesController]);
+                              '$state','$stateParams','$translate','stypes','ptypes',
+                              'avProcessTypeService','processService','sampleService',recipesController]);
 
 })();

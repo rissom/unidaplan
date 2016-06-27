@@ -21,11 +21,32 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 		return restfactory.POST('add-children',{"sampleid":sampleID,"children":children});
 	};
 	
+
+	
+	this.addSample = function(sampletype, recipe){
+		var d = new Date();
+		var json = { sampletypeid : sampletype,
+					 tz : d.getTimezoneOffset(),
+					 date : d }
+		if (recipe > 0) { 
+			json.recipe = recipe 
+		} 
+		return restfactory.POST("add-sample",json);
+	}
+	
+
+	
+	this.addSampleRecipe = function(name,sampletype){
+		var newRecipe = {"name" : name, "sampletype" : sampletype, "type" : "sample"};
+		return restfactory.POST("add-recipe",newRecipe);
+	}
+	
 	
 	
 	this.addSampleType = function(newSampleType){
 		return restfactory.POST("add-sample-type",newSampleType); 
 	};
+	
 	
 
 	// delete an attached file
@@ -51,6 +72,51 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 		return restfactory.DELETE("delete-sample-type?id="+id);
 	};
 
+	
+	
+
+	this.getRecipe = function(recipeID){
+		var defered = $q.defer();
+		var promise = restfactory.GET('/get-sample-recipe?recipeid='+recipeID);
+		promise.then(function(rest) {			// getting the parameters
+			var strings = rest.data.strings;
+			angular.forEach(rest.data.parametergroups, function(paramgrp) {
+				paramgrp.grpnamef = function(){
+					return key2string.key2string(paramgrp.paramgrpkey,strings);
+				};
+				angular.forEach(paramgrp.parameter, function(parameter) {
+					parameter.namef = function(){
+						return key2string.key2string(parameter.stringkeyname,strings);
+					};
+					if (parameter.parametergroup){
+						parameter.grpnamef = function(){
+							return key2string.key2string(parameter.parametergrp_key,strings);
+						};
+					}
+					if (parameter.unit){
+						parameter.unitf = function(){
+							return key2string.key2string(parameter.unit,strings); 
+						};
+					}
+					if (parameter.datatype === "date" || parameter.datatype === "timestamp"){			
+						parameter.newDate = new Date(parameter.value);
+					}
+				});
+			});
+			rest.data.namef = function(){
+				return key2string.key2string(rest.data.name,strings);
+			}
+			rest.data.nameLang = function(lang){
+				return key2string.key2stringWithLangStrict(rest.data.name,strings,lang);
+			}
+			defered.resolve(rest.data);
+		}, function () {
+			console.log("Error getting Parameters")
+		}); // promise.then
+	    return defered.promise;	
+	}
+	
+	
 	
 	
 	this.getSamplesByName = function (name,types,privilege){
@@ -180,6 +246,20 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 			json.error=parameter.error;
 		} 
 		return restfactory.POST('save-sample-parameter',json);
+	};
+	
+	
+	
+	this.saveSampleRecipeParameter = function(samplerecipeid,parameter) {
+		var json = {samplerecipeid:samplerecipeid, parameterid:parameter.id, data:{value:parameter.data.value}};
+		if ("date" in parameter.data) {
+			json.data.date = parameter.data.date;
+			json.data.tz = parameter.data.tz;
+		}
+		if ("error" in parameter.data) {
+			json.data.error = parameter.data.error;
+		} 
+		return restfactory.POST('save-sample-recipe-parameter',json);
 	};
 	
 };

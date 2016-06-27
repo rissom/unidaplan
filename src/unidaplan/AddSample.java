@@ -1,6 +1,5 @@
 package unidaplan;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -25,18 +24,32 @@ import org.json.JSONObject;
 		int userID=authentificator.GetUserID(request,response);
 		int id = -1;
 	    PreparedStatement pStmt = null;
-		String status="ok";
-	   	String privilege="n";
-		
-		
+		String status = "ok";
+	   	String privilege = "n";
+	   	int recipe = 0;
+	    JSONObject jsonIn = null;		
 	    request.setCharacterEncoding("utf-8");
 		response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
+	    String in = request.getReader().readLine();
+
+	    
+	    
+	    try {
+			jsonIn = new JSONObject(in);
+		} catch (JSONException e) {
+			System.err.println("AddProcessType: Input is not valid JSON");
+			status="input error";
+		}
 	    
 	    // get the sampletypeID
-	    int sampletypeID=-1;
+	    int sampletypeID = -1;
 	    try {
-			 sampletypeID=Integer.parseInt(request.getParameter("sampletypeid")); 
+			 sampletypeID = jsonIn.getInt("sampletypeid"); 
+			 if (jsonIn.has("recipe")){
+				 recipe = jsonIn.getInt("recipe");
+			 }
+			 
 		} catch (Exception e) {
 			System.err.println("AddSample: Error parsing type ID");
 			response.setStatus(404);
@@ -51,7 +64,7 @@ import org.json.JSONObject;
 	 	
 		 	 // check privilege
 		    pStmt = dBconn.conn.prepareStatement( 	
-					   "SELECT getSampleTypeRights(vuserid:=?,vsampletype:=?)");
+					   "SELECT getSampleTypeRights(vuserid := ?, vsampletype := ?)");
 			pStmt.setInt(1,userID);
 			pStmt.setInt(2,sampletypeID);
 			privilege = dBconn.getSingleStringValue(pStmt);
@@ -146,9 +159,9 @@ import org.json.JSONObject;
 		        	pStmt.setInt(1, id);
 		        	pStmt.setInt(2, parameter.getInt("id"));
 		        	JSONObject data = null;
-		        	System.out.println("intParameterExists: " + intParameterExists);
-		        	System.out.println("i: "+i);
-		        	System.out.println("lastTitleStrParameters.length: "+lastTitleStrParameters.length());
+//		        	System.out.println("intParameterExists: " + intParameterExists);
+//		        	System.out.println("i: "+i);
+//		        	System.out.println("lastTitleStrParameters.length: "+lastTitleStrParameters.length());
 		        	if (!intParameterExists && i+1 == lastTitleStrParameters.length()){
 		        		data = new JSONObject();
 		        		data.put("value", "new");
@@ -160,6 +173,27 @@ import org.json.JSONObject;
 		        	pStmt.executeUpdate();
 		        	pStmt.close();
 		        }
+		        
+		        
+		        
+		    	// fill in default parameter values from recipe
+	   	   		if (recipe > 0){
+			   	   	pStmt = dBconn.conn.prepareStatement(	
+				   	   	  "INSERT INTO sampledata (objectid, ot_parameter_id, data, lastuser) "
+			   	   		+ "SELECT "
+				   	 	+ "? AS objectid, "
+				   	 	+ "parameter, "
+				   	 	+ "data, "
+				   	 	+ "? AS lastuser " 
+			   	   		+ "FROM samplerecipedata " 
+			   	   		+ "WHERE recipe = ? ");
+			   	   	pStmt.setInt(1, id);
+			   	   	pStmt.setInt(2, userID);
+			   	   	pStmt.setInt(3, recipe);
+		   	   		pStmt.executeUpdate();
+	   	   		}
+		        
+		        
 			} else {
 				response.setStatus(401);
 			}

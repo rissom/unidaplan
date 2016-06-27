@@ -26,18 +26,16 @@ public class AvailableProcesstypes extends HttpServlet {
 		throws ServletException, IOException {
 		  
 		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
-		userID=userID+1;
-		userID=userID-1;
+		int userID = authentificator.GetUserID(request,response);
 		request.setCharacterEncoding("utf-8");
 	    response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
 	    PrintWriter out = response.getWriter(); 
 	    
 		PreparedStatement pstmt = null; 	// Declare variables
-	    JSONArray processList= null;
-	    JSONArray recipes= null;		
-	 	DBconnection DBconn=new DBconnection(); // New connection to the database
+	    JSONArray processList = null;
+	    JSONArray recipes = null;		
+	 	DBconnection DBconn = new DBconnection(); // New connection to the database
 	 			 	
 	 	ArrayList<String> stringkeys = new ArrayList<String>(); 
 		 	
@@ -45,28 +43,52 @@ public class AvailableProcesstypes extends HttpServlet {
 	 		try{
 	 		 	DBconn.startDB();
 	 			pstmt = DBconn.conn.prepareStatement(	
-				  "SELECT pt.id, pt.name, pt.description, count(pt.id)=3 AS deletable  FROM processtypes pt "
-				 +"JOIN p_parameters ON processtypeid=pt.id "
-				 +"GROUP BY pt.id");
-	 			processList=DBconn.jsonArrayFromPreparedStmt(pstmt); // get ResultSet from the database using the query
+					  "WITH "
+				 	+ "  deletable AS ( "
+					+ "SELECT "
+					+ "  processtypeid, "
+					+ "  count(processtypeid) <= 3 AS deletable " // only the 3 basic Parameters exist 
+					+ "FROM p_parameters "
+					+ "GROUP BY processtypeid "
+					+ "), "
+					+ ""
+					+ "recipes AS ( "
+					+ "SELECT "
+					+ "	processtype, "
+					+ "	array_to_json ( array_agg( json_build_object( "
+					+ "     'id',id, "
+					+ "		'name',name, "
+					+ "		'position',position))) AS recipes "
+					+ "FROM processrecipes "
+					+ "GROUP BY processtype "
+					+ ") "
+					+ ""
+					+ ""
+					+ "SELECT "
+					+ "	pt.id, "
+					+ " pt.name, "
+					+ "	deletable, " 
+					+ "	recipes "
+					+ "FROM processtypes pt "
+					+ "LEFT JOIN deletable ON deletable.processtypeid = pt.id " 
+					+ "LEFT JOIN recipes ON recipes.processtype = pt.id");
+	 			processList = DBconn.jsonArrayFromPreparedStmt(pstmt); // get ResultSet from the database using the query
 	 			pstmt.close();
-	           	if (processList.length()>0) {
-	           		for (int i=0; i<processList.length();i++) {
-	           			JSONObject tempObj=processList.getJSONObject(i);
+	           	if (processList.length() > 0) {
+	           		for (int i = 0; i < processList.length(); i++) {
+	           			JSONObject tempObj = processList.getJSONObject(i);
 	           			stringkeys.add(Integer.toString(tempObj.getInt("name")));
 	           			if (tempObj.has("description")){
 	           				stringkeys.add(Integer.toString(tempObj.getInt("description")));
 	           			}
-	           			pstmt = DBconn.conn.prepareStatement(
-	           					"SELECT id, name FROM processrecipes WHERE processtype=?");
-	           			pstmt.setInt(1, tempObj.getInt("id"));
-	           			recipes=DBconn.jsonArrayFromPreparedStmt(pstmt); // get ResultSet from the database using the query
-	           			processList.getJSONObject(i).put("recipes", recipes);
-	    	           	if (recipes.length()>0) {
-	    	           		for (int j=0; j<recipes.length();j++) {
-	    	           			stringkeys.add(Integer.toString(recipes.getJSONObject(j).getInt("name")));
-	    	           		}
-	    	           	}
+	           			if (tempObj.has("recipes")){
+		           			recipes = tempObj.getJSONArray("recipes");
+		           		 	if (recipes.length() > 0) {
+		    	           		for (int j = 0; j < recipes.length(); j++) {
+		    	           			stringkeys.add(Integer.toString(recipes.getJSONObject(j).getInt("name")));
+		    	           		}
+		    	           	}
+	           			}
 	           		}
 			        JSONArray theStrings=DBconn.getStrings(stringkeys);
 			        JSONObject jsAvailable=new JSONObject();

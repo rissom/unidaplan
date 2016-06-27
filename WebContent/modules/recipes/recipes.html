@@ -1,38 +1,76 @@
 <p />
 <p />
-<div ng-show = "recipesCtrl.type == 'process'">
+<div ng-show = "recipesCtrl.type === 'process'">
 {{'Select processtype'|translate}}
+</div>
+
+<div ng-show = "recipesCtrl.type === 'sample'">
+{{'Select sampletype'|translate}}
 </div>
 <p />
 
 <select class = "form-control" 
 	style = "width:300px;"	
+	ng-show = "recipesCtrl.type === 'process'"
 	ng-model = "recipesCtrl.processType"
 	ng-options = "ptype.namef() group by ptype.group for ptype in recipesCtrl.processTypes">
 </select>
+
+<select class = "form-control" 
+	style = "width:300px;"	
+	ng-show = "recipesCtrl.type === 'sample'"
+	ng-model = "recipesCtrl.sampleType"
+	ng-options = "stype.namef() group by stype.group for stype in recipesCtrl.sampleTypes">
+</select>
+<br />
 <br />
 
-
-<p />
-<table class="table" ng-if="recipesCtrl.processType.recipes.length>0">
-	<thead class=parametertablehead>
+<table class = "table" ng-if = "recipesCtrl.type === 'process' && recipesCtrl.processType.recipes.length > 0">
+	<thead class = parametertablehead>
 		<tr><td><b>Name</b></td>
 			<td><b>{{'action'|translate}}</b>
 		</tr>	
 	</thead>
 	<tbody>
-	<tr ng-repeat="recipe in recipesCtrl.processType.recipes">
+	<tr ng-repeat = "recipe in recipesCtrl.processType.recipes">
 		<td>
 			{{recipe.namef()}}
 		</td>
 		<td>
-			<div class="dropdown" uib-dropdown on-toggle="toggled(open)">
-				<a class="dropdown-toggle" uib-dropdown-toggle>
+			<div class = "dropdown" uib-dropdown on-toggle = "toggled(open)">
+				<a class = "dropdown-toggle" uib-dropdown-toggle>
 		  			{{'action'|translate}} &#x25BC;
 			    </a>
-			    <ul class="dropdown-menu">
-			    	<li ng-repeat="action in recipe.actions">
-			        	<a ng-click="recipesCtrl.performAction(action,recipe)">{{action.name}}</a>
+			    <ul class = "dropdown-menu">
+			    	<li ng-repeat = "action in recipe.actions">
+			        	<a ng-click = "recipesCtrl.performAction(action,recipe)">{{action.name}}</a>
+			        </li>
+			    </ul>
+	  		</div>
+		</td>
+	</tr>
+	</tbody>
+</table>
+
+<table class = "table" ng-if = "recipesCtrl.type === 'sample' && recipesCtrl.sampleType.recipes.length > 0">
+	<thead class = parametertablehead>
+		<tr><td><b>Name</b></td>
+			<td><b>{{'action'|translate}}</b>
+		</tr>	
+	</thead>
+	<tbody>
+	<tr ng-repeat="recipe in recipesCtrl.sampleType.recipes">
+		<td>
+			{{recipe.namef()}}
+		</td>
+		<td>
+			<div class = "dropdown" uib-dropdown on-toggle = "toggled(open)">
+				<a class = "dropdown-toggle" uib-dropdown-toggle>
+		  			{{'action'|translate}} &#x25BC;
+			    </a>
+			    <ul class = "dropdown-menu">
+			    	<li ng-repeat = "action in recipe.actions">
+			        	<a ng-click = "recipesCtrl.performAction(action,recipe)">{{action.name}}</a>
 			        </li>
 			    </ul>
 	  		</div>

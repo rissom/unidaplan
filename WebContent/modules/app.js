@@ -470,7 +470,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 			templateUrl: 'modules/recipes/recipes.html',
 			controller: 'recipesController as recipesCtrl',
 			resolve:{
-				types: 
+				stypes: 
 	        	    function(avSampleTypeService){
 	        	   	    return avSampleTypeService.getSampleTypes();
 	                },
@@ -575,6 +575,30 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 	        }
         })       
         
+        
+          .state('sampleRecipe', {
+	    	url: '/recipes/samplerecipe?:sampleID&:recipeID',
+	        templateUrl: 'modules/recipes/samplerecipe.html',
+	        controller:"sampleRecipeController as sRecipeCtrl",
+	        resolve:{
+	            recipeData: 
+	            	function(sampleService,$stateParams){
+	        			return sampleService.getRecipe($stateParams.recipeID);
+	        	    },
+        	    stypes: 
+	        	    function(avSampleTypeService){
+	        	   	    return avSampleTypeService.getSampleTypes();
+	                },
+    	   	 	users:
+	        	    function(userService){
+        	   	    	return userService.getUsers();
+        	   		},
+        	   	groups:
+        	   		function(userService){
+        	   			return userService.getGroups();
+        	   		}
+			}
+        })
                 
         .state('search', {
 	    	url: '/search/{id:int}',
