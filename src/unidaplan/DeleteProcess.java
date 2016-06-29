@@ -29,10 +29,10 @@ public class DeleteProcess extends HttpServlet {
 		
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
-	   	String privilege="n";
+	   	String privilege = "n";
 		request.setCharacterEncoding("utf-8");
-	    String status="ok";
-	    Boolean deletable;
+	    String status = "ok";
+	    Boolean deletable = true;
 	    
 		PreparedStatement pStmt = null; 	// Declare variables
 		int processID;
@@ -67,14 +67,20 @@ public class DeleteProcess extends HttpServlet {
 					"FROM files "+
 					"WHERE files.process = ?");
 					pStmt.setInt(1,processID);
-					deletable = dBconn.getSingleBooleanValue(pStmt);
+					if (dBconn.getSingleBooleanValue(pStmt)) { 
+						deletable = false; 
+					}
 					pStmt.close();
 			 		
 					// delete the process
 					if (deletable){
 				        pStmt = dBconn.conn.prepareStatement(	
-				        	"DELETE FROM processes WHERE id = ?");
+				        			"DELETE FROM processes WHERE id = ?");
 						pStmt.setInt(1,processID);
+						pStmt.executeUpdate();
+						pStmt.close();
+						pStmt = dBconn.conn.prepareStatement(	
+									"REFRESH MATERIALIZED VIEW pnumbers");
 						pStmt.executeUpdate();
 						pStmt.close();
 					} else {

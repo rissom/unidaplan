@@ -88,31 +88,33 @@ import org.json.JSONObject;
 		 	try {	
 			    // Select p_parameter id
 			    pStmt = dBconn.conn.prepareStatement( 			
-						 "SELECT pp.id FROM processes "
-						+ "JOIN p_parameters pp ON pp.processtypeid=processes.processtypesid AND pp.definition=8 "
-						+ "WHERE processes.id=?");
+						   "SELECT pp.id FROM processes "
+					 	 + "JOIN p_parameters pp ON pp.processtypeid = processes.processtypesid AND pp.definition = 8 "
+				 		 + "WHERE processes.id = ?");
 			   	pStmt.setInt(1, processID);
 			   	int ppid = dBconn.getSingleIntValue(pStmt);
 			   	pStmt.close();
 			    
 			    // check if the number already exists for the processtype of the given process
 				pStmt = dBconn.conn.prepareStatement( 			
-						 "SELECT 1 AS exists "
-						 + "FROM  p_integer_data pid "
-						 + "WHERE pid.p_parameter_id=? AND pid.value=?");
+						   "SELECT 1 AS exists "
+						 + "FROM  processdata pid "
+						 + "WHERE pid.parameterid = ? AND pid.data = ?");
 			   	pStmt.setInt(1, ppid);
-			   	pStmt.setInt(2, number);
-			   	Boolean exists=dBconn.getSingleIntValue(pStmt)==1;
+			   	JSONObject numberJSON = new JSONObject();
+			   	numberJSON.put("value", number);
+	   		  	pStmt.setObject(2, numberJSON, java.sql.Types.OTHER);
+			   	Boolean exists = dBconn.getSingleIntValue(pStmt) == 1;
 			   	
 			   	if (exists){ // error!
 			   		response.setStatus(409);
 			   		status = "number already taken";
 			   	} else {  	// update the old value.
-					pStmt= dBconn.conn.prepareStatement( 			
-							  "UPDATE p_integer_data "
-							+ "SET value=? "
-							+ "WHERE p_integer_data.processid=? AND p_parameter_id=?");
-					pStmt.setInt(1, number);
+					pStmt = dBconn.conn.prepareStatement( 			
+							  "UPDATE processdata "
+							+ "SET data = ? "
+							+ "WHERE processdata.processid = ? AND parameterid = ?");
+		   		  	pStmt.setObject(1, numberJSON, java.sql.Types.OTHER);
 				   	pStmt.setInt(2, processID);
 				   	pStmt.setInt(3, ppid);
 				   	pStmt.executeUpdate();

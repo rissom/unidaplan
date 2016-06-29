@@ -43,8 +43,8 @@ import org.json.JSONObject;
 	    int parameterID = -1;
 	    
 	    try {
-			processID=jsonIn.getInt("processid");	
-     		parameterID=jsonIn.getInt("parameterid");
+			processID = jsonIn.getInt("processid");	
+     		parameterID = jsonIn.getInt("parameterid");
 		} catch (JSONException e) {
 			System.err.println("SaveProcessParameter: Error parsing ID-Field");
 			status="error parsing ID-Field";
@@ -79,15 +79,23 @@ import org.json.JSONObject;
 	    if (privilege.equals("w")){
  	    	    
 		    // look up the datatype in Database	    
-		    int type=-1;
+		    int type = -1;
 			try {	
+				
+				pStmt= dBconn.conn.prepareStatement( 			
+						   "DELETE FROM processdata "
+						 + "WHERE processid = ? AND parameterid = ?");
+			   	pStmt.setInt(1, processID);
+			   	pStmt.setInt(2, parameterID);
+				pStmt.executeUpdate();
+			   	
 				pStmt= dBconn.conn.prepareStatement( 			
 						 "SELECT paramdef.datatype FROM p_parameters p "
-						+"JOIN paramdef ON p.definition=paramdef.id "
+						+"JOIN paramdef ON p.definition = paramdef.id "
 						+"WHERE p.id=?");
 			   	pStmt.setInt(1, parameterID);
 			   	JSONObject answer = dBconn.jsonObjectFromPreparedStmt(pStmt);
-				type= answer.getInt("datatype");
+				type = answer.getInt("datatype");
 			} catch (SQLException e) {
 				System.err.println("SaveProcessParameter: Problems with SQL query");
 				status="error";
