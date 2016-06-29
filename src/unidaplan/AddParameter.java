@@ -79,19 +79,17 @@ import org.json.JSONObject;
 				}
 	
 				if (jsonIn.has("description")){
-					 JSONObject description=jsonIn.getJSONObject("description");
+					 JSONObject description = jsonIn.getJSONObject("description");
 					 if (description.length()>0){
 						 String [] descriptions = JSONObject.getNames(description);
-						 stringKeyDesc=dBconn.createNewStringKey(description.getString(descriptions[0]));
-						 for (int i=0; i<descriptions.length; i++){
+						 stringKeyDesc = dBconn.createNewStringKey(description.getString(descriptions[0]));
+						 for (int i = 0; i < descriptions.length; i++){
 							 dBconn.addString(stringKeyDesc,descriptions[i],description.getString(descriptions[i]));
 						 }	 
-					 } else {
-						 stringKeyDesc=38;
-					 }
+					 } 
 				 }
 	  
-				 PreparedStatement pStmt = null;
+				PreparedStatement pStmt = null;
 	
 				pStmt= dBconn.conn.prepareStatement( 			
 						"INSERT INTO paramdef (StringKeyName,StringKeyUnit,Datatype,format,regex,min,max,description,lastChange,lastUser) "

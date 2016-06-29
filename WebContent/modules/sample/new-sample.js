@@ -28,7 +28,11 @@ function newSampleController(restfactory,$state,$translate,sampleService,key2str
 
 		
 	this.addSample = function() {
-		var promise = sampleService.addSample(this.sampletype.id, this.recipe.id);
+		var recipeID = 0;
+		if (typeof(this.recipe) != "undefined" && typeof(this.recipe.id) != "undefined"){
+			recipeID = this.recipe.id;
+		}
+		var promise = sampleService.addSample(this.sampletype.id, recipeID );
 		promise.then(function(rest){
 			if (rest.data.status == "ok") {
 				$state.go('sample',{sampleID:rest.data.id})

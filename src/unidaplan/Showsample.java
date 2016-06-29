@@ -30,7 +30,7 @@ public class Showsample extends HttpServlet {
 	int userID=authentificator.GetUserID(request,response);
 	if (userID>0){
 	 	ArrayList<String> stringkeys = new ArrayList<String>(); 
-	 	Boolean deletable = false;
+	 	Boolean deletable = true;
 	 	Boolean editable = false;
 	    response.setContentType("application/json");
 	    request.setCharacterEncoding("utf-8");
@@ -416,13 +416,13 @@ public class Showsample extends HttpServlet {
 			
 			// find the previous sample
 			try{
-			    pStmt=  dBconn.conn.prepareStatement( 	
-	    		"SELECT  samplenames.id, samplenames.name, samplenames.typeid "
-				+"FROM samplenames "
-				+"WHERE ((UPPER(samplenames.name) < UPPER((SELECT samplenames.name FROM samplenames WHERE samplenames.id=?))) "
-				+"AND samplenames.typeid=(SELECT samplenames.typeid FROM samplenames WHERE samplenames.id=?)) "
-				+"ORDER BY UPPER(samplenames.name) DESC "
-				+"LIMIT 1");
+			    pStmt =  dBconn.conn.prepareStatement( 	
+				    		"SELECT  samplenames.id, samplenames.name, samplenames.typeid "
+							+"FROM samplenames "
+							+"WHERE ((UPPER(samplenames.name) < UPPER((SELECT samplenames.name FROM samplenames WHERE samplenames.id=?))) "
+							+"AND samplenames.typeid=(SELECT samplenames.typeid FROM samplenames WHERE samplenames.id=?)) "
+							+"ORDER BY UPPER(samplenames.name) DESC "
+							+"LIMIT 1");
 				pStmt.setInt(1,sampleID);
 				pStmt.setInt(2,sampleID);
 				table= dBconn.jsonArrayFromPreparedStmt(pStmt);
@@ -440,12 +440,20 @@ public class Showsample extends HttpServlet {
 			// find next sample	
 			try{
 			    pStmt=  dBconn.conn.prepareStatement( 	
-	    		"SELECT  samplenames.id, samplenames.name, samplenames.typeid "
-				+"FROM samplenames "
-				+"WHERE ((UPPER(samplenames.name) > UPPER((SELECT samplenames.name FROM samplenames WHERE samplenames.id=?))) "
-				+"AND samplenames.typeid=(SELECT samplenames.typeid FROM samplenames WHERE samplenames.id=?)) "
-				+"ORDER BY UPPER(samplenames.name) "	
-	    		+"LIMIT 1 ");
+				    		  "SELECT  samplenames.id, samplenames.name, samplenames.typeid "
+							+ "FROM samplenames "
+							+ "WHERE ("
+							+ "(UPPER(samplenames.name) > UPPER(("
+							+ "		SELECT samplenames.name "
+							+ "		FROM samplenames "
+							+ "		WHERE samplenames.id = ?"
+							+ "))) "
+							+ "AND samplenames.typeid = ("
+							+ "  SELECT samplenames.typeid "
+							+ "  FROM samplenames "
+							+ "  WHERE samplenames.id = ?)) "
+							+ "ORDER BY UPPER(samplenames.name) "	
+				    		+ "LIMIT 1 ");
 				pStmt.setInt(1,sampleID);
 				pStmt.setInt(2,sampleID); 
 				table = dBconn.jsonArrayFromPreparedStmt(pStmt);
@@ -463,8 +471,8 @@ public class Showsample extends HttpServlet {
 			// Can we delete this sample?
 			try{
 		        pStmt = dBconn.conn.prepareStatement(	
-		    	"SELECT processid, sampleid FROM samplesinprocess "
-		 		+"WHERE sampleid = ?");
+					    	"SELECT processid, sampleid FROM samplesinprocess "
+					 		+"WHERE sampleid = ?");
 				pStmt.setInt(1,sampleID);
 				ResultSet resultset = pStmt.executeQuery();
 				if (resultset.next()) {
@@ -474,13 +482,26 @@ public class Showsample extends HttpServlet {
 				
 				// Check if experiments with this sample exist
 		        pStmt = dBconn.conn.prepareStatement(	
-		        	"SELECT id FROM expp_samples WHERE sample = ?");
+		        			"SELECT id FROM expp_samples WHERE sample = ?");
 				pStmt.setInt(1,sampleID);
 				resultset = pStmt.executeQuery();
 				if (resultset.next()) { deletable = false; }
 				pStmt.close();
+				
+				// Check if files are attached
+		        pStmt = dBconn.conn.prepareStatement(	
+		        			"SELECT true FROM files WHERE files.sample = ?");
+				pStmt.setInt(1,sampleID);
+				if (dBconn.getSingleBooleanValue(pStmt)) { 
+					deletable = false; 
+				}
+				pStmt.close();
+				
+				if (deletable) { deletable = editable; }
+				
 				jsSample.put("deletable", deletable);
 				jsSample.put("editable", editable);
+
 
 				
 			} catch (SQLException e) {
@@ -501,7 +522,7 @@ public class Showsample extends HttpServlet {
 	    }
 		out.println(jsSample.toString());
 		} else {
-			String status="insufficient rights";
+			String status = "insufficient rights";
 			response.setStatus(401);
 			Unidatoolkit.sendStandardAnswer(status, response);
 		}

@@ -82,16 +82,27 @@ public class SampleTypeParams extends HttpServlet {
 		 		 	
 		 		// check if the parameter can be deleted. (No, if corresponding data exists).
 		           	pStmt = dBconn.conn.prepareStatement(
-		     		  	   "SELECT ot_parameters.id, compulsory, id_field, formula, hidden, pos, definition, "
-		           		  +"  COALESCE(ot_parameters.stringkeyname,paramdef.stringkeyname) as name, "
-		     		  	  +"  (blabla.count) IS NULL as deletable, stringkeyunit, paramdef.datatype "
-		     		  	  +"FROM ot_parameters " 
-		     		  	  +"JOIN paramdef ON (definition=paramdef.id) "
-		     		  	  +"LEFT JOIN "
-					  	  +"( "
-						  +"  SELECT count(a.id),ot_parameter_id FROM sampledata a GROUP BY parameter_id "
-						  +") AS blabla ON blabla.ot_parameter_id=ot_parameters.id "
-						  +"WHERE parametergroup=?"); // status, processnumber and date cannot be edited
+			     		  	   "SELECT "
+			     		  	 + "  ot_parameters.id, "
+			     		  	 + "  compulsory, "
+			     		  	 + "  id_field, "
+			     		  	 + "  formula, "
+			     		  	 + "  hidden, "
+			     		  	 + "  pos, "
+			     		  	 + "  definition, "
+			           		 + "  COALESCE(ot_parameters.stringkeyname,paramdef.stringkeyname) as name, "
+			     		  	 + "  (blabla.count) IS NULL as deletable, stringkeyunit, paramdef.datatype "
+			     		  	 + "FROM ot_parameters " 
+			     		  	 + "JOIN paramdef ON (definition=paramdef.id) "
+			     		  	 + "LEFT JOIN "
+						  	 + "( "
+							 + "  SELECT "
+							 + "    count(a.id),"
+							 + "    ot_parameter_id "
+							 + "  FROM sampledata a "
+							 + "  GROUP BY ot_parameter_id "
+							 + ") AS blabla ON blabla.ot_parameter_id = ot_parameters.id "
+							 + "WHERE parametergroup = ?"); // status, processnumber and date cannot be edited
 			 		pStmt.setInt(1, paramgroupid);
 					processTypeGrps=dBconn.jsonArrayFromPreparedStmt(pStmt); // get ResultSet from the database using the query
 					if (processTypeGrps.length()>0) {

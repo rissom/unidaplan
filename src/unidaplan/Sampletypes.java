@@ -67,6 +67,7 @@ import org.json.JSONObject;
 					+ "	SELECT "
 					+ "		st.id, "
 					+ "		st.string_key, "
+					+ "		description,"
 					+ "		deletable, " 
 					+ "		recipes "
 					+ "	FROM objecttypes st "
