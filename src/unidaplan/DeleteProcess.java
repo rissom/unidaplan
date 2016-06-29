@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONArray;
+
 public class DeleteProcess extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -30,6 +32,7 @@ public class DeleteProcess extends HttpServlet {
 	   	String privilege="n";
 		request.setCharacterEncoding("utf-8");
 	    String status="ok";
+	    Boolean deletable;
 	    
 		PreparedStatement pStmt = null; 	// Declare variables
 		int processID;
@@ -57,13 +60,27 @@ public class DeleteProcess extends HttpServlet {
 				pStmt.close();
 				
 				if (privilege.equals("w")){
+					
+					// check if files are attached to process
+				    pStmt =  dBconn.conn.prepareStatement( 	
+					"SELECT true "+
+					"FROM files "+
+					"WHERE files.process = ?");
+					pStmt.setInt(1,processID);
+					deletable = dBconn.getSingleBooleanValue(pStmt);
+					pStmt.close();
 			 		
 					// delete the process
-			        pStmt = dBconn.conn.prepareStatement(	
-			        	"DELETE FROM processes WHERE id=?");
-					pStmt.setInt(1,processID);
-					pStmt.executeUpdate();
-					pStmt.close();
+					if (deletable){
+				        pStmt = dBconn.conn.prepareStatement(	
+				        	"DELETE FROM processes WHERE id = ?");
+						pStmt.setInt(1,processID);
+						pStmt.executeUpdate();
+						pStmt.close();
+					} else {
+						response.setStatus(403);
+						status = "not deleted, files are attached";
+					}
 					
 				} else {
 					response.setStatus(401);
