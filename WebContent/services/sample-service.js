@@ -67,6 +67,12 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 	};
 	
 	
+
+	this.deleteSampleRecipe = function(recipeID){
+		return restfactory.DELETE("delete-sample-recipe?id=" + recipeID);
+	}
+	
+	
 	
 	this.deleteSampleType=function(id){
 		return restfactory.DELETE("delete-sample-type?id="+id);
@@ -261,6 +267,17 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 		} 
 		return restfactory.POST('save-sample-recipe-parameter',json);
 	};
+	
+	
+	
+	this.updateSampleRecipeName = function(id, newName, language){
+		var json = {'type':'sample', 
+					'language':language,
+					'id':id,
+					'name':newName};
+		return restfactory.PUT('update-recipe-name',json);
+	}
+
 	
 };
 

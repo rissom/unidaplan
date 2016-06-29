@@ -8,7 +8,7 @@ function recipesController(restfactory,$state,$stateParams,$translate,stypes,pty
 	this.processTypes = ptypes;
 	
 	this.sampleTypes = stypes;
-		
+
 	this.id = $stateParams.id;
 		
 	this.type = $stateParams.type || "process";
@@ -55,7 +55,11 @@ function recipesController(restfactory,$state,$stateParams,$translate,stypes,pty
 	
 	
 	this.deleteRecipe = function(recipeID){
-		var promise = processService.deleteRecipe(recipeID);
+		if ($stateParams.type === "sample"){
+			var promise = sampleService.deleteSampleRecipe(recipeID);
+		} else {
+			var promise = processService.deleteProcessRecipe(recipeID);
+		}
 		promise.then(function(){reload()});
 	}
 	
@@ -66,7 +70,7 @@ function recipesController(restfactory,$state,$stateParams,$translate,stypes,pty
 			case "edit"   :  if (thisController.type === 'process'){
 								$state.go('processRecipe',{processID : this.processType.id, recipeID:recipe.id})
 							}else{
-								$state.go('sampleRecipe',{  sampleID : this.processType.id, recipeID:recipe.id})
+								$state.go('sampleRecipe',{  sampleID : this.sampleType.id, recipeID:recipe.id})
 							};
 			break;
 			case "delete" :	this.deleteRecipe(recipe.id); break;
@@ -75,8 +79,22 @@ function recipesController(restfactory,$state,$stateParams,$translate,stypes,pty
 	
 	
 	
-	// activate function
-
+	this.updateStateParamsProcess = function(){
+		$stateParams.id =  this.processType.id;
+		this.id = this.processType.id;
+	}
+	
+	
+	
+	this.updateStateParamsSample = function(){
+		$stateParams.id =  this.sampleType.id;
+		this.id = this.sampleType.id;
+	}
+	
+	
+	
+	// *** activate function ***
+	
 	//define actions
 	angular.forEach(ptypes, function(ptype){
 		angular.forEach(ptype.recipes, function(recipe){
@@ -101,8 +119,7 @@ function recipesController(restfactory,$state,$stateParams,$translate,stypes,pty
 		});
 	});
 	
-	
-	
+
 	// prefill selector for processes
 	if (ptypes){
 		if ($stateParams.id) {

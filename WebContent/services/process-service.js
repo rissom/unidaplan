@@ -188,14 +188,6 @@ var processService = function (restfactory,$q,$translate,key2string) {
 	}
 	
 	
-	this.updateProcessRecipeName = function(id, newName, language){
-		var json = {'type':'process', 
-					'language':language,
-					'id':id,
-					'name':newName};
-		return restfactory.PUT('update-recipe-name',json);
-	}
-
 	
 	this.pushProcess = function(process){
 		var i;
@@ -231,8 +223,8 @@ var processService = function (restfactory,$q,$translate,key2string) {
 	};
 	
 	
-	this.deleteProcessRecipe = function(recipe){
-		return restfactory.DELETE("delete-recipe?id=",recipe.id);
+	this.deleteRecipe = function(recipe){
+		return restfactory.DELETE("delete-process-recipe?id=",recipe.id);
 	}
 	
 
@@ -288,6 +280,16 @@ var processService = function (restfactory,$q,$translate,key2string) {
 	this.setStatus = function(process,status){
 		return this.saveParameter(process.id,{id:process.statuspid,data:{value:status}});
 	};
+	
+	
+	
+	this.updateProcessRecipeName = function(id, newName, language){
+		var json = {'type':'process', 
+					'language':language,
+					'id':id,
+					'name':newName};
+		return restfactory.PUT('update-recipe-name',json);
+	}
 	
 	
 	

@@ -66,7 +66,7 @@ public class GetSampleRecipe extends HttpServlet {
   	  		
   	  		// check privileges
 	        pStmt = dBconn.conn.prepareStatement( 	
-					"SELECT getProcessRecipeRights(vuserid:=?,vprocessrecipe:=?)");
+					"SELECT getSampleRecipeRights(vuserid:=?,vsamplerecipe:=?)");
 			pStmt.setInt(1,userID);
 			pStmt.setInt(2,recipeID);
 			privilege = dBconn.getSingleStringValue(pStmt);
@@ -91,6 +91,7 @@ public class GetSampleRecipe extends HttpServlet {
 	  	  		// get name 
 	  	  		pStmt= dBconn.conn.prepareStatement(
 	  	  				  "SELECT "
+	  	  				+ "  samplerecipes.id, "
 	  	  				+ "  name, "
 	  	  				+ "  samplerecipes.sampletype, "
 	  	  				+ "  users.id AS owner "

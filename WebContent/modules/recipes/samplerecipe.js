@@ -40,6 +40,8 @@ function sampleRecipeController(restfactory,$state,$stateParams,$translate,recip
 	this.users = users;
 	
 	this.owner = users.filter(function(user){return user.id == recipeData.owner})[0];
+	
+	this.id = recipeData.sampletype;
 		
 	
 	this.changeOwner = function() {

@@ -91,6 +91,7 @@ public class GetProcessRecipe extends HttpServlet {
 	  	  		// get name 
 	  	  		pStmt= dBconn.conn.prepareStatement(
 	  	  				  "SELECT "
+	  	  				+ "  processrecipes.id,"
 	  	  				+ "  name, "
 	  	  				+ "  processrecipes.processtype, "
 	  	  				+ "  users.id AS owner "
