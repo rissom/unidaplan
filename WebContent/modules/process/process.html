@@ -99,19 +99,19 @@ ng-class="{'1':'ok','2':'att','3':'failed'}[processCtrl.process.status]" >&nbsp;
 				</span>
 			</td>
 			<td width="300" >&nbsp;<br /> &nbsp;
-				<button type="button" 
-						class="btn btn-danger"
-						ng-click="processCtrl.deleteProcess()"
-						ng-show="processCtrl.editable"
-						ui-sref="sampleChoser">
+				<button type = "button" 
+						class = "btn btn-danger"
+						ng-click = "processCtrl.deleteProcess()"
+						ng-show = "processCtrl.deletable"
+						ui-sref = "sampleChoser">
 					{{'Delete Process'|translate}}
 				</button>&nbsp;
 			</td>
 			<td width="300"  align="center">
 				<span ng-show="processCtrl.process.next"> &nbsp;
 					{{'next'|translate}} &nbsp; &#9654; &nbsp; <br />
-					<button class="btn btn-default" 
-							ui-sref="process({processID:processCtrl.process.next.id})">
+					<button class = "btn btn-default" 
+							ui-sref = "process({processID:processCtrl.process.next.id})">
 						{{processCtrl.process.trprocesstype}} {{processCtrl.process.next.p_number}}
 					</button>	
 				</span>

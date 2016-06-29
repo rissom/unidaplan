@@ -32,11 +32,12 @@ public class Process extends HttpServlet {
         throws ServletException, IOException {
     	
     	Boolean editable = false;
-		boolean found=false;
+    	Boolean deletable = false;
+		boolean found = false;
 
 
     	Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
+		int userID = authentificator.GetUserID(request,response);
 		
 		ArrayList<String> stringkeys = new ArrayList<String>(); // Array for translation strings
       
@@ -75,7 +76,8 @@ public class Process extends HttpServlet {
 			privilege=dBconn.getSingleStringValue(pStmt);
 			pStmt.close();
 	        
-	        editable= privilege!=null && privilege.equals("w");
+	        editable = privilege!=null && privilege.equals("w");
+	        deletable = editable;
   	    } catch (SQLException e) { 
 	  		System.err.println("Problems with SQL query");
 	  		e.printStackTrace();
@@ -428,12 +430,18 @@ public class Process extends HttpServlet {
 		    
 				// Find all corresponding files
 		    	try{
-				    pStmt=  dBconn.conn.prepareStatement( 	
+				    pStmt =  dBconn.conn.prepareStatement( 	
 					"SELECT files.id,filename "+
 					"FROM files "+
-					"WHERE files.process=?");
+					"WHERE files.process = ?");
 					pStmt.setInt(1,processID);
-					JSONArray files= dBconn.jsonArrayFromPreparedStmt(pStmt);
+					JSONArray files = dBconn.jsonArrayFromPreparedStmt(pStmt);
+
+					// process is only deletable when there are no files
+			    	if (files.length() > 0) {
+			    		deletable = false;
+			    	}
+			    	
 					if (files.length()>0) {
 						jsProcess.put("files",files); 
 					}
@@ -444,12 +452,16 @@ public class Process extends HttpServlet {
 				} catch (Exception e3) {
 					System.err.println("Showsample: Strange Problem while getting child samples");
 		    	}
+		    	
+
+	
 	
 		
 				// get the strings
 				try{
 			        jsProcess.put("strings",dBconn.getStrings(stringkeys));
 			        jsProcess.put("editable", editable);
+			        jsProcess.put("deletable", deletable);
 				} catch (JSONException e) {
 					System.err.println("Showsample: JSON Problem while getting Stringkeys");
 				} catch (Exception e2) {

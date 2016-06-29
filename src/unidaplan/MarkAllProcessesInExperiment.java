@@ -17,32 +17,33 @@ import org.json.JSONObject;
 
 	@Override
 	  public void doPost(HttpServletRequest request, HttpServletResponse response)
-	      throws ServletException, IOException {		
+	      throws ServletException, IOException {
 	    
 		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
+		int userID = authentificator.GetUserID(request,response);
 	    PreparedStatement pStmt = null;
-	   	String privilege="n";
+	   	String privilege = "n";
 		
 		request.setCharacterEncoding("utf-8");
-	    int processID=0;
-	    int experimentID=0;
+	    int processID = 0;
+	    int experimentID = 0;
+	 	
 	  	  	try{
-	  	  		experimentID=Integer.parseInt(request.getParameter("experimentid"));
-	  	  		processID=Integer.parseInt(request.getParameter("processid"));
+	  	  		experimentID = Integer.parseInt(request.getParameter("experimentid"));
+	  	  		processID = Integer.parseInt(request.getParameter("processid"));
 	  	  	}
 	  	  	catch (Exception e1) {
 	  	  		System.err.print("MarkAllProcessesInExperiment: no sampleID or no id given!");
 	  	  	}
-	    String status="ok";
+	    String status = "ok";
 
 	    try {
-		 	DBconnection dBconn=new DBconnection();
+		 	DBconnection dBconn = new DBconnection();
 		    dBconn.startDB();
 		    
 		    // Check privileges
 		    pStmt = dBconn.conn.prepareStatement( 	
-					"SELECT getExperimentRights(vuserid:=?,vexperimentid:=?)");
+					"SELECT getExperimentRights(vuserid := ?,vexperimentid := ?)");
 			pStmt.setInt(1,userID);
 			pStmt.setInt(2,experimentID);
 			privilege = dBconn.getSingleStringValue(pStmt);
@@ -50,15 +51,18 @@ import org.json.JSONObject;
 			
 			if (privilege.equals("w")){	    
 		    
-				pStmt= dBconn.conn.prepareStatement( 			
-					"INSERT INTO exp_plan_steps (exp_plan_pr, recipe, expp_s_id, note, lastuser) "
-					+"SELECT exp_plan_processes.id AS exp_plan_pr, "
-					+" exp_plan_processes.recipe, expp_samples.id AS expp_s_id, exp_plan_processes.note, ? "
+				pStmt = dBconn.conn.prepareStatement( 			
+					  "INSERT INTO exp_plan_steps (exp_plan_pr, recipe, expp_s_id, note, lastuser) "
+					+ "SELECT exp_plan_processes.id AS exp_plan_pr, "
+					+"   exp_plan_processes.recipe, "
+					+ "  expp_samples.id AS expp_s_id, "
+					+ "  exp_plan_processes.note, "
+					+ "  ? "
 					+"FROM expp_samples "
-					+"JOIN exp_plan_processes ON (expp_samples.expp_id=exp_plan_processes.expp_id) " 
-					+"LEFT JOIN exp_plan_steps ON (exp_plan_steps.expp_s_id=expp_samples.id ) " 
-					+" AND (exp_plan_steps.exp_plan_pr=exp_plan_processes.id) "
-					+"WHERE expp_samples.expp_id=? AND exp_plan_processes.id=? AND exp_plan_steps.id IS NULL");
+					+"JOIN exp_plan_processes ON (expp_samples.expp_id = exp_plan_processes.expp_id) " 
+					+"LEFT JOIN exp_plan_steps ON (exp_plan_steps.expp_s_id = expp_samples.id ) " 
+					+"     AND (exp_plan_steps.exp_plan_pr=exp_plan_processes.id) "
+					+"WHERE expp_samples.expp_id = ? AND exp_plan_processes.id = ? AND exp_plan_steps.id IS NULL");
 			   	pStmt.setInt(1, userID);
 			   	pStmt.setInt(2, experimentID);
 			   	pStmt.setInt(3, processID);
