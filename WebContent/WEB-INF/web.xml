@@ -108,6 +108,94 @@
   </servlet-mapping>
   
   <servlet>
+    <description>AddSample</description>
+    <display-name>AddSample</display-name>
+    <servlet-name>AddSample</servlet-name>
+    <servlet-class>unidaplan.AddSample</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddSample</servlet-name>
+    <url-pattern>/add-sample</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>AddSamplesToProcess</description>
+    <display-name>AddSamplesToProcess</display-name>
+    <servlet-name>AddSamplesToProcess</servlet-name>
+    <servlet-class>unidaplan.AddSamplesToProcess</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddSamplesToProcess</servlet-name>
+    <url-pattern>/add-sample-to-process</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>AddAncestors</description>
+    <display-name>AddAncestors</display-name>
+    <servlet-name>AddAncestors</servlet-name>
+    <servlet-class>unidaplan.AddAncestors</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddAncestors</servlet-name>
+    <url-pattern>/add-ancestors</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>AddChildren</description>
+    <display-name>AddChildren</display-name>
+    <servlet-name>AddChildren</servlet-name>
+    <servlet-class>unidaplan.AddChildren</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddChildren</servlet-name>
+    <url-pattern>/add-children</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>AvailableProcesstypes</description>
+    <display-name>AvailableProcesstypes</display-name>
+    <servlet-name>AvailableProcesstypes</servlet-name>
+    <servlet-class>unidaplan.AvailableProcesstypes</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AvailableProcesstypes</servlet-name>
+    <url-pattern>/available-processtypes</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>AddProcess</description>
+    <display-name>AddProcess</display-name>
+    <servlet-name>AddProcess</servlet-name>
+    <servlet-class>unidaplan.AddProcess</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddProcess</servlet-name>
+    <url-pattern>/add-process</url-pattern>
+  </servlet-mapping>
+    
+  <servlet>
+    <description>Add a user</description>
+    <display-name>AddUser</display-name>
+    <servlet-name>AddUser</servlet-name>
+    <servlet-class>unidaplan.AddUser</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddUser</servlet-name>
+    <url-pattern>/add-user</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>AssignGroupMembers</description>
+    <display-name>AssignGroupMembers</display-name>
+    <servlet-name>AssignGroupMembers</servlet-name>
+    <servlet-class>unidaplan.AssignGroupMembers</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AssignGroupMembers</servlet-name>
+    <url-pattern>/assign-group-members</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
     <description>AssignGroupToUser</description>
     <display-name>AssignGroupToUser</display-name>
     <servlet-name>AssignGroupToUser</servlet-name>
@@ -225,29 +313,7 @@
     <servlet-name>AddPossibleValue</servlet-name>
     <url-pattern>/add-possible-value</url-pattern>
   </servlet-mapping>
-  
-  <servlet>
-    <description>Add a user</description>
-    <display-name>AddUser</display-name>
-    <servlet-name>AddUser</servlet-name>
-    <servlet-class>unidaplan.AddUser</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>AddUser</servlet-name>
-    <url-pattern>/add-user</url-pattern>
-  </servlet-mapping>
-  
-  <servlet>
-    <description>AssignGroupMembers</description>
-    <display-name>AssignGroupMembers</display-name>
-    <servlet-name>AssignGroupMembers</servlet-name>
-    <servlet-class>unidaplan.AssignGroupMembers</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>AssignGroupMembers</servlet-name>
-    <url-pattern>/assign-group-members</url-pattern>
-  </servlet-mapping>
-  
+
   <servlet>
     <description>ChangeOrderSearchOutput</description>
     <display-name>ChangeOrderSearchOutput</display-name>
@@ -290,6 +356,17 @@
   <servlet-mapping>
     <servlet-name>DeleteProcessRecipe</servlet-name>
     <url-pattern>/delete-process-recipe</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>Delete Sample Recipe</description>
+    <display-name>DeleteSampleRecipe</display-name>
+    <servlet-name>DeleteSampleRecipe</servlet-name>
+    <servlet-class>unidaplan.DeleteSampleRecipe</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeleteSampleRecipe</servlet-name>
+    <url-pattern>/delete-sample-recipe</url-pattern>
   </servlet-mapping>
   
   <servlet>
@@ -367,6 +444,28 @@
   <servlet-mapping>
     <servlet-name>DeleteSearchParameter</servlet-name>
     <url-pattern>/delete-search-parameter</url-pattern>
+  </servlet-mapping>
+    
+  <servlet>
+    <description>DeletePTParameter</description>
+    <display-name>DeletePTParameter</display-name>
+    <servlet-name>DeletePTParameter</servlet-name>
+    <servlet-class>unidaplan.DeletePTParameter</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeletePTParameter</servlet-name>
+    <url-pattern>/delete-pt-parameter</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>DeletePTSRParameter</description>
+    <display-name>DeletePTSRParameter</display-name>
+    <servlet-name>DeletePTSRParameter</servlet-name>
+    <servlet-class>unidaplan.DeletePTSRParameter</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeletePTSRParameter</servlet-name>
+    <url-pattern>/delete-pt-sr-parameter</url-pattern>
   </servlet-mapping>
   
   <servlet>
@@ -454,66 +553,7 @@
     <servlet-name>Logout</servlet-name>
     <url-pattern>/logout</url-pattern>
   </servlet-mapping>
-  <servlet>
-    <description>AddSample</description>
-    <display-name>AddSample</display-name>
-    <servlet-name>AddSample</servlet-name>
-    <servlet-class>unidaplan.AddSample</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>AddSample</servlet-name>
-    <url-pattern>/add-sample</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description>AddSamplesToProcess</description>
-    <display-name>AddSamplesToProcess</display-name>
-    <servlet-name>AddSamplesToProcess</servlet-name>
-    <servlet-class>unidaplan.AddSamplesToProcess</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>AddSamplesToProcess</servlet-name>
-    <url-pattern>/add-sample-to-process</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description>AddAncestors</description>
-    <display-name>AddAncestors</display-name>
-    <servlet-name>AddAncestors</servlet-name>
-    <servlet-class>unidaplan.AddAncestors</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>AddAncestors</servlet-name>
-    <url-pattern>/add-ancestors</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description>AddChildren</description>
-    <display-name>AddChildren</display-name>
-    <servlet-name>AddChildren</servlet-name>
-    <servlet-class>unidaplan.AddChildren</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>AddChildren</servlet-name>
-    <url-pattern>/add-children</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description>AvailableProcesstypes</description>
-    <display-name>AvailableProcesstypes</display-name>
-    <servlet-name>AvailableProcesstypes</servlet-name>
-    <servlet-class>unidaplan.AvailableProcesstypes</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>AvailableProcesstypes</servlet-name>
-    <url-pattern>/available-processtypes</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description>AddProcess</description>
-    <display-name>AddProcess</display-name>
-    <servlet-name>AddProcess</servlet-name>
-    <servlet-class>unidaplan.AddProcess</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>AddProcess</servlet-name>
-    <url-pattern>/add-process</url-pattern>
-  </servlet-mapping>
+  
   <servlet>
     <description>ProcessByNumber</description>
     <display-name>ProcessByNumber</display-name>
@@ -985,28 +1025,6 @@
   <servlet-mapping>
     <servlet-name>ChangeOrderPTParameters</servlet-name>
     <url-pattern>/change-order-pt-parameters</url-pattern>
-  </servlet-mapping>
-  
-  <servlet>
-    <description>DeletePTParameter</description>
-    <display-name>DeletePTParameter</display-name>
-    <servlet-name>DeletePTParameter</servlet-name>
-    <servlet-class>unidaplan.DeletePTParameter</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>DeletePTParameter</servlet-name>
-    <url-pattern>/delete-pt-parameter</url-pattern>
-  </servlet-mapping>
-  
-  <servlet>
-    <description>DeletePTSRParameter</description>
-    <display-name>DeletePTSRParameter</display-name>
-    <servlet-name>DeletePTSRParameter</servlet-name>
-    <servlet-class>unidaplan.DeletePTSRParameter</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>DeletePTSRParameter</servlet-name>
-    <url-pattern>/delete-pt-sr-parameter</url-pattern>
   </servlet-mapping>
   
   <servlet>
