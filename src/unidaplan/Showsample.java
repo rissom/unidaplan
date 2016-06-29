@@ -240,22 +240,23 @@ public class Showsample extends HttpServlet {
 		// find all corresponding processes + timestamp
 		try {
 			pStmt = dBconn.conn.prepareStatement( 
-			   "SELECT "
-			   + "samplesinprocess.processid, "
-			   + "processes.processtypesid AS processtype, "
-			   + "ptd.data->>'date' AS date, "
-			   + "(n1.data->>'value')::integer AS number, "
-			   + "(n2.data->>'value')::integer AS status "
-			   + "FROM samplesinprocess "
-			   + "JOIN processes ON (processes.id=samplesinprocess.processid) " 
-			   + "JOIN processtypes ON (processes.processtypesid=processtypes.id) "  
-			   + "JOIN p_parameters pp ON (pp.definition = 10) "   // date
-			   + "JOIN p_parameters pp2 ON (pp2.definition = 8) "  // number
-			   + "JOIN p_parameters pp3 ON (pp3.definition = 1) "  // status
-			   + "JOIN processdata ptd ON (ptd.processID = samplesinprocess.processid AND ptd.parameterID = pp.id) "
-			   + "JOIN processdata n1 ON (n1.ProcessID = samplesinprocess.processid AND n1.parameterID = pp2.id) "
-			   + "JOIN processdata n2 ON (n2.ProcessID = samplesinprocess.processid AND n2.parameterID = pp3.id) " 
-			   + "WHERE sampleid=?");
+					  "SELECT "
+					+ "  samplesinprocess.processid, " 
+					+ "  processes.processtypesid AS processtype, "
+					+ "  max (ptd.data->>'date') AS date, "
+					+ "  max (n1.data->>'value')::integer AS number, "
+					+ "  max (n2.data->>'value')::integer AS status "
+					+ "FROM samplesinprocess "
+					+ "JOIN processes ON (processes.id = samplesinprocess.processid) " 
+					+ "JOIN processtypes ON (processes.processtypesid = processtypes.id) " 
+					+ "JOIN p_parameters pp ON (pp.definition = 10) " // date
+					+ "JOIN p_parameters pp2 ON (pp2.definition = 8) " //number
+					+ "JOIN p_parameters pp3 ON (pp3.definition = 1) " // status
+					+ "JOIN processdata ptd ON (ptd.processID = samplesinprocess.processid AND ptd.parameterID = pp.id) " 
+					+ "JOIN processdata n1 ON (n1.ProcessID = samplesinprocess.processid AND n1.parameterID = pp2.id) "
+					+ "JOIN processdata n2 ON (n2.ProcessID = samplesinprocess.processid AND n2.parameterID = pp3.id) "
+					+ "WHERE samplesinprocess.sampleid = ? "
+					+ "GROUP BY samplesinprocess.processid, processes.processtypesid "); 
 			pStmt.setInt(1,sampleID);
 			JSONArray processes = dBconn.jsonArrayFromPreparedStmt(pStmt);
 	//	   	String validToString = jsToken.optString("token_valid_to");
