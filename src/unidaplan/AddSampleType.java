@@ -2,10 +2,12 @@ package unidaplan;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -49,9 +51,9 @@ import org.json.JSONObject;
 				
 				 // generate strings for the name and the unit
 				if (jsonIn.has("name")){
-					 JSONObject name=jsonIn.getJSONObject("name");
+					 JSONObject name = jsonIn.getJSONObject("name");
 					 String [] names = JSONObject.getNames(name);
-					 stringKeyName=dBconn.createNewStringKey(name.getString(names[0]));
+					 stringKeyName = dBconn.createNewStringKey(name.getString(names[0]));
 					 for (int i=0; i<names.length; i++){
 						 dBconn.addString(stringKeyName,names[i],name.getString(names[i]));
 					 }
@@ -74,19 +76,82 @@ import org.json.JSONObject;
 				 if (jsonIn.has("otgroup")){
 					 otgroup=jsonIn.getInt("ptgroup");
 				 }  
-				pStmt= dBconn.conn.prepareStatement( 			
-					"INSERT INTO objecttypes (position,otgrp,string_key,description,lastchange,lastuser) "
-					+"VALUES(?,?,?,?,NOW(),?)");
+				pStmt = dBconn.conn.prepareStatement( 			
+						  "INSERT INTO objecttypes ("
+						+ "  position,"
+						+ "  otgrp,"
+						+ "  string_key,"
+						+ "  description,"
+						+ "  lastuser) "
+						+ "VALUES(?,?,?,?,?) "
+						+ "RETURNING id");
 				pStmt.setInt(1, position);
 				pStmt.setInt(2, otgroup);
 			   	pStmt.setInt(3, stringKeyName);
-			   	if (stringKeyDesc>0){
+			   	if (stringKeyDesc > 0){
 				   	pStmt.setInt(4, stringKeyDesc);
 			   	}else{
 			   		pStmt.setNull(4, java.sql.Types.INTEGER);
 			   	}
 			   	pStmt.setInt(5, userID);
-			   	pStmt.executeUpdate();
+			   	int id = dBconn.getSingleIntValue(pStmt);
+			   	pStmt.close();
+			   	
+			   	
+			   	
+			   	
+			   	// create new Parametertype for title
+			   	
+			   	int stringKeySampleNumber = 0;
+			   	int stringKeyDescSampleNumber = 0;
+			   	
+			   	if (jsonIn.has("name")){
+			   		
+					 JSONObject name = jsonIn.getJSONObject("name");
+					 String [] names = JSONObject.getNames(name);
+					 stringKeySampleNumber = dBconn.createNewStringKey(name.getString(names[0]));
+					 stringKeyDescSampleNumber = dBconn.createNewStringKey(name.getString(names[0]));
+					 for (int i = 0; i < names.length; i++){
+						 dBconn.addString(stringKeySampleNumber, names[i],"no. of " + name.getString(names[i]));
+						 dBconn.addString(stringKeyDescSampleNumber, names[i], "samplenumber of " + name.getString(names[i]));
+					 }
+			   	}
+			   	
+			
+			   	
+			   	pStmt = dBconn.conn.prepareStatement( 			
+						  "INSERT INTO paramdef ("
+						+ "  StringKeyName,"
+						+ "  Datatype,"
+						+ "  description,"
+						+ "  lastUser) "
+						+ "VALUES (?,1,?,?) "
+						+ "RETURNING id");
+			   	pStmt.setInt(1, stringKeySampleNumber);
+			   	pStmt.setInt(2, stringKeyDescSampleNumber);
+				pStmt.setInt(3, userID);  	// lastUser 
+				
+				int parameterID = dBconn.getSingleIntValue(pStmt); 
+				pStmt.close();
+				
+			   	pStmt = dBconn.conn.prepareStatement(
+				  		  "INSERT INTO ot_parameters ("
+				  		+ "  ObjecttypesID,  "
+					    + "  compulsory, "
+					    + "  ID_Field, "
+					    + "  Hidden, "
+					    + "  pos, "
+					    + "  definition, "
+					    + "  lastUser ) "
+					    +"VALUES(?,?,?,?,1,?,?)");
+				pStmt.setInt(1, id);
+				pStmt.setBoolean(2, true);
+				pStmt.setBoolean(3, true);
+				pStmt.setBoolean(4, false);  	//hidden
+				pStmt.setInt(5, parameterID);  	// parameterID 
+				pStmt.setInt(6, userID);  		// lastUser 
+				pStmt.executeUpdate();
+			   	
 		    } else {
 		    	response.setStatus(401);
 		    }

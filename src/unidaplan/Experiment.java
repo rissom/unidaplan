@@ -89,7 +89,7 @@ public class Experiment extends HttpServlet {
 							.prepareStatement("SELECT "
 									+ "exp_plan_processes.id, "
 									+ "processrecipes.name AS recipename, "
-									+ "exp_plan_processes AS position, "
+									+ "exp_plan_processes.position AS position, "
 									+ "ptid AS processtype, "
 									+ "recipe, "
 									+ "note "

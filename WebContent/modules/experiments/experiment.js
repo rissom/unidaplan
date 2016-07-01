@@ -1,12 +1,12 @@
 (function(){
 'use strict';
 
-function experimentController($uibModal,$scope,editmode,experimentService,restfactory,$translate,$state,$stateParams,key2string,
+function experimentController($uibModal,$scope,editmode,experimentService,languages,restfactory,$translate,$state,$stateParams,key2string,
 							  avSampleTypeService,avProcessTypeService,experimentData,ptypes,stypes,avParameters) {
 	
 	this.experiment = experimentData;
 	
-	this.editmode=editmode;
+	this.editmode = editmode;
 	
 	this.newNumber=experimentData.number;
 
@@ -18,7 +18,18 @@ function experimentController($uibModal,$scope,editmode,experimentService,restfa
 	var thisController =this;	
 	
 	this.avProcesses = ptypes;
+	  
+	this.NameL1 = experimentData.nameLang(languages[0].key);
+	  
+	this.newNameL1 = experimentData.nameLang(languages[0].key);
+	  
+	this.NameL2 = experimentData.nameLang(languages[1].key);
+
+	this.newNameL2 = experimentData.nameLang(languages[1].key);
 	
+	this.lang1=$translate.instant(languages[0].name);
+	  
+	this.lang2=$translate.instant(languages[1].name);
 	
 
 	  
@@ -243,9 +254,9 @@ function experimentController($uibModal,$scope,editmode,experimentService,restfa
 	
 	
 	this.moveProcessRight = function(process){
-		for (var i=0; i<this.experiment.processes.length; i++){
-			if (this.experiment.processes[i].position==process.position+1){
-				this.experiment.processes[i].position=this.experiment.processes[i].position-1;
+		for (var i=0; i < this.experiment.processes.length; i++){
+			if (this.experiment.processes[i].position == process.position+1){
+				this.experiment.processes[i].position = this.experiment.processes[i].position-1;
 			}
 		}
 		process.position=process.position+1;
@@ -264,6 +275,21 @@ function experimentController($uibModal,$scope,editmode,experimentService,restfa
 		this.updatePositionsForProcesses();
 	};
 	
+	
+	
+	this.nameKeyUp = function(keyCode,field,newValue) {
+		if (keyCode === 13) {				// Return key pressed
+			// save new name in database.
+			var language;
+			if (field === 'NL1'){
+				language = languages[0].key;
+			} else {
+				language = languages[1].key;
+			}
+			var promise = experimentService.updateExperimentName(experimentData.id,language,newValue);
+			promise.then(reload());
+		}
+	};
 	
 	
 	this.plannedProcessExists = function(process,sample){
@@ -433,7 +459,8 @@ function experimentController($uibModal,$scope,editmode,experimentService,restfa
 }
     
         
-angular.module('unidaplan').controller('experimentController',['$uibModal','$scope','editmode','experimentService','restfactory',
+angular.module('unidaplan').controller('experimentController',['$uibModal','$scope','editmode','experimentService',
+               'languages','restfactory',
                '$translate','$state','$stateParams','key2string','avSampleTypeService','avProcessTypeService',
                'experimentData','ptypes','stypes','avParameters',experimentController]);
 

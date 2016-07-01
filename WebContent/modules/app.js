@@ -282,7 +282,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 			   	    },
 	            editmode: 
 	            	function($stateParams){
-	        			return $stateParams.editmode==="true";
+	        			return $stateParams.editmode === "true";
 	        	    },
 	        }
         })

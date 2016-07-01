@@ -77,6 +77,7 @@ import org.json.JSONException;
 			status="SQL error";
 		} catch (JSONException e){
 			System.err.println("UpdatePositionsForProcessesInExperiment: Problems creating JSON");
+			e.printStackTrace();
 			status="JSON error";
 		} catch (Exception e) {
 			System.err.println("UpdatePositionsForProcessesInExperiment: Strange Problems");

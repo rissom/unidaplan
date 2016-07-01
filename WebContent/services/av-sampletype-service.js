@@ -10,7 +10,7 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	   
 	  
 	this.AddSampletypePGParameters=function(sampletype,paramgrp,parameters){
-		var tempObj={
+		var tempObj = {
 			sampletypeid 	 : sampletype,
 			parametergroupid : paramgrp,
 			parameterids     : parameters,

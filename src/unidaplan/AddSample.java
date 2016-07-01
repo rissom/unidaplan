@@ -101,7 +101,7 @@ import org.json.JSONObject;
 				
 				if (lastSampleID > 0){
 				
-					// List of titleparameters of type Integer:
+					// List of titleparameters of type Integer with values of last object:
 					pStmt = dBconn.conn.prepareStatement( 	
 							  "SELECT "
 							+ "  ot_parameters.id, "
@@ -116,6 +116,7 @@ import org.json.JSONObject;
 					pStmt.close();
 
 				} else {
+					// List of titleparameters without any values.
 					pStmt = dBconn.conn.prepareStatement( 	
 							  "SELECT "
 							+ "  ot_parameters.id "

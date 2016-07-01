@@ -1073,6 +1073,17 @@
   
   <servlet>
     <description>Change value for a Possible Value for chooser parameter type</description>
+    <display-name>UpdateExperimentName</display-name>
+    <servlet-name>UpdateExperimentName</servlet-name>
+    <servlet-class>unidaplan.UpdateExperimentName</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateExperimentName</servlet-name>
+    <url-pattern>/update-experiment-name</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>Change value for a Possible Value for chooser parameter type</description>
     <display-name>UpdatePossibleValue</display-name>
     <servlet-name>UpdatePossibleValue</servlet-name>
     <servlet-class>unidaplan.UpdatePossibleValue</servlet-class>

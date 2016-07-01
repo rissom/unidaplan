@@ -91,7 +91,7 @@ import org.json.JSONObject;
 	  
 				PreparedStatement pStmt = null;
 	
-				pStmt= dBconn.conn.prepareStatement( 			
+				pStmt = dBconn.conn.prepareStatement( 			
 						"INSERT INTO paramdef (StringKeyName,StringKeyUnit,Datatype,format,regex,min,max,description,lastChange,lastUser) "
 						+ "VALUES (?,?,?,?,?,?,?,?,NOW(),?) RETURNING id");
 			   	pStmt.setInt(1, stringKeyName);

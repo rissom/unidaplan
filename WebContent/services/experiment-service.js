@@ -32,8 +32,11 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 	    	promise.then(function(rest) {
     	    	var experiment = rest.data.experiment;
     	    	var strings = rest.data.strings;
-    			experiment.namef=function(){
+    			experiment.namef = function(){
     				return key2string.key2string(experiment.name,strings);
+    			};
+    			experiment.nameLang = function(lang){
+    				return key2string.key2stringWithLangStrict(experiment.name,strings,lang);
     			};
     			angular.forEach(experiment.parameters, function(parameter) {
     				parameter.namef=function(){
@@ -171,6 +174,13 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 	
 	this.updatePositionsForProcessesInExperiment=function(processes){
 		return restfactory.POST("update-positions-for-processes-in-experiment",processes);
+	};
+	
+	
+	
+	this.updateExperimentName = function(id,language,newName){
+		var json = {"id":id, "language":language, "name":newName};
+		return restfactory.PUT('update-experiment-name',json);
 	};
 	
 	
