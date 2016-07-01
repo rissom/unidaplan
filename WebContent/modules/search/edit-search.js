@@ -37,19 +37,15 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 	this.modes = [{mode:true,  name:$translate.instant("All of the following")},
 				  {mode:false, name:$translate.instant("One of the following")}];
 					
-//	this.avParameters = iSampleParamsAndGrps.parameters;
-//	
-//	this.paramGroups = iSampleParamsAndGrps.parametergroups;
-//	
 	this.languages = languages;
 	
 	this.search = searchData;
 		
-	this.ooutput=$filter('filter')(searchData.output,{type:'o'});
+	this.ooutput = $filter('filter')(searchData.output, function (x){ return x.type==='o'} );
 	
-	this.poutput=$filter('filter')(searchData.output,{type:'p'});
+	this.poutput = $filter('filter')(searchData.output, function (x){ return x.type==='p'} );
 	
-	this.pooutput=$filter('filter')(searchData.output,{type:'po'});
+	this.pooutput = $filter('filter')(searchData.output, function (x){ return x.type==='po'} );
 		
 	this.poutput.sort(function(a,b){return a.position-b.position});
 	
@@ -112,7 +108,7 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 					
 	
 	
-	this.addSampleParameter=function(){
+	this.addSampleParameter = function(){
 		var modalInstance = $uibModal.open({
 			animation: false,
 		    templateUrl: 'modules/modal-parameter-choser/modal-parameter-choser-with-grps.html',
@@ -139,7 +135,7 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 	
 
 	
-	this.addProcessParameter=function(){
+	this.addProcessParameter = function(){
 		var modalInstance = $uibModal.open({
 			animation: false,
 		    templateUrl: 'modules/modal-parameter-choser/modal-parameter-choser-with-grps.html',
@@ -166,6 +162,32 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 	
 	
 	
+	this.addSampleRelatedProcessParameter = function(){
+		var modalInstance = $uibModal.open({
+			animation: false,
+		    templateUrl: 'modules/modal-parameter-choser/modal-parameter-choser.html',
+		    controller: 'modalParameterChoser as mParameterChoserCtrl',
+		    resolve: {
+		    	mode		  	 : function(){return 'immediate'; },
+		    	avParameters     : function(){return thisController.search.avPOParameters; },
+		    	parameters		 : function(){return []}
+				}
+		});
+		  	
+		modalInstance.result.then(
+			function (result) {  // get the new Parameterlist + Info if it has changed from Modal.  
+				var promise = searchService.updateSearchPOParameter(thisController.search.id,result.chosen);
+				if (result.chosen.length>0){
+					promise.then(function(){reload();});		    	  
+				}
+			},function () {
+				console.log('Strange Error: Modal dismissed at: ' + new Date());
+		    }
+		);
+	}
+	
+	
+	
     this.addOutputParameter = function (type) {
 		var modalInstance = $uibModal.open({
 			animation: false,
@@ -174,13 +196,13 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 		    resolve: {
 		    	mode		  	 : function(){return 'immediate'; },
 		    	avParameters     : function(){ // All parameters which have not been already chosen
-		    		var avParams=[];
-		    		var outParams=[];
-		    		var oparameters=[];
+		    		var avParams = [];
+		    		var outParams = [];
+		    		var oparameters = [];
 		    		switch (type){
-			    		case "o" : avParams=searchData.avSParameters; outParams=thisController.ooutput; break;
-			    		case "p" : avParams=searchData.avPParameters; outParams=thisController.poutput; break;
-			    		case "po": avParams=searchData.avPOParameters; outParams=thisController.pooutput;
+			    		case "o" : avParams = searchData.avSParameters; outParams = thisController.ooutput; break;
+			    		case "p" : avParams = searchData.avPParameters; outParams = thisController.poutput; break;
+			    		case "po": avParams = searchData.avPOParameters; outParams = thisController.pooutput;
 		    		}
 		    		for (var i=0; i<outParams.length;i++){ 
 		    			oparameters.push(outParams[i].id);
@@ -188,23 +210,23 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 			    	return $filter('filter')(avParams,function(p){
 			    		return (oparameters.indexOf(p.id))==-1});} ,
 		    	paramGroups      : function(){
-		    		var avParamGrps=[];
+		    		var avParamGrps = [];
 		    		switch (type){
-			    		case "o" : avParamGrps=searchData.avSParamGrps; break;
-			    		case "p" : avParamGrps=searchData.avPParamGrps; break;
-			    		case "po": avParamGrps=searchData.avPOParamGrps;
+			    		case "o" : avParamGrps = searchData.avSParamGrps; break;
+			    		case "p" : avParamGrps = searchData.avPParamGrps; break;
+			    		case "po": avParamGrps = [];
 		    		}
 		    		return avParamGrps; },
 		    	parameters    	 : function(){
 		    			// make an array of outputparameterids of the given type
-			    		var oparameters=[];
-			    		var outParams=[];
+			    		var oparameters = [];
+			    		var outParams = [];
 			    		switch (type){
-				    		case "o" : outParams=thisController.ooutput; break;
-				    		case "p" : outParams=thisController.poutput; break;
-				    		case "po" : outParams=thisController.pooutput;
+				    		case "o" : outParams = thisController.ooutput; break;
+				    		case "p" : outParams = thisController.poutput; break;
+				    		case "po" : outParams = thisController.pooutput;
 			    		}
-			    		for (var i=0; i<outParams.length;i++){ 
+			    		for (var i = 0; i < outParams.length; i++){ 
 			    			oparameters.push(outParams[i].id);
 			    		}
 			    		return oparameters;

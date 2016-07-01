@@ -33,10 +33,10 @@ import org.json.JSONObject;
 	    
 	    // get the id
 	    int popid = 0;
-	    int opid = 0;
+	    int sip = 0;
 	    try {
 			 popid=jsonIn.getInt("parameterid");
-			 opid=jsonIn.getInt("opid");
+			 sip=jsonIn.getInt("opid");
 		} catch (JSONException e) {
 			System.err.println("SavePOParameter: Error parsing ID-Field");
 			response.setStatus(404);
@@ -55,7 +55,7 @@ import org.json.JSONObject;
 		    pStmt= dBconn.conn.prepareStatement( 	
 					"SELECT getProcessRights(vuserid:=?,vprocess:=(SELECT processid FROM samplesinprocess WHERE id=? ))");
 			pStmt.setInt(1,userID);
-			pStmt.setInt(2,opid);
+			pStmt.setInt(2,sip);
 			privilege=dBconn.getSingleStringValue(pStmt);
 			pStmt.close();
 		} catch (SQLException e) {
@@ -80,7 +80,7 @@ import org.json.JSONObject;
 				pStmt= dBconn.conn.prepareStatement( 			
 						 "SELECT paramdef.datatype FROM po_parameters pop \n"
 						+"JOIN paramdef ON pop.definition=paramdef.id \n"
-						+"WHERE pop.id=?");
+						+"WHERE pop.id = ?");
 			   	pStmt.setInt(1, popid);
 			   	JSONObject answer = dBconn.jsonObjectFromPreparedStmt(pStmt);
 			   	pStmt.close();
@@ -90,9 +90,9 @@ import org.json.JSONObject;
 				// delete old values.
 				pStmt= dBconn.conn.prepareStatement( 			
 						 "DELETE FROM spdata "
-						+"WHERE parameterid = ? AND opid = ?");
+						+"WHERE parameterid = ? AND sip = ?");
 			   	pStmt.setInt(1, popid);
-			   	pStmt.setInt(2, opid);
+			   	pStmt.setInt(2, sip);
 			   	pStmt.executeUpdate();
 			   	pStmt.close();
 			   	
@@ -184,7 +184,7 @@ import org.json.JSONObject;
 				} // end of switch Statement
 			pStmt= dBconn.conn.prepareStatement( 			// Integer values
   					"INSERT INTO spdata (sip,parameterid,data,lastUser) VALUES (?,?,?,?)");
-  			pStmt.setInt(1, opid);
+  			pStmt.setInt(1, sip);
   			pStmt.setInt(2, popid);
    		  	pStmt.setObject(3, data, java.sql.Types.OTHER);
 	   		pStmt.setInt(4, userID);

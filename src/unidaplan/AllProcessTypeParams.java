@@ -41,22 +41,23 @@ public class AllProcessTypeParams extends HttpServlet {
 	   	}
 	  	
 		PreparedStatement pStmt = null; 	// Declare variables
-	    JSONArray parameterGrps= null;		
-	    JSONArray parameters= null;
-	 	DBconnection dBconn=new DBconnection(); // New connection to the database
+	    JSONArray parameterGrps = null;		
+	    JSONArray parameters = null;
+	    JSONArray poparameters = null;
+	 	DBconnection dBconn = new DBconnection(); // New connection to the database
 	 	ArrayList<String> stringkeys = new ArrayList<String>(); 
 		 	
 	    try{
 		 	dBconn.startDB();
 		 	
 		 	// if the processtypeid is 0, set it to the first existing process type 
-		 	if (processTypeID==0){
+		 	if (processTypeID == 0){
 		 		pStmt = dBconn.conn.prepareStatement(
 					  	   "SELECT id FROM processtypes "
 						  +"ORDER BY position "
 						  +"LIMIT 1");
 		 		processTypeID = dBconn.getSingleIntValue(pStmt);
-		 		if (processTypeID<1) {
+		 		if (processTypeID < 1) {
 		 			System.err.println("No processtypes in database!");
 					response.setStatus(404);
 		 			throw new Exception();
@@ -67,12 +68,13 @@ public class AllProcessTypeParams extends HttpServlet {
 		 	
 		 	// get the parametergroups
 		 	pStmt = dBconn.conn.prepareStatement(
-				  	   "SELECT id,pos,stringkey FROM p_parametergrps "
-					  +"WHERE (p_parametergrps.processtype=?) ");
+				  	     "SELECT id,pos,stringkey "
+				  	   + "FROM p_parametergrps "
+					   + "WHERE (p_parametergrps.processtype=?) ");
    			pStmt.setInt(1, processTypeID);
-   			parameterGrps=dBconn.jsonArrayFromPreparedStmt(pStmt); 
+   			parameterGrps = dBconn.jsonArrayFromPreparedStmt(pStmt); 
    			if (parameterGrps.length()>0) {
-           		for (int j=0; j<parameterGrps.length();j++) {
+           		for (int j = 0; j < parameterGrps.length(); j++) {
            			if (parameterGrps.getJSONObject(j).has("stringkey")){
            				stringkeys.add(Integer.toString(parameterGrps.getJSONObject(j).getInt("stringkey")));
            			}
@@ -80,15 +82,22 @@ public class AllProcessTypeParams extends HttpServlet {
            	}	
    			
    			
-   			// get the parameters
+   			// get the general parameters
            	pStmt = dBconn.conn.prepareStatement(
-     		  	   "SELECT p_parameters.id, compulsory, formula, hidden, pos, definition, p_parameters.stringkeyname as name, "
-     		  	  + "stringkeyunit, parametergroup " 
-     		  	  +"FROM p_parameters " 
-     		  	  +"JOIN paramdef ON (definition=paramdef.id)"
-				  +"WHERE processtypeid=?"); // status, processnumber and date cannot be edited
+	     		  	    "SELECT "
+	     		  	  + "  p_parameters.id, "
+	     		  	  + "  compulsory, "
+	     		  	  + "  formula, "
+	     		  	  + "  hidden, "
+	     		  	  + "  pos, "
+	     		  	  + "  definition, "
+	     		  	  + "  COALESCE (p_parameters.stringkeyname, paramdef.stringkeyname) AS name, "
+	     		  	  + "stringkeyunit, parametergroup " 
+	     		  	  + "FROM p_parameters " 
+	     		  	  + "JOIN paramdef ON (definition=paramdef.id)"
+					  + "WHERE processtypeid=?"); // status, processnumber and date cannot be edited
 	 		pStmt.setInt(1, processTypeID);
-			parameters=dBconn.jsonArrayFromPreparedStmt(pStmt); // get ResultSet from the database using the query
+			parameters = dBconn.jsonArrayFromPreparedStmt(pStmt); // get ResultSet from the database using the query
 			
 			if (parameters.length()>0) {
 				// get all the stringkeys from the parameters
@@ -99,23 +108,51 @@ public class AllProcessTypeParams extends HttpServlet {
            				stringkeys.add(Integer.toString(parameters.getJSONObject(j).getInt("stringkeyunit")));
            			}
            		}
-           		
-//    			// assign parameters to parametergroups (not needed any more)
-//           		for (int k=0; k<parameterGrps.length();k++){
-//           			JSONObject parameterGrp=parameterGrps.getJSONObject(k);
-//           			JSONArray grpParameters = new JSONArray();
-//               		for (int j=0; j<parameters.length();j++) {
-//               			JSONObject parameter=parameters.getJSONObject(j);
-//	           			if (parameterGrp.getInt("id")==parameter.getInt("parametergroup")){
-//	           				grpParameters.put(parameter);
-//	           			}
-//               		}
-//           			parameterGrp.put("parameters", grpParameters);
-//           		}
            	}
-					
+			
+			
+			// get the sample related parameters
+           	pStmt = dBconn.conn.prepareStatement(
+	     		  	     "SELECT "
+	     		  	   + "  po_parameters.id, "
+	     		  	   + "  compulsory, "
+	     		  	   + "  hidden, "
+	     		  	   + "  position, "
+	     		  	   + "  definition, "
+	     		  	   + "  COALESCE (po_parameters.stringkeyname, paramdef.stringkeyname) AS name, "
+	     		  	   + "  stringkeyunit AS unit "
+	     		  	   + "FROM po_parameters " 
+	     		  	   + "JOIN paramdef ON (definition = paramdef.id)"
+					   + "WHERE processtypeid = ?"); // status, processnumber and date cannot be edited
+	 		pStmt.setInt(1, processTypeID);
+			poparameters = dBconn.jsonArrayFromPreparedStmt(pStmt); // get ResultSet from the database using the query
+			
+			if (parameters.length() > 0) {
+				// get all the stringkeys from the parameters
+           		for (int j = 0; j < parameters.length(); j++) {
+           			JSONObject parameter = parameters.getJSONObject(j);
+           			stringkeys.add(Integer.toString(parameter.getInt("name")));
+           			if (parameter.has("stringkeyunit")){
+           				stringkeys.add(Integer.toString(parameters.getJSONObject(j).getInt("stringkeyunit")));
+           			}
+           		}
+           	}
+			
+			if (poparameters.length() > 0) {
+				// get all the stringkeys from the parameters
+           		for (int j = 0; j < poparameters.length(); j++) {
+           			JSONObject parameter = poparameters.getJSONObject(j);
+           			stringkeys.add(Integer.toString(parameter.getInt("name")));
+           			if (parameter.has("stringkeyunit")){
+           				stringkeys.add(Integer.toString(parameters.getJSONObject(j).getInt("stringkeyunit")));
+           			}
+           		}
+           	}
+			
+		
 	        answer.put("parametergrps",parameterGrps);
 	        answer.put("parameters",parameters);
+	        answer.put("poparameters",poparameters);
 	        answer.put("strings", dBconn.getStrings(stringkeys));
 	        out.println(answer.toString());
 	    } catch (SQLException e) {

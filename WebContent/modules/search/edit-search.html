@@ -1,6 +1,7 @@
 <p />
 <p />
 
+<div ng-show="editSearchCtrl.search.type == 3"> Suche nach prozessbezogenen Probenparametern ist noch nicht implementiert!<br/></div>
 
 <button class="btn btn-default"
 		ui-sref="openSearch">
@@ -192,7 +193,7 @@
 
 
 
-<div ng-show="editSearchCtrl.searchType>1" class="col-md-12" >
+<div ng-show="editSearchCtrl.searchType > 1" class="col-md-12" >
 	{{'Processtype'|translate}}
 	<select
 	    class="form-control" 
@@ -263,9 +264,72 @@
 	</table>
 	<button class="btn btn-default"
 		ng-click="editSearchCtrl.addProcessParameter()"
-		ng-show="editSearchCtrl.searchType==2 || editSearchCtrl.searchType==4">
+		ng-show="editSearchCtrl.searchType == 2 || editSearchCtrl.searchType == 4">
 	+ {{'Add Parameter'|translate}}
 	</button>
+	
+	<table class="table" ng-show="editSearchCtrl.search.type == 3">
+	
+		<thead class=parametertablehead>
+			<tr>
+				<td>
+					{{'Parameter'|translate}}
+				</td>
+				<td>
+					{{'Comparison operation'|translate}}
+				</td>
+				<td>
+					{{'Default Values'|translate}}
+				</td>
+				<td>
+					{{'delete'|translate}}
+				</td>
+			</tr>
+		</thead>
+		
+		<tr ng-repeat="parameter in editSearchCtrl.search.poparameter | orderBy:'namef()'"
+			ng-dblclick = "parameter.editing = true">
+			<td>
+				<div>{{parameter.namef()}}</div>
+			</td>
+			<td>
+				<select class = "form-control input-sm" 
+					style = "width:68px;"	
+					ng-model = "parameter.comparison"
+					ng-change = "editSearchCtrl.changeComparison(parameter,'po')"
+					ng-options = "comparator.index as comparator.label for comparator in editSearchCtrl.comparators[parameter.datatype]"> 
+				</select>
+			</td>
+			<td>
+				<span ng-hide = "parameter.editing">{{parameter.value}}
+				</span>
+					<input 						   
+							ng-keyup = "editSearchCtrl.valueKeyUp($event.keyCode,newValue,parameter,'po')"
+							ng-show = "parameter.editing" type="text"
+						    ng-model = "newValue" 
+						    ng-blur = "parameter.editing=false">
+					<span ng-show = "parameter.unit">
+						{{parameter.unitf()}}
+					</span>
+			</td>
+			<td>
+				<button 
+					type="button" 
+					class="btn btn-default btn-xs" 
+					ng-click = "editSearchCtrl.deleteParameter(parameter,'po')" >
+					<span class="glyphicon glyphicon-remove"></span>
+				</button>
+			</td>
+		</tr>
+	</table>
+	
+	
+	<button class="btn btn-default"
+		ng-click = "editSearchCtrl.addSampleRelatedProcessParameter()"
+		ng-show = "editSearchCtrl.searchType == 3">
+	+ {{'Add Parameter'|translate}}
+	</button>
+	
 	<br/>
 	<br/>
 	<br/>
@@ -277,14 +341,17 @@
 
 	
 <h4>{{'Output'|translate}}</h4>
-<div class="col-md-12" ng-show="editSearchCtrl.search.type==1 || editSearchCtrl.search.type==4 || editSearchCtrl.search.type==2">
-	<table class="table">
-		<thead class=parametertablehead>
-		<tr>		
-			<td width="100px">
+
+
+<br/>
+<div class = "col-md-12">
+	<table class = "table">
+		<thead class = parametertablehead>
+		<tr>
+			<td width = "100px">
 			  {{'type'|translate}}
 			</td>
-			<td width="70px">
+			<td width = "70px">
 			</td>
 			<td>
 				Parameter
@@ -319,6 +386,8 @@
 				</button>
 			</td>
 		</tr>
+		
+		
 		<!-- process parameters -->
 		<tr  ng-repeat="parameter in editSearchCtrl.poutput">
 			<td><span ng-show="$first">{{'Process parameter'|translate}}</span></td>
@@ -343,6 +412,8 @@
 				</button>
 			</td>
 		</tr>
+		
+		
 		<!--  process / sample parameters -->
 		<tr  ng-repeat="parameter in editSearchCtrl.pooutput">
 			<td class="parametertd">
@@ -368,23 +439,24 @@
 		</tr>
 	</table>
 	
-	<button class="btn btn-default"
-			ng-click="editSearchCtrl.addOutputParameter('o')"
-			ng-show="editSearchCtrl.search.type==1 || editSearchCtrl.search.type==4">
+	<button class = "btn btn-default"
+			ng-click = "editSearchCtrl.addOutputParameter('o')"
+			ng-show = "editSearchCtrl.search.type == 1 || editSearchCtrl.search.type == 4">
 		+ {{'Add sample parameter'|translate}}
 	</button>
 	
 	<button class="btn btn-default"
-			ng-click="editSearchCtrl.addOutputParameter('p')"
-			ng-show="editSearchCtrl.search.type==2 || editSearchCtrl.search.type==4">
+			ng-click = "editSearchCtrl.addOutputParameter('p')"
+			ng-show = "editSearchCtrl.search.type == 2 || editSearchCtrl.search.type == 4">
 		+ {{'Add process parameter'|translate}}
 	</button>
 	
 	<button class="btn btn-default"
-			ng-click="editSearchCtrl.addOutputParameter('po')"
-			ng-show="editSearchCtrl.search.type==3">
-		+ {{'Add process / sample parameter'|translate}}
+			ng-click = "editSearchCtrl.addOutputParameter('po')"
+			ng-show = "editSearchCtrl.search.type == 3">
+		+ {{'Add processrelated sample parameter'|translate}}
 	</button>
+	
 	<p/>
 	<br/>
 </div>

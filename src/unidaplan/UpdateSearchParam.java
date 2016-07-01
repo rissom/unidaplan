@@ -63,12 +63,14 @@ import org.json.JSONObject;
 				// get the searchparameters according to searchtype
 				for (int i=0; i<parameter.length();i++){
 					switch (jsonIn.getString("type")){
-						case "o" : table="searchobject";  col="otparameter";break;
-						case "p" : table="searchprocess"; col="pparameter"; break;
-						case "op" : table="searchpo";  	  col="poparameter"; break;
+						case "o"  : table = "searchobject";  col = "otparameter"; break;
+						case "p"  : table = "searchprocess"; col = "pparameter";  break;
+						case "po" : table = "searchpo";  	 col = "poparameter"; break;
 					}
-					pStmt= dBconn.conn.prepareStatement("INSERT INTO "+table+
-							" (search,"+col+",lastchange,lastuser) VALUES (?,?,NOW(),?)");
+					pStmt = dBconn.conn.prepareStatement(
+							  "INSERT INTO " + table 
+							+ " (search," + col + ",lastchange,comparison,lastuser) "
+							+ "VALUES (?,?,NOW(),2,?)");
 					pStmt.setInt(1, searchID);
 					pStmt.setInt(2, parameter.getInt(i));
 					pStmt.setInt(3, userID);
@@ -81,6 +83,7 @@ import org.json.JSONObject;
 		} catch (SQLException e) {
 			System.err.println("UpdateSearchParam: Problems with SQL query");
 			status="SQL error";
+			e.printStackTrace();
 		} catch (Exception e) {
 			System.err.println("UpdateSearchParam: some error occured");
 			e.printStackTrace();

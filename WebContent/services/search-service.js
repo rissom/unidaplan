@@ -77,37 +77,37 @@ var searchService = function (restfactory,$q,$translate,key2string,languages) {
 	
 	this.getSearchData = function(searchID){
 	// get the data for editing search
-		var defered=$q.defer();
+		var defered = $q.defer();
 		var promise = restfactory.GET("searchdata?id="+searchID);
 		promise.then(function(rest) {
 		  	var search = rest.data.search;
 		  	var strings = rest.data.strings;
-	  		search.namef=function(){
+	  		search.namef = function(){
 	  			return key2string.key2string(search.name,strings);
 	  		};
-	  		search.nameL1=
+	  		search.nameL1 =
 	  			key2string.key2stringWithLangStrict(search.name,
 	  			strings,languages[0].key);
-		  	search.nameL2=
+		  	search.nameL2 =
 		  		key2string.key2stringWithLangStrict(search.name,
 		  		strings,languages[1].key);
 		  	if (search.sparameter){
 			  	angular.forEach(search.sparameter,function(parameter){
-			  		parameter.namef=function(){
+			  		parameter.namef = function(){
 			  			return key2string.key2string(parameter.stringkeyname, strings);
 			  		}
 			  	})
 		  	}
 		  	if (search.pparameter){
 			  	angular.forEach (search.pparameter,function(parameter){
-			  		parameter.namef=function(){
+			  		parameter.namef = function(){
 			  			return key2string.key2string(parameter.stringkeyname,strings);
 			  		}
 			  	});
 		  	}
 		  	if (search.poparameter){
 			  	angular.forEach (search.poparameter,function(parameter){
-			  		parameter.fname=function(){
+			  		parameter.namef = function(){
 			  			return key2string.key2string(parameter.stringkeyname,strings);
 			  		}
 			  	});
@@ -117,19 +117,19 @@ var searchService = function (restfactory,$q,$translate,key2string,languages) {
 		  			return key2string.key2string(parameter.stringkeyname, strings);
 		  		}
 		  	})
-		  	if (search.type===1){
+		  	if (search.type === 1){
 		  		var prom2 = thisController.getSParameters(search);
 		  		prom2.then(function(){
 					defered.resolve(search);
 		  		});
 		  	}
-		  	if (search.type===2){
+		  	if (search.type === 2){
 		  		var prom2 = thisController.getPParameters(search);
 		  		prom2.then(function(){
 					defered.resolve(search);
 		  		});
 		  	}
-		  	if (search.type===3){
+		  	if (search.type === 3){
 		  		var prom2 = thisController.getPParameters(search);
 		  		prom2.then(function(){
 					defered.resolve(search);
@@ -161,29 +161,29 @@ var searchService = function (restfactory,$q,$translate,key2string,languages) {
 	  		search.namef=function(){
 	  			return key2string.key2string(search.name,strings);
 	  		};
-	  		search.nameL1=
+	  		search.nameL1 =
 	  			key2string.key2stringWithLangStrict(search.name,
-	  			strings,languages[0].key);
-		  	search.nameL2=
+	  													strings, languages[0].key);
+		  	search.nameL2 =
 		  		key2string.key2stringWithLangStrict(search.name,
-		  		languages[1].key);
+		  												languages[1].key);
 		  	if (search.sparameters){
 			  	angular.forEach (search.sparameters,function(parameter){
-			  		parameter.namef=function(){
+			  		parameter.namef = function(){
 			  			return key2string.key2string(parameter.stringkeyname,strings);
 			  		}
 			  	});
 		  	}
 		  	if (search.pparameters){
 			  	angular.forEach (search.pparameters,function(parameter){
-			  		parameter.namef=function(){
+			  		parameter.namef = function(){
 			  			return key2string.key2string(parameter.stringkeyname,strings);
 			  		}
 			  	});
 		  	}
 		  	if (search.poparameters){
 			  	angular.forEach (search.poparameters,function(parameter){
-			  		parameter.fname=function(){
+			  		parameter.namef = function(){
 			  			return key2string.key2string(parameter.stringkeyname,strings);
 			  		}
 			  	});
@@ -221,28 +221,42 @@ var searchService = function (restfactory,$q,$translate,key2string,languages) {
 	
 	
 	this.getPParameters = function(search){
-		var defered=$q.defer();
-		var url="/all-process-type-params";
+		var defered = $q.defer();
+		var url = "/all-process-type-params";
 		if (search.defaultprocess){
-			url+="?processtypeid="+search.defaultprocess;
+			url += "?processtypeid=" + search.defaultprocess;
 		}
 		var promise = restfactory.GET(url);
 		promise.then(function(rest) {
 		  	search.avPParameters = rest.data.parameters;
 		  	search.avPParamGrps = rest.data.parametergrps;
+		  	search.avPOParameters = rest.data.poparameters;
+		  	
 		  	var strings = rest.data.strings;
 		  	angular.forEach (search.avPParameters,function(parameter){
-		  		parameter.namef=function(){
+		  		parameter.namef = function(){
 		  			return key2string.key2string(parameter.name,strings);
 		  		}
 		  	});
 		  	angular.forEach (search.avPParamGrps,function(paramGrp){
-		  		paramGrp.namef=function(){
+		  		paramGrp.namef = function(){
 		  			return key2string.key2string(paramGrp.stringkey,strings);
 		  		}
 		  	});
+		  	angular.forEach (search.avPOParameters,function(parameter){
+		  		parameter.namef = function(){
+		  			return key2string.key2string(parameter.name,strings);
+		  		}
+				parameter.nameUnitf = function(){
+					var answer = key2string.key2string(parameter.name,strings); 
+					if (parameter.stringkeyunit) { 
+						answer += " ("+ key2string.key2string(parameter.unit,strings) +")";
+					}
+					return answer;
+		  		}
+		  	});
 		  	if (rest.data.processtype){
-		  		search.processtype=rest.data.processtype;
+		  		search.processtype = rest.data.processtype;
 		  	}
 			defered.resolve(search.parameters);
 		});
@@ -319,6 +333,9 @@ var searchService = function (restfactory,$q,$translate,key2string,languages) {
 		return restfactory.POST("update-search-param",{searchid:searchid,parameter:pparameter,type:'p'});
 	}
 	
+	this.updateSearchPOParameter = function(searchid,pparameter){
+		return restfactory.POST("update-search-param",{searchid:searchid,parameter:pparameter,type:'po'});
+	}
 	
 //	
 //	this.goToSearches = function(){
