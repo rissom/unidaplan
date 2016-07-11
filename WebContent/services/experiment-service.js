@@ -6,25 +6,53 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 
 	var thisController=this;
 	
+	this.statusItems = ['doof','bloed','schwachsinn']
 	
-	this.getExperiments = function() {
-        var defered=$q.defer();
-		var promise = restfactory.GET("experiments");
-	    promise.then(function(rest) {
-	    	thisController.experiments = rest.data.experiments;
-	    	thisController.expsStrings = rest.data.strings;
-			angular.forEach(thisController.experiments, function(anExp) {
-				anExp.namef=function(){
-					return key2string.key2string(anExp.name,thisController.expsStrings);
-				};
-			});
-	    	defered.resolve(thisController.experiments);
-	    }, function(rest) {
-	    });
-		return defered.promise;
+	this.addExperiment = function(){
+		return restfactory.POST("add-experiment",{name:{"de":"neues Experiment", "en":"new Experiment"}});
 	};
 	
 	
+	
+	this.addParameters = function(experimentid,parameters) {
+		return  restfactory.POST("add-experiment-parameter",{ experimentid : experimentid , parameters : parameters });
+	};
+	
+	
+	
+	this.addSampleToExperiment = function (expid,sampleid,pos){
+		return  restfactory.POST("add-sample-to-experiment?experimentid="+expid+"&position="+pos+"&sampleid="+sampleid);
+	};
+
+	
+	
+	this.addProcessToExperiment = function(processType,experimentID){
+		return restfactory.POST("add-process-to-experiment?processtype="+processType+"&experimentid="+experimentID);
+	};
+	
+	
+	
+	this.ExpStepChangeRecipe = function(id,recipe) {
+		return restfactory.POST("exp-step-change-recipe?processstepid="+id+"&recipe="+recipe);
+	};
+	
+	
+	
+	// delete an experiment (also from recent experiments)
+	this.deleteExperiment = function(id){
+			if (this.recentExperiments!==undefined) {
+				for (var i=0;i<this.recentExperiments.length;i++){
+					if (this.recentExperiments[i].id==id){
+						this.recentExperiments.splice(i,1);
+					}
+				}
+			}
+		return restfactory.DELETE("delete-experiment?id="+id);
+	};
+	
+	
+	
+
 	
 	this.getExperiment = function(id) {
         var defered=$q.defer();
@@ -77,45 +105,21 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 	
 	
 	
-	this.ExpStepChangeRecipe = function(id,recipe) {
-		return restfactory.POST("exp-step-change-recipe?processstepid="+id+"&recipe="+recipe);
-	};
-	
-	
-	
-	// delete an experiment (also from recent experiments)
-	this.deleteExperiment = function(id){
-			if (this.recentExperiments!==undefined) {
-				for (var i=0;i<this.recentExperiments.length;i++){
-					if (this.recentExperiments[i].id==id){
-						this.recentExperiments.splice(i,1);
-					}
-				}
-			}
-		return restfactory.DELETE("delete-experiment?id="+id);
-	};
-	
-	
-	this.addExperiment = function(){
-		console.log ("Not implemented yet");
-	};
-	
-	
-	
-	this.addParameters = function(experimentid,parameters) {
-		return  restfactory.POST("add-experiment-parameter",{ experimentid : experimentid , parameters : parameters });
-	};
-	
-	
-	
-	this.addSampleToExperiment = function (expid,sampleid,pos){
-		return  restfactory.POST("add-sample-to-experiment?experimentid="+expid+"&position="+pos+"&sampleid="+sampleid);
-	};
-
-	
-	
-	this.addProcessToExperiment = function(processType,experimentID){
-		return restfactory.POST("add-process-to-experiment?processtype="+processType+"&experimentid="+experimentID);
+	this.getExperiments = function() {
+        var defered = $q.defer();
+		var promise = restfactory.GET("experiments");
+	    promise.then(function(rest) {
+	    	thisController.experiments = rest.data.experiments;
+	    	thisController.expsStrings = rest.data.strings;
+			angular.forEach(thisController.experiments, function(anExp) {
+				anExp.namef = function(){
+					return key2string.key2string(anExp.name,thisController.expsStrings);
+				};
+			});
+	    	defered.resolve(thisController.experiments);
+	    }, function(rest) {
+	    });
+		return defered.promise;
 	};
 	
 	
@@ -140,21 +144,21 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 	
 	// save experiment for "recent experiments"
 	this.pushExperiment = function(experiment){
-		var found=false;
-		if (this.recentExperiments===undefined) {
+		var found = false;
+		if (this.recentExperiments === undefined) {
 			this.recentExperiments=[];
 		}
-		var tExperiment={"id":experiment.id,"number":experiment.number,"trname":experiment.trname,"name":experiment.name};
-		for (var i=0;i<this.recentExperiments.length;i++){
-			if (this.recentExperiments[i].id==tExperiment.id) {
-				found=true;	
+		var tExperiment = {"id":experiment.id,"number":experiment.number,"namef":experiment.namef,"name":experiment.name};
+		for (var i = 0; (i < this.recentExperiments.length && !found); i++){
+			if (this.recentExperiments[i].id == tExperiment.id) {
+				found = true;	
 			}
 		}
 		if (!found) {
 			this.recentExperiments.push(tExperiment);
 		}
-		if (this.recentExperiments.length>20){
-			this.recentExperiments.slice(0,this.recentExperiments.length-20);
+		if (this.recentExperiments.length > 20){
+			this.recentExperiments.slice(0,this.recentExperiments.length - 20);
 		}
 	};
 	

@@ -18,6 +18,9 @@ function searchController(restfactory,$state,$stateParams,$translate,
 	
 	this.pparameters = search.pparameters;
 	
+	this.poparameters = search.poparameters;
+
+	
 	
 	var allComparators = [{index:0,label:"<"},
 	                      {index:1,label:"<="},

@@ -3,22 +3,20 @@
 
 function oExpController(restfactory,$translate,$scope,$state,$stateParams,experimentService,experiments) {
 	
-	var thisController=this;
+	var thisController = this;
 
-	this.experiments=experiments;
+	this.experiments = experiments;
 	
 	this.strings = [];
-	
-	this.myName='Thorsten Rissom';
-	
+		
 	this.statusItems=[$translate.instant("planning phase"),$translate.instant("planned"),
 	                  $translate.instant("running"),$translate.instant("completed")]
 	
 
 	
 	this.setStatus=function(status,experiment){
-		experiment.status=status;
-		var promise = restfactory.GET("change-experiment-status?id="+experiment.id+"&status="+status)
+		experiment.status = status;
+		var promise = restfactory.GET("change-experiment-status?id=" + experiment.id + "&status=" + status)
 	    promise.then(function(rest) {
 	    }, function(rest) {
 	    	console.log("ERROR");
@@ -39,23 +37,20 @@ function oExpController(restfactory,$translate,$scope,$state,$stateParams,experi
 	};
 	
 	
-	
-	this.addExperiment=function(){
-		this.editmode=true;
+	this.cancelAdd = function(){
+		this.editmode = false;
 	};
 	
 	
 	
-	this.cancelAdd=function(){
-		this.editmode=false;
-	};
-	
-	
-	
-	this.newExperiment=function(){
-		var promise= experimentService.addExperiment();
-		promise.then(function(){reload();},function(){console.log("error");})
-		this.editmode=false;
+	this.newExperiment = function(){
+		var promise = experimentService.addExperiment();
+		promise.then(function(rest){ 
+				$state.go("experiment",{"experimentID":rest.data.id, "editmode" : "true"})
+			},function(){
+				console.log("error");
+			}
+		)
 	};
 	
 	
@@ -99,7 +94,7 @@ function oExpController(restfactory,$translate,$scope,$state,$stateParams,experi
 	
 	
 
-	 var reload=function() {
+	 var reload = function() {
 	 	var current = $state.current;
 	 	var params = angular.copy($stateParams);
 	 	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });

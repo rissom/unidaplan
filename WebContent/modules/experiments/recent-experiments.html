@@ -2,8 +2,12 @@
 	{{'Recently viewed Experiments'|translate }}
 </h3>
 
-<div ng-repeat="experiment in recentExperimentsCtrl.getRecentExperiments() | orderBy:'number'">  <!-- noch nach Typ sortieren!  -->
-	<button class="btn btn-default" ui-sref="experiment({experimentID:experiment.id})">
-				{{experiment.number}} {{experiment.trname}}
-	</button>
+<div ng-hide = "recentExperimentsCtrl.recentExperiments">-- {{'no recent experiments found' | translate}} --</div>
+
+<div ng-if = "recentExperimentsCtrl.recentExperiments">
+	<div ng-repeat = "experiment in recentExperimentsCtrl.recentExperiments | orderBy:'number'">  <!-- noch nach Typ sortieren!  -->
+		<button class="btn btn-default" ui-sref="experiment({experimentID:experiment.id})">
+					{{experiment.number}} {{experiment.namef()}}
+		</button>
+	</div>
 </div>	

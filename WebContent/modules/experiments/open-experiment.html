@@ -21,11 +21,11 @@
 				<a ui-sref="experiment({experimentID:experiment.id,editmode:'false'})">{{experiment.namef()}}</a>
 				</td>
 				<td>
-	  				<div class="dropdown" uib-dropdown on-toggle="toggled(open)">
+	  				<div class = "dropdown" uib-dropdown on-toggle = "toggled(open)">
 					      <a class="dropdown-toggle" uib-dropdown-toggle>
 				  			{{oexpCtrl.getStatus(experiment)}}
 					      </a>
-					      <ul class="dropdown-menu">
+					      <ul class = "dropdown-menu">
 					        <li ng-repeat="choice in oexpCtrl.statusItems">
 					          <a  ng-click="oexpCtrl.setStatus($index,experiment)">{{choice}}</a>
 					        </li>
@@ -38,23 +38,9 @@
 					</button>
 				</td>
 			</tr>  <!-- ends ng-repeat -->
-			<tr ng-show="oexpCtrl.editmode"><td><input 						   
-				type="text"
-			    ng-model="oexpCtrl.newNameL1"> </td><td><input 						   
-				type="text"
-			    ng-model="oexpCtrl.newNameL2"> </td><td><input 						   
-				type="text"
-			    ng-model="oexpCtrl.newNameL3"> </td><td></td></tr>
 			<tr><td></td><td></td><td></td><td></td></tr></tbody>
 		</table>
 
-		<button type="button" 
-				class="btn btn-default"
-				ng-hide="oexpCtrl.editmode"
-				ng-click="oexpCtrl.addExperiment()" >
-			{{'Add Experiment'|translate}}
-		</button>
-		
 		<button type="button" 
 				class="btn btn-default"
 				ng-show="oexpCtrl.editmode"
@@ -123,3 +109,12 @@
 			</tr>
 			<tr><td></td><td></td><td></td><td></td><td></td></tr></tbody>
 		</table>
+		
+		
+		<button type = "button" 
+				class = "btn btn-default"
+				ng-hide = "oexpCtrl.editmode"
+				ng-click = "oexpCtrl.newExperiment()" >
+			{{'Add Experiment'|translate}}
+		</button>
+		

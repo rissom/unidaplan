@@ -22,10 +22,10 @@ public class AddProcessToExperiment extends HttpServlet {
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
 		request.setCharacterEncoding("utf-8");
-	    int experimentID=0;
-	    int processTypeID=0;
+	    int experimentID = 0;
+	    int processTypeID = 0;
 	    PreparedStatement pStmt = null;
-	   	String privilege="n";
+	   	String privilege = "n";
 
 	  	  	try{
 	  	  		experimentID=Integer.parseInt(request.getParameter("experimentid")); 
@@ -34,11 +34,11 @@ public class AddProcessToExperiment extends HttpServlet {
 	  	  	catch (Exception e1) {
 	  	  		System.err.print("AddProcessToExperiment: Parameters missing!");
 	  	  	}
-	    String status="ok";
+	    String status = "ok";
 
 	    try {
 		    // Connect to database	    
-		 	DBconnection dBconn=new DBconnection();
+		 	DBconnection dBconn = new DBconnection();
 		    dBconn.startDB();
 		    
 		    // Check privileges
@@ -46,7 +46,6 @@ public class AddProcessToExperiment extends HttpServlet {
 					"SELECT getExperimentRights(vuserid:=?,vexperimentid:=?)");
 			pStmt.setInt(1,userID);
 			pStmt.setInt(2,experimentID);
-			System.out.println(pStmt.toString());
 			privilege = dBconn.getSingleStringValue(pStmt);
 			pStmt.close();
 			

@@ -44,36 +44,39 @@
 
 
 <!-- Parameters -->
-<h4 ng-show="experimentCtrl.experiment.parameters">{{'Parameters'|translate}}</h4>
+<h4 ng-show = "experimentCtrl.experiment.parameters && !experimentCtrl.editmode">{{'Parameters'|translate}}</h4>
 
 <paramfield 
-			ng-hide="experimentCtrl.editmode"
-			parameters="experimentCtrl.experiment.parameters"
-			editable="experimentCtrl.experiment.editable"
-			pupdate="experimentCtrl.submitParameter(parameter)">
+		ng-hide = "experimentCtrl.editmode"
+		parameters = "experimentCtrl.experiment.parameters"
+		editable = "experimentCtrl.experiment.editable"
+		pupdate = "experimentCtrl.submitParameter(parameter)">
 </paramfield>
 
-<table class="table" ng-if="experimentCtrl.editmode">
-	<tr ng-repeat="parameter in experimentCtrl.experiment.parameters 
+<table class = "table" ng-if = "experimentCtrl.editmode">
+	<tr>
+		<td>hallo</td>
+	</tr>
+	<tr ng-repeat = "parameter in experimentCtrl.experiment.parameters 
 				   | orderBy : experimentCtrl.experiment.parameters.pos" 
-	ng-dblclick="parameter.editing=true; parameter.datatype==='date+time' ? parameter.newDate=parameter.date : parameter.newValue=parameter.value">
+		ng-dblclick = "parameter.editing = true; parameter.datatype === 'date+time' 
+						? parameter.newDate = parameter.date : parameter.newValue = parameter.value">
 		<td>
-			<button type="button" class="btn btn-default btn-xs" 
-				ng-click="experimentCtrl.deleteParameter(parameter)"
-				ng-show="experimentCtrl.editmode">
-				<span class="glyphicon glyphicon-remove"></span>
+			<button type = "button" class = "btn btn-default btn-xs" 
+				ng-click = "experimentCtrl.deleteParameter(parameter)"
+				ng-show = "experimentCtrl.editmode">
+				<span class = "glyphicon glyphicon-remove"></span>
 			</button>
 		    {{parameter.namef()}} :
 		</td>
 		<td >
-			<tparameter parameter = "parameter" pupdate="experimentCtrl.submitParameter(parameter)" ></tparameter>
+			<tparameter parameter = "parameter" pupdate="experimentCtrl.submitParameter(parameter)"></tparameter>
 		</td>
 	</tr>
 	<tr ng-hide="experimentCtrl.editmode">
 		<td></td>
 		<td></td>
 	</tr>
-	 
 </table>
 
 <button type="button" 

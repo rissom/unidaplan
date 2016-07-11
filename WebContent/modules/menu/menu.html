@@ -47,9 +47,9 @@
 					{{'Experiment'|translate}}
 				</a>
 				<ul class="dropdown-menu" role="menu">
-					<li><a ui-sref="error">{{'New Experiment'|translate}} </a></li>
-					<li><a ui-sref="openExperiment"> {{'Open Experiments'|translate}} </a></li>
-					<li><a ui-sref="recentExperiments"> {{'Recent Experiments'|translate}} </a></li>
+					<li><a ng-click = "menuCtrl.newExperiment()">{{'New Experiment'|translate}} </a></li>
+					<li><a ui-sref = "openExperiment"> {{'Open Experiments'|translate}} </a></li>
+					<li><a ui-sref = "recentExperiments"> {{'Recent Experiments'|translate}} </a></li>
 				</ul>
 			</li>
 			<li class="dropdown" uib-dropdown="" ng-show="$root.userid">
@@ -66,12 +66,12 @@
 					{{'Admin.'|translate}} 
 				</a>
 				<ul class="dropdown-menu" role="menu">
-					<li><a ui-sref="users"> {{'Users'|translate}} </a></li>
-					<li><a ui-sref="groups"> {{'Groups'|translate}} </a></li>
-					<li><a ui-sref="adminSamples"> {{'Sampletypes'|translate}} </a></li>
-					<li><a ui-sref="adminProcesses"> {{'Processtypes'|translate}} </a></li>
-					<li><a ui-sref="parameter"> {{'Parameters'|translate}} </a></li>
-					<li><a ui-sref="import"> {{'Import'|translate}} </a></li>
+					<li><a ui-sref = "users"> {{'Users'|translate}} </a></li>
+					<li><a ui-sref = "groups"> {{'Groups'|translate}} </a></li>
+					<li><a ui-sref = "adminSamples"> {{'Sampletypes'|translate}} </a></li>
+					<li><a ui-sref = "adminProcesses"> {{'Processtypes'|translate}} </a></li>
+					<li><a ui-sref = "parameter"> {{'Parameters'|translate}} </a></li>
+					<li><a ui-sref = "import"> {{'Import'|translate}} </a></li>
 				</ul>
 			</li>
 			<li class="dropdown" uib-dropdown="" ng-show="$root.userid">
@@ -84,9 +84,9 @@
 					</span>
 				</a>
 				<ul class="dropdown-menu" role="menu">
-					<li><a ng-click="menuCtrl.setLanguage('en')">EN</a></li>
-					<li><a ng-click="menuCtrl.setLanguage('de')">DE</a></li>
-					<li><a ng-click="menuCtrl.logout()"> {{'Logout'|translate}} </a></li>
+					<li><a ng-click = "menuCtrl.setLanguage('en')">EN</a></li>
+					<li><a ng-click = "menuCtrl.setLanguage('de')">DE</a></li>
+					<li><a ng-click = "menuCtrl.logout()"> {{'Logout'|translate}} </a></li>
 				</ul>
 			</li>
 

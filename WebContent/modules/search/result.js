@@ -35,12 +35,12 @@ function resultController(restfactory,result,$state,$translate,$stateParams,avSa
 		}
 		
 		// create a 2 dimensional array for HTML-Table 
-		var processedArray=[];
-		var line=0;
+		var processedArray = [];
+		var line = 0;
 		
-		for (var i=0; i<result.samples.length; i++){
+		for (var i = 0; i < result.samples.length; i++){
 			var sample=result.samples[i];
-			for (var j=0; j<result.samples[i].processes.length;j++){
+			for (var j = 0; j < result.samples[i].processes.length; j++){
 				processedArray.push([{
 						id:sample.sampleid,
 						name:sample.samplename,
@@ -61,66 +61,66 @@ function resultController(restfactory,result,$state,$translate,$stateParams,avSa
 	
 	
     this.saveCSV = function(){   	
-    	var csvData=[];
-    	var line="";
-    	if (result.type==1 || result.type==4) {
-			line+="Objekt;";
+    	var csvData = [];
+    	var line = "";
+    	if (result.type == 1 || result.type == 4 || result.type ==3 ) {
+			line += $translate.instant("Sample") + ";";
 		}
-		if (result.type==2) {
-			line+="Eigenschaft;";
+		if (result.type == 2 || result.type == 3) {
+			line += $translate.instant("process") + ";";
 		}
-    	var sep="";
+    	var sep = "";
     	angular.forEach (result.headings, function(col){
-    		line+=sep;
-    		line+=col.namef();
+    		line += sep;
+    		line += col.namef();
     		if (col.unitf){ 
-    			line+="("+col.unitf()+")";
+    			line += "(" + col.unitf() + ")";
     		}
     		sep=";";
     	});
-    	line+="\n";
+    	line += "\n";
     	csvData.push(line);
     	
-    	if (result.type<4){
+    	if (result.type < 4){
   
 	    	angular.forEach (result.data,function(row){
 	    		line="";
-	    		if (result.type==1) {
-	    			line+=thisController.getType(row.type);
+	    		if (result.type == 1 || result.type == 3) {
+	    			line += thisController.getType(row.type);
 	    		}
-	    		if (result.type==2) {
-	    			line+=thisController.getProcessType(row.type);
+	    		if (result.type == 2 || result.type == 3) {
+	    			line += thisController.getProcessType(row.type);
 	    		}
-				line+=row.name;
+				line += row.name;
 				angular.forEach(row.rowdata, function(col){
-					line+=";"
-					if (col!=null){
-						line+=col;
+					line += ";"
+					if (col != null){
+						line += col;
 					}
 				});
 	// 			code in result.html: 
 	//			<td ng-repeat="col in row.rowdata track by $index">
 	//			 	<tparameter parameter="col"></tparameter>
-	        	line+="\n";
+	        	line += "\n";
 	    		csvData.push(line)
 	    	});
     	} else{
-    		line="";
+    		line = "";
     		var lastObjectName;
-    		for (var i=0;i<thisController.processedArray.length;i++){
+    		for (var i = 0; i < thisController.processedArray.length; i++){
     			if (thisController.processedArray[i][0].name){
-    				line=thisController.processedArray[i][0].name+";";
-    				lastObjectName=thisController.processedArray[i][0].name;
+    				line = thisController.processedArray[i][0].name + ";";
+    				lastObjectName = thisController.processedArray[i][0].name;
     			} else{
-    				line=lastObjectName;
+    				line = lastObjectName;
     			}
-    			for (var j=1;j<thisController.processedArray[i].length;j++){
+    			for (var j = 1; j < thisController.processedArray[i].length; j++){
     				if (thisController.processedArray[i][j]){
-    					line+=thisController.processedArray[i][j];
+    					line += thisController.processedArray[i][j];
     				}
-    				line+=";";
+    				line += ";";
     			}
-    			line+="\n";
+    			line += "\n";
     			csvData.push(line);
     		}
     	}
@@ -147,10 +147,9 @@ function resultController(restfactory,result,$state,$translate,$stateParams,avSa
     		thisController.result.data.sort(function(a,b){return thisController.currentSortDirection*(a.rowdata[index]>b.rowdata[index]?1:-1)});
     	}else{
     		thisController.processedArray.sort(function(a,b){
-    			return thisController.currentSortDirection*((a[index]<b[index])?-1:1)});
+    			return thisController.currentSortDirection*((a[index] < b[index]) ? -1 : 1)});
     	}
-    	
-    }
+    };
     
     
     // activate function:

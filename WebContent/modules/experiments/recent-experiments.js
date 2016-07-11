@@ -1,15 +1,13 @@
 (function(){
 'use strict';
 
-var recentExperimentsController = function(experimentService) {
-			
-	this.getRecentExperiments=function(){
-		return experimentService.recentExperiments;
-	}
+var recentExperimentsController = function(recentExperiments) {
+		
+	this.recentExperiments = recentExperiments;
 
 };
     
         
-angular.module('unidaplan').controller('recentExperimentsController',['experimentService',recentExperimentsController]);
+angular.module('unidaplan').controller('recentExperimentsController',['recentExperiments',recentExperimentsController]);
 
 })();

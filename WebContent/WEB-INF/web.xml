@@ -152,6 +152,17 @@
   </servlet-mapping>
   
   <servlet>
+    <description>Add an experiment</description>
+    <display-name>AddExperiment</display-name>
+    <servlet-name>AddExperiment</servlet-name>
+    <servlet-class>unidaplan.AddExperiment</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddExperiment</servlet-name>
+    <url-pattern>/add-experiment</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
     <description>AvailableProcesstypes</description>
     <display-name>AvailableProcesstypes</display-name>
     <servlet-name>AvailableProcesstypes</servlet-name>
@@ -1038,7 +1049,18 @@
     <url-pattern>/reorder-possible-values</url-pattern>
   </servlet-mapping>
   
-    <servlet>
+  <servlet>
+    <description>Returns data for searches of type 3 (process related sample parameter)</description>
+    <display-name>ResultType3</display-name>
+    <servlet-name>ResultType3</servlet-name>
+    <servlet-class>unidaplan.ResultType3</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ResultType3</servlet-name>
+    <url-pattern>/result-type3</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
     <description>Returns data for searches of type 4 (sample+process)</description>
     <display-name>ResultType4</display-name>
     <servlet-name>ResultType4</servlet-name>

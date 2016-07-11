@@ -18,11 +18,11 @@ public class AddExperimentParameter extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {		
 	Authentificator authentificator = new Authentificator();
-	int userID=authentificator.GetUserID(request,response);
-	String status="ok";
+	int userID = authentificator.GetUserID(request,response);
+	String status = "ok";
     request.setCharacterEncoding("utf-8");
     String in = request.getReader().readLine();
-    JSONObject  jsonIn = null;
+    JSONObject jsonIn = null;
     PreparedStatement pStmt = null;
 	String privilege = "n";
 
@@ -36,7 +36,7 @@ public class AddExperimentParameter extends HttpServlet {
 	    
 		// check privileges
 	    pStmt = dBconn.conn.prepareStatement( 	
-				"SELECT getExperimentRights(vuserid:=?,vexperimentid:=?)");
+				"SELECT getExperimentRights(vuserid := ?,vexperimentid := ?)");
 		pStmt.setInt(1,userID);
 		pStmt.setInt(2,jsonIn.getInt("experimentid"));
 		privilege = dBconn.getSingleStringValue(pStmt);
@@ -45,18 +45,20 @@ public class AddExperimentParameter extends HttpServlet {
 		
 		if (privilege.equals("w")){
 	   
-			pStmt=dBconn.conn.prepareStatement(
-					"INSERT INTO expp_param (exp_plan_id,hidden,pos,definition,StringKeyName,lastUser) "
-				   +"VALUES (?,false,( "
-				   +"SELECT max(pos)+1 FROM expp_param WHERE exp_plan_id=?),?,("
-				   +"SELECT stringkeyname FROM paramdef WHERE ID=?),?)");
-			JSONArray parameters=jsonIn.getJSONArray("parameters");
-			for (int i=0;i<parameters.length();i++){
+			pStmt = dBconn.conn.prepareStatement(
+					 "INSERT INTO expp_param (exp_plan_id,hidden,pos,definition,lastUser) "
+				   + "VALUES ("
+				   + "	?,"
+				   + "	false,"
+				   + "	COALESCE ((SELECT max(pos) + 1 FROM expp_param WHERE exp_plan_id = ?), 1),"
+				   + "	?,"
+				   + "	?)");
+			JSONArray parameters = jsonIn.getJSONArray("parameters");
+			for (int i = 0; i < parameters.length(); i++){
 				pStmt.setInt(1, jsonIn.getInt("experimentid"));  // exp_plan:_id
 				pStmt.setInt(2, jsonIn.getInt("experimentid"));  // exp_plan:_id
 				pStmt.setInt(3, parameters.getInt(i));  // definition
-				pStmt.setInt(4, parameters.getInt(i));  // StringKeyName from definition
-				pStmt.setInt(5, userID);						 // lastUser
+				pStmt.setInt(4, userID);						 // lastUser
 				pStmt.addBatch();
 			}
 			pStmt.executeBatch();
@@ -64,9 +66,10 @@ public class AddExperimentParameter extends HttpServlet {
 			response.setStatus(401);
 		}
 	} catch (SQLException e) {
-		System.err.println("AddParameter: Problems with SQL query");
+		System.err.println("AddExperimentParameter: Problems with SQL query");
+		e.printStackTrace();
 	} catch (Exception e) {
-		System.err.println("AddParameter: Strange Problems");
+		System.err.println("AddExperimentParameter: Strange Problems");
 	}	
 			
 	// tell client that everything is fine

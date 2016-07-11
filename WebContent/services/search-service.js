@@ -273,30 +273,50 @@ var searchService = function (restfactory,$q,$translate,key2string,languages) {
 	
 	this.startSearch = function (searchparameters){
 		var defered=$q.defer();
-		if (searchparameters.searchtype<4){
+		if (searchparameters.searchtype < 3){
 			var promise = restfactory.POST("result",searchparameters);
 			promise.then(function(rest) {
 				var result = rest.data;
 				var strings = rest.data.strings;
 				angular.forEach(result.headings,function(heading){
-					heading.namef=function(){
+					heading.namef = function(){
 						return key2string.key2string(heading.stringkeyname,strings);
 					}
 					if (heading.stringkeyunit){
-						heading.unitf=function(){
+						heading.unitf = function(){
 							return key2string.key2string(heading.stringkeyunit,strings);
 						}
 					}
 				});
 				defered.resolve(result);
 			});
-		} else {
+		}
+		if (searchparameters.searchtype == 3){
+			var promise = restfactory.POST("result-type3",searchparameters);
+			promise.then(function(rest) {
+				var result = rest.data;
+				var strings = rest.data.strings;
+				angular.forEach(result.headings,function(heading){
+					heading.namef = function(){
+						return key2string.key2string(heading.stringkeyname,strings);
+					}
+					if (heading.stringkeyunit){
+						heading.unitf = function(){
+							return key2string.key2string(heading.stringkeyunit,strings);
+						}
+					}
+				});
+				delete result.strings;
+				defered.resolve(result);
+			});
+		}
+		if (searchparameters.searchtype == 4){
 			var promise = restfactory.POST("result-type4",searchparameters);
 			promise.then(function(rest) {
 				var result = rest.data;
 				var strings = rest.data.strings;
 				angular.forEach(result.headings,function(heading){
-					heading.namef=function(){
+					heading.namef = function(){
 						return key2string.key2string(heading.stringkeyname,strings);
 					}
 					if (heading.stringkeyunit){

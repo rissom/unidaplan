@@ -510,7 +510,13 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
         .state('recentExperiments', {
 			url: '/recent-experiments',
 			templateUrl: 'modules/experiments/recent-experiments.html',
-		    controller: 'recentExperimentsController as recentExperimentsCtrl'
+		    controller: 'recentExperimentsController as recentExperimentsCtrl',
+		    resolve: {
+		    	recentExperiments : 
+		    		function(experimentService){
+		    			return experimentService.recentExperiments;
+		    		}
+		    }
     	})
     	
     	

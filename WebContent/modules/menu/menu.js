@@ -1,11 +1,12 @@
 (function(){
 'use strict';
 
-function menuf(searchService,restfactory,$translate,$rootScope,$state,userService) {
+function menuf(experimentService,searchService,restfactory,$translate,
+						$rootScope,$state,userService) {
 
-	var thisController=this;
+	var thisController = this;
 		
-	this.navCollapsed=true;
+	this.navCollapsed = true;
 	
 	
 	
@@ -28,6 +29,19 @@ function menuf(searchService,restfactory,$translate,$rootScope,$state,userServic
 		function(){
 			console.log("Error creating new Search");
 		});
+	};
+	
+	
+	
+	this.newExperiment = function(){
+		var promise = experimentService.addExperiment();
+		promise.then(function(rest){ 
+				console.log("rest",rest)
+				$state.go("experiment",{"experimentID":rest.data.id, "editmode" : "true"})
+			},function(){
+				console.log("error");
+			}
+		)
 	};
 	
 	
@@ -56,7 +70,7 @@ function menuf(searchService,restfactory,$translate,$rootScope,$state,userServic
 		promise.then(function(){
 				delete $rootScope.username;
 				window.localStorage.removeItem("username");
-				$rootScope.admin=false;
+				$rootScope.admin = false;
 		    	window.localStorage.removeItem("admin");
 				delete $rootScope.userid;
 		    	window.localStorage.removeItem("userid");
@@ -70,6 +84,7 @@ function menuf(searchService,restfactory,$translate,$rootScope,$state,userServic
 	
 }
 
-angular.module('unidaplan').controller('menu',['searchService','restfactory','$translate','$rootScope','$state','userService',menuf]);
+angular.module('unidaplan').controller('menu',['experimentService',
+    'searchService','restfactory','$translate','$rootScope','$state','userService',menuf]);
   
 })();

@@ -12,7 +12,7 @@
 
 
 <table class="table">
-	<thead class=parametertablehead>
+	<thead class = parametertablehead>
 		<tr>
 			<td>
 				Parameter
@@ -30,30 +30,45 @@
 			<div>{{parameter.namef()}}</div>
 		</td>
 		<td>
-			<select class="form-control input-sm"
-				style="width:78px;"	
-				ng-model="parameter.comparison"
-				ng-options="comparator.index as comparator.label for comparator in searchCtrl.comparators[parameter.datatype]"> 
+			<select class = "form-control input-sm"
+				style = "width:78px;"	
+				ng-model = "parameter.comparison"
+				ng-options = "comparator.index as comparator.label for comparator in searchCtrl.comparators[parameter.datatype]"> 
 			</select>
 		</td>
 		<td>
-			<input ng-model="parameter.value">
+			<input ng-model = "parameter.value">
 		</td>
 	</tr>
-	<tr  ng-repeat="parameter in searchCtrl.pparameters">
+	<tr  ng-repeat = "parameter in searchCtrl.pparameters">
 		<td>
 			<div>{{parameter.namef()}}</div>
 		</td>
 		<td>
-			<select class="form-control input-sm"
-				style="width:78px;"	
-				ng-model="parameter.comparison"
-				ng-options="comparator.index as comparator.label for comparator in searchCtrl.comparators[parameter.datatype]"> 
+			<select class = "form-control input-sm"
+				style = "width:78px;"	
+				ng-model = "parameter.comparison"
+				ng-options = "comparator.index as comparator.label for comparator in searchCtrl.comparators[parameter.datatype]"> 
 			</select>
 		</td>
 		<td>
-			<input ng-model="parameter.value"
-			 ng-keyup="searchCtrl.keyUp($event.keyCode)">
+			<input ng-model = "parameter.value"
+			 ng-keyup = "searchCtrl.keyUp($event.keyCode)">
+		</td>
+	</tr>
+		<tr  ng-repeat="parameter in searchCtrl.poparameters">
+		<td>
+			<div>{{parameter.namef()}}</div>
+		</td>
+		<td>
+			<select class = "form-control input-sm"
+				style = "width:78px;"	
+				ng-model = "parameter.comparison"
+				ng-options = "comparator.index as comparator.label for comparator in searchCtrl.comparators[parameter.datatype]"> 
+			</select>
+		</td>
+		<td>
+			<input ng-model = "parameter.value">
 		</td>
 	</tr>
 </table>

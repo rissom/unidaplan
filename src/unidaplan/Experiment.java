@@ -69,8 +69,8 @@ public class Experiment extends HttpServlet {
 						+ "  experiments.id," + "  users.fullname as creator, "
 						+ "  experiments.name," + "  status, "
 						+ "  experiments.number " + "FROM experiments "
-						+ "JOIN users ON (users.id=experiments.Creator) "
-						+ "WHERE experiments.id=?");
+						+ "JOIN users ON (users.id = experiments.Creator) "
+						+ "WHERE experiments.id = ?");
 				pStmt.setInt(1, id);
 				experiment = dBconn.jsonObjectFromPreparedStmt(pStmt);
 				pStmt.close();
@@ -85,17 +85,17 @@ public class Experiment extends HttpServlet {
 			if (experiment.length() > 0) {
 				try {
 					// Get the default processes for this experiment
-					pStmt = dBconn.conn
-							.prepareStatement("SELECT "
-									+ "exp_plan_processes.id, "
-									+ "processrecipes.name AS recipename, "
-									+ "exp_plan_processes.position AS position, "
-									+ "ptid AS processtype, "
-									+ "recipe, "
-									+ "note "
+					pStmt = dBconn.conn.prepareStatement(
+									  "SELECT "
+									+ "  exp_plan_processes.id, "
+									+ "  processrecipes.name AS recipename, "
+									+ "  exp_plan_processes.position AS position, "
+									+ "  ptid AS processtype, "
+									+ "  recipe, "
+									+ "  note "
 									+ "FROM exp_plan_processes "
-									+ "LEFT JOIN processrecipes ON (processrecipes.id=exp_plan_processes.recipe) "
-									+ "WHERE expp_id=? ORDER BY exp_plan_processes.position");
+									+ "LEFT JOIN processrecipes ON (processrecipes.id = exp_plan_processes.recipe) "
+									+ "WHERE expp_id = ? ORDER BY exp_plan_processes.position");
 					pStmt.setInt(1, id);
 					processes = dBconn.jsonArrayFromPreparedStmt(pStmt);
 					if (processes.length() > 0) {
@@ -116,12 +116,17 @@ public class Experiment extends HttpServlet {
 					
 	
 					// Get the associated samples and their associated processes
-					pStmt = dBconn.conn
-							.prepareStatement("SELECT expp_samples.id,expp_samples.position AS sampleposition,expp_samples.sample AS sampleid, "
-									+ "samplenames.typeid, samplenames.name, note "
+					pStmt = dBconn.conn.prepareStatement(
+									  "SELECT "
+									+ "  expp_samples.id,"
+									+ "  expp_samples.position AS sampleposition,"
+									+ "  expp_samples.sample AS sampleid, "
+									+ "  samplenames.typeid, "
+									+ "  samplenames.name, "
+									+ "  note "
 									+ "FROM expp_samples "
-									+ "JOIN samplenames ON expp_samples.sample=samplenames.id "
-									+ "WHERE expp_samples.expp_id=? ORDER BY sampleposition");
+									+ "JOIN samplenames ON expp_samples.sample = samplenames.id "
+									+ "WHERE expp_samples.expp_id = ? ORDER BY sampleposition");
 					pStmt.setInt(1, id);
 					samples = dBconn.jsonArrayFromPreparedStmt(pStmt);
 					if (samples.length() > 0) {
@@ -133,14 +138,19 @@ public class Experiment extends HttpServlet {
 							}
 	
 							// get planned Processes for a sample
-							pStmt = dBconn.conn
-									.prepareStatement("SELECT eps.id as process_step_id, "
-											+ "epp.position AS processposition, epp.ptid AS processtype, eps.recipe, eps.note, "
-											+ "processrecipes.name AS recipename, epp.id AS eppprocess "
+							pStmt = dBconn.conn.prepareStatement(
+											  "SELECT "
+											+ "  eps.id as process_step_id, "
+											+ "  epp.position AS processposition, "
+											+ "  epp.ptid AS processtype, "
+											+ "  eps.recipe, "
+											+ "  eps.note, "
+											+ "  processrecipes.name AS recipename, "
+											+ "  epp.id AS eppprocess "
 											+ "FROM exp_plan_steps eps "
-											+ "JOIN exp_plan_processes epp ON (epp.id=eps.exp_plan_pr) "
-											+ "LEFT JOIN processrecipes ON (processrecipes.id=eps.recipe) "
-											+ "WHERE eps.expp_s_id=? "
+											+ "JOIN exp_plan_processes epp ON (epp.id = eps.exp_plan_pr) "
+											+ "LEFT JOIN processrecipes ON (processrecipes.id = eps.recipe) "
+											+ "WHERE eps.expp_s_id = ? "
 											+ "ORDER BY processposition");
 							pStmt.setInt(1, samples.getJSONObject(i).getInt("id"));
 							JSONArray pprocesses = dBconn
@@ -164,11 +174,11 @@ public class Experiment extends HttpServlet {
 							pStmt = dBconn.conn
 									.prepareStatement(
 											  "SELECT "
-											+ "samplesinprocess.processid, "
-											+ "processes.processtypesid AS processtype, "
-											+ "ptd.data->>'date' AS date, "
-											+ "(n.data->>'value')::integer AS number, "
-											+ "(n2.data->>'value')::integer AS status "
+											+ "  samplesinprocess.processid, "
+											+ "  processes.processtypesid AS processtype, "
+											+ "  ptd.data->>'date' AS date, "
+											+ "  (n.data->>'value')::integer AS number, "
+											+ "  (n2.data->>'value')::integer AS status "
 											+ "FROM samplesinprocess "
 											+ "JOIN processes ON (processes.id = samplesinprocess.processid) "
 											+ "JOIN processtypes ON (processes.processtypesid = processtypes.id) "
@@ -178,14 +188,11 @@ public class Experiment extends HttpServlet {
 											+ "JOIN processdata ptd ON (ptd.processID = samplesinprocess.processid AND ptd.parameterID = pp.id) "
 											+ "JOIN processdata n ON (n.ProcessID = samplesinprocess.processid AND n.parameterID = pp2.id) "
 											+ "JOIN processdata n2 ON (n2.ProcessID = samplesinprocess.processid AND n2.parameterID = pp3.id) "
-											+ "WHERE sampleid=?");
-							pStmt.setInt(1,
-									samples.getJSONObject(i).getInt("sampleid"));
-							JSONArray fprocesses = dBconn
-									.jsonArrayFromPreparedStmt(pStmt);
+											+ "WHERE sampleid = ?");
+							pStmt.setInt(1,samples.getJSONObject(i).getInt("sampleid"));
+							JSONArray fprocesses = dBconn.jsonArrayFromPreparedStmt(pStmt);
 							if (fprocesses.length() > 0) {
-								samples.getJSONObject(i).put("fprocesses",
-										fprocesses);
+								samples.getJSONObject(i).put("fprocesses",fprocesses);
 							}
 						}
 						experiment.put("samples", samples);
@@ -203,22 +210,19 @@ public class Experiment extends HttpServlet {
 					stringkeys.add(Integer.toString(experiment.getInt("name")));
 	
 					// Query the parameters
-					pStmt = dBconn.conn
-							.prepareStatement(
+					pStmt = dBconn.conn.prepareStatement(
 									  "SELECT "
 									+ "  expp_param.id, "
 									+ "  expp_param.definition, "
 									+ "  expp_param.pos, "
-									+ "  expp_param.stringkeyname, "
+									+ "  COALESCE (expp_param.stringkeyname, paramdef.stringkeyname) AS stringkeyname, "
 									+ "  ed.data, "
-									+ "  st.description, "
 									+ "  paramdef.datatype, "
 									+ "  paramdef.stringkeyunit AS unit "
 									+ "FROM expp_param "
 									+ "JOIN paramdef ON (paramdef.id=expp_param.definition) "
 									+ "LEFT JOIN experimentdata ed ON  "
 									+ "(ed.experimentid = expp_param.exp_plan_id AND ed.parameterid = expp_param.id ) "
-									+ "JOIN String_key_table st ON st.id = expp_param.stringkeyname "
 									+ "WHERE expp_param.exp_plan_id=? AND hidden=false "
 									+ "ORDER BY pos ");
 					pStmt.setInt(1, id);

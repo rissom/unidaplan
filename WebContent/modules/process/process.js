@@ -34,8 +34,12 @@ function process($state,$stateParams,$translate,avSampleTypeService,types,$uibMo
 	for (var i = 0; i<this.process.samples.length; i++){
 		for (var j = 0; j<this.process.samples[i].parameters.length; j++){
 			this.process.samples[i].parameters[j].opid = this.process.samples[i].opid
-			this.process.samples[i].parameters[j].unit = this.process.fields[j].unit;
-			this.process.samples[i].parameters[j].unitf = this.process.fields[j].unitf;
+			if (typeof(this.process.samples[i].parameters[j].unit)!="undefined"){
+				this.process.samples[i].parameters[j].unit = this.process.fields[j].unit;
+			}
+			if (typeof(this.process.samples[i].parameters[j].unitf)!="undefined"){
+				this.process.samples[i].parameters[j].unitf = this.process.fields[j].unitf;
+			}
 		}
 	}
   

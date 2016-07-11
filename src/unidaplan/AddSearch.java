@@ -48,10 +48,10 @@ import org.json.JSONObject;
 				
 			
 				if (jsonIn.has("name")){
-					JSONObject name=jsonIn.getJSONObject("name");
+					JSONObject name = jsonIn.getJSONObject("name");
 					String [] names = JSONObject.getNames(name);
 					stringKeyName=dBconn.createNewStringKey(name.getString(names[0]));
-					for (int i=0; i<names.length; i++){
+					for (int i = 0; i < names.length; i++){
 						dBconn.addString(stringKeyName,names[i],name.getString(names[i]));
 					}
 				}else{
@@ -68,7 +68,7 @@ import org.json.JSONObject;
 				   +"RETURNING ID");
 		   	pStmt.setInt(1, stringKeyName);
 		   	pStmt.setInt(2, userID);
-			searchID=dBconn.getSingleIntValue(pStmt);
+			searchID = dBconn.getSingleIntValue(pStmt);
 
 		} catch (SQLException e) {
 			System.err.println("AddSearch: Problems with SQL query");
