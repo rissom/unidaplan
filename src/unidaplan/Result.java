@@ -108,29 +108,40 @@ import org.json.JSONObject;
 			type=search.getInt("type");
 			switch (type){
 				case 1:   // sample search
-					query = "SELECT otparameter AS pid, comparison, value, "
-					  		 +"COALESCE(ot_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname, \n"
-							 +"paramdef.datatype "
-							 +"FROM searchobject "
-							 +"JOIN ot_parameters ON (ot_parameters.id=otparameter) "
-							 +"JOIN paramdef ON (paramdef.id=ot_parameters.definition) "
-							 +"WHERE search=?";
+					query =   "SELECT "
+							+ "  otparameter AS pid, "
+							+ "  comparison, "
+							+ "  value, "
+					  		+ "  COALESCE(ot_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname, \n"
+							+ "  paramdef.datatype "
+							+ "FROM searchobject "
+							+ "JOIN ot_parameters ON (ot_parameters.id=otparameter) "
+							+ "JOIN paramdef ON (paramdef.id=ot_parameters.definition) "
+							+ "WHERE search=?";
 					break;
 				case 2:   // process search
-					query = "SELECT pparameter AS pid, comparison, value, "
-					  		 +"p_parameters.stringkeyname,p_parameters.stringkeyname,paramdef.datatype \n"
-							 +"FROM searchprocess "
-							 +"JOIN p_parameters ON (p_parameters.id=pparameter) "
-							 +"JOIN paramdef ON (paramdef.id=p_parameters.definition) "
-							 +"WHERE search=?";
+					query =   "SELECT "
+							+ "  pparameter AS pid, "
+							+ "  comparison, value, "
+					  		+ "  COALESCE (p_parameters.stringkeyname, paramdef.stringkeyname) AS stringkeyname,"
+					  		+ "  paramdef.datatype \n"
+							+ "FROM searchprocess "
+							+ "JOIN p_parameters ON (p_parameters.id=pparameter) "
+							+ "JOIN paramdef ON (paramdef.id=p_parameters.definition) "
+							+ "WHERE search=?";
 					break;
 				case 3:   // sample specific processparameter
-					query = "SELECT poparameter AS pid, poparameter, comparison, value, "
-					 		 +"po_parameters.stringkeyname,po_parameters.stringkeyname,paramdef.datatype \n"
-							 +"FROM searchpo "
-							 +"JOIN po_parameters ON (po_parameters.id=poparameter) "
-							 +"JOIN paramdef ON (paramdef.id=po_parameters.definition) "
-							 +"WHERE search=?";
+					query =   "SELECT "
+							+ "poparameter AS pid, "
+							+ "poparameter, "
+							+ "comparison, "
+							+ "value, "
+					 		+ "COALESCE (po_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname,"
+					 		+ "paramdef.datatype \n"
+							+ "FROM searchpo "
+							+ "JOIN po_parameters ON (po_parameters.id=poparameter) "
+							+ "JOIN paramdef ON (paramdef.id=po_parameters.definition) "
+							+ "WHERE search=?";
 					break;
 			}
 			pStmt = dBconn.conn.prepareStatement(query);
@@ -154,6 +165,14 @@ import org.json.JSONObject;
 				idString = "processid";
 				idString2 = "parameterid";
 				datatable = "processdata";
+				break;
+			case 3: // samplerelated in processparameter search
+				query = "SELECT processes.id, samplesinprocess.sampleid FROM processes "
+						+ "JOIN samplesinprocess ON samplesinprocess.processid = processes.id ";
+				tString = "processes";
+				idString = "processid";
+				idString2 = "parameterid";
+				datatable = "spdata";
 				break;
 			default : // sample specific processparameter
 				tString = "processes";
@@ -182,7 +201,7 @@ import org.json.JSONObject;
 				if (i>0) {
 					where += " " + operationString + " ";
 				}
-				where += "compare (val:= p"+i+".data, "
+				where += "compare (val:= p" + i + ".data, "
 						+ "datatype:='" + parameter.getString("datatype") + "', "
 						+ "comparator:=" + parameter.getInt("comparison") + ", "
 						+ "comval:='" + parameter.getString("value") + "') ";
@@ -190,12 +209,13 @@ import org.json.JSONObject;
 			query += " WHERE "+ where +" GROUP BY " + tString + ".id";
 //			System.out.println(query);
 			pStmt = dBconn.conn.prepareStatement(query);
+			System.out.println(query);
 			sResults = dBconn.jsonArrayFromPreparedStmt(pStmt);
 			pStmt.close();
 			
 			
-			JSONArray headings= null;
-			JSONArray data= null;
+			JSONArray headings = null;
+			JSONArray data = null;
 
 			
 			// get data for samples
