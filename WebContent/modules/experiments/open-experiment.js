@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-function oExpController(restfactory,$translate,$scope,$state,$stateParams,experimentService,experiments) {
+function oExpController(restfactory,$rootScope,$translate,$scope,$state,$stateParams,experimentService,experiments) {
 	
 	var thisController = this;
 
@@ -43,6 +43,19 @@ function oExpController(restfactory,$translate,$scope,$state,$stateParams,experi
 	
 	
 	
+	this.myExperiments = function() {  // returns all my experiments
+		var myExps = [];
+		var me = this.myName;
+		angular.forEach(this.experiments, function(anExp) {
+			if (anExp.creator == $rootScope.userid) {
+				myExps.push(anExp);
+			}
+		});
+		return myExps;
+	};
+	
+	
+	
 	this.newExperiment = function(){
 		var promise = experimentService.addExperiment();
 		promise.then(function(rest){ 
@@ -55,24 +68,11 @@ function oExpController(restfactory,$translate,$scope,$state,$stateParams,experi
 	
 	
 	
-	this.myexperiments = function() {  // returns all my experiments
-		var myExps=[];
+	this.otherExperiments = function() {  // liefert alle meine Experimente zurück
+		var otherExps = [];
 		var me=this.myName;
 		angular.forEach(this.experiments, function(anExp) {
-			if (anExp.creator==me) {
-				myExps.push(anExp);
-			}
-		});
-		return myExps;
-	};
-	
-	
-	
-	this.otherexperiments = function() {  // liefert alle meine Experimente zurück
-		var otherExps=[];
-		var me=this.myName;
-		angular.forEach(this.experiments, function(anExp) {
-			if (anExp.creator!=me) {
+			if (anExp.creator != $rootScope.userid) {
 				otherExps.push(anExp);
 			}
 		});
@@ -103,6 +103,6 @@ function oExpController(restfactory,$translate,$scope,$state,$stateParams,experi
 };
     
         
-angular.module('unidaplan').controller('oExpController',['restfactory','$translate','$scope','$state','$stateParams','experimentService','experiments',oExpController]);
+angular.module('unidaplan').controller('oExpController',['restfactory','$rootScope','$translate','$scope','$state','$stateParams','experimentService','experiments',oExpController]);
 
 })();

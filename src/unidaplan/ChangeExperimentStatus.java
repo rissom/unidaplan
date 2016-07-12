@@ -52,7 +52,6 @@ public class ChangeExperimentStatus extends HttpServlet {
 						"SELECT getExperimentRights(vuserid:=?,vexperimentid:=?)");
 				pStmt.setInt(1,userID);
 				pStmt.setInt(2,experimentID);
-				System.out.println(pStmt.toString());
 				privilege = dBconn.getSingleStringValue(pStmt);
 				pStmt.close();
 				

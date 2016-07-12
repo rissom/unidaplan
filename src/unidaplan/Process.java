@@ -105,12 +105,12 @@ public class Process extends HttpServlet {
 					+ "  pp3.id AS statuspid "
 					+ "FROM processes "
 					+ "JOIN processtypes ON (processes.processtypesid=processtypes.id) "
-					+ "JOIN p_parameters pp1 ON (pp1.definition=10 AND pp1.ProcesstypeID=processes.processtypesid) " // date
-					+ "JOIN p_parameters pp2 ON (pp2.definition=8 AND pp2.ProcesstypeID=processes.processtypesid) " // number
-					+ "JOIN p_parameters pp3 ON (pp3.definition=1 AND pp3.ProcesstypeID=processes.processtypesid) " // status
-					+ "LEFT JOIN processdata ptd ON (ptd.processID=processes.id AND ptd.parameterid=pp1.id) "
-					+ "LEFT JOIN processdata n1 ON (n1.ProcessID=processes.id AND n1.parameterid=pp2.id) "
-					+ "LEFT JOIN processdata n2 ON (n2.ProcessID=processes.id AND n2.parameterid=pp3.id) "
+					+ "JOIN p_parameters pp1 ON (pp1.definition=10 AND pp1.ProcesstypeID = processes.processtypesid) " // date
+					+ "JOIN p_parameters pp2 ON (pp2.definition=8 AND pp2.ProcesstypeID = processes.processtypesid) " // number
+					+ "JOIN p_parameters pp3 ON (pp3.definition=1 AND pp3.ProcesstypeID = processes.processtypesid) " // status
+					+ "LEFT JOIN processdata ptd ON (ptd.processID = processes.id AND ptd.parameterid = pp1.id) "
+					+ "LEFT JOIN processdata n1 ON (n1.ProcessID = processes.id AND n1.parameterid = pp2.id) "
+					+ "LEFT JOIN processdata n2 ON (n2.ProcessID = processes.id AND n2.parameterid = pp3.id) "
 					+ "WHERE processes.id=?");
 	  	  		pStmt.setInt(1, processID);
 	  	  		jsProcess = dBconn.jsonObjectFromPreparedStmt(pStmt);
@@ -144,7 +144,7 @@ public class Process extends HttpServlet {
 					+ "  id,"
 					+ "  p_number "
 					+ "FROM pnumbers "
-					+ "WHERE (p_number>? AND processtype=?) "
+					+ "WHERE (p_number > ? AND processtype = ?) "
 					+ "ORDER BY p_number LIMIT 1");
 					pStmt.setInt(1,pnumber);
 					pStmt.setInt(2,processTypeID);
@@ -189,10 +189,14 @@ public class Process extends HttpServlet {
 		    
 			    // get parametergroups
 				try {
-					pStmt= dBconn.conn.prepareStatement(
-							"SELECT parametergroup, max(stringkey) AS paramgrpkey, min(p_parametergrps.pos) AS pos FROM p_parameters "+
-							"JOIN p_parametergrps ON parametergroup=p_parametergrps.id "+
-							"WHERE processtypeid=? GROUP BY parametergroup");
+					pStmt = dBconn.conn.prepareStatement(
+							   "SELECT "
+							 + "  parametergroup, "
+							 + "  max(stringkey) AS paramgrpkey, "
+							 + "  min(p_parametergrps.pos) AS pos "
+							 + "FROM p_parameters "
+							 + "JOIN p_parametergrps ON parametergroup=p_parametergrps.id "
+							 + "WHERE processtypeid = ? GROUP BY parametergroup");
 					pStmt.setInt(1,processTypeID);
 					parametergrps=dBconn.jsonArrayFromPreparedStmt(pStmt);
 					pStmt.close();
@@ -211,19 +215,19 @@ public class Process extends HttpServlet {
 			    // get the process Parameters:
 			    try{
 			    	pStmt = dBconn.conn.prepareStatement(
-			    	"SELECT "
-			    	+ "p_parameters.id, "
-			    	+ "parametergroup, "
-			    	+ "compulsory, "
-			    	+ "p_parameters.pos, "
-					+" p_parameters.stringkeyname,  "
-					+ "a.parameterid, "
-					+ "a.data, "
-					+ "p_parametergrps.id AS pgrpid, " 
-					+ "p_parametergrps.stringkey as parametergrp_key, "
-					+ "st.description, paramdef.datatype, "
-					+ "paramdef.stringkeyunit as unit, "
-					+ "p_parameters.definition "
+			    	  "SELECT "
+			    	+ "  p_parameters.id, "
+			    	+ "  parametergroup, "
+			    	+ "  compulsory, "
+			    	+ "  p_parameters.pos, "
+					+"   p_parameters.stringkeyname,  "
+					+ "  a.parameterid, "
+					+ "  a.data, "
+					+ "  p_parametergrps.id AS pgrpid, " 
+					+ "  p_parametergrps.stringkey as parametergrp_key, "
+					+ "  st.description, paramdef.datatype, "
+					+ "  paramdef.stringkeyunit as unit, "
+					+ "  p_parameters.definition "
 					+ "FROM p_parameters "
 					+ "JOIN p_parametergrps ON (p_parameters.Parametergroup = p_parametergrps.ID) " 
 					+ "JOIN paramdef ON (paramdef.id = p_parameters.definition) "

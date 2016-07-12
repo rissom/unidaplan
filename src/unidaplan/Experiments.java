@@ -36,13 +36,14 @@ import org.json.JSONObject;
 			pStmt= dBconn.conn.prepareStatement( 	
 					  "SELECT "
 					+ "  experiments.id, " 
-					+ "  users.fullname as creator, " 
+					+ "  experiments.creator, "
+					+ "  users.fullname as creatorname, " 
 					+ "  name, "
 					+ "  status, " 
 					+ "  number, "
 					+ "  getExperimentRights(1,experiments.id) AS rights "
 					+ "FROM experiments "
-					+ "JOIN users ON users.id=experiments.Creator "
+					+ "JOIN users ON users.id = experiments.creator "
 					+ "WHERE getExperimentRights(?,experiments.id)>'n'");
 			pStmt.setInt(1,userID);
 			experiments = dBconn.jsonArrayFromPreparedStmt(pStmt);

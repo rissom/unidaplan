@@ -55,26 +55,29 @@
 		<h3>
 			{{ 'Searches' | translate }}</h3>
 		<table class="table" ng-show="openSearchCtrl.otherSearches.length>0">
-			<thead class=parametertablehead>
+			<thead class = parametertablehead>
 				<tr>
 					<td><b>Name</b></td>
 					<td> </td>
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="osearch in openSearchCtrl.otherSearches">
+				<tr ng-repeat = "osearch in openSearchCtrl.otherSearches">
 					<td>
-						<a ui-sref="search({id:osearch.id})">{{osearch.namef()}}</a>
+						<a ui-sref = "search({id:osearch.id})">{{osearch.namef()}}</a>
 					</td>
 					<td>
-						<div class="dropdown" uib-dropdown ng-show="$root.admin==true" on-toggle="toggled(open)"
-							>
-							<a class="dropdown-toggle" uib-dropdown-toggle>
+						<div 
+		  					class = "dropdown" 
+		  					uib-dropdown 
+							ng-show = "$root.admin == true" 
+							on-toggle = "toggled(open)">
+							<a class = "dropdown-toggle" uib-dropdown-toggle>
 					  			{{'action'|translate}} &#x25BC;
 						    </a>
-						    <ul class="dropdown-menu">
-						    	<li ng-repeat="action in osearch.actions" ng-show="$root.admin">
-						        	<a ng-click="openSearchCtrl.performAction(osearch,action)">{{action.name}}</a>
+						    <ul class = "dropdown-menu">
+						    	<li ng-repeat = "action in osearch.actions" ng-show = "$root.admin">
+						        	<a ng-click = "openSearchCtrl.performAction(osearch,action)">{{action.name}}</a>
 						        </li>
 				    		</ul>
 		  				</div>

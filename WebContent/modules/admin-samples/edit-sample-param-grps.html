@@ -104,12 +104,12 @@
 	  			</div>
 			</td>
 		</tr>
-		<tr ng-show="editSampleParamGrpsCtrl.editmode">
+		<tr ng-show = "editSampleParamGrpsCtrl.editmode">
 			<td></td>
 			<td class="parametertd">
 				<input 						   
 				type="text"
-			    ng-model="editSampleParamGrpsCtrl.newGrpNameL1"> 
+			    ng-model = "editSampleParamGrpsCtrl.newGrpNameL1"> 
 			</td>
 			<td class="parametertd">
 				<input 						   
@@ -121,24 +121,24 @@
 	</tbody>
 </table>
 
-<button type="button" 
-		ng-hide="editSampleParamGrpsCtrl.editmode"
-		class="btn btn-default" 
-		ng-click="editSampleParamGrpsCtrl.newParameterGroup()" >
+<button type = "button" 
+		ng-hide = "editSampleParamGrpsCtrl.editmode"
+		class = "btn btn-default" 
+		ng-click = "editSampleParamGrpsCtrl.newParameterGroup()" >
 	<b>+</b> {{'Add parametergroup'|translate}}
 </button>
 
-<button type="button" 
-		ng-show="editSampleParamGrpsCtrl.editmode"
-		class="btn btn-default" 
-		ng-click="editSampleParamGrpsCtrl.editmode=false" >
+<button type = "button" 
+		ng-show = "editSampleParamGrpsCtrl.editmode"
+		class = "btn btn-default" 
+		ng-click = "editSampleParamGrpsCtrl.editmode=false" >
 	{{'Cancel'|translate}}
 </button>
 
-<button type="button" 
-		ng-show="editSampleParamGrpsCtrl.editmode"
-		class="btn btn-default" 
-		ng-click="editSampleParamGrpsCtrl.addParameterGroup()" >
+<button type = "button" 
+		ng-show = "editSampleParamGrpsCtrl.editmode"
+		class = "btn btn-default" 
+		ng-click = "editSampleParamGrpsCtrl.addParameterGroup()" >
 	{{'Save Parametergroup'|translate}}
 </button>
 
@@ -167,48 +167,48 @@
 	
 	
 	<tbody>
-		<tr ng-repeat="parameter in editSampleParamGrpsCtrl.titleparameters | orderBy : 'pos'">
-			<td class="parametertd">
-				<button type="button" class="btn btn-default btn-xs" 
-					ng-click="editSampleParamGrpsCtrl.parameterUp($index)"   ng-hide="$first">&#9650;
+		<tr ng-repeat = "parameter in editSampleParamGrpsCtrl.titleparameters | orderBy : 'pos'">
+			<td class = "parametertd">
+				<button type = "button" class = "btn btn-default btn-xs" 
+					ng-click = "editSampleParamGrpsCtrl.parameterUp($index)"   ng-hide = "$first">&#9650;
 				</button>
-				<button type="button" class="btn btn-default btn-xs" 
-					ng-click="editSampleParamGrpsCtrl.parameterDown($index)" ng-hide="$last" >&#9660;
+				<button type = "button" class = "btn btn-default btn-xs" 
+					ng-click = "editSampleParamGrpsCtrl.parameterDown($index)" ng-hide = "$last" >&#9660;
 				</button>
 			</td> 
-			<td class="parametertd" ng-dblclick="editSampleParamGrpsCtrl.editNL1(parameter)">
-				<span ng-hide="parameter.editNL1">
+			<td class = "parametertd" ng-dblclick = "editSampleParamGrpsCtrl.editNL1(parameter)">
+				<span ng-hide = "parameter.editNL1">
 					{{parameter.nameLang(editSampleParamGrpsCtrl.lang1key)}}
 				</span>
 				<input 						   
-				type="text"
-				ng-show="parameter.editNL1"
-			    ng-model="parameter.newParameterNameL1"
-			    ng-keyup="editSampleParamGrpsCtrl.keyUpParameter($event.keyCode,parameter)"> 
+				type = "text"
+				ng-show = "parameter.editNL1"
+			    ng-model = "parameter.newParameterNameL1"
+			    ng-keyup = "editSampleParamGrpsCtrl.keyUpParameter($event.keyCode,parameter)"> 
 			</td>
 			<td class="parametertd" ng-dblclick="editSampleParamGrpsCtrl.editNL2(parameter)">
 				<span ng-hide="parameter.editNL2">
 					{{parameter.nameLang(editSampleParamGrpsCtrl.lang2key)}}
 				</span>
 				<input 						   
-				type="text"
-				ng-show="parameter.editNL2"
-			    ng-model="parameter.newParameterNameL2" 
-			    ng-keyup="editSampleParamGrpsCtrl.keyUpParameter($event.keyCode,parameter)"> 
+				type = "text"
+				ng-show = "parameter.editNL2"
+			    ng-model = "parameter.newParameterNameL2" 
+			    ng-keyup = "editSampleParamGrpsCtrl.keyUpParameter($event.keyCode,parameter)"> 
 			</td>
 			<td>
 				{{parameter.format}}
 			</td>
 			
 		
-			<td class="parametertd" ng-hide=editSampleParamGrpsCtrl.editmode>			
-				<div class="dropdown" uib-dropdown on-toggle="toggled(open)">
-					<a class="dropdown-toggle" uib-dropdown-toggle>
+			<td class = "parametertd" ng-hide = editSampleParamGrpsCtrl.editmode>			
+				<div class = "dropdown" uib-dropdown on-toggle = "toggled(open)">
+					<a class = "dropdown-toggle" uib-dropdown-toggle>
 			  			{{'action'|translate}} &#x25BC;
 				    </a>
-				    <ul class="dropdown-menu">
-				    	<li ng-repeat="action in parameter.actions" ng-class="{disabled:action.disabled}">
-				        	<a ng-click="editSampleParamGrpsCtrl.performPAction(parameter,action)">{{action.name}}</a>
+				    <ul class = "dropdown-menu">
+				    	<li ng-repeat = "action in parameter.actions" ng-class = "{disabled:action.disabled}">
+				        	<a ng-click = "editSampleParamGrpsCtrl.performPAction(parameter,action)">{{action.name}}</a>
 				        </li>
 				    </ul>
 	  			</div>

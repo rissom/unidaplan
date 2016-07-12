@@ -151,10 +151,10 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
         
         
         .state('editSTParamGrps', {
-        	url: '/editsampletype/{sampleTypeID:int}',
-	        templateUrl: 'modules/admin-samples/edit-sample-param-grps.html',
-	        controller:"editSampleParamGrpsController as editSampleParamGrpsCtrl",
-	        resolve:{
+        	url : '/editsampletype/{sampleTypeID:int}',
+	        templateUrl : 'modules/admin-samples/edit-sample-param-grps.html',
+	        controller : "editSampleParamGrpsController as editSampleParamGrpsCtrl",
+	        resolve : {
 	        	sampleType: 
 	        		function(avSampleTypeService,$stateParams){
         	   	    	return avSampleTypeService.getSampleTypeParamGrps($stateParams.sampleTypeID);

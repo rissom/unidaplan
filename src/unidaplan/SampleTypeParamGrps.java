@@ -26,7 +26,7 @@ public class SampleTypeParamGrps extends HttpServlet {
 		throws ServletException, IOException {
 		  
 		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
+		int userID = authentificator.GetUserID(request,response);
 		int sampleTypeID=0;
 		request.setCharacterEncoding("utf-8");
 	    response.setContentType("application/json");
@@ -54,10 +54,15 @@ public class SampleTypeParamGrps extends HttpServlet {
 		 	if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
 		 	
 	 			pStmt = dBconn.conn.prepareStatement(	
-				   "SELECT objecttypes.id, objecttypes.position, otgrp, objecttypes.string_key, "
-	 			  +"description, objecttypes.lastuser "
-				  +"FROM objecttypes "
-				  +"WHERE objecttypes.id=?");
+				   "SELECT "
+				   + "  objecttypes.id, "
+				   + "  objecttypes.position, "
+				   + "  otgrp, "
+				   + "  objecttypes.string_key, "
+	 			   + "  description, "
+	 			   + "  objecttypes.lastuser "
+				   + "FROM objecttypes "
+				   + "WHERE objecttypes.id = ?");
 		 		pStmt.setInt(1, sampleTypeID);
 	 			sampleType=dBconn.jsonObjectFromPreparedStmt(pStmt); 
 	 			// get ResultSet from the database using the query
@@ -72,27 +77,30 @@ public class SampleTypeParamGrps extends HttpServlet {
 	 			// get all objecttypesgrps
 	           	pStmt = dBconn.conn.prepareStatement(
 	     		  	   "SELECT id, position, name FROM objecttypesgrp");
-				sampleTypeGrps=dBconn.jsonArrayFromPreparedStmt(pStmt); 
+				sampleTypeGrps = dBconn.jsonArrayFromPreparedStmt(pStmt); 
 				// get ResultSet from the database using the query
-				if (sampleTypeGrps.length()>0) {
-	           		for (int j=0; j<sampleTypeGrps.length();j++) {
+				if (sampleTypeGrps.length() > 0) {
+	           		for (int j = 0; j < sampleTypeGrps.length(); j++) {
 	           			stringkeys.add(Integer.toString(sampleTypeGrps.getJSONObject(j).getInt("name")));
 	           		}
 	           	}		
 	           	
 				// get all parametergroups for this sampletype
 	   			pStmt = dBconn.conn.prepareStatement(
-			  	   "SELECT ot_parametergrps.id,ot_parametergrps.pos,ot_parametergrps.stringkey, "
-	   				+"count(ot_parameters.id)=0 AS deletable "
-	   				+"FROM ot_parametergrps "
-					+"LEFT JOIN ot_parameters ON ot_parameters.parametergroup=ot_parametergrps.id "
-					+"WHERE (ot_parametergrps.ot_id=?) "
-					+"GROUP BY ot_parametergrps.id"); 
+	   					"SELECT "
+	   				  + "  ot_parametergrps.id,"
+	   				  + "  ot_parametergrps.pos,"
+	   				  + "  ot_parametergrps.stringkey, "
+	   				  + "  count(ot_parameters.id) = 0 AS deletable "
+	   				  + "FROM ot_parametergrps "
+	   				  +	"LEFT JOIN ot_parameters ON ot_parameters.parametergroup = ot_parametergrps.id "
+	   				  + "WHERE (ot_parametergrps.ot_id = ?) "
+	   				  + "GROUP BY ot_parametergrps.id"); 
 	   			pStmt.setInt(1, sampleTypeID);
 	   			parameterGrps=dBconn.jsonArrayFromPreparedStmt(pStmt); 
 	
-	           	if (parameterGrps.length()>0) {
-	           		for (int j=0; j<parameterGrps.length();j++) {
+	           	if (parameterGrps.length() > 0) {
+	           		for (int j = 0; j < parameterGrps.length(); j++) {
 	           			stringkeys.add(Integer.toString(parameterGrps.getJSONObject(j).getInt("stringkey")));
 	           		}
 	           	}
@@ -100,18 +108,22 @@ public class SampleTypeParamGrps extends HttpServlet {
 	        	
 				// get the titleparameters
 	   			pStmt = dBconn.conn.prepareStatement(
-		   			"SELECT "
-					+"otp.id, "
-					+"COALESCE (otp.stringkeyname, pd.stringkeyname) AS name, "
-					+"COALESCE (otp.description, pd.description) AS description, "
-					+"format, pos "
-					+"FROM  ot_parameters otp "
-					+"JOIN paramdef pd ON (otp.definition=pd.ID) "
-					+"WHERE otp.ObjecttypesID=? AND otp.ID_FIELD=true "); 
+	   					"SELECT "
+	   				  + "  otp.id, "
+					  + "  max( COALESCE (otp.stringkeyname, pd.stringkeyname)) AS name, "
+					  + "  max( COALESCE (otp.description, pd.description)) AS description, "
+					  + "  format, "
+					  + "  pos, "
+					  + "  count(sampledata) = 0 AS deletable "
+					  + "FROM  ot_parameters otp "
+					  + "JOIN paramdef pd ON (otp.definition = pd.ID) "
+					  + "LEFT JOIN sampledata ON ot_parameter_id = otp.id "
+					  + "WHERE otp.ObjecttypesID = ? AND otp.ID_FIELD = true "
+					  + "GROUP by otp.id, format, pos"); 
 	   			pStmt.setInt(1, sampleTypeID);
-	   			titleParameters=dBconn.jsonArrayFromPreparedStmt(pStmt); 
+	   			titleParameters = dBconn.jsonArrayFromPreparedStmt(pStmt); 
 	
-	           	if (titleParameters.length()>0) {
+	           	if (titleParameters.length() > 0) {
 	           		for (int j=0; j<titleParameters.length();j++) {
 	           			stringkeys.add(Integer.toString(titleParameters.getJSONObject(j).getInt("name")));
 	           			stringkeys.add(Integer.toString(titleParameters.getJSONObject(j).getInt("description")));

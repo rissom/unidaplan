@@ -42,19 +42,19 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	
 	
 	
-	this.deleteSTParameter=function(id){
+	this.deleteSTParameter = function(id){
 		return restfactory.DELETE("delete-st-parameter?id="+id);
 	};
 	
 	
 	
-	this.deleteSTParameterGrp=function(id){
+	this.deleteSTParameterGrp = function(id){
 		return restfactory.DELETE("delete-st-parameter-grp?id="+id);
 	};
 
 	
 	
-	this.exPosSTParamGrp=function(id1,pos1,id2,pos2){
+	this.exPosSTParamGrp = function(id1,pos1,id2,pos2){
 		var jsonObj={"id1":id1, "id2":id2, "pos1":pos1, "pos2":pos2};
 		return restfactory.POST ("exchange-pos-st-parameter-grp",jsonObj);
 	};	
@@ -86,20 +86,19 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	    					  ];
 	        });
 	    	angular.forEach(thisController.sampleType.titleparameters,function(tparam) {
-	    		tparam.namef=function(){
+	    		tparam.namef = function(){
 	    			return (key2string.key2string(tparam.name,thisController.strings));
 	    		};
-	    		tparam.nameLang=function(lang){
+	    		tparam.nameLang = function(lang){
 	    			return (key2string.key2stringWithLangStrict(tparam.name,thisController.strings,lang));
 	    		};
-
-	    		tparam.actions=[{ action:"edit",
-	    						  name	:$translate.instant("edit")},
-	    		                { action	  : "delete",
-	    						  name		  : $translate.instant("delete"),
-	    						  disabled	  : thisController.sampleType.titleparameters.length==1
-	    						}
-	    					  ];
+	    		tparam.actions = [{ action   : "edit",
+	    						    name	 : $translate.instant("edit")
+	    						  },
+	    		                  { action	 : "delete",
+	    						    name	 : $translate.instant("delete"),
+	    						    disabled : thisController.sampleType.titleparameters.length == 1 || !tparam.deletable
+	    						  }];
 	    		for (var i=0; i< rest.data.parametergrps.length; i++){
 	    			tparam.actions.push({ action	  : "move",
 						name		: $translate.instant("move to")+" "+thisController.sampleType.parametergrps[i].namef(),
@@ -165,23 +164,23 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	    			return (key2string.key2string(parameter.parametergroupname,strings));
 	    		};
 	    	}
-	    	parameter.sampletypenamef=function(){
+	    	parameter.sampletypenamef = function(){
 				return (key2string.key2string(parameter.sampletypename,strings));
 			};
-		    parameter.namef=function(){
+		    parameter.namef = function(){
 					return (key2string.key2string(parameter.name,strings));
 				};
-			parameter.nameLang=function(lang){
+			parameter.nameLang = function(lang){
 					return (key2string.key2stringWithLangStrict(parameter.name,strings,lang));
 				};
-			parameter.descf=function(){
+			parameter.descf = function(){
 					return (key2string.key2string(parameter.description,strings));
 				};
-			parameter.descLang=function(lang){
+			parameter.descLang = function(lang){
 					return (key2string.key2stringWithLangStrict(parameter.description,strings,lang));
 				};
 //			if (parameter.stringkeyunit){
-				parameter.unitLang=function(lang){
+				parameter.unitLang = function(lang){
 					return (key2string.key2stringWithLangStrict(parameter.stringkeyunit,strings,lang));
 				};
 //			}
@@ -209,20 +208,20 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	    		parameter.namef=function(){
 	    			return (key2string.key2string(parameter.name,thisController.paramGrp.strings));
 	    		};
-	    		parameter.nameLang=function(lang){
+	    		parameter.nameLang = function(lang){
 	    			return (key2string.key2stringWithLangStrict(parameter.name,thisController.paramGrp.strings,lang));
 	    		};
-	    		parameter.unitf=function(){
+	    		parameter.unitf = function(){
 	    			return (key2string.key2string(parameter.stringkeyunit,thisController.paramGrp.strings));
 	    		};
-	    		parameter.unitLang=function(lang){
+	    		parameter.unitLang = function(lang){
 	    			return (key2string.key2stringWithLangStrict(parameter.stringkeyunit,thisController.paramGrp.strings,lang));
 	    		};
-	    		parameter.actions=[{action:"edit",name:$translate.instant("edit")},
-	    		                   {action:"delete",name:$translate.instant("delete"),disabled:!parameter.deletable}];
+	    		parameter.actions = [{action:"edit",name:$translate.instant("edit")},
+	    		                     {action:"delete",name:$translate.instant("delete"),disabled:!parameter.deletable}];
 	    		if ("siblings" in thisController.paramGrp){
 	    			thisController.paramGrp.siblings.map(function(sibling){
-	    				var name=key2string.key2string(sibling.name,thisController.paramGrp.strings);
+	    				var name = key2string.key2string(sibling.name,thisController.paramGrp.strings);
 	    				parameter.actions.push(
     						{ action	  : "move",
     						  name		  : $translate.instant("move to")+" "+name,
@@ -231,7 +230,7 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
     					);
 	    			});
 	    		}
-	    		if (parameter.datatype=='string' || parameter.datatype=='integer'){
+	    		if (parameter.datatype == 'string' || parameter.datatype == 'integer'){
 	    			parameter.actions.push({
 	    				action : 'title',
 	    				name	: $translate.instant("make titleparameter")

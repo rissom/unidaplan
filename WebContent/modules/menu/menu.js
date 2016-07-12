@@ -10,16 +10,13 @@ function menuf(experimentService,searchService,restfactory,$translate,
 	
 	
 	
-	
-	
-	
 	this.language = function(){
 		return $translate.use();
 	};
 	
 	
 	
-	this.addSearch=function(){
+	this.addSearch = function(){
 		var name={}
         name[this.language()]=$translate.instant("New Search");
 		var promise=searchService.addSearch(name);

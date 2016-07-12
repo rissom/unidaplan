@@ -141,7 +141,7 @@ import org.json.JSONObject;
 						    + "pparameter AS pid, "
 						    + "  comparison, "
 						    + "  value, "
-					  	    + "  COALESCE (po_parameters.stringkeyname, paramdef.stringkeyname) AS stringkeyname, "
+					  	    + "  COALESCE (p_parameters.stringkeyname, paramdef.stringkeyname) AS stringkeyname, "
 					  	    + "  p_parameters.processtypeid AS typeid,"
 					  	    + "  paramdef.stringkeyunit,"
 					  	    + "  paramdef.datatype "
