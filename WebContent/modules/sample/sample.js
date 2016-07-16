@@ -28,8 +28,8 @@ function sampleController(sample,$state,$stateParams,$uibModal,$filter,types,sam
 	
 	// store ancestors in database
 	this.assignAncestors = function(ancestors){
-		var a2=[];
-		for (var i=0; i<ancestors.length; i++) {
+		var a2 = [];
+		for (var i = 0; i < ancestors.length; i++) {
 			a2.push(ancestors[i].sampleid);
 		}
 		sampleService.addAncestors(sample.id,a2);
@@ -96,8 +96,13 @@ function sampleController(sample,$state,$stateParams,$uibModal,$filter,types,sam
 	
 	this.keyUp = function(keyCode,newValue,parameter) {
 		if (keyCode === 13) {				// Return key pressed
-			parameter.editing = false; 
-			var oldValue = parameter.data.value;
+			parameter.editing = false;
+			var oldValue 
+			if (typeof(parameter.data) != "undefined") {
+				oldvalue = parameter.data.value;
+			} else {
+				parameter.data = {};
+			} 
 			parameter.data.value = newValue;
 			var res;
 			res = sampleService.saveParameter(sample.id,

@@ -5,12 +5,25 @@
 		<span ng-hide = "tparameter.editing">
 			{{("0000"+tparameter.data.value).substr(-tparameter.format.length,tparameter.format.length)}}
 		</span>
-		<input 						   
-			ng-keyup = "sampleCtrl.keyUp($event.keyCode,newValue,tparameter)"
-			ng-show  = "tparameter.editing" type="text"
-		    ng-model = "newValue" 
-		    ng-blur  = "tparameter.editing = false">
-		{{$last?'':'-'}}  <!-- Delimiter for name is '-' -->
+		<span ng-switch on = "tparameter.datatype">
+			<input 
+				ng-switch-when = "string"						   
+				ng-keyup = "sampleCtrl.keyUp($event.keyCode,newValue,tparameter)"
+				ng-show  = "tparameter.editing" 
+				type = "text"
+			    ng-model = "newValue" 
+			    ng-blur  = "tparameter.editing = false">
+			<input
+			    ng-switch-when = "integer"						   
+				ng-keyup = "sampleCtrl.keyUp($event.keyCode,newValue,tparameter)"
+				ng-show  = "tparameter.editing" 
+				type = "number"
+				min = "0" 
+				step = "1"
+			    ng-model = "newValue" 
+			    ng-blur  = "tparameter.editing = false">
+			{{$last?'':'-'}}  <!-- Delimiter for name is '-' -->
+		</span>
 	</span>
 </h3>
 <br />
