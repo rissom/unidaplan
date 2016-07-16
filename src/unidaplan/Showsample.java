@@ -1,14 +1,17 @@
 package unidaplan;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,8 +26,10 @@ public class Showsample extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 	
+	
+	
 	Authentificator authentificator = new Authentificator();
-	int userID=authentificator.GetUserID(request,response);
+	int userID = authentificator.GetUserID(request,response);
 	if (userID>0){
 	 	ArrayList<String> stringkeys = new ArrayList<String>(); 
 	 	Boolean deletable = true;
@@ -34,16 +39,16 @@ public class Showsample extends HttpServlet {
 	    response.setCharacterEncoding("utf-8");
 	    PrintWriter out = response.getWriter();
 	 	DBconnection dBconn=new DBconnection();
-		int sampleID=1;      // variable initialisation
-		int typeid=1;
+		int sampleID = 1;      // variable initialisation
+		int typeid = 1;
 		String privilege = "";
 		JSONObject jsSample=new JSONObject(); // variable initialisation
 		
 		// get Parameter for id
 		try{
-			 sampleID=Integer.parseInt(request.getParameter("id")); 
+			 sampleID = Integer.parseInt(request.getParameter("id")); 
 		} catch (Exception e1) {
-			sampleID=1;
+			sampleID = 1;
 			System.err.print("Showsample: no sample ID given!");
 		}
 		   
@@ -67,6 +72,10 @@ public class Showsample extends HttpServlet {
 			System.err.println("Showsample: Strange Problem while getting sample name");
 			e2.printStackTrace();
 		} 
+	    
+	    
+	    // dingstest
+	    
 	        
 		if (editable || (privilege != null && privilege.equals("r"))){
 			try {
@@ -113,22 +122,26 @@ public class Showsample extends HttpServlet {
 		//get the title parameters
 		try {
 			pStmt = dBconn.conn.prepareStatement( 	 
-			   "SELECT "
-			 + "  sd.ot_parameter_id AS parameterid, "
-			 + "  data, "
-			 + "  pd.datatype, " 
-			 + "  pd.format, "
-			 + "  COALESCE (op.stringkeyname, pd.stringkeyname) AS name_key "
-			 + "FROM sampledata sd "
-			 + "JOIN ot_parameters op ON op.id = sd.ot_parameter_id "
-			 + "JOIN paramdef pd ON pd.id = op.definition "
-			 + "WHERE id_field = true AND sd.objectid = ?");		
+					   "SELECT "
+					 + "  op.id AS parameterid, "
+					 + "  data, "
+					 + "  pd.datatype, " 
+					 + "  pd.format, "
+					 + "  COALESCE (op.stringkeyname, pd.stringkeyname) AS name_key "
+					 + "FROM samples "
+					 + "JOIN ot_parameters op ON op.objecttypesid = samples.objecttypesid "
+					 + "JOIN paramdef pd ON pd.id = op.definition "
+					 + "LEFT JOIN sampledata sd ON sd.objectid = samples.id AND op.id = sd.ot_parameter_id  "
+					 + "WHERE id_field = true AND samples.id = ?");		
 			pStmt.setInt(1,sampleID);
 			JSONArray titleparameters = dBconn.jsonArrayFromPreparedStmt(pStmt);
-			if (titleparameters.length()>0) {
+			if (titleparameters.length() > 0) {
 				jsSample.put("titleparameters",titleparameters);
-		      	for (int i=0; i<titleparameters.length();i++) {
-		      		JSONObject tempObj=(JSONObject) titleparameters.get(i);
+		      	for (int i = 0; i < titleparameters.length(); i++) {
+		      		JSONObject tempObj = (JSONObject) titleparameters.get(i);
+		      		int datatype = tempObj.getInt("datatype");
+		      		tempObj.remove("datatype");
+		      		tempObj.put("datatype",Unidatoolkit.Datatypes[datatype]); 
 		      		stringkeys.add(Integer.toString(tempObj.getInt("name_key")));
 		      	}
 			}
@@ -145,10 +158,14 @@ public class Showsample extends HttpServlet {
 	    	
 	    // get the parametergroups
 		try {
-			pStmt= dBconn.conn.prepareStatement(
-					"SELECT parametergroup, max(stringkey) AS paramgrpkey, min(ot_parametergrps.pos) AS pos FROM ot_parameters "+
-					"JOIN ot_parametergrps ON parametergroup=ot_parametergrps.id "+
-					"WHERE objecttypesid=? GROUP BY parametergroup");
+			pStmt = dBconn.conn.prepareStatement(
+					  "SELECT "
+					+ "  parametergroup, "
+					+ "  max(stringkey) AS paramgrpkey, "
+					+ "  min(ot_parametergrps.pos) AS pos FROM ot_parameters "
+					+ "JOIN ot_parametergrps ON parametergroup = ot_parametergrps.id "
+					+ "WHERE objecttypesid = ? "
+					+ "GROUP BY parametergroup");
 			pStmt.setInt(1,typeid);
 			JSONArray parametergrps=dBconn.jsonArrayFromPreparedStmt(pStmt);
 			pStmt.close();
@@ -173,11 +190,11 @@ public class Showsample extends HttpServlet {
 		 		  + "  paramdef.stringkeyunit AS unit, "
 		 		  + "  op.definition "
 				  + "FROM ot_parameters op "
-				  + "JOIN ot_parametergrps ON (op.Parametergroup=ot_parametergrps.ID) "
+				  + "JOIN ot_parametergrps ON (op.Parametergroup = ot_parametergrps.ID) "
 				  + "JOIN paramdef ON (paramdef.id=op.definition) "
 				  + "LEFT JOIN sampledata sd ON "
-				  + "(sd.objectid=? AND sd.ot_parameter_id=op.id AND hidden = FALSE) "
-				  + "WHERE (op.objecttypesID=? AND op.id_field=false AND op.hidden=false)");
+				  + "	(sd.objectid = ? AND sd.ot_parameter_id = op.id AND hidden = FALSE) "
+				  + "WHERE (op.objecttypesID = ? AND op.id_field = false AND op.hidden=false)");
 			pStmt.setInt(1,sampleID);
 			pStmt.setInt(2,typeid);
 			JSONArray parameters = dBconn.jsonArrayFromPreparedStmt(pStmt);
@@ -197,7 +214,7 @@ public class Showsample extends HttpServlet {
 				      		if (tParam.has("description")){ 
 				      			stringkeys.add(Integer.toString(tParam.getInt("description")));
 				      		}
-			      			int datatype=tParam.getInt("datatype");
+			      			int datatype = tParam.getInt("datatype");
 				      		tParam.remove("datatype");
 					      	tParam.put("datatype",Unidatoolkit.Datatypes[datatype]); 
 				      		if (datatype==6) {	// chooser 
@@ -293,14 +310,18 @@ public class Showsample extends HttpServlet {
 		// Find all experiment plans
 		try { 
 			pStmt = dBconn.conn.prepareStatement( 
-					    "SELECT ep.id as exp_id, name, creator, status "
+					    "SELECT "
+					  + "  ep.id AS exp_id, "
+					  + "  name, "
+					  + "  creator, "
+					  + "  status "
 					  + "FROM experiments ep "
-					  + "JOIN expp_samples es ON es.expp_ID=ep.id "
-				  	  + "WHERE sample=?");
+					  + "JOIN expp_samples es ON es.expp_ID = ep.id "
+				  	  + "WHERE sample = ?");
 			pStmt.setInt(1,sampleID);
 			JSONArray eps = dBconn.jsonArrayFromPreparedStmt(pStmt);
 			pStmt.close();
-			for (int i=0; i<eps.length();i++) {
+			for (int i = 0; i < eps.length(); i++) {
 	      		  stringkeys.add(Integer.toString(eps.getJSONObject(i).getInt("name")));
 	      		// get planned processes
 	      		pStmt = dBconn.conn.prepareStatement(
@@ -342,10 +363,12 @@ public class Showsample extends HttpServlet {
 		
 		// Find all corresponding files
     	try{
-		    pStmt=  dBconn.conn.prepareStatement( 	
-			"SELECT files.id,filename "+
-			"FROM files "+
-			"WHERE files.sample=?");
+		    pStmt = dBconn.conn.prepareStatement( 	
+						  "SELECT "
+						+ "  files.id,"
+						+ "  filename "
+						+ "FROM files "
+						+ "WHERE files.sample = ?");
 			pStmt.setInt(1,sampleID);
 			JSONArray files= dBconn.jsonArrayFromPreparedStmt(pStmt);
 			if (files.length()>0) {
@@ -370,7 +393,7 @@ public class Showsample extends HttpServlet {
 			    		+ "  samplenames.name, \n"
 			    		+ "  samplenames.typeid \n"
 			    		+ "FROM originates_from \n"
-			    		+ "JOIN samplenames ON (samplenames.id=originates_from.child) \n"
+			    		+ "JOIN samplenames ON (samplenames.id = originates_from.child) \n"
 			    		+ "WHERE originates_from.parent = ? \n");
 				pStmt.setInt(1,sampleID);
 				table= dBconn.jsonArrayFromPreparedStmt(pStmt);
@@ -396,11 +419,15 @@ public class Showsample extends HttpServlet {
 	    	
 			// find all parent objects
 			try{    
-			    pStmt=  dBconn.conn.prepareStatement( 	
-				"SELECT originates_from.id, samplenames.id AS sampleid, samplenames.name, samplenames.typeid \n" +
-				"FROM originates_from \n" +
-				"JOIN samplenames ON (samplenames.id=originates_from.parent) \n" +
-				"WHERE originates_from.child=? \n");
+			    pStmt = dBconn.conn.prepareStatement( 	
+						  "SELECT \n"
+						+ "  originates_from.id, \n"
+						+ "  samplenames.id AS sampleid, \n"
+						+ "  samplenames.name, \n"
+						+ "  samplenames.typeid \n" 
+						+ "FROM originates_from \n" 
+						+ "JOIN samplenames ON (samplenames.id=originates_from.parent) \n" 
+						+ "WHERE originates_from.child=? \n");
 				pStmt.setInt(1,sampleID);
 				table= dBconn.jsonArrayFromPreparedStmt(pStmt);
 				if (table.length() > 0) {
@@ -428,7 +455,7 @@ public class Showsample extends HttpServlet {
 			
 			// find the previous sample
 			try{
-			    pStmt =  dBconn.conn.prepareStatement( 	
+			    pStmt = dBconn.conn.prepareStatement( 	
 				    		  "SELECT  "
 				    		+ "  samplenames.id, "
 				    		+ "  samplenames.name, "
@@ -454,7 +481,7 @@ public class Showsample extends HttpServlet {
 			
 			// find next sample	
 			try{
-			    pStmt=  dBconn.conn.prepareStatement( 	
+			    pStmt = dBconn.conn.prepareStatement( 	
 				    		  "SELECT  samplenames.id, samplenames.name, samplenames.typeid "
 							+ "FROM samplenames "
 							+ "WHERE ("
@@ -486,8 +513,11 @@ public class Showsample extends HttpServlet {
 			// Can we delete this sample?
 			try{
 		        pStmt = dBconn.conn.prepareStatement(	
-					    	"SELECT processid, sampleid FROM samplesinprocess "
-					 		+"WHERE sampleid = ?");
+					    	"SELECT "
+					      + "  processid, "
+					      + "  sampleid "
+					      + "FROM samplesinprocess "
+					 	  + "WHERE sampleid = ?");
 				pStmt.setInt(1,sampleID);
 				ResultSet resultset = pStmt.executeQuery();
 				if (resultset.next()) {
@@ -497,7 +527,10 @@ public class Showsample extends HttpServlet {
 				
 				// Check if experiments with this sample exist
 		        pStmt = dBconn.conn.prepareStatement(	
-		        			"SELECT id FROM expp_samples WHERE sample = ?");
+		        		    "SELECT "
+		        		  + "  id "
+		        		  + "FROM expp_samples "
+		        		  + "WHERE sample = ?");
 				pStmt.setInt(1,sampleID);
 				resultset = pStmt.executeQuery();
 				if (resultset.next()) { deletable = false; }
@@ -505,7 +538,10 @@ public class Showsample extends HttpServlet {
 				
 				// Check if files are attached
 		        pStmt = dBconn.conn.prepareStatement(	
-		        			"SELECT true FROM files WHERE files.sample = ?");
+		        			 "SELECT "
+		        		   + " true "
+		        		   + "FROM files "
+		        		   + "WHERE files.sample = ?");
 				pStmt.setInt(1,sampleID);
 				if (dBconn.getSingleBooleanValue(pStmt)) { 
 					deletable = false; 
