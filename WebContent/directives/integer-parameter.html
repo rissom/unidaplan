@@ -9,6 +9,8 @@
 	ng-blur = "parameter.editing = false"
 	ng-show = "parameter.editing" 
 	type = "number"
+	min = "0" 
+	step = "1"
     ng-model = "integerParamCtrl.newValue">
 <span ng-show = "parameter.editing">
 	{{parameter.unitf()}}
