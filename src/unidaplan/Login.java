@@ -31,7 +31,7 @@ public class Login extends HttpServlet {
     PrintWriter out = response.getWriter();
 	HttpSession session = request.getSession();
 	JSONObject hashjs = null;
-	String preferredLanguage="";
+	String preferredLanguage = "";
 	String pw="";
 	String user="";
 	  try  {
@@ -43,19 +43,19 @@ public class Login extends HttpServlet {
 //		 e1.printStackTrace();
 	  }
 	  try{    
- 	DBconnection dBconn=new DBconnection();
+ 	DBconnection dBconn = new DBconnection();
     dBconn.startDB();
     try {  
 		pstmt= dBconn.conn.prepareStatement( 	
-		"SELECT "
-		+ "pw_hash, "
-		+ "users.id, "
-		+ "fullname, "
-		+ "groupmemberships.groupid AS admin, "
-		+ "preferredlanguage "
+		  "SELECT "
+		+ "  pw_hash, "
+		+ "  users.id, "
+		+ "  fullname, "
+		+ "  groupmemberships.groupid AS admin, "
+		+ "  preferredlanguage "
 		+ "FROM users " 
-		+ "LEFT JOIN groupmemberships ON (groupid=1 AND userid=users.id) "
-		+ "WHERE username=?");
+		+ "LEFT JOIN groupmemberships ON (groupid = 1 AND userid = users.id) "
+		+ "WHERE username = ?");
 		pstmt.setString(1,user);
 		hashjs=dBconn.jsonObjectFromPreparedStmt(pstmt);
 		pstmt.close();
@@ -65,7 +65,7 @@ public class Login extends HttpServlet {
 	}try{
 		
 
-		String hash= hashjs.getString("pw_hash");
+		String hash = hashjs.getString("pw_hash");
 		int id = hashjs.getInt("id");
 		if (PasswordHash.validatePassword(pw,hash)){
 			JSONObject answer=new JSONObject();
