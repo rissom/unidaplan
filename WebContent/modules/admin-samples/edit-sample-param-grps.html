@@ -1,7 +1,7 @@
-<button type="button" 
-		ng-hide="editSampleParamGrpsCtrl.editmode"
-		class="btn btn-default" 
-		ui-sref="adminSamples" >
+<button type = "button" 
+		ng-hide = "editSampleParamGrpsCtrl.editmode"
+		class = "btn btn-default" 
+		ui-sref = "adminSamples" >
 	<b>&larr;</b> {{'all sampletypes'|translate}}
 </button>
 
@@ -11,8 +11,8 @@
 
 <br/>
 <h4>{{'General information'|translate}}</h4>
-<table class="table">
-<tr ng-dblclick="editSampleParamGrpsCtrl.edit('NL1')">
+<table class = "table">
+<tr ng-dblclick = "editSampleParamGrpsCtrl.edit('NL1')">
 	<td>Name ({{editSampleParamGrpsCtrl.lang1}}):</td>
 	<td>
 		<span ng-hide="editSampleParamGrpsCtrl.editNL1">{{editSampleParamGrpsCtrl.NameL1}}</span>
@@ -22,34 +22,34 @@
 			   ng-model="editSampleParamGrpsCtrl.newNameL1">
 	</td>
 </tr>
-<tr ng-dblclick="editSampleParamGrpsCtrl.edit('NL2')">
+<tr ng-dblclick = "editSampleParamGrpsCtrl.edit('NL2')">
 	<td>Name ({{editSampleParamGrpsCtrl.lang2}}):</td>
 	<td>
-		<span ng-hide="editSampleParamGrpsCtrl.editNL2">{{editSampleParamGrpsCtrl.NameL2}}</span>
-		<input ng-show="editSampleParamGrpsCtrl.editNL2" 
-			   ng-keyup="editSampleParamGrpsCtrl.keyUp($event.keyCode,'NL2')"
-			   type="text"
-			   ng-model="editSampleParamGrpsCtrl.newNameL2">
+		<span ng-hide = "editSampleParamGrpsCtrl.editNL2">{{editSampleParamGrpsCtrl.NameL2}}</span>
+		<input ng-show = "editSampleParamGrpsCtrl.editNL2" 
+			   ng-keyup = "editSampleParamGrpsCtrl.keyUp($event.keyCode,'NL2')"
+			   type = "text"
+			   ng-model = "editSampleParamGrpsCtrl.newNameL2">
 	</td>
 </tr>
 <tr ng-dblclick="editSampleParamGrpsCtrl.edit('DL1')">
 	<td>{{'Description'|translate}} ({{editSampleParamGrpsCtrl.lang1}}):</td>
 	<td>
-		<span ng-hide="editSampleParamGrpsCtrl.editDL1">{{editSampleParamGrpsCtrl.DescL1}}</span>
-		<input ng-show="editSampleParamGrpsCtrl.editDL1" 
-			   ng-keyup="editSampleParamGrpsCtrl.keyUp($event.keyCode,'DL1')"
-			   type="text"
-			   ng-model="editSampleParamGrpsCtrl.newDescL1">
+		<span ng-hide = "editSampleParamGrpsCtrl.editDL1">{{editSampleParamGrpsCtrl.DescL1}}</span>
+		<input ng-show = "editSampleParamGrpsCtrl.editDL1" 
+			   ng-keyup = "editSampleParamGrpsCtrl.keyUp($event.keyCode,'DL1')"
+			   type = "text"
+			   ng-model = "editSampleParamGrpsCtrl.newDescL1">
 	</td>
 </tr>
 <tr ng-dblclick="editSampleParamGrpsCtrl.edit('DL2')">
 	<td>{{'Description'|translate}} ({{editSampleParamGrpsCtrl.lang2}}):</td>
 	<td>
-		<span ng-hide="editSampleParamGrpsCtrl.editDL2">{{editSampleParamGrpsCtrl.DescL2}}</span>
-		<input ng-show="editSampleParamGrpsCtrl.editDL2" 
-			   ng-keyup="editSampleParamGrpsCtrl.keyUp($event.keyCode,'DL2')"
-			   type="text"
-			   ng-model="editSampleParamGrpsCtrl.newDescL2">
+		<span ng-hide = "editSampleParamGrpsCtrl.editDL2">{{editSampleParamGrpsCtrl.DescL2}}</span>
+		<input ng-show = "editSampleParamGrpsCtrl.editDL2" 
+			   ng-keyup = "editSampleParamGrpsCtrl.keyUp($event.keyCode,'DL2')"
+			   type = "text"
+			   ng-model = "editSampleParamGrpsCtrl.newDescL2">
 	</td>
 </tr>
 </table>
@@ -57,17 +57,17 @@
 <h4>{{'Parametergroups'|translate}}</h4>
 
 
-<table class="table">
-	<thead class=parametertablehead>
+<table class = "table">
+	<thead class = parametertablehead>
 		<tr>
 			<td></td>
-			<td class="parametertd">
+			<td class = "parametertd">
 	 			Name ({{editSampleParamGrpsCtrl.lang1}})
 			</td>
-			<td class="parametertd">
+			<td class = "parametertd">
 	 			Name ({{editSampleParamGrpsCtrl.lang2}})
 			</td>
-			<td ng-hide=editSampleParamGrpsCtrl.editmode>
+			<td ng-hide = editSampleParamGrpsCtrl.editmode>
 				{{'action'|translate}}
 			</td>
 		</tr>
@@ -75,13 +75,17 @@
 	
 	
 	<tbody>
-		<tr ng-repeat="grp in editSampleParamGrpsCtrl.parametergrps | orderBy : 'pos'">
-			<td class="parametertd">
-				<button type="button" class="btn btn-default btn-xs" 
-					ng-click="editSampleParamGrpsCtrl.up($index)"   ng-hide="$first || editSampleParamGrpsCtrl.editmode">&#9650;
+		<tr ng-repeat = "grp in editSampleParamGrpsCtrl.parametergrps | orderBy : 'pos'">
+			<td class = "parametertd">
+				<button 
+					type = "button" 
+					class="btn btn-default btn-xs" 
+					ng-click = "editSampleParamGrpsCtrl.up($index)"   
+					ng-hide = "$first || editSampleParamGrpsCtrl.editmode">&#9650;
 				</button>
 				<button type="button" class="btn btn-default btn-xs" 
-					ng-click="editSampleParamGrpsCtrl.down($index)" ng-hide="$last  || editSampleParamGrpsCtrl.editmode" >&#9660;
+					ng-click = "editSampleParamGrpsCtrl.down($index)" 
+					ng-hide = "$last  || editSampleParamGrpsCtrl.editmode" >&#9660;
 				</button>
 			</td> 
 			<td> 
@@ -91,7 +95,7 @@
 	 			{{grp.nameLang(editSampleParamGrpsCtrl.languages[1].key)}}
 			</td>
 		
-			<td class="parametertd" ng-hide=editSampleParamGrpsCtrl.editmode>			
+			<td class = "parametertd" ng-hide = editSampleParamGrpsCtrl.editmode>			
 				<div class="dropdown" uib-dropdown on-toggle="toggled(open)">
 					<a class="dropdown-toggle" uib-dropdown-toggle>
 			  			{{'action'|translate}} &#x25BC;
@@ -216,11 +220,11 @@
 			
 				
 			
-			<td class="parametertd" ng-show="editSampleParamGrpsCtrl.editmode">
+			<td class = "parametertd" ng-show = "editSampleParamGrpsCtrl.editmode">
 				<input 						   
-				type="text"
-				ng-keyup="editSampleParamGrpsCtrl.keyUpPG($event.keyCode)"
-			    ng-model="editSampleParamGrpsCtrl.newParameterNameL2"> 
+					type = "text"
+					ng-keyup = "editSampleParamGrpsCtrl.keyUpPG($event.keyCode)"
+			    	ng-model = "editSampleParamGrpsCtrl.newParameterNameL2"> 
 			</td>
 		</tr>
 		
@@ -228,11 +232,11 @@
 	</tbody>
 </table>
 
-<button type="button" 
-		ng-click="editSampleParamGrpsCtrl.addParameter()"
-		ng-hide="editSampleParamGrpsCtrl.editmode"
-		class="btn btn-default" 
-		ng-click="editSampleParamGrpsCtrl.addTitleParameter()" >
+<button type = "button" 
+		ng-click = "editSampleParamGrpsCtrl.addParameter()"
+		ng-hide = "editSampleParamGrpsCtrl.editmode"
+		class = "btn btn-default" 
+		ng-click = "editSampleParamGrpsCtrl.addTitleParameter()" >
 	<b>+</b> {{'Add Titleparameter'|translate}}
 </button>
 

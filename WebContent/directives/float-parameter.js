@@ -26,19 +26,21 @@ var floatParameter = function() {
 			}
 			
 			this.keyUp = function(keyCode) {
-				if (keyCode===13) {				// Return key pressed
-					$scope.parameter.editing=false; 
-					$scope.parameter.data = {value : this.newValue};
-					$scope.pupdate({parameter:$scope.parameter});
+				if (keyCode === 13) {				// Return key pressed
+					$scope.parameter.editing = false;
+					if (this.form.$valid){
+						$scope.parameter.data = {value : this.newValue};
+						$scope.pupdate({parameter:$scope.parameter});
+					}
 				}
-				if (keyCode===27) {		// Escape key pressed
+				if (keyCode === 27) {		// Escape key pressed
 					$scope.parameter.editing=false;
 					this.newValue=$scope.parameter.data.value;
 				}
 			}
 			
 			this.keyDown = function(keyCode) {
-				if (keyCode===9) {		// Tab key pressed
+				if (keyCode === 9) {		// Tab key pressed
 					$scope.parameter.editing=false; 
 					$scope.parameter.data.value=this.newValue;
 					$scope.pupdate({parameter:$scope.parameter});

@@ -174,27 +174,28 @@ public class Showsample extends HttpServlet {
 			
 			//get the parameters
 			pStmt = dBconn.conn.prepareStatement( 
-				    "SELECT "
-				  + "  op.id AS pid, "
-				  + "  op.parametergroup, "
-		 		  + "  op.compulsory, "
-		 		  + "  op.pos, "
-		 		  + "  COALESCE (op.stringkeyname,paramdef.stringkeyname) AS namekey,  "
-		 		  + "  sd.data, "
-		 		  + "  ot_parametergrps.id AS pgrpid, "
-		 		  + "  ot_parametergrps.stringkey as paramgrpkey, "
-		 		  + "  COALESCE (op.description, paramdef.description) AS description, "
-		 		  + "  paramdef.datatype, "
-		 		  + "  op.id_field, "
-		 		  + "  paramdef.format, "
-		 		  + "  paramdef.stringkeyunit AS unit, "
-		 		  + "  op.definition "
-				  + "FROM ot_parameters op "
-				  + "JOIN ot_parametergrps ON (op.Parametergroup = ot_parametergrps.ID) "
-				  + "JOIN paramdef ON (paramdef.id=op.definition) "
-				  + "LEFT JOIN sampledata sd ON "
-				  + "	(sd.objectid = ? AND sd.ot_parameter_id = op.id AND hidden = FALSE) "
-				  + "WHERE (op.objecttypesID = ? AND op.id_field = false AND op.hidden=false)");
+					    "SELECT "
+					  + "  op.id AS pid, "
+					  + "  op.parametergroup, "
+			 		  + "  op.compulsory, "
+			 		  + "  op.pos, "
+			 		  + "  NOT (formula is null) AS calculated,"
+			 		  + "  COALESCE (op.stringkeyname,paramdef.stringkeyname) AS namekey,  "
+			 		  + "  sd.data, "
+			 		  + "  ot_parametergrps.id AS pgrpid, "
+			 		  + "  ot_parametergrps.stringkey as paramgrpkey, "
+			 		  + "  COALESCE (op.description, paramdef.description) AS description, "
+			 		  + "  paramdef.datatype, "
+			 		  + "  op.id_field, "
+			 		  + "  paramdef.format, "
+			 		  + "  paramdef.stringkeyunit AS unit, "
+			 		  + "  op.definition "
+					  + "FROM ot_parameters op "
+					  + "JOIN ot_parametergrps ON (op.Parametergroup = ot_parametergrps.ID) "
+					  + "JOIN paramdef ON (paramdef.id=op.definition) "
+					  + "LEFT JOIN sampledata sd ON "
+					  + "	(sd.objectid = ? AND sd.ot_parameter_id = op.id AND hidden = FALSE) "
+					  + "WHERE (op.objecttypesID = ? AND op.id_field = false AND op.hidden=false)");
 			pStmt.setInt(1,sampleID);
 			pStmt.setInt(2,typeid);
 			JSONArray parameters = dBconn.jsonArrayFromPreparedStmt(pStmt);
@@ -456,15 +457,15 @@ public class Showsample extends HttpServlet {
 			// find the previous sample
 			try{
 			    pStmt = dBconn.conn.prepareStatement( 	
-				    		  "SELECT  "
-				    		+ "  samplenames.id, "
-				    		+ "  samplenames.name, "
-				    		+ "  samplenames.typeid "
-							+ "FROM samplenames "
-							+ "WHERE ((UPPER(samplenames.name) < UPPER((SELECT samplenames.name FROM samplenames WHERE samplenames.id=?))) "
-							+ "AND samplenames.typeid=(SELECT samplenames.typeid FROM samplenames WHERE samplenames.id=?)) "
-							+ "ORDER BY UPPER(samplenames.name) DESC "
-							+ "LIMIT 1");
+			    		  "SELECT  "
+			    		+ "  samplenames.id, "
+			    		+ "  samplenames.name, "
+			    		+ "  samplenames.typeid "
+						+ "FROM samplenames "
+						+ "WHERE ((UPPER(samplenames.name) < UPPER((SELECT samplenames.name FROM samplenames WHERE samplenames.id=?))) "
+						+ "AND samplenames.typeid=(SELECT samplenames.typeid FROM samplenames WHERE samplenames.id=?)) "
+						+ "ORDER BY UPPER(samplenames.name) DESC "
+						+ "LIMIT 1");
 				pStmt.setInt(1,sampleID);
 				pStmt.setInt(2,sampleID);
 				table= dBconn.jsonArrayFromPreparedStmt(pStmt);
@@ -482,20 +483,20 @@ public class Showsample extends HttpServlet {
 			// find next sample	
 			try{
 			    pStmt = dBconn.conn.prepareStatement( 	
-				    		  "SELECT  samplenames.id, samplenames.name, samplenames.typeid "
-							+ "FROM samplenames "
-							+ "WHERE ("
-							+ "(UPPER(samplenames.name) > UPPER(("
-							+ "		SELECT samplenames.name "
-							+ "		FROM samplenames "
-							+ "		WHERE samplenames.id = ?"
-							+ "))) "
-							+ "AND samplenames.typeid = ("
-							+ "  SELECT samplenames.typeid "
-							+ "  FROM samplenames "
-							+ "  WHERE samplenames.id = ?)) "
-							+ "ORDER BY UPPER(samplenames.name) "	
-				    		+ "LIMIT 1 ");
+			    		  "SELECT  samplenames.id, samplenames.name, samplenames.typeid "
+						+ "FROM samplenames "
+						+ "WHERE ("
+						+ "(UPPER(samplenames.name) > UPPER(("
+						+ "		SELECT samplenames.name "
+						+ "		FROM samplenames "
+						+ "		WHERE samplenames.id = ?"
+						+ "))) "
+						+ "AND samplenames.typeid = ("
+						+ "  SELECT samplenames.typeid "
+						+ "  FROM samplenames "
+						+ "  WHERE samplenames.id = ?)) "
+						+ "ORDER BY UPPER(samplenames.name) "	
+			    		+ "LIMIT 1 ");
 				pStmt.setInt(1,sampleID);
 				pStmt.setInt(2,sampleID); 
 				table = dBconn.jsonArrayFromPreparedStmt(pStmt);

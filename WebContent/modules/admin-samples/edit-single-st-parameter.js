@@ -1,28 +1,34 @@
 (function(){
   'use strict';
 
-function editSingleSTParameterController($state,$stateParams,$translate,avSampleTypeService,parameter,restfactory,sampleService,languages){
+function editSingleSTParameterController($state,$stateParams,$translate,$uibModal,avSampleTypeService,parameter,restfactory,sampleService,languages){
   
 
-    var thisController=this;
-  
-    var activeParameter={};
-    
-    this.compulsory=parameter.compulsory;
-    
-    this.format=parameter.format;
-        
-    this.hidden=parameter.hidden;
-    
-    this.paramGrpID=parameter.parametergroup;
-    
-    this.pgnamef=parameter.pgnamef;
-    
-    this.sampletypenamef=parameter.sampletypenamef;
-    
-    this.sampletype=parameter.sampletype;
+    var thisController = this;
       
-    this.languages=languages;
+    this.compulsory = parameter.compulsory;
+    
+    this.definition = parameter.definition;
+    
+    this.format = parameter.format;
+    
+    this.formula = parameter.formula;
+        
+    this.hidden = parameter.hidden;
+    
+    this.paramGrpID = parameter.parametergroup;
+    
+    this.min = parameter.min;
+    
+    this.max = parameter.max;
+    
+    this.pgnamef = parameter.pgnamef;
+    
+    this.sampletypenamef = parameter.sampletypenamef;
+    
+    this.sampletype = parameter.sampletype;
+      
+    this.languages = languages;
   
     this.nameL1 = parameter.nameLang(languages[0].key);
   
@@ -40,69 +46,96 @@ function editSingleSTParameterController($state,$stateParams,$translate,avSample
     
     this.newDescL2 = this.descL2;
     
-    this.lang1=$translate.instant(languages[0].name);
+    this.lang1 = $translate.instant(languages[0].name);
   
-    this.lang2=$translate.instant(languages[1].name);
+    this.lang2 = $translate.instant(languages[1].name);
   
-    this.lang1key=$translate.instant(languages[0].key);
+    this.lang1key = $translate.instant(languages[0].key);
   
-    this.lang2key=$translate.instant(languages[1].key);
+    this.lang2key = $translate.instant(languages[1].key);
     
     if (parameter.stringkeyunit){
 	    this.unitL1=parameter.unitLang(languages[0].key);
 	    this.unitL2=parameter.unitLang(languages[1].key);
     }
   
-    this.editFieldNL1=false;
-  
-    this.editFieldNL2=false;
+//    this.editFieldNL1=false;
+//  
+//    this.editFieldNL2=false;
     
-    this.unit=parameter.stringkeyunit>0;
+    this.unit = parameter.stringkeyunit > 0;
     
-    this.titlefield=parameter.id_field;
+    this.titlefield = parameter.id_field;
     
     
 
   
   
     this.edit = function(field){
-	    thisController.editFieldNL1 = (field=="NL1");
-	    thisController.editFieldNL2 = (field=="NL2");
-	    thisController.editFieldDL1 = (field=="DL1");
-	    thisController.editFieldDL2 = (field=="DL2");
-	    thisController.newNameL1=thisController.nameL1;
-	    thisController.newNameL2=thisController.nameL2;
-	    thisController.newDescL1=thisController.descL1;
-	    thisController.newDescL2=thisController.descL2;
-    };
-	
-  
-  
-  
-    this.editNL1= function(){
-	    thisController.editmode=true;
-	    parameter.editNL1=true;
-	    parameter.newParameterNameL1=parameter.nameLang(thisController.lang1key);
-	    activeParameter=parameter;
-    };
-   
-  
-  
-    this.editNL2= function(){
-	    thisController.editmode=true;
-	    parameter.editNL2=true;
-	    parameter.newParameterNameL2=parameter.nameLang(thisController.lang2key);
-	    activeParameter=parameter;
+    	this.activeField = field;
+	    thisController.newNameL1 = thisController.nameL1;
+	    thisController.newNameL2 = thisController.nameL2;
+	    thisController.newDescL1 = thisController.descL1;
+	    thisController.newDescL2 = thisController.descL2;
+	    thisController.newFormula = thisController.formula;
+
+//	    parameter.newParameterNameL1 = parameter.nameLang(thisController.lang1key);
+//	    parameter.newParameterNameL2 = parameter.nameLang(thisController.lang2key);
     };
   
   
+    
+	this.openFormulaModal = function(){
+  		var modalInstance = $uibModal.open({
+  			animation: false,
+  			templateUrl: 'modules/admin-samples/formula-modal.html',
+  			controller: 'formulaModalController as formulaModalCtrl',
+  			resolve: {
+  				formula : function(){
+  					return parameter.formula;
+  				},
+  				paramGroups: function(){
+  					return parameter.parametergroups;
+  				},
+  				parameters: function () {
+  					return parameter.otherparameters; 
+  				}
+  			}
+  	    });
+
+  	    modalInstance.result.then(
+  	    	function (formula) {
+  	    		if (formula.ok){
+	  	  	    	var tParameter = {parameterid : parameter.id};
+	  	    		tParameter.formula = formula.formula;
+	  	    		thisController.formula = formula.formula;
+	  	    		var promise = avSampleTypeService.updateParameter(tParameter);
+	  			    promise.then(
+	  			    	function(){
+	  			    		reload();
+	  			    	},
+	  			    	function(dings){
+	  			    		console.log("error");
+	  			    		reload();
+	  			    	}
+	  			    );
+  	    		}
+  	    	}, 
+  	    	function () {
+  	    		// dismissed
+  	    	}
+  	    );
+	};
+
+  	
+    
   
-  	this.setHidden=function(){
-	    var tempParameter={ 
+  	this.setHidden = function(){
+	    var tempParameter = { 
 	    		parameterid : parameter.id, 
-	    		hidden : thisController.hidden
+	    		hidden      : thisController.hidden
 	    };
-	    var promise= avSampleTypeService.updateParameter(tempParameter);
+	    var promise = avSampleTypeService.updateParameter(tempParameter);
  	    promise.then(function(){
  	    	reload();
  	    },function(){
@@ -112,11 +145,11 @@ function editSingleSTParameterController($state,$stateParams,$translate,avSample
   
   
   
-  	this.setCompulsory=function(){
-  		var tempParameter={ 
+  	this.setCompulsory = function(){
+  		var tempParameter = { 
   			parameterid : parameter.id,
-			compulsory : thisController.compulsory};
-  		var promise= avSampleTypeService.updateParameter(tempParameter);
+			compulsory  : thisController.compulsory};
+  		var promise = avSampleTypeService.updateParameter(tempParameter);
   		promise.then(function(){
   			reload();
   		},function(){
@@ -127,15 +160,16 @@ function editSingleSTParameterController($state,$stateParams,$translate,avSample
   
   
   
-    this.keyUp = function(keyCode,value,language) {
-  	    if (keyCode===13) {				// Return key pressed
-  	    	var tParameter={parameterid:parameter.id};
-  	    	if (thisController.editFieldDL1 || thisController.editFieldDL2){
-  	    		tParameter.description={};
-  	    		tParameter.description[language]=value;
-  	    	} else{
-  	    		tParameter.name={};
-  	    		tParameter.name[language]=value;
+    this.keyUp = function(keyCode, value, language) {
+  	    if (keyCode === 13) {				// Return key pressed
+  	    	var tParameter = {parameterid:parameter.id};
+  	    	if (thisController.activeField === 'DL1' || thisController.activeField === 'DL2'){
+  	    		tParameter.description = {};
+  	    		tParameter.description[language] = value;
+  	    	} 
+  	    	if (thisController.activeField === 'NL1' || thisController.activeField === 'NL2'){
+  	    		tParameter.name = {};
+  	    		tParameter.name[language] = value;
   	    	}
   		  	var promise = avSampleTypeService.updateParameter(tParameter);
 		    promise.then(function(){
@@ -144,14 +178,18 @@ function editSingleSTParameterController($state,$stateParams,$translate,avSample
 		    	console.log("error");
 		    });
 	    }
-	    if (keyCode===27) {		// Escape key pressed
-		    thisController.editmode=false;
+	    if (keyCode === 27) {		// Escape key pressed
+		    delete thisController.activeField;
 	    }
     };
+    
+    
+    
+    
 
   
   
-    var reload=function() {
+    var reload = function() {
     	var current = $state.current;
   	  	var params = angular.copy($stateParams);
   	  	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
@@ -161,7 +199,7 @@ function editSingleSTParameterController($state,$stateParams,$translate,avSample
 }
 
 angular.module('unidaplan').controller('editSingleSTParameterController', 
-		['$state','$stateParams','$translate','avSampleTypeService','parameter',
+		['$state','$stateParams','$translate','$uibModal','avSampleTypeService','parameter',
 		 'restfactory','sampleService','languages',editSingleSTParameterController]);
 
 })();

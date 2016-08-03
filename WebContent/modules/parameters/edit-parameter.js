@@ -3,13 +3,13 @@
 
 function editParamController($scope,$state,$stateParams,$translate,parameterService,restfactory,parameters,languages){
 
-  var index=-1;
-  for (var i=0; i<parameters.length; i++){  
-	  if (parameters[i].id==$stateParams.parameterID){
-		  index=i;
+  var index = -1;
+  for (var i = 0; i < parameters.length; i++){  
+	  if (parameters[i].id == $stateParams.parameterID){
+		  index = i;
 	  }
   }
-  if (index==-1){
+  if (index == -1){
 	  console.log("ERROR! Parameter doesn't exist");
   }
   
@@ -20,31 +20,31 @@ function editParamController($scope,$state,$stateParams,$translate,parameterServ
 //	        containerPositioning: 'relative'
 //	    };
     
-  var thisController=this;
+  var thisController = this;
       
-  this.lang1=$translate.instant(languages[0].name);
+  this.lang1 = $translate.instant(languages[0].name);
   
-  this.lang2=$translate.instant(languages[1].name);
+  this.lang2 = $translate.instant(languages[1].name);
   
-  this.lang1Key=languages[0].key;
+  this.lang1Key = languages[0].key;
   
-  this.lang2Key=languages[1].key;
+  this.lang2Key = languages[1].key;
 
-  this.dataTypes=["undefined","integer","float","measurement","string","longstring","chooser","date","checkbox","timestamp","url","email"];
+  this.dataTypes = ["undefined","integer","float","measurement","string","longstring","chooser","date","checkbox","timestamp","url","email"];
   
-  this.originalDataType=parameters[index].datatype;
+  this.originalDataType = parameters[index].datatype;
   
-  this.dataType=parameters[index].datatype;
+  this.dataType = parameters[index].datatype;
       
-  this.descL1=parameters[index].descLang(this.lang1Key);
+  this.descL1 = parameters[index].descLang(this.lang1Key);
   
-  this.descL2=parameters[index].descLang(this.lang2Key);
+  this.descL2 = parameters[index].descLang(this.lang2Key);
   
-  this.editNL1=$stateParams.newParameter==='true';
+  this.editNL1 = $stateParams.newParameter === 'true';
     
-  this.newDescL1=parameters[index].descLang(this.lang1Key);
+  this.newDescL1 = parameters[index].descLang(this.lang1Key);
   
-  this.newDescL2=parameters[index].descLang(this.lang2Key);
+  this.newDescL2 = parameters[index].descLang(this.lang2Key);
   
   if (parameters[index].stringkeyunit){
 	  this.unitL1=parameters[index].unitLang(this.lang1Key);
@@ -58,53 +58,53 @@ function editParamController($scope,$state,$stateParams,$translate,parameterServ
 	  this.newUnitL2="";
   }	
   
-  $scope.possibleValues=parameters[index].possiblevalues;
+  $scope.possibleValues = parameters[index].possiblevalues;
   
-  if ($stateParams.newPossvalue=='true') {
-	  $scope.possibleValues[$scope.possibleValues.length-1].edit=true;
+  if ($stateParams.newPossvalue == 'true') {
+	  $scope.possibleValues[$scope.possibleValues.length-1].edit = true;
   }
   
-  this.format=parameters[index].format;
+  this.format = parameters[index].format;
   
-  this.newFormat=parameters[index].format;
+  this.newFormat = parameters[index].format;
   
-  this.languages=languages;
+  this.languages = languages;
   
-  this.min=parameters[index].min;
+  this.min = parameters[index].min;
 
-  this.newMin=parameters[index].min;
+  this.newMin = parameters[index].min;
   
-  this.max=parameters[index].max;
+  this.max = parameters[index].max;
 
-  this.newMax=parameters[index].max;
+  this.newMax = parameters[index].max;
   
-  this.newDataType=parameters[index].datatype;
+  this.newDataType = parameters[index].datatype;
     
-  this.nameL1=parameters[index].nameLang(this.lang1Key);
+  this.nameL1 = parameters[index].nameLang(this.lang1Key);
   
-  if (parameters[index].nameLang(this.lang1Key)!='-'){
+  if (parameters[index].nameLang(this.lang1Key) != '-'){
 	  this.newNameL1=parameters[index].nameLang(this.lang1Key);
   }
   
   this.nameL2=parameters[index].nameLang(this.lang2Key);
 
-  if (parameters[index].nameLang(this.lang2Key)!='-'){
+  if (parameters[index].nameLang(this.lang2Key) != '-'){
 	  this.newNameL2=parameters[index].nameLang(this.lang2Key);
   }
   
-  if (parameters[index].descLang(this.lang1Key)!='-'){
+  if (parameters[index].descLang(this.lang1Key) != '-'){
 	  this.newDescriptionL1=parameters[index].descLang(this.lang1Key);
   }
   
-  if (parameters[index].descLang(this.lang2Key)!='-'){
+  if (parameters[index].descLang(this.lang2Key) != '-'){
 	  this.newDescriptionL2=parameters[index].descLang(this.lang2Key);
   }
 	  
-  this.parameters=parameters;
+  this.parameters = parameters;
   
-  this.regex=parameters[index].regex;
+  this.regex = parameters[index].regex;
   
-  this.newRegex=parameters[index].regex;
+  this.newRegex = parameters[index].regex;
 
   
   this.addPossibleValue = function(){
@@ -185,7 +185,7 @@ function editParamController($scope,$state,$stateParams,$translate,parameterServ
   
   
   this.keyUpPValue = function (item,keyCode){
-	  if (keyCode===13) {				// Return key pressed
+	  if (keyCode === 13) {				// Return key pressed
 		  item.edit=false
 		  var promise = parameterService.updatePossibleValue(item.id,item.string);
 		  promise.then (function(){reload();})
@@ -205,8 +205,8 @@ function editParamController($scope,$state,$stateParams,$translate,parameterServ
 			//		promise.then(function(){reload();})
 		},
 	    orderChanged: function(event) {
-	      	var neworder=[];
-		  	for (var i=0; i<$scope.possibleValues.length; i++)
+	      	var neworder = [];
+		  	for (var i = 0; i < $scope.possibleValues.length; i++)
 		  		neworder.push($scope.possibleValues[i].id);
 			var promise=parameterService.reorderPossibleValues($stateParams.parameterID,neworder);
 			//		promise.then(function(){reload();})
@@ -234,7 +234,7 @@ function editParamController($scope,$state,$stateParams,$translate,parameterServ
   
   
   this.showMinMaxNumber = function(){
-	  if (['double','measurement','integer'].indexOf(thisController.dataType)>-1){
+	  if (['float','measurement','integer'].indexOf(thisController.dataType) > -1){
 		  return true;
 	  }else{ 
 		  return false;
@@ -266,7 +266,7 @@ function editParamController($scope,$state,$stateParams,$translate,parameterServ
 		  description[thisController.lang1Key]=thisController.newDescL1;
 		  description[thisController.lang2Key]=thisController.newDescL2;
 
-		  var newParam={
+		  var newParam = {
 			name:name,
 			description:description,
 			regex: thisController.regex,
@@ -277,7 +277,7 @@ function editParamController($scope,$state,$stateParams,$translate,parameterServ
 			parameterid:$stateParams.parameterID
 		  }
 		  
-		  var unit={};
+		  var unit = {};
 		  if (thisController.newUnitL1 && thisController.newUnitL1!=""){
 			  unit[thisController.lang1Key]=thisController.newUnitL1;
 		  }

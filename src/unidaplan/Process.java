@@ -91,10 +91,10 @@ public class Process extends HttpServlet {
   	  	
 
  
-  	  	if (privilege.equals("r")||privilege.equals("w")){
+  	  	if (privilege.equals("r") || privilege.equals("w")){
   	  	  	try{
 	  	  		// get number, type and status 
-	  	  		pStmt= dBconn.conn.prepareStatement(
+	  	  		pStmt = dBconn.conn.prepareStatement(
 					  "SELECT "
 					+ "  processes.id, "
 					+ "  processes.processtypesid AS processtype, "
@@ -104,14 +104,14 @@ public class Process extends HttpServlet {
 					+ "  n2.data ->> 'value' AS status, "
 					+ "  pp3.id AS statuspid "
 					+ "FROM processes "
-					+ "JOIN processtypes ON (processes.processtypesid=processtypes.id) "
+					+ "JOIN processtypes ON (processes.processtypesid = processtypes.id) "
 					+ "JOIN p_parameters pp1 ON (pp1.definition=10 AND pp1.ProcesstypeID = processes.processtypesid) " // date
 					+ "JOIN p_parameters pp2 ON (pp2.definition=8 AND pp2.ProcesstypeID = processes.processtypesid) " // number
 					+ "JOIN p_parameters pp3 ON (pp3.definition=1 AND pp3.ProcesstypeID = processes.processtypesid) " // status
 					+ "LEFT JOIN processdata ptd ON (ptd.processID = processes.id AND ptd.parameterid = pp1.id) "
 					+ "LEFT JOIN processdata n1 ON (n1.ProcessID = processes.id AND n1.parameterid = pp2.id) "
 					+ "LEFT JOIN processdata n2 ON (n2.ProcessID = processes.id AND n2.parameterid = pp3.id) "
-					+ "WHERE processes.id=?");
+					+ "WHERE processes.id = ?");
 	  	  		pStmt.setInt(1, processID);
 	  	  		jsProcess = dBconn.jsonObjectFromPreparedStmt(pStmt);
 	  	  		if (jsProcess.length()>0) {
@@ -195,10 +195,10 @@ public class Process extends HttpServlet {
 							 + "  max(stringkey) AS paramgrpkey, "
 							 + "  min(p_parametergrps.pos) AS pos "
 							 + "FROM p_parameters "
-							 + "JOIN p_parametergrps ON parametergroup=p_parametergrps.id "
+							 + "JOIN p_parametergrps ON parametergroup = p_parametergrps.id "
 							 + "WHERE processtypeid = ? GROUP BY parametergroup");
 					pStmt.setInt(1,processTypeID);
-					parametergrps=dBconn.jsonArrayFromPreparedStmt(pStmt);
+					parametergrps = dBconn.jsonArrayFromPreparedStmt(pStmt);
 					pStmt.close();
 				} catch (SQLException e) {
 					System.err.println("Problems with SQL query for parameters");
@@ -227,7 +227,10 @@ public class Process extends HttpServlet {
 					+ "  p_parametergrps.stringkey as parametergrp_key, "
 					+ "  st.description, paramdef.datatype, "
 					+ "  paramdef.stringkeyunit as unit, "
-					+ "  p_parameters.definition "
+					+ "  p_parameters.definition, "
+					+ "  p_parameters.formula, "
+					+ "  paramdef.min, "
+					+ "  paramdef.max "
 					+ "FROM p_parameters "
 					+ "JOIN p_parametergrps ON (p_parameters.Parametergroup = p_parametergrps.ID) " 
 					+ "JOIN paramdef ON (paramdef.id = p_parameters.definition) "
@@ -238,19 +241,19 @@ public class Process extends HttpServlet {
 					+ "ORDER BY pos");
 			    	pStmt.setInt(1,processID);
 			    	pStmt.setInt(2,processTypeID);
-					JSONArray parameters=dBconn.jsonArrayFromPreparedStmt(pStmt);
+					JSONArray parameters = dBconn.jsonArrayFromPreparedStmt(pStmt);
 			
-					if (parameters.length()>0 && parametergrps.length()>0) { 		
-						for (int j=0;j<parametergrps.length();j++){
-							JSONArray prmgrpprms=new JSONArray();
-							JSONObject prmgrp=parametergrps.getJSONObject(j);
+					if (parameters.length() > 0 && parametergrps.length() > 0) { 		
+						for (int j = 0; j < parametergrps.length(); j++){
+							JSONArray prmgrpprms = new JSONArray();
+							JSONObject prmgrp = parametergrps.getJSONObject(j);
 				      		stringkeys.add(Integer.toString(prmgrp.getInt("paramgrpkey")));				
 				      		
-					      	for (int i=0; i<parameters.length();i++) {  
+					      	for (int i = 0; i < parameters.length(); i++) {  
 					      		JSONObject tParam=parameters.getJSONObject(i);
 					      		stringkeys.add(Integer.toString(tParam.getInt("stringkeyname")));
 					      		if (tParam.has("parametergroup")&&
-						      		tParam.getInt("parametergroup")==prmgrp.getInt("parametergroup")){		
+						      		tParam.getInt("parametergroup") == prmgrp.getInt("parametergroup")){		
 					      			
 						      		if (tParam.has("unit")){
 							      		stringkeys.add(Integer.toString(tParam.getInt("unit")));
@@ -258,7 +261,7 @@ public class Process extends HttpServlet {
 					      			int datatype=tParam.getInt("datatype");
 						      		tParam.remove("datatype");
 						      		switch (datatype) {
-						      		case 1: tParam.put("datatype","integer"); 
+						      		case 1: tParam.put("datatype", "integer"); 
 						      				if (tParam.has("value")){
 						      					int x=Integer.parseInt(tParam.getString("value"));
 						      					tParam.remove("value");

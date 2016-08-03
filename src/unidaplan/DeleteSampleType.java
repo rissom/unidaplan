@@ -28,22 +28,22 @@ public class DeleteSampleType extends HttpServlet {
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
+		int userID = authentificator.GetUserID(request,response);
 		int name = 0;
 		request.setCharacterEncoding("utf-8");
-	    String status="ok";
+	    String status = "ok";
 	    
 		PreparedStatement pStmt = null; 	// Declare variables
-		int sampleTypeID=0;
-		int description=0;
-	 	DBconnection dBconn=new DBconnection(); // New connection to the database
+		int sampleTypeID = 0;
+		int description = 0;
+	 	DBconnection dBconn = new DBconnection(); // New connection to the database
 	 	
 		// get Parameter for id
 		try{
 			dBconn.startDB();
 			sampleTypeID=Integer.parseInt(request.getParameter("id")); }
 		catch (Exception e1) {
-			sampleTypeID=-1;
+			sampleTypeID = -1;
 			System.err.print("DeleteSampleType: no sampleType ID given!");
 			status="error: no process ID";
 		}
@@ -55,7 +55,7 @@ public class DeleteSampleType extends HttpServlet {
 			 		
 					// get string_key_table references for later deletion
 			        pStmt = dBconn.conn.prepareStatement(	
-			        	"SELECT string_key,description FROM objecttypes WHERE id=?");
+			        	"SELECT string_key,description FROM objecttypes WHERE id = ?");
 					pStmt.setInt(1,sampleTypeID);
 					JSONObject ot=dBconn.jsonObjectFromPreparedStmt(pStmt);
 					pStmt.close();

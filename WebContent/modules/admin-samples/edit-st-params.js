@@ -5,21 +5,21 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
 		avParameters,restfactory,sampleService,parameterGrp,languages,avSampleTypeService){
   
 
-    var thisController=this;
+    var thisController = this;
   
-    var activeParameter={};
+    var activeParameter = {};
     
     this.parameters=parameterGrp.parameters.sort(function(a,b){
     	return a.pos-b.pos;
     });
 
-    this.strings=parameterGrp.strings;
+    this.strings = parameterGrp.strings;
   
-    this.sampletype=parameterGrp.sampletype;
+    this.sampletype = parameterGrp.sampletype;
     
     this.sampletypenamef = parameterGrp.sampletypenamef;
   
-    this.languages=languages;
+    this.languages = languages;
   
     this.nameL1 = parameterGrp.nameLang(languages[0].key);
   
@@ -53,37 +53,37 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
     this.edit = function(field){
 	    thisController.editFieldNL1 = (field=="NL1");
 	    thisController.editFieldNL2 = (field=="NL2");
-	    thisController.newNameL1=thisController.nameL1;
-	    thisController.newNameL2=thisController.nameL2;
+	    thisController.newNameL1 = thisController.nameL1;
+	    thisController.newNameL2 = thisController.nameL2;
     };
 	
   
   
   
-    this.editNL1= function(parameter){
-	    thisController.editmode=true;
-	    parameter.editNL1=true;
-	    parameter.newParameterNameL1=parameter.nameLang(thisController.lang1key);
-	    activeParameter=parameter;
+    this.editNL1 = function(parameter){
+	    thisController.editmode = true;
+	    parameter.editNL1 = true;
+	    parameter.newParameterNameL1 = parameter.nameLang(thisController.lang1key);
+	    activeParameter = parameter;
     };
    
   
   
-    this.editNL2= function(parameter){
-	    thisController.editmode=true;
-	    parameter.editNL2=true;
-	    parameter.newParameterNameL2=parameter.nameLang(thisController.lang2key);
-	    activeParameter=parameter;
+    this.editNL2 = function(parameter){
+	    thisController.editmode = true;
+	    parameter.editNL2 = true;
+	    parameter.newParameterNameL2 = parameter.nameLang(thisController.lang2key);
+	    activeParameter = parameter;
     };
   
   
   
-  	this.setHidden=function(parameter){
+  	this.setHidden = function(parameter){
 	    var tempParameter={ 
 	    		parameterid : parameter.id, 
 	    		hidden : parameter.hidden
 	    };
-	    var promise= avSampleTypeService.updateParameter(tempParameter);
+	    var promise = avSampleTypeService.updateParameter(tempParameter);
  	    promise.then(function(){
  	    	reload();
  	    },function(){
@@ -93,7 +93,7 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
   
   
   
-  	this.setCompulsory=function(parameter){
+  	this.setCompulsory = function(parameter){
   		var tempParameter={ 
   			parameterid : parameter.id,
 			compulsory : parameter.compulsory};
@@ -107,7 +107,7 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
   	
   	
   
-	this.setIDField=function(parameter){
+	this.setIDField = function(parameter){
   		var tempParameter={ 
   			parameterid : parameter.id,
 			id_field : parameter.id_field};
@@ -121,17 +121,17 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
   	
   	
   
-	this.submitParameter=function(){
-		this.editmode=false;
-	  	var tempParameter={parameterid:activeParameter.id, name:{}};
+	this.submitParameter = function(){
+		this.editmode = false;
+	  	var tempParameter = {parameterid:activeParameter.id, name:{}};
 	  	if (activeParameter.editNL1){
-	  		tempParameter.name[languages[0].key]=activeParameter.newParameterNameL1;
-	  		activeParameter.editNL1=false;
+	  		tempParameter.name[languages[0].key] = activeParameter.newParameterNameL1;
+	  		activeParameter.editNL1 = false;
 	  	} else {
-	  		tempParameter.name[languages[1].key]=activeParameter.newParameterNameL2;
-	  		activeParameter.editNL2=false;
+	  		tempParameter.name[languages[1].key] = activeParameter.newParameterNameL2;
+	  		activeParameter.editNL2 = false;
 	  	}
-	  	var promise= avSampleTypeService.updateParameter(tempParameter);
+	  	var promise = avSampleTypeService.updateParameter(tempParameter);
 	  	promise.then(function(){
 	  		reload();
 	  	},function(){
@@ -141,12 +141,12 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
   
   
   
-  	this.performAction=function(parameter,action){
+  	this.performAction = function(parameter,action){
   		// actions are defined in av-sampletype-service.getSTypeParams
-  		if (action.action==="edit"  && !action.disabled){
+  		if (action.action === "edit"  && !action.disabled){
   			$state.go('editSingleSTParameter',{parameterID:parameter.id});
   		}
-  		if (action.action==="delete" && !action.disabled) {
+  		if (action.action === "delete" && !action.disabled) {
   			var promise = avSampleTypeService.deleteSTParameter(parameter.id);
   			promise.then(function(){
   				reload();
@@ -154,16 +154,16 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
   				console.log("error");
   			});
   		}
-  		if (action.action==="move" && !action.disabled) {
+  		if (action.action === "move" && !action.disabled) {
   			var promise = avSampleTypeService.moveParameterToGrp(parameter.id,action.destination);
   			promise.then(function(){reload();});
   		}
-  		if (action.action==="title") {
+  		if (action.action === "title") {
   			thisController.setIDField(parameter);
   		}
   	};
-  
-  
+  	
+  	
   
 	this.addParameter = function () {
 		var modalInstance = $uibModal.open({
@@ -220,7 +220,7 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
   
   
   
-    this.down=function(index){  // exchange two parameter positions
+    this.down = function(index){  // exchange two parameter positions
 	    var newPositions=[];
 	    newPositions.push({"id":thisController.parameters[index].id,"position":thisController.parameters[index+1].pos});
 	    newPositions.push({"id":thisController.parameters[index+1].id,"position":thisController.parameters[index].pos});
@@ -234,7 +234,7 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
 
   
     
-	this.setIDField=function(parameter){
+	this.setIDField = function(parameter){
   		var tempParameter={ 
   			parameterid : parameter.id,
 			id_field : true};
@@ -248,7 +248,7 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
     
     
   
-    this.up=function(index){  // exchange two parameter positions
+    this.up = function(index){  // exchange two parameter positions
 	    var newPositions=[];
 	    newPositions.push({"id":thisController.parameters[index-1].id,"position":thisController.parameters[index].pos});
 	    newPositions.push({"id":thisController.parameters[index].id,"position":thisController.parameters[index-1].pos});
@@ -262,7 +262,7 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
   
   
   
-    var reload=function() {
+    var reload = function() {
     	var current = $state.current;
   	  	var params = angular.copy($stateParams);
   	  	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });

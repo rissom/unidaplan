@@ -1,0 +1,81 @@
+<div class = "container">
+	<h3> 
+		{{ 'Edit Formula' | translate }} 
+	</h3>
+	
+	<input
+			id = "target" 
+		    ng-keyup = "formulaModalCtrl.keyUp($event.keyCode)"
+		    type = "text"
+		    ng-model = "formulaModalCtrl.newFormula"
+		    size="75">
+		    
+	<div class = "row">
+	<!-- type choser -->  
+		<div class = col-md-6>
+			<br/>
+			<div 
+				ng-repeat = "parameter in formulaModalCtrl.parameters"
+				ng-click = "formulaModalCtrl.insertInFormula('p' + parameter.id)">
+			  	p{{parameter.id}}: {{parameter.namef()}}
+			</div>
+			<br/><br/><br/>
+		 	{{'available operations'| translate}}:<br/>
+			<span ng-click = "formulaModalCtrl.insertInFormula('+')">+</span>, 
+			<span ng-click = "formulaModalCtrl.insertInFormula('-')">-</span>,
+			<span ng-click = "formulaModalCtrl.insertInFormula('*')">*</span>,
+			<span ng-click = "formulaModalCtrl.insertInFormula('/')">/</span>, 
+			<span ng-click = "formulaModalCtrl.insertInFormula('^')">^</span>,
+			<span ng-click = "formulaModalCtrl.insertInFormula('<')"> &lt; </span>,
+			<span ng-click = "formulaModalCtrl.insertInFormula('>')"> &gt; </span>, 
+			<span ng-click = "formulaModalCtrl.insertInFormula('<=')">&lt;=</span>, 
+			<span ng-click = "formulaModalCtrl.insertInFormula('>=')">&gt;=</span>, 
+			<span ng-click = "formulaModalCtrl.insertInFormula('<>')">&lt;&gt;</span>,
+			<span ng-click = "formulaModalCtrl.insertInFormula('and')">and</span>,
+			<span ng-click = "formulaModalCtrl.insertInFormula('or')">or</span>, 
+			<span ng-click = "formulaModalCtrl.insertInFormula('abs( )')">abs( )</span>,
+			<span ng-click = "formulaModalCtrl.insertInFormula('acos( )')">acos( )</span>, 
+			<span ng-click = "formulaModalCtrl.insertInFormula('asin()')">asin()</span>, 
+			<span ng-click = "formulaModalCtrl.insertInFormula('atan( )')">atan( )</span>,
+			<span ng-click = "formulaModalCtrl.insertInFormula('acos( )')">acos( )</span>, 
+			<span ng-click = "formulaModalCtrl.insertInFormula('asin()')">asin()</span>, 
+			<span ng-click = "formulaModalCtrl.insertInFormula('atan( )')">atan( )</span>,   
+			<span ng-click = "formulaModalCtrl.insertInFormula('atan2( , )')">atan2( , )</span>, 
+			<span ng-click = "formulaModalCtrl.insertInFormula('ceil( )')">ceil( )</span>, 
+			<span ng-click = "formulaModalCtrl.insertInFormula('cos( )')">cos( )</span>,
+			<span ng-click = "formulaModalCtrl.insertInFormula('exp( )')">exp( )</span>, 
+			<span ng-click = "formulaModalCtrl.insertInFormula('floor( )')">floor( )</span>, 
+			<span ng-click = "formulaModalCtrl.insertInFormula('if( , , )')">if( , , )</span>, 
+			<span ng-click = "formulaModalCtrl.insertInFormula('log( )')">log( )</span>,
+			<span ng-click = "formulaModalCtrl.insertInFormula('max( , )')">max( , )</span>, 
+			<span ng-click = "formulaModalCtrl.insertInFormula('min( , )')">min( , )</span>, 
+			<span ng-click = "formulaModalCtrl.insertInFormula('round( )')">round( )</span>, 
+			<span ng-click = "formulaModalCtrl.insertInFormula('sin( )')">sin( )</span>, 
+			<span ng-click = "formulaModalCtrl.insertInFormula('sqrt( )')">sqrt( )</span>, 
+			<span ng-click = "formulaModalCtrl.insertInFormula('tan( )')">tan( )</span> <br/><br/>
+			{{'available constants'| translate}}:<br/>
+			<span ng-click = "formulaModalCtrl.insertInFormula('pi')">pi</span>,  
+			<span ng-click = "formulaModalCtrl.insertInFormula('e')">e</span><br/><br/>
+			<a href = "modules/help/formula-help.html" target="_blank">{{'further help'|translate}}</a>
+			 
+			
+			
+		</div>
+	</div>
+	<br/>
+	
+	
+	<button ng-click = "formulaModalCtrl.cancel()" 
+			class="btn btn-default">
+		{{'Cancel'|translate}}
+	</button>&nbsp;
+	
+	
+	<button ng-click = "formulaModalCtrl.saveFormula()" 
+			class = "btn btn-primary">
+		{{'OK'|translate}}
+	</button>
+	<br /><br />
+	
+	
+</div>

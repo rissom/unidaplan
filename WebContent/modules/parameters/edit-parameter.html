@@ -21,7 +21,7 @@
 			   ng-model="editParamCtrl.newNameL1"
 			   ng-blur="editParamCtrl.cancelEdit()"
 			   autofocus 
-			   select-on-click>
+			   >
 	</td>
 </tr>
 <tr ng-dblclick="editParamCtrl.edit('NL2')">
@@ -33,7 +33,7 @@
 			   type="text"
 			   ng-model="editParamCtrl.newNameL2"
 			   ng-blur="editParamCtrl.cancelEdit()"
-			   select-on-click>
+			   >
 	</td>
 </tr>
 
@@ -46,7 +46,7 @@
 			   type="text"
 			   ng-model="editParamCtrl.newDescL1"
 			   ng-blur="editParamCtrl.cancelEdit()"
-			   select-on-click>
+			   >
 	</td>
 </tr>
 
@@ -59,7 +59,7 @@
 			   type="text"
 			   ng-model="editParamCtrl.newDescL2"
 			   ng-blur="editParamCtrl.cancelEdit()"
-			   select-on-click>
+			   >
 	</td>
 </tr>
 
@@ -72,7 +72,7 @@
 			   type="text"
 			   ng-model="editParamCtrl.newUnitL1"
 			   ng-blur="editParamCtrl.cancelEdit()"
-			   select-on-click>
+			   >
 	</td>
 </tr>
 
@@ -85,17 +85,17 @@
 			   type="text"
 			   ng-model="editParamCtrl.newUnitL2"
 			   ng-blur="editParamCtrl.cancelEdit()"
-			   select-on-click>
+			   >
 	</td>
 </tr>
 
 <tr>
 	<td>{{'Datatype'|translate}}:</td>
 	<td>
-	<select class="input-sm"
-			ng-options="type as type for type in editParamCtrl.dataTypes"
-			ng-model="editParamCtrl.dataType"
-			ng-change="editParamCtrl.update()">
+	<select class = "input-sm"
+			ng-options = "type as type for type in editParamCtrl.dataTypes"
+			ng-model = "editParamCtrl.dataType"
+			ng-change = "editParamCtrl.update()">
     </select>
   <!--   <button 
     	class="btn btn-default btn-sm"
@@ -108,13 +108,13 @@
 
 <tr ng-dblclick="editParamCtrl.edit('format')" ng-show="editParamCtrl.showFormat()">
 <td>{{'Format'|translate}}</td>
-	<td><span ng-hide="editParamCtrl.editFormat">{{editParamCtrl.format}}</span>
-		<input ng-show="editParamCtrl.editFormat" 
-			   ng-keyup="editParamCtrl.keyUp($event.keyCode,'Format')"
-			   type="text"
-			   ng-model="editParamCtrl.newFormat"
-			   ng-blur="editParamCtrl.cancelEdit()"
-			   select-on-click>
+	<td><span ng-hide = "editParamCtrl.editFormat">{{editParamCtrl.format}}</span>
+		<input ng-show = "editParamCtrl.editFormat" 
+			   ng-keyup = "editParamCtrl.keyUp($event.keyCode,'Format')"
+			   type = "text"
+			   ng-model = "editParamCtrl.newFormat"
+			   ng-blur = "editParamCtrl.cancelEdit()"
+			   >
 	</td>
 </tr>
 <!-- 
@@ -139,7 +139,7 @@
 			   type="number"
 			   ng-model="editParamCtrl.newMin"
 			   ng-blur="editParamCtrl.cancelEdit()"
-			   select-on-click>
+			   >
 	</td>
 </tr>
 
@@ -151,7 +151,7 @@
 			   type="number"
 			   ng-model="editParamCtrl.newMax"
 			   ng-blur="editParamCtrl.cancelEdit()"
-			   select-on-click>
+			   >
 	</td>
 </tr>
 <!-- 
@@ -163,7 +163,7 @@
 			   type="date"
 			   ng-model="editParamCtrl.newMin"
 			   ng-blur="editParamCtrl.cancelEdit()"
-			   select-on-click>
+			   >
 	</td>
 </tr>
 
@@ -175,7 +175,7 @@
 			   type="date"
 			   ng-model="editParamCtrl.newMax"
 			   ng-blur="editParamCtrl.cancelEdit()"
-			   select-on-click>
+			   >
 	</td>
 </tr>
  -->

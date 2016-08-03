@@ -179,6 +179,14 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 			parameter.descLang = function(lang){
 					return (key2string.key2stringWithLangStrict(parameter.description,strings,lang));
 				};
+				
+			angular.forEach(parameter.otherparameters, function(parameter){
+				parameter.namef = function(){
+					return key2string.key2string(parameter.stringkeyname,strings);
+				}
+			});
+				
+			
 //			if (parameter.stringkeyunit){
 				parameter.unitLang = function(lang){
 					return (key2string.key2stringWithLangStrict(parameter.stringkeyunit,strings,lang));
