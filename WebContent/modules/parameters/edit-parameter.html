@@ -10,68 +10,70 @@
 <!--  <form name="parameterForm">  -->
 
 <br/>
-<table class="table">
-<tr ng-dblclick="editParamCtrl.edit('NL1')">
+<table class = "table">
+<tr ng-dblclick = "editParamCtrl.edit('NL1')">
 	<td>Name ({{editParamCtrl.lang1}}):</td>
 	<td>
-		<span ng-hide="editParamCtrl.editNL1">{{editParamCtrl.nameL1}}</span>
-		<input ng-show="editParamCtrl.editNL1" 
-			   ng-keyup="editParamCtrl.keyUp($event.keyCode,'NL1')"
-			   type="text"
-			   ng-model="editParamCtrl.newNameL1"
-			   ng-blur="editParamCtrl.cancelEdit()"
+		<span ng-hide = "editParamCtrl.editNL1">{{editParamCtrl.nameL1}}</span>
+		<input ng-show = "editParamCtrl.editNL1" 
+			   ng-keyup = "editParamCtrl.keyUpName($event.keyCode,editParamCtrl.lang1Key,editParamCtrl.newNameL1)"
+			   type = "text"
+			   ng-model = "editParamCtrl.newNameL1"
+			   ng-blur = "editParamCtrl.cancelEdit()"
 			   autofocus 
 			   >
 	</td>
 </tr>
-<tr ng-dblclick="editParamCtrl.edit('NL2')">
+<tr ng-dblclick = "editParamCtrl.edit('NL2')">
 	<td>Name ({{editParamCtrl.lang2}}):</td>
 	<td>
-		<span ng-hide="editParamCtrl.editNL2">{{editParamCtrl.nameL2}}</span>
-		<input ng-show="editParamCtrl.editNL2" 
-			   ng-keyup="editParamCtrl.keyUp($event.keyCode,'NL2')"
-			   type="text"
-			   ng-model="editParamCtrl.newNameL2"
-			   ng-blur="editParamCtrl.cancelEdit()"
+		<span ng-hide = "editParamCtrl.editNL2">{{editParamCtrl.nameL2}}</span>
+		<input ng-show = "editParamCtrl.editNL2" 
+			   ng-keyup = "editParamCtrl.keyUpName($event.keyCode,editParamCtrl.lang2Key,editParamCtrl.newNameL2)"
+			   type = "text"
+			   ng-model = "editParamCtrl.newNameL2"
+			   ng-blur = "editParamCtrl.cancelEdit()"
 			   >
 	</td>
 </tr>
 
-<tr ng-dblclick="editParamCtrl.edit('DL1')">
+<tr ng-dblclick = "editParamCtrl.edit('DL1')">
 	<td>{{'Description'|translate}} ({{editParamCtrl.lang1}}):</td>
 	<td>
-		<span ng-hide="editParamCtrl.editDL1">{{editParamCtrl.descL1}}</span>
-		<input ng-show="editParamCtrl.editDL1" 
-			   ng-keyup="editParamCtrl.keyUp($event.keyCode,'DL1')"
-			   type="text"
-			   ng-model="editParamCtrl.newDescL1"
-			   ng-blur="editParamCtrl.cancelEdit()"
+		<span ng-hide = "editParamCtrl.editDL1">{{editParamCtrl.descL1}}</span>
+		<input ng-show = "editParamCtrl.editDL1" 
+			   ng-keyup = "editParamCtrl.keyUpDescription($event.keyCode,
+			   				editParamCtrl.lang1Key,editParamCtrl.newDescL1)"
+			   type = "text"
+			   ng-model = "editParamCtrl.newDescL1"
+			   ng-blur = "editParamCtrl.cancelEdit()"
 			   >
 	</td>
 </tr>
 
-<tr ng-dblclick="editParamCtrl.edit('DL2')">
+<tr ng-dblclick = "editParamCtrl.edit('DL2')">
 	<td>{{'Description'|translate}} ({{editParamCtrl.lang2}}):</td>
 	<td>
-		<span ng-hide="editParamCtrl.editDL2">{{editParamCtrl.descL2}}</span>
-		<input ng-show="editParamCtrl.editDL2" 
-			   ng-keyup="editParamCtrl.keyUp($event.keyCode,'DL2')"
-			   type="text"
-			   ng-model="editParamCtrl.newDescL2"
-			   ng-blur="editParamCtrl.cancelEdit()"
+		<span ng-hide = "editParamCtrl.editDL2">{{editParamCtrl.descL2}}</span>
+		<input ng-show = "editParamCtrl.editDL2" 
+			   ng-keyup = "editParamCtrl.keyUpDescription($event.keyCode,
+			   				editParamCtrl.lang2Key,editParamCtrl.newDescL2)"
+			   type = "text"
+			   ng-model = "editParamCtrl.newDescL2"
+			   ng-blur = "editParamCtrl.cancelEdit()"
 			   >
 	</td>
 </tr>
 
-<tr ng-dblclick="editParamCtrl.edit('UL1')" ng-show="editParamCtrl.hasUnit()">
+<tr ng-dblclick = "editParamCtrl.edit('UL1')" ng-show="editParamCtrl.hasUnit()">
 	<td>{{'Unit'|translate}} ({{editParamCtrl.lang1}}):</td>
 	<td>
-		<span ng-hide="editParamCtrl.editUL1">{{editParamCtrl.unitL1}}</span>
-		<input ng-show="editParamCtrl.editUL1" 
-			   ng-keyup="editParamCtrl.keyUp($event.keyCode,'UL1')"
-			   type="text"
-			   ng-model="editParamCtrl.newUnitL1"
-			   ng-blur="editParamCtrl.cancelEdit()"
+		<span ng-hide = "editParamCtrl.editUL1">{{editParamCtrl.unitL1}}</span>
+		<input ng-show = "editParamCtrl.editUL1" 
+			   ng-keyup = "editParamCtrl.keyUpUnit($event.keyCode,editParamCtrl.lang1Key,editParamCtrl.newUnitL1)"
+			   type = "text"
+			   ng-model = "editParamCtrl.newUnitL1"
+			   ng-blur = "editParamCtrl.cancelEdit()"
 			   >
 	</td>
 </tr>
@@ -79,12 +81,12 @@
 <tr ng-dblclick="editParamCtrl.edit('UL2')"  ng-show="editParamCtrl.hasUnit()">
 	<td>{{'Unit'|translate}} ({{editParamCtrl.lang2}}):</td>
 	<td>
-		<span ng-hide="editParamCtrl.editUL2">{{editParamCtrl.unitL2}}</span>
-		<input ng-show="editParamCtrl.editUL2" 
-			   ng-keyup="editParamCtrl.keyUp($event.keyCode,'UL2')"
-			   type="text"
-			   ng-model="editParamCtrl.newUnitL2"
-			   ng-blur="editParamCtrl.cancelEdit()"
+		<span ng-hide = "editParamCtrl.editUL2">{{editParamCtrl.unitL2}}</span>
+		<input ng-show = "editParamCtrl.editUL2" 
+			   ng-keyup = "editParamCtrl.keyUpUnit($event.keyCode,editParamCtrl.lang2Key,editParamCtrl.newUnitL2)"
+			   type = "text"
+			   ng-model = "editParamCtrl.newUnitL2"
+			   ng-blur = "editParamCtrl.cancelEdit()"
 			   >
 	</td>
 </tr>
@@ -92,17 +94,11 @@
 <tr>
 	<td>{{'Datatype'|translate}}:</td>
 	<td>
-	<select class = "input-sm"
-			ng-options = "type as type for type in editParamCtrl.dataTypes"
-			ng-model = "editParamCtrl.dataType"
-			ng-change = "editParamCtrl.update()">
-    </select>
-  <!--   <button 
-    	class="btn btn-default btn-sm"
-    	ng-show=editParamCtrl.dataTypeChanged()
-    	ng-click="editParamCtrl.update()">
-    	ok
-    </button>  -->
+		<select class = "input-sm"
+				ng-options = "type as type for type in editParamCtrl.dataTypes"
+				ng-model = "editParamCtrl.dataType"
+				ng-change = "editParamCtrl.update()">
+	    </select>
     </td>
 </tr>
 
@@ -110,7 +106,7 @@
 <td>{{'Format'|translate}}</td>
 	<td><span ng-hide = "editParamCtrl.editFormat">{{editParamCtrl.format}}</span>
 		<input ng-show = "editParamCtrl.editFormat" 
-			   ng-keyup = "editParamCtrl.keyUp($event.keyCode,'Format')"
+			   ng-keyup = "editParamCtrl.keyUp($event.keyCode,'format',editParamCtrl.newFormat)"
 			   type = "text"
 			   ng-model = "editParamCtrl.newFormat"
 			   ng-blur = "editParamCtrl.cancelEdit()"
@@ -129,28 +125,31 @@
 	</td>
 </tr>
  -->
-<tr ng-dblclick="editParamCtrl.edit('min')" ng-show="editParamCtrl.showMinMaxNumber()">
+<tr ng-dblclick = "editParamCtrl.edit('min')" 
+	ng-show = "editParamCtrl.showMinMaxNumber()">
 
-<tr ng-dblclick="editParamCtrl.edit('min')" ng-show="editParamCtrl.showMinMaxNumber()">
+<tr ng-dblclick = "editParamCtrl.edit('min')" 
+	ng-show = "editParamCtrl.showMinMaxNumber()">
 <td>{{'Minimum'|translate}}</td>
-	<td><span ng-hide="editParamCtrl.editMin">{{editParamCtrl.min}}</span>
-		<input ng-show="editParamCtrl.editMin" 
-			   ng-keyup="editParamCtrl.keyUp($event.keyCode,'Min')"
-			   type="number"
-			   ng-model="editParamCtrl.newMin"
-			   ng-blur="editParamCtrl.cancelEdit()"
+	<td><span ng-hide = "editParamCtrl.editMin">{{editParamCtrl.min}}</span>
+		<input ng-show = "editParamCtrl.editMin" 
+			   ng-keyup = "editParamCtrl.keyUp($event.keyCode,'min',editParamCtrl.newMin)"
+			   type = "number"
+			   ng-model = "editParamCtrl.newMin"
+			   ng-blur = "editParamCtrl.cancelEdit()"
 			   >
 	</td>
 </tr>
 
-<tr ng-dblclick="editParamCtrl.edit('max')" ng-show="editParamCtrl.showMinMaxNumber()">
+<tr ng-dblclick = "editParamCtrl.edit('max')" 
+	ng-show="editParamCtrl.showMinMaxNumber()">
 <td>{{'Maximum'|translate}}</td>
-	<td><span ng-hide="editParamCtrl.editMax">{{editParamCtrl.max}}</span>
-		<input ng-show="editParamCtrl.editMax" 
-			   ng-keyup="editParamCtrl.keyUp($event.keyCode,'Max')"
-			   type="number"
-			   ng-model="editParamCtrl.newMax"
-			   ng-blur="editParamCtrl.cancelEdit()"
+	<td><span ng-hide = "editParamCtrl.editMax">{{editParamCtrl.max}}</span>
+		<input ng-show = "editParamCtrl.editMax" 
+			   ng-keyup = "editParamCtrl.keyUp($event.keyCode,'max',editParamCtrl.newMax)"
+			   type = "number"
+			   ng-model = "editParamCtrl.newMax"
+			   ng-blur = "editParamCtrl.cancelEdit()"
 			   >
 	</td>
 </tr>
@@ -187,34 +186,34 @@
 
 
 
-<div ng-show="editParamCtrl.dataType=='chooser'">
+<div ng-show="editParamCtrl.dataType == 'chooser'">
 	<h4>{{'Possible values'|translate}}</h4>
 	
 	<table id="table-container">
 	    <tbody data-ng-model="possibleValues" data-as-sortable="dragControlListeners">
 		    <tr ng-repeat="item in possibleValues" as-sortable-item style="padding: 7px; white-space:nowrap" >
 		        <td as-sortable-item-handle>
-		         	<span ng-hide="item.edit" ng-dblclick="item.edit=true">
-		        	<span class="glyphicon glyphicon-menu-hamburger" >&nbsp;</span> 
+		         	<span ng-hide = "item.edit" ng-dblclick = "item.edit=true">
+		        	<span class = "glyphicon glyphicon-menu-hamburger">&nbsp;</span> 
 		          	{{item.string}} &nbsp;
 		          	</span>
-		            <input ng-show="item.edit"
-		            	type="text"
-		            	ng-model="item.string"
-		            	ng-keyup="editParamCtrl.keyUpPValue(item,$event.keyCode)"
+		            <input ng-show = "item.edit"
+		            	type = "text"
+		            	ng-model = "item.string"
+		            	ng-keyup = "editParamCtrl.keyUpPValue(item,$event.keyCode)"
 		            	autofocus>
 		        </td>
-		        <td ng-click="editParamCtrl.deletePossibleValue(item)">
-		            <span  class="glyphicon glyphicon-remove"></span>
+		        <td ng-click = "editParamCtrl.deletePossibleValue(item)">
+		            <span  class = "glyphicon glyphicon-remove"></span>
 		    	</td>
 		    </tr>
 	    </tbody>
 	</table>
 	<br/>
 	
-	<button type="button" 
-			class="btn btn-default" 
-			ng-click="editParamCtrl.addPossibleValue()" >
+	<button type = "button" 
+			class = "btn btn-default" 
+			ng-click = "editParamCtrl.addPossibleValue()" >
 		<b>+</b> {{'Add possible Value'|translate}}
 	</button>
 </div>

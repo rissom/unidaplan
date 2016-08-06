@@ -14,6 +14,7 @@ import org.json.JSONObject;
 	public class UpdateSTParameter extends HttpServlet {
 		private static final long serialVersionUID = 1L;
 
+	@SuppressWarnings("resource")
 	@Override
 	  public void doPut(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {		
@@ -50,8 +51,8 @@ import org.json.JSONObject;
 	    
 		if (jsonIn.has("name")){
 		    try{
-				 newName=jsonIn.getJSONObject("name");
-				 language=JSONObject.getNames(newName)[0];
+				 newName = jsonIn.getJSONObject("name");
+				 language = JSONObject.getNames(newName)[0];
 				 value=newName.getString(language);
 			} catch (JSONException e) {
 				System.err.println("UpdateSTParameter: Error parsing ID-Field or comment");

@@ -23,7 +23,7 @@ import org.json.JSONObject;
 	    String in = request.getReader().readLine();
 	    String status = "ok";
 
-	    JSONObject  jsonIn = null;	
+	    JSONObject jsonIn = null;	
 	    int parameterID = -1;
 	    
     
@@ -34,20 +34,20 @@ import org.json.JSONObject;
 		}
 		
 
-	    JSONObject newName=null; // Object contains the new names, language as keys
-	    JSONObject newDesc=null; // Object contains the new descriptions, language as keys
-	    JSONObject newUnit=null; // Object contains the new units, language as keys
+	    JSONObject newName = null; // Object contains the new names, language as keys
+	    JSONObject newDesc = null; // Object contains the new descriptions, language as keys
+	    JSONObject newUnit = null; // Object contains the new units, language as keys
 
 	    
 	    try {
-			 parameterID=jsonIn.getInt("parameterid");
+			 parameterID = jsonIn.getInt("parameterid");
 		} catch (JSONException e) {
 			System.err.println("UpdateParameter: Error parsing ID-Field or comment");
 			e.printStackTrace();
 			response.setStatus(404);
 		}
 	    
-	 	DBconnection dBconn=new DBconnection(); // initialize database
+	 	DBconnection dBconn = new DBconnection(); // initialize database
 	    PreparedStatement pStmt = null;
 	    
 	    try{ 
@@ -65,14 +65,14 @@ import org.json.JSONObject;
 	    
 			if (jsonIn.has("datatype")){
 				try {
-					String datatype=jsonIn.getString("datatype");
-					int dt=0;
-					for (int i=0; i<Unidatoolkit.Datatypes.length; i++){
+					String datatype = jsonIn.getString("datatype");
+					int dt = 0;
+					for (int i = 0; i < Unidatoolkit.Datatypes.length; i++){
 						if (Unidatoolkit.Datatypes[i].equalsIgnoreCase(datatype)){
 							dt=i;
 						}
 					}
-					pStmt=dBconn.conn.prepareStatement(
+					pStmt = dBconn.conn.prepareStatement(
 							"UPDATE paramdef SET datatype=? WHERE id=?");
 					pStmt.setInt(1,dt);
 					pStmt.setInt(2,parameterID);				
@@ -99,25 +99,28 @@ import org.json.JSONObject;
 			   
 				try {
 					// find the stringkey
-					pStmt=dBconn.conn.prepareStatement(
-							"SELECT stringkeyname FROM paramdef WHERE id=?");
+					pStmt = dBconn.conn.prepareStatement(
+							"SELECT stringkeyname FROM paramdef WHERE id = ?");
 					pStmt.setInt(1,parameterID);
-					int stringKey=dBconn.getSingleIntValue(pStmt);
+					int stringKey = dBconn.getSingleIntValue(pStmt);
 					pStmt.close();
-					
-					// delete old entries 
-					pStmt=dBconn.conn.prepareStatement(
-							"DELETE FROM stringtable WHERE string_key=?");
-					pStmt.setInt(1,stringKey);
-					pStmt.executeUpdate();
-					pStmt.close();
-					
 					
 					// create database entries for the new name
-					String[] names=JSONObject.getNames(newName);
-					for (int i=0; i<names.length; i++){
-						pStmt= dBconn.conn.prepareStatement( 			
-								 "INSERT INTO stringtable VALUES(default,?,?,?,NOW(),?)");
+					String[] names = JSONObject.getNames(newName);
+					for (int i = 0; i < names.length; i++){
+						
+						// delete old entries in the same language
+						pStmt = dBconn.conn.prepareStatement(
+								  "DELETE FROM stringtable "
+								+ "WHERE string_key = ? AND language = ?");
+						pStmt.setInt(1,stringKey);
+						pStmt.setString(2,names[i]);
+						pStmt.executeUpdate();
+						pStmt.close();
+						
+						pStmt = dBconn.conn.prepareStatement( 			
+								   "INSERT INTO stringtable (string_key,language,value,lastuser)"
+								 + "VALUES(?,?,?,?)");
 						pStmt.setInt(1,stringKey);
 						pStmt.setString(2,names[i]);
 						pStmt.setString(3,newName.getString(names[i]));
@@ -128,57 +131,53 @@ import org.json.JSONObject;
 					
 				} catch (SQLException e) {
 					System.err.println("UpdateParameter: Problems with SQL query");
-					status="SQL error";
+					status = "SQL error";
 				} catch (Exception e) {
 					System.err.println("UpdateParameter: some error occured");
 					e.printStackTrace();
-					status="misc error";
+					status = "misc error";
 				}
 			}
 			
 			
 			if (jsonIn.has("description")){
 			    try{
-					newDesc=jsonIn.getJSONObject("description");
-					String[] descriptions=JSONObject.getNames(newDesc);
+					newDesc = jsonIn.getJSONObject("description");
+					String[] descriptions = JSONObject.getNames(newDesc);
 	
 					// find the stringkey
-					pStmt=dBconn.conn.prepareStatement(
+					pStmt = dBconn.conn.prepareStatement(
 							"SELECT description FROM paramdef WHERE id=?");
 					pStmt.setInt(1,parameterID);
-					int descriptionKey=dBconn.getSingleIntValue(pStmt);
-					if (descriptionKey<1){
-						pStmt=dBconn.conn.prepareStatement(
-								"INSERT INTO string_key_table (description, lastchange, lastuser) VALUES (?,NOW(),?) RETURNING id");
-						if (newDesc.getString(descriptions[0]).equals("")){
-							pStmt.setString(1,newDesc.getString(descriptions[1]));
-						}else{
-							pStmt.setString(1,newDesc.getString(descriptions[0]));
-						}
-						pStmt.setInt(2,userID);
-						descriptionKey=dBconn.getSingleIntValue(pStmt);
-						pStmt=dBconn.conn.prepareStatement(
-								"UPDATE paramdef SET description=? WHERE id=?");
+					int descriptionKey = dBconn.getSingleIntValue(pStmt);
+					
+					// if it does not exist: create a new one
+					if (descriptionKey < 1){ 
+						descriptionKey = dBconn.createNewStringKey(newUnit.getString(descriptions[0]));
+						pStmt = dBconn.conn.prepareStatement(
+								"UPDATE paramdef SET description = ? WHERE id = ?");
 						pStmt.setInt(1,descriptionKey);
 						pStmt.setInt(2,parameterID);
 						pStmt.executeUpdate();
+						pStmt.close();
 					}
-	
-					pStmt.close();
-					
-					// delete old entries in the same language
-					pStmt=dBconn.conn.prepareStatement(
-							"DELETE FROM stringtable WHERE string_key=?");
-					pStmt.setInt(1,descriptionKey);
-					pStmt.executeUpdate();
-					pStmt.close();
-					
 					
 					// create database entries for the new descriptions
-					for (int i=0; i<descriptions.length; i++){
-						pStmt= dBconn.conn.prepareStatement( 			
-								 "INSERT INTO stringtable (string_key,language,value,lastchange,lastuser) "
-								+"VALUES (?,?,?,NOW(),?)");
+					for (int i = 0; i < descriptions.length; i++){
+						
+						// delete old entries in the same language
+						pStmt = dBconn.conn.prepareStatement(
+								  "DELETE FROM stringtable "
+								+ "WHERE string_key = ? AND language = ?");
+						pStmt.setInt(1,descriptionKey);
+						pStmt.setString(2,descriptions[i]);
+						pStmt.executeUpdate();
+						pStmt.close();
+						
+						// insert new value
+						pStmt = dBconn.conn.prepareStatement( 			
+								 "INSERT INTO stringtable (string_key,language,value,lastuser) "
+							   + "VALUES (?,?,?,?)");
 						pStmt.setInt(1,descriptionKey);
 						pStmt.setString(2,descriptions[i]);
 						pStmt.setString(3,newDesc.getString(descriptions[i]));
@@ -199,42 +198,44 @@ import org.json.JSONObject;
 			
 			if (jsonIn.has("unit")){
 			    try{
-					newUnit=jsonIn.getJSONObject("unit");
-					String[] units=JSONObject.getNames(newUnit);
+					newUnit = jsonIn.getJSONObject("unit");
+					String[] units = JSONObject.getNames(newUnit);
 	
 					// find the stringkey
 					pStmt=dBconn.conn.prepareStatement(
-							"SELECT stringkeyunit FROM paramdef WHERE id=?");
+							"SELECT stringkeyunit FROM paramdef WHERE id = ?");
 					pStmt.setInt(1,parameterID);
-					int unitKey=dBconn.getSingleIntValue(pStmt);
-					if (unitKey<1){
-						pStmt=dBconn.conn.prepareStatement(
-								"INSERT INTO string_key_table (description, lastchange, lastuser) VALUES (?,NOW(),?) RETURNING id");
-						pStmt.setString(1,"unit: "+newUnit.getString(units[0]));
-						pStmt.setInt(2,userID);
-						unitKey=dBconn.getSingleIntValue(pStmt);
-						pStmt=dBconn.conn.prepareStatement(
-								"UPDATE paramdef SET stringkeyunit=? WHERE id=?");
+					int unitKey = dBconn.getSingleIntValue(pStmt);
+					pStmt.close();
+					
+					// if it does not exist: create a new one
+					if (unitKey < 1){ 
+						unitKey = dBconn.createNewStringKey(newUnit.getString(units[0]));
+						pStmt = dBconn.conn.prepareStatement(
+								"UPDATE paramdef SET stringkeyunit = ? WHERE id = ?");
 						pStmt.setInt(1,unitKey);
 						pStmt.setInt(2,parameterID);
 						pStmt.executeUpdate();
+						pStmt.close();
 					}
-	
-					pStmt.close();
 					
-					// delete old entries in the same language
-					pStmt=dBconn.conn.prepareStatement(
-							"DELETE FROM stringtable WHERE string_key=?");
-					pStmt.setInt(1,unitKey);
-					pStmt.executeUpdate();
-					pStmt.close();
+					
 					
 					
 					// create database entries for the new units
-					for (int i=0; i<units.length; i++){
-						pStmt= dBconn.conn.prepareStatement( 			
-								 "INSERT INTO stringtable (string_key,language,value,lastchange,lastuser) "
-								+"VALUES (?,?,?,NOW(),?)");
+					for (int i = 0; i < units.length; i++){
+						
+						// delete old entries in the same language
+						pStmt = dBconn.conn.prepareStatement(
+								"DELETE FROM stringtable WHERE string_key = ? AND language = ?");
+						pStmt.setInt(1,unitKey);
+						pStmt.setString(2,units[i]);
+						pStmt.executeUpdate();
+						pStmt.close();
+						
+						pStmt = dBconn.conn.prepareStatement( 			
+								 "INSERT INTO stringtable (string_key,language,value,lastuser) "
+								+"VALUES (?,?,?,?)");
 						pStmt.setInt(1,unitKey);
 						pStmt.setString(2,units[i]);
 						pStmt.setString(3,newUnit.getString(units[i]));
@@ -244,18 +245,18 @@ import org.json.JSONObject;
 					}
 				} catch (SQLException e) {
 					System.err.println("UpdateParameter: Problems with SQL query");
-					status="SQL error";
+					status = "SQL error";
 				} catch (Exception e) {
 					System.err.println("UpdateParameter: some error occured");
 					e.printStackTrace();
-					status="misc error";
+					status = "misc error";
 				}
 			}
 			
 			
 			if (jsonIn.has("regex")){
 				try {
-					pStmt=dBconn.conn.prepareStatement(
+					pStmt = dBconn.conn.prepareStatement(
 							"UPDATE paramdef SET regex=? WHERE id=?");
 					pStmt.setString(1, jsonIn.getString("regex"));
 					pStmt.setInt(2,parameterID);				
@@ -263,17 +264,17 @@ import org.json.JSONObject;
 					pStmt.close();	
 				} catch (SQLException e){
 					System.err.println("UpdateParameter: SQL error reading regex field");
-					status="SQL error, compulsory field";
+					status = "SQL error, compulsory field";
 				}catch(JSONException e) {
 					System.err.println("UpdateParameter: JSON error reading regex field");
-					status="JSON error, regex field";
+					status = "JSON error, regex field";
 				}
 			}
 			
 			
 			if (jsonIn.has("min")){
 				try {
-					pStmt=dBconn.conn.prepareStatement(
+					pStmt = dBconn.conn.prepareStatement(
 							"UPDATE paramdef SET min=? WHERE id=?");
 					if (jsonIn.optString("min").equals("")){
 						pStmt.setNull(1, java.sql.Types.DOUBLE);
@@ -285,10 +286,10 @@ import org.json.JSONObject;
 					pStmt.close();	
 				} catch (SQLException e){
 					System.err.println("UpdateParameter: SQL error reading min field");
-					status="SQL error, min field";
+					status = "SQL error, min field";
 				}catch(JSONException e) {
 					System.err.println("UpdateParameter: JSON error reading min field");
-					status="JSON error, min field";
+					status = "JSON error, min field";
 					e.printStackTrace();
 				}
 			}
@@ -316,10 +317,10 @@ import org.json.JSONObject;
 		
 			if (jsonIn.has("format")){
 				try {
-					pStmt=dBconn.conn.prepareStatement(
-							"UPDATE paramdef SET format=? WHERE id=?");
+					pStmt = dBconn.conn.prepareStatement(
+							"UPDATE paramdef SET format = ? WHERE id = ?");
 					pStmt.setString(1, jsonIn.getString("format"));
-					pStmt.setInt(2,parameterID);				
+					pStmt.setInt(2, parameterID);	
 					pStmt.executeUpdate();
 					pStmt.close();	
 				} catch (SQLException e){
