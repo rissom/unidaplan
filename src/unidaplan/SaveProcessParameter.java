@@ -258,7 +258,7 @@ import expr.Variable;
 								}
 								
 								// find all parameters for this formula
-								for ( Matcher m = Pattern.compile("p\\d").matcher(formula); m.find(); ){
+								for ( Matcher m = Pattern.compile("p\\d+").matcher(formula); m.find(); ){
 									myVariables.add (Variable.make(m.toMatchResult().group()));
 								}
 								
@@ -309,7 +309,7 @@ import expr.Variable;
 				}
 			    // tell client that everything is fine
 			    PrintWriter out = response.getWriter();
-			    JSONObject myResponse= new JSONObject();
+			    JSONObject myResponse = new JSONObject();
 			    myResponse.put("status", status);
 			    myResponse.put("id", id);
 				out.println(myResponse.toString());
@@ -321,12 +321,12 @@ import expr.Variable;
 				System.err.println("SaveProcessParameter: More Problems creating JSON");
 				e.printStackTrace();
 				System.err.println(pStmt.toString());
-				status="error";
+				status = "error";
 			} catch (Exception e) {
 				System.err.println("SaveProcessParameter: More Strange Problems");
 				System.err.println(pStmt.toString());
 				e.printStackTrace();
-				status="error";
+				status = "error";
 			}
 	    } else {
 	    	response.setStatus(401);

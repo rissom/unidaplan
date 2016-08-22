@@ -259,7 +259,7 @@ import expr.Variable;
 								}
 								
 								// find all parameters for this formula
-								for ( Matcher m = Pattern.compile("p\\d").matcher(formula); m.find(); ){
+								for ( Matcher m = Pattern.compile("p\\d+").matcher(formula); m.find(); ){
 									myVariables.add (Variable.make(m.toMatchResult().group()));
 								}
 								
