@@ -205,16 +205,27 @@ public class DBconnection  {
   
   
   
+  public void deleteString(int stringKey, String language) throws Exception{
+	PreparedStatement pStmt = conn.prepareStatement(
+			"DELETE FROM stringtable WHERE language = ? AND string_key = ?");
+	pStmt.setString(1,language);
+	pStmt.setInt(2,stringKey);
+	pStmt.executeUpdate();
+	pStmt.close();
+  }
+  
+  
+  
   	public JSONArray getDataTable(PreparedStatement pStmt) throws Exception{
-  		ResultSet rs=null;
+  		ResultSet rs = null;
   		JSONArray jsArray = new JSONArray();	  
 	  		try{
-	  			if (pStmt==null) {
+	  			if (pStmt == null) {
 	  				System.err.println("DBconnection: prepared statement null! " );
 	  			} else {
 	  				rs = pStmt.executeQuery(); 
 	  			}
-	  			if (rs==null) {
+	  			if (rs == null) {
 	  				System.err.println("DBconnection: statement result null! ");
 	  			} else {
 	  				int columns = rs.getMetaData().getColumnCount();
@@ -284,10 +295,10 @@ public class DBconnection  {
   	
   
   public int createNewStringKey(String input) throws Exception{
-	  PreparedStatement pStmt= null;
-	  pStmt=conn.prepareStatement("INSERT INTO string_key_table VALUES (default,?,NOW()) RETURNING id");
+	  PreparedStatement pStmt = conn.prepareStatement(
+			  "INSERT INTO string_key_table VALUES (default,?,NOW()) RETURNING id");
 	  pStmt.setString(1, input);
-	  int id=getSingleIntValue(pStmt);
+	  int id = getSingleIntValue(pStmt);
 	  pStmt.close();
 	  return id;
   }

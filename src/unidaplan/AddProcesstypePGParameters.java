@@ -68,28 +68,24 @@ import org.json.JSONObject;
 				for (int i=0; i<ids.length();i++){
 					pStmt= dBconn.conn.prepareStatement( 			
 							   "INSERT INTO p_parameters ("
-							 + "ProcesstypeID,"
-							 + "Parametergroup,"
-							 + "compulsory,"
-							 + "ID_Field,"
-							 + "Hidden,"
-							 + "pos,"
-							 + "definition,"
-							 + "StringKeyName,"
-							 + "lastUser) "
+							 + "	ProcesstypeID,"
+							 + "	Parametergroup,"
+							 + "	compulsory,"
+							 + "	ID_Field,"
+							 + "	Hidden,"
+							 + "	pos,"
+							 + "	definition,"
+							 + "	lastUser) "
 							 + "VALUES(?,?,False,False,False,"
 							 + "(SELECT COALESCE ((SELECT max(p2.pos)+1 FROM p_parameters p2 WHERE p2.parametergroup=?),1)),"
-							 + "?,(SELECT stringkeyname FROM paramdef WHERE paramdef.id=?),?)");
+							 + "?,?)");
 				   	pStmt.setInt(1, processTypeID);
 				   	pStmt.setInt(2, parameterGrpID);
 				   	pStmt.setInt(3, parameterGrpID);
 				   	pStmt.setInt(4, ids.getInt(i));
-				   	pStmt.setInt(5, ids.getInt(i));
-				   	pStmt.setInt(6, userID);
-	//				pStmt.addBatch();  // Does not work. I don't know why.
+				   	pStmt.setInt(5, userID);
 					pStmt.executeUpdate();
 				}
-	//			pStmt.executeBatch();
 				pStmt.close();
 		    } else {
 		    	response.setStatus(401);

@@ -4,10 +4,13 @@ import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class SinglePTParameter extends HttpServlet {
@@ -27,7 +30,7 @@ public class SinglePTParameter extends HttpServlet {
 		request.setCharacterEncoding("utf-8");
 	    response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
-	    int parameterID=0;
+	    int parameterID = 0;
 	    PrintWriter out = response.getWriter(); 
 	  	  	try  {
 	  	  		parameterID=Integer.parseInt(request.getParameter("parameterid")); 
@@ -78,7 +81,7 @@ public class SinglePTParameter extends HttpServlet {
 				pStmt.setInt(1, parameterID);
 				parameter=dBconn.jsonObjectFromPreparedStmt(pStmt);
 				pStmt.close();
-				int datatype=parameter.getInt("datatype");
+				int datatype = parameter.getInt("datatype");
 				parameter.put("datatype", Unidatoolkit.Datatypes[datatype]);
 				stringkeys.add(Integer.toString(parameter.getInt("name")));
 				stringkeys.add(Integer.toString(parameter.getInt("description")));
@@ -89,6 +92,29 @@ public class SinglePTParameter extends HttpServlet {
 				if (parameter.has("stringkeyunit")){
 					stringkeys.add(Integer.toString(parameter.getInt("stringkeyunit")));
 				}
+				
+		        // get all parameters of this sampletype for formula editing
+		        pStmt = dBconn.conn.prepareStatement(
+		        		"SELECT " 
+		        	  + "  pp.id, "
+		        	  + "  COALESCE (pp.stringkeyname, paramdef.stringkeyname) AS stringkeyname, "
+		        	  + "  pp.pos, "
+		        	  + "paramdef.stringkeyunit "
+		        	  + "FROM p_parameters pp "
+		        	  + "JOIN paramdef ON paramdef.id = pp.definition "
+		        	  + "WHERE processtypeid = ? AND pp.id != ? AND paramdef.datatype IN (1,2,3)");
+		        pStmt.setInt(1,parameter.getInt("processtype"));
+		        pStmt.setInt(2,parameterID);
+		        JSONArray otherparameters = dBconn.jsonArrayFromPreparedStmt(pStmt);
+		        
+		        // extract all stringkeys
+		        for (int i = 0; i < otherparameters.length(); i++){
+					stringkeys.add(Integer.toString(otherparameters.getJSONObject(i).getInt("stringkeyname")));
+		        }
+		        
+		        // add otherparameter of same objecttype
+		        parameter.put("otherparameters", otherparameters);
+				
 		        parameter.put("strings", dBconn.getStrings(stringkeys));
 		        out.println(parameter.toString());
 		        dBconn.closeDB();

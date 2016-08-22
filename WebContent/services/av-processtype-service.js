@@ -75,7 +75,7 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 	
 	
 	this.getProcessRecipes = function(process,pTypes){
-		var recipes=[];
+		var recipes = [];
 		angular.forEach(pTypes,function(ptype) {
 			if (process.processtype==ptype.id){
 				recipes=ptype.recipes;
@@ -87,11 +87,11 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 
 	
 	this.getProcessType = function(process,pTypes) {
-		var processTypeName="processtype not found";
+		var processTypeName = "processtype not found";
 		if (pTypes){
 		  	angular.forEach(pTypes,function(ptype) {
-		  		if (process.processtype==ptype.id){
-		  			processTypeName=ptype.namef();
+		  		if (process.processtype == ptype.id){
+		  			processTypeName = ptype.namef();
 		  		}
 		  	});
 		} else {
@@ -171,6 +171,11 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 					return (key2string.key2stringWithLangStrict(parameter.stringkeyunit,strings,lang));
 				};
 //				}
+				angular.forEach(parameter.otherparameters, function(parameter){
+					parameter.namef = function(){
+						return key2string.key2string(parameter.stringkeyname,strings);
+					}
+				});
 	        defered.resolve(parameter);
     	}, function(rest) {
     		console.log("Error loading processtype-parameter");

@@ -164,15 +164,16 @@ public class Process extends HttpServlet {
 		    
 			    // get previous process
 			    try {       
-					pStmt=dBconn.conn.prepareStatement( 
+					pStmt = dBconn.conn.prepareStatement( 
 					  "SELECT "
-					+ "  id,p_number "
+					+ "  id,"
+					+ "  p_number "
 					+ "FROM pnumbers "
-					+ "WHERE (p_number<? AND processtype=?) "
+					+ "WHERE (p_number < ? AND processtype = ?) "
 					+ "ORDER BY p_number DESC LIMIT 1");
 					pStmt.setInt(1,pnumber);
 					pStmt.setInt(2,processTypeID);
-					JSONObject previous= dBconn.jsonObjectFromPreparedStmt(pStmt);
+					JSONObject previous = dBconn.jsonObjectFromPreparedStmt(pStmt);
 					if (previous.length()>0) {
 					jsProcess.put("previous",previous); } 
 				} catch (SQLException e) {
@@ -220,12 +221,12 @@ public class Process extends HttpServlet {
 			    	+ "  parametergroup, "
 			    	+ "  compulsory, "
 			    	+ "  p_parameters.pos, "
-					+"   p_parameters.stringkeyname,  "
+					+"   COALESCE (p_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname,  "
 					+ "  a.parameterid, "
 					+ "  a.data, "
 					+ "  p_parametergrps.id AS pgrpid, " 
 					+ "  p_parametergrps.stringkey as parametergrp_key, "
-					+ "  st.description, paramdef.datatype, "
+					+ "  paramdef.datatype, "
 					+ "  paramdef.stringkeyunit as unit, "
 					+ "  p_parameters.definition, "
 					+ "  p_parameters.formula, "
@@ -236,7 +237,6 @@ public class Process extends HttpServlet {
 					+ "JOIN paramdef ON (paramdef.id = p_parameters.definition) "
 					+ "LEFT JOIN processdata a ON "
 					+ "(a.processid = ? AND a.parameterid = p_parameters.id AND hidden = FALSE) "
-					+ "JOIN String_key_table st ON st.id = p_parameters.stringkeyname "
 					+ "WHERE (p_parameters.processtypeID = ? AND p_parameters.id_field = FALSE AND p_parameters.hidden = FALSE) "
 					+ "ORDER BY pos");
 			    	pStmt.setInt(1,processID);

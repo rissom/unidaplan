@@ -19,7 +19,7 @@ import org.json.JSONObject;
 	      throws ServletException, IOException {
 		
 		Authentificator authentificator = new Authentificator();
-		String status="ok";
+		String status = "ok";
 		int userID = authentificator.GetUserID(request,response);
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
@@ -42,20 +42,22 @@ import org.json.JSONObject;
 	    String lang = null;
 	    PreparedStatement pStmt = null;
 
-		DBconnection dBconn=new DBconnection();
+		DBconnection dBconn = new DBconnection();
 
 
 	    try {
 		    dBconn.startDB();
 		    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){		    
 
-				objectTypeID=jsonIn.getInt("sampletypeid");
-				String field=jsonIn.getString("field");
+				objectTypeID = jsonIn.getInt("sampletypeid");
+				String field = jsonIn.getString("field");
 				lang=jsonIn.getString("lang");
-				newValue=jsonIn.getString("newvalue");
+				newValue = jsonIn.getString("newvalue");
 				
-				pStmt= dBconn.conn.prepareStatement( 			
-						 "SELECT string_key,description FROM objecttypes WHERE objecttypes.id=?");
+				pStmt = dBconn.conn.prepareStatement( 			
+						   "SELECT string_key,description "
+						 + "FROM objecttypes "
+						 + "WHERE objecttypes.id = ?");
 				pStmt.setInt(1,  objectTypeID);
 				JSONObject sampleType=dBconn.jsonObjectFromPreparedStmt(pStmt);
 	//			System.out.println("st: "+sampleType);

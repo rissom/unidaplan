@@ -73,7 +73,7 @@ public class ProcessTypeParams extends HttpServlet {
 		     		  	  + "  hidden,"
 		     		  	  + "  pos,"
 		     		  	  + "  definition,"
-		     		  	  + "  p_parameters.stringkeyname as name, "
+		     		  	  + "  COALESCE (p_parameters.stringkeyname,paramdef.stringkeyname) AS name, "
 		     		  	  + "  (blabla.count) IS NULL as deletable,"
 		     		  	  + "  stringkeyunit " 
 		     		  	  +"FROM p_parameters " 
