@@ -1,22 +1,23 @@
 (function(){
   'use strict';
 
-function editSingleSTParameterController($state,$stateParams,$translate,$uibModal,avSampleTypeService,parameter,restfactory,sampleService,languages){
+function editSingleSTParameterController($state,$uibModal,
+		$stateParams,$translate,avSampleTypeService,parameter,
+		restfactory,sampleService,languages){
   
-
     var thisController = this;
       
     this.compulsory = parameter.compulsory;
-    
-    this.definition = parameter.definition;
     
     this.format = parameter.format;
     
     this.formula = parameter.formula;
         
     this.hidden = parameter.hidden;
-    
+        
     this.paramGrpID = parameter.parametergroup;
+    
+    this.definition = parameter.definition;
     
     this.min = parameter.min;
     
@@ -58,10 +59,6 @@ function editSingleSTParameterController($state,$stateParams,$translate,$uibModa
 	    this.unitL1=parameter.unitLang(languages[0].key);
 	    this.unitL2=parameter.unitLang(languages[1].key);
     }
-  
-//    this.editFieldNL1=false;
-//  
-//    this.editFieldNL2=false;
     
     this.unit = parameter.stringkeyunit > 0;
     
@@ -78,9 +75,6 @@ function editSingleSTParameterController($state,$stateParams,$translate,$uibModa
 	    thisController.newDescL1 = thisController.descL1;
 	    thisController.newDescL2 = thisController.descL2;
 	    thisController.newFormula = thisController.formula;
-
-//	    parameter.newParameterNameL1 = parameter.nameLang(thisController.lang1key);
-//	    parameter.newParameterNameL2 = parameter.nameLang(thisController.lang2key);
     };
   
   
@@ -157,9 +151,8 @@ function editSingleSTParameterController($state,$stateParams,$translate,$uibModa
   		});
   	};
   	
-  
-  
-  
+  	
+  	
     this.keyUp = function(keyCode, value, language) {
   	    if (keyCode === 13) {				// Return key pressed
   	    	var tParameter = {parameterid:parameter.id};
@@ -183,12 +176,7 @@ function editSingleSTParameterController($state,$stateParams,$translate,$uibModa
 	    }
     };
     
-    
-    
-    
-
-  
-  
+   
     var reload = function() {
     	var current = $state.current;
   	  	var params = angular.copy($stateParams);
@@ -199,7 +187,7 @@ function editSingleSTParameterController($state,$stateParams,$translate,$uibModa
 }
 
 angular.module('unidaplan').controller('editSingleSTParameterController', 
-		['$state','$stateParams','$translate','$uibModal','avSampleTypeService','parameter',
+		['$state','$uibModal','$stateParams','$translate','avSampleTypeService','parameter',
 		 'restfactory','sampleService','languages',editSingleSTParameterController]);
 
 })();

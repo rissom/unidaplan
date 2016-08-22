@@ -4,25 +4,25 @@
 function editSinglePTParameterController($state,$uibModal,$stateParams,$translate,avProcessTypeService,parameter,restfactory,languages){
   
 
-    var thisController=this;
-  
-    var activeParameter={};
+    var thisController = this;
     
-    this.compulsory=parameter.compulsory;
+    this.compulsory = parameter.compulsory;
     
-    this.format=parameter.format;
+    this.format = parameter.format;
+    
+    this.formula = parameter.formula;
         
-    this.hidden=parameter.hidden;
+    this.hidden = parameter.hidden;
     
-    this.paramGrpID=parameter.parametergroup;
+    this.paramGrpID = parameter.parametergroup;
     
-    this.pgnamef=parameter.pgnamef;
+    this.pgnamef = parameter.pgnamef;
     
-    this.processtype=parameter.processtype;
+    this.processtype = parameter.processtype;
         
-    this.processtypenamef=parameter.processtypenamef;
+    this.processtypenamef = parameter.processtypenamef;
           
-    this.languages=languages;
+    this.languages = languages;
   
     this.nameL1 = parameter.nameLang(languages[0].key);
   
@@ -40,64 +40,83 @@ function editSinglePTParameterController($state,$uibModal,$stateParams,$translat
     
     this.newDescL2 = this.descL2;
     
-    this.lang1=$translate.instant(languages[0].name);
+    this.lang1 = $translate.instant(languages[0].name);
   
-    this.lang2=$translate.instant(languages[1].name);
+    this.lang2 = $translate.instant(languages[1].name);
   
-    this.lang1key=$translate.instant(languages[0].key);
+    this.lang1key = $translate.instant(languages[0].key);
   
-    this.lang2key=$translate.instant(languages[1].key);
+    this.lang2key = $translate.instant(languages[1].key);
     
     if (parameter.stringkeyunit){
 	    this.unitL1=parameter.unitLang(languages[0].key);
 	    this.unitL2=parameter.unitLang(languages[1].key);
     }
+    
+    this.unit = parameter.stringkeyunit > 0;
+    
+    this.titlefield = parameter.id_field;
+    
+   
   
-    this.editFieldNL1=false;
-  
-    this.editFieldNL2=false;
+    this.edit = function(field){
+    	this.activeField = field;
+	    thisController.newNameL1 = thisController.nameL1;
+	    thisController.newNameL2 = thisController.nameL2;
+	    thisController.newDescL1 = thisController.descL1;
+	    thisController.newDescL2 = thisController.descL2;
+	    thisController.newFormula = thisController.formula;
+    };
     
-    this.unit=parameter.stringkeyunit>0;
-    
-    this.titlefield=parameter.id_field;
     
     
+    this.openFormulaModal = function(){
+  		var modalInstance = $uibModal.open({
+  			animation: false,
+  			templateUrl: 'modules/admin-samples/formula-modal.html',
+  			controller: 'formulaModalController as formulaModalCtrl',
+  			resolve: {
+  				formula : function(){
+  					return parameter.formula;
+  				},
+  				paramGroups: function(){
+  					return parameter.parametergroups;
+  				},
+  				parameters: function () {
+  					return parameter.otherparameters; 
+  				}
+  			}
+  	    });
+
+  	    modalInstance.result.then(
+  	    	function (formula) {
+  	    		if (formula.ok){
+	  	  	    	var tParameter = {parameterid : parameter.id};
+	  	    		tParameter.formula = formula.formula;
+	  	    		thisController.formula = formula.formula;
+	  	    		var promise = avProcessTypeService.updateParameter(tParameter);
+	  			    promise.then(
+	  			    	function(){
+	  			    		reload();
+	  			    	},
+	  			    	function(dings){
+	  			    		console.log("error");
+	  			    		reload();
+	  			    	}
+	  			    );
+  	    		}
+  	    	}, 
+  	    	function () {
+  	    		// dismissed
+  	    	}
+  	    );
+	};
 
   
   
-    this.edit = function(field){
-	    thisController.editFieldNL1 = (field=="NL1");
-	    thisController.editFieldNL2 = (field=="NL2");
-	    thisController.editFieldDL1 = (field=="DL1");
-	    thisController.editFieldDL2 = (field=="DL2");
-	    thisController.newNameL1=thisController.nameL1;
-	    thisController.newNameL2=thisController.nameL2;
-	    thisController.newDescL1=thisController.descL1;
-	    thisController.newDescL2=thisController.descL2;
-    };
-	
   
   
-  
-    this.editNL1= function(){
-	    thisController.editmode=true;
-	    parameter.editNL1=true;
-	    parameter.newParameterNameL1=parameter.nameLang(thisController.lang1key);
-	    activeParameter=parameter;
-    };
-   
-  
-  
-    this.editNL2= function(){
-	    thisController.editmode=true;
-	    parameter.editNL2=true;
-	    parameter.newParameterNameL2=parameter.nameLang(thisController.lang2key);
-	    activeParameter=parameter;
-    };
-  
-  
-  
-  	this.setHidden=function(){
+  	this.setHidden = function(){
 	    var tempParameter={ 
 	    		parameterid : parameter.id, 
 	    		hidden : thisController.hidden
@@ -112,7 +131,7 @@ function editSinglePTParameterController($state,$uibModal,$stateParams,$translat
   
   
   
-  	this.setCompulsory=function(){
+  	this.setCompulsory = function(){
   		var tempParameter={ 
   			parameterid : parameter.id,
 			compulsory  : thisController.compulsory};
@@ -128,9 +147,9 @@ function editSinglePTParameterController($state,$uibModal,$stateParams,$translat
   
   
     this.keyUp = function(keyCode,value,language) {
-  	    if (keyCode===13) {				// Return key pressed
+  	    if (keyCode === 13) {				// Return key pressed
   	    	var tParameter={parameterid:parameter.id};
-  	    	if (thisController.editFieldDL1 || thisController.editFieldDL2){
+  	    	if (thisController.activeField === 'DL1' || thisController.activeField === 'DL2'){
   	    		tParameter.description={};
   	    		tParameter.description[language]=value;
   	    	} else{
@@ -151,7 +170,7 @@ function editSinglePTParameterController($state,$uibModal,$stateParams,$translat
 
   
   
-    var reload=function() {
+    var reload = function() {
     	var current = $state.current;
   	  	var params = angular.copy($stateParams);
   	  	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });

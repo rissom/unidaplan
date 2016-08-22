@@ -5,11 +5,11 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	// restfactory is a wrapper for $html.
 	
 	
-	var thisController=this;
+	var thisController = this;
 	
 	   
 	  
-	this.AddSampletypePGParameters=function(sampletype,paramgrp,parameters){
+	this.AddSampletypePGParameters = function(sampletype,paramgrp,parameters){
 		var tempObj = {
 			sampletypeid 	 : sampletype,
 			parametergroupid : paramgrp,
