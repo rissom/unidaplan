@@ -25,6 +25,10 @@ var floatParameter = function() {
 				this.newValue = parseFloat($scope.parameter.data.value);
 			}
 			
+			this.dataFormatter = new DataFormatter({locale : 'en-US'});
+			this.dataFormatter.locale.decimalSeparator = ".";
+			this.dataFormatter.locale.thousandSeparator = " ";
+			
 			this.keyUp = function(keyCode) {
 				if (keyCode === 13) {				// Return key pressed
 					$scope.parameter.editing = false;
