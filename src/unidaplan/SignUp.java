@@ -28,16 +28,16 @@ public class SignUp extends HttpServlet {
       throws ServletException, IOException {		
     request.setCharacterEncoding("utf-8");    
     JSONObject  jsonIn = null;	
-    JSONObject answer=new JSONObject();
-    String fullname="";
-    String username="";
-    String token="";
-    String email="";
-    String hash="";
-    int id=0;
-    String status="ok";
+    JSONObject answer = new JSONObject();
+    String fullname = "";
+    String username = "";
+    String token = "";
+    String email = "";
+    String hash = "";
+    int id = 0;
+    String status = "ok";
     String password = "";
-	DBconnection DBconn=new DBconnection();
+	DBconnection DBconn = new DBconnection();
 
     try {
         String in = request.getReader().readLine();
@@ -45,11 +45,11 @@ public class SignUp extends HttpServlet {
 	    // get User details
 		id=jsonIn.getInt("id");
 		
-		fullname=jsonIn.getString("fullname");
-		username=jsonIn.getString("username");
-		email=jsonIn.getString("email");
-		token=jsonIn.getString("token");
-		password=jsonIn.getString("password");  //password should already be a hash
+		fullname = jsonIn.getString("fullname");
+		username = jsonIn.getString("username");
+		email = jsonIn.getString("email");
+		token = jsonIn.getString("token");
+		password = jsonIn.getString("password");  //password should already be a hash
 	} catch (JSONException e){
 		e.printStackTrace();
 		System.err.println("SignUp: Problems reading JSON. Missing token?");
@@ -62,8 +62,8 @@ public class SignUp extends HttpServlet {
 			"SELECT token, token_valid_to,"
 			+ "groupmemberships.groupid AS admin "
 			+ "FROM users "
-			+ "LEFT JOIN groupmemberships ON (groupid=1 AND userid=users.id) "
-			+ "WHERE users.id=?");
+			+ "LEFT JOIN groupmemberships ON (groupid = 1 AND userid = users.id) "
+			+ "WHERE users.id = ?");
 	   	pstmt1.setInt(1, id);
 	   	
 	   	JSONObject jsToken = DBconn.jsonObjectFromPreparedStmt(pstmt1);
@@ -71,6 +71,7 @@ public class SignUp extends HttpServlet {
 			answer.put("admin",true);
 		}
 	   	answer.put("fullname", fullname);
+	   	answer.put("id", id);
 	   	String dbtoken = jsToken.getString("token");
 	   	String validToString = jsToken.optString("token_valid_to");
 	   	Timestamp validToDate = Timestamp.valueOf(validToString); 
@@ -80,8 +81,9 @@ public class SignUp extends HttpServlet {
 	   		hash=PasswordHash.createHash(password);   	
 	   		// store stuff in database
 	   		PreparedStatement pstmt2 = DBconn.conn.prepareStatement( 			
-					"UPDATE users SET fullname=(?), username=(?),email=(?),pw_hash=(?),token=(Null) "
-					+"WHERE id=?");
+					  "UPDATE users "
+					+ "SET fullname=(?), username=(?),email=(?),pw_hash=(?),token=(Null) "
+					+ "WHERE id = ?");
 		   	pstmt2.setString(1, fullname);
 		   	pstmt2.setString(2, username);
 		   	pstmt2.setString(3, email);

@@ -3,10 +3,10 @@
 
 function signupController(userService,$rootScope,$state,$translate,user,token){
 	
-	var thisController=this;
-	this.fullname="";
-	this.username="";
-	this.email="";
+	var thisController = this;
+	this.fullname = "";
+	this.username = "";
+	this.email = "";
 	
 	this.user={};
 	
@@ -21,12 +21,12 @@ function signupController(userService,$rootScope,$state,$translate,user,token){
 		};
 		userService.signUpUser(userData).then(
 			function(data, status, headers, config){
-				$rootScope.username=data.data.fullname;
-				$rootScope.userid=data.data.id;
+				$rootScope.username = data.data.fullname;
+				$rootScope.userid = data.data.id;
 				if(data.data.admin){
-					$rootScope.admin=data.data.admin;
+					$rootScope.admin = data.data.admin;
 				} else {
-					$rootScope.admin=false;
+					$rootScope.admin = false;
 				}
 				
 				//language and username is stored in Browser storage.
