@@ -31,18 +31,18 @@ import org.json.JSONObject;
 public class DBconnection  {
 	Connection conn = null;
 	
-//	 local DB
-	static Boolean localDB = true;
-	static String dbURL2 = "jdbc:postgresql://127.0.0.1/thorse";
-	static String user = "thorse";
-	static String pass = "jame765!";
-
-//	// remote DB
-//	static Boolean localDB = false;
-//	static String dbURL2 = "jdbc:postgresql://isadb.czghuuewemph.eu-west-1.rds.amazonaws.com/isaheat";
+////	 local DB
+//	static Boolean localDB = true;
+//	static String dbURL2 = "jdbc:postgresql://127.0.0.1/thorse";
 //	static String user = "thorse";
-//	static String pass = "Amaz765!";
+//	static String pass = "jame765!";
 
+
+	// remote DB
+	static Boolean localDB = false;
+	static String dbURL2 = "jdbc:postgresql://85.199.143.79/mo";
+	static String user = "mo";
+	static String pass = "hgfzzt!11";
 
   
 	private static final String DEFAULT_DRIVER = "org.postgresql.Driver";
