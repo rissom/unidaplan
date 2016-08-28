@@ -21,9 +21,9 @@ import org.json.JSONObject;
 	      throws ServletException, IOException {
 		
 		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
+		int userID = authentificator.GetUserID(request,response);
 	    request.setCharacterEncoding("utf-8");
-	    String status="ok";
+	    String status = "ok";
 	    String in = request.getReader().readLine();
 	    JSONObject jsonIn = null;
 	    
@@ -37,9 +37,9 @@ import org.json.JSONObject;
 	    response.setCharacterEncoding("utf-8");
 	    PreparedStatement pStmt;
 
-	    int userId=0;
+	    int ID = 0;
 	    try {
-			userId=jsonIn.getInt("userid");	
+			ID = jsonIn.getInt("userid");	
 		} catch (JSONException e) {
 			System.err.println("UpdateUserRights: Error parsing ID-Field");
 			status="error parsing ID-Field";
@@ -49,7 +49,7 @@ import org.json.JSONObject;
 	 	DBconnection dBconn=new DBconnection();
 	    try{   
 		    dBconn.startDB();
-			if (Unidatoolkit.userHasAdminRights(userId, dBconn)){
+			if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
 				
 				 // for experiments
 			    if (jsonIn.has("updatedExRights")){
@@ -58,14 +58,14 @@ import org.json.JSONObject;
 			    		String permission = updatedExRights.getJSONObject(i).getString("permission");
 			    		int sampletypeId = updatedExRights.getJSONObject(i).getInt("id");
 			    		pStmt = dBconn.conn.prepareStatement("DELETE FROM rightsexperimentuser WHERE userId=? AND experiment=?");
-						pStmt.setInt(1,userId);
+						pStmt.setInt(1,ID);
 						pStmt.setInt(2,sampletypeId);	
 				    	pStmt.executeUpdate();
 					    pStmt.close();
 						if (!permission.equals("l")){ // permission is 'read' or 'write'
 			    			pStmt = dBconn.conn.prepareStatement("INSERT INTO rightsexperimentuser "
 			    					+" (userId,experiment,permission,lastuser) VALUES (?,?,?,?)");
-			    			pStmt.setInt(1,userId);
+			    			pStmt.setInt(1,ID);
 							pStmt.setInt(2,sampletypeId);
 							pStmt.setString(3,permission);
 							pStmt.setInt(4,userID);
@@ -78,18 +78,20 @@ import org.json.JSONObject;
 			    // for sampletypes
 			    if (jsonIn.has("updatedSTrights")){
 			    	JSONArray updatedSTrights = jsonIn.getJSONArray("updatedSTrights");
-			    	for (int i=0; i<updatedSTrights.length(); i++){
+			    	for (int i = 0; i < updatedSTrights.length(); i++){
 			    		String permission = updatedSTrights.getJSONObject(i).getString("permission");
 			    		int sampletypeId = updatedSTrights.getJSONObject(i).getInt("id");
-			    		pStmt = dBconn.conn.prepareStatement("DELETE FROM rightssampletypeuser WHERE userId=? AND sampletype=?");
-						pStmt.setInt(1,userId);
+			    		pStmt = dBconn.conn.prepareStatement("DELETE FROM rightssampletypeuser WHERE userId = ? AND sampletype = ?");
+						pStmt.setInt(1,ID);
 						pStmt.setInt(2,sampletypeId);	
 				    	pStmt.executeUpdate();
 					    pStmt.close();
 						if (!permission.equals("l")){ // permission is 'read' or 'write'
-			    			pStmt = dBconn.conn.prepareStatement("INSERT INTO rightssampletypeuser "
-			    					+" (userId,sampletype,permission,lastuser) VALUES (?,?,?,?)");
-			    			pStmt.setInt(1,userId);
+			    			pStmt = dBconn.conn.prepareStatement(
+			    						"INSERT INTO rightssampletypeuser "
+			    					  + " (userId,sampletype,permission,lastuser) "
+			    					  + "VALUES (?,?,?,?)");
+			    			pStmt.setInt(1,ID);
 							pStmt.setInt(2,sampletypeId);
 							pStmt.setString(3,permission);
 							pStmt.setInt(4,userID);
@@ -106,14 +108,14 @@ import org.json.JSONObject;
 			    		String permission = updatedSTrights.getJSONObject(i).getString("permission");
 			    		int processtypeId = updatedSTrights.getJSONObject(i).getInt("id");
 			    		pStmt = dBconn.conn.prepareStatement("DELETE FROM rightsprocesstypeuser WHERE userId=? AND processtype=?");
-						pStmt.setInt(1,userId);
+						pStmt.setInt(1,ID);
 						pStmt.setInt(2,processtypeId);	
 				    	pStmt.executeUpdate();
 					    pStmt.close();
 						if (!permission.equals("l")){ // permission is 'read' or 'write'
 			    			pStmt = dBconn.conn.prepareStatement("INSERT INTO rightsprocesstypeuser "
 			    					+" (userid,processtype,permission,lastuser) VALUES (?,?,?,?)");
-			    			pStmt.setInt(1,userId);
+			    			pStmt.setInt(1,ID);
 							pStmt.setInt(2,processtypeId);
 							pStmt.setString(3,permission);
 							pStmt.setInt(4,userID);
