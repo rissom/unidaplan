@@ -26,8 +26,6 @@ var floatParameter = function() {
 			}
 			
 			this.dataFormatter = new DataFormatter({locale : 'en-US'});
-			this.dataFormatter.locale.decimalSeparator = ".";
-			this.dataFormatter.locale.thousandSeparator = " ";
 			
 			this.keyUp = function(keyCode) {
 				if (keyCode === 13) {				// Return key pressed
@@ -45,8 +43,8 @@ var floatParameter = function() {
 			
 			this.keyDown = function(keyCode) {
 				if (keyCode === 9) {		// Tab key pressed
-					$scope.parameter.editing=false; 
-					$scope.parameter.data.value=this.newValue;
+					$scope.parameter.editing = false; 
+					$scope.parameter.data.value = this.newValue;
 					$scope.pupdate({parameter:$scope.parameter});
 				}
 			}
