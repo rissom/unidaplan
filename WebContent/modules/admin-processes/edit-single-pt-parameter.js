@@ -8,6 +8,8 @@ function editSinglePTParameterController($state,$uibModal,$stateParams,$translat
     
     this.compulsory = parameter.compulsory;
     
+    this.definition = parameter.definition;
+    
     this.format = parameter.format;
     
     this.formula = parameter.formula;
