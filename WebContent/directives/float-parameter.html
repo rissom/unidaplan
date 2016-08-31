@@ -1,5 +1,5 @@
 <div>
-<span ng-if = "!parameter.editing"> 
+<span ng-if = "!parameter.editing && parameter.data.value"> 
 {{floatParamCtrl.dataFormatter.format(parameter.data.value, 'Number', parameter.format||'@').value}}</span>
 <span ng-if = "!parameter.editing && parameter.unit && parameter.data.value && parameter.data.value != ''">
 	{{parameter.unitf()}}
