@@ -666,30 +666,34 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 
 
 
-
 .run(function($rootScope, restfactory) {
 	
 	// init function: reads the username from local Browser storage.
 	
 	
+	
+		var request = new XMLHttpRequest();
+		request.open("GET", "get-active-session-user", false);  // `false` makes the request synchronous
+		request.send(null);
+		var data = JSON.parse(request.responseText);
+		console.log("data",data)
 
-	var username=window.localStorage.getItem("username");
-	if (username){
-		$rootScope.username=username;
-	}else{
-		$rootScope.username="User";
-	}
+		if (request.status === 200) {
+			$rootScope.userid = data.id;
+			if (data.username){
+				$rootScope.username = data.fullname;
+			}else{
+				delete $rootScope.username;
+			}
+			
+			if (data.admin == "true"){
+				$rootScope.admin = true;
+			}else{
+				$rootScope.admin = false;
+			}
+		};
+		
 	
-	if (window.localStorage.getItem("admin")=="true"){
-		$rootScope.admin=true;
-	}else{
-		$rootScope.admin=false;
-	}
-	
-	var userid=window.localStorage.getItem("userid");
-	if (userid){
-		$rootScope.userid=userid;
-	}
 		
 	
 	

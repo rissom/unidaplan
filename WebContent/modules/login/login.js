@@ -1,25 +1,25 @@
 (function(){
 'use strict';
 
-var loginController=function($state,restfactory,$scope,$rootScope,$translate){
+var loginController = function($state,restfactory,$scope,$rootScope,$translate){
 	
-	var thisController=this;
+	var thisController = this;
 	
-	this.error="";
+	this.error = "";
 	
 	
 	
 	this.userLogin = function(){
 		// is called when the user logs in.
-		var promise=restfactory.GET('login?user='+this.userinput+'&pw='+CryptoJS.SHA256(this.pwinput).toString(CryptoJS.enc.Base64));
+		var promise = restfactory.GET('login?user='+this.userinput+'&pw='+CryptoJS.SHA256(this.pwinput).toString(CryptoJS.enc.Base64));
 		promise.then(function(data){
-				thisController.error="";
-				$rootScope.username=data.data.fullname;
-				$rootScope.userid=data.data.id;
+				thisController.error = "";
+				$rootScope.username = data.data.fullname;
+				$rootScope.userid = data.data.id;
 				if(data.data.admin){
-					$rootScope.admin=data.data.admin;
+					$rootScope.admin = data.data.admin;
 				} else {
-					$rootScope.admin=false;
+					$rootScope.admin = false;
 				}
 				
 				//language and username is stored in Browser storage.
@@ -27,10 +27,10 @@ var loginController=function($state,restfactory,$scope,$rootScope,$translate){
 			    window.localStorage.setItem("username",data.data.fullname);
 			    if (data.data.admin){
 			    	window.localStorage.setItem("admin",true);
-			    	$rootScope.admin=true;
+			    	$rootScope.admin = true;
 			    }else{
 			    	window.localStorage.setItem("admin",false);
-			    	$rootScope.admin=false;
+			    	$rootScope.admin = false;
 			    }
 			    window.localStorage.setItem("userid",data.data.id);
 			    
@@ -49,7 +49,7 @@ var loginController=function($state,restfactory,$scope,$rootScope,$translate){
 					$state.go('sampleChoser');
 				}
 			}, function(data){
-				thisController.error=$translate.instant("unknown user or wrong password");
+				thisController.error = $translate.instant("unknown user or wrong password");
 			}
 		)
 	}

@@ -414,6 +414,17 @@
   </servlet-mapping>
   
   <servlet>
+    <description>GetActiveSessionUser</description>
+    <display-name>GetActiveSessionUser</display-name>
+    <servlet-name>GetActiveSessionUser</servlet-name>
+    <servlet-class>unidaplan.GetActiveSessionUser</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GetActiveSessionUser</servlet-name>
+    <url-pattern>/get-active-session-user</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
     <description>Get the user groups (only admins)</description>
     <display-name>GetGroups</display-name>
     <servlet-name>GetGroups</servlet-name>
