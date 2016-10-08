@@ -99,7 +99,7 @@ function sampleController(sample,$state,$stateParams,$uibModal,$filter,types,sam
 			parameter.editing = false;
 			var oldValue 
 			if (typeof(parameter.data) != "undefined") {
-				oldvalue = parameter.data.value;
+				oldValue = parameter.data.value;
 			} else {
 				parameter.data = {};
 			} 
