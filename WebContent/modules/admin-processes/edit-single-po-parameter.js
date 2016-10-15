@@ -4,25 +4,27 @@
 function editSinglePOParameterController($state,$uibModal,$stateParams,$translate,avProcessTypeService,parameter,restfactory,languages){
   
 
-    var thisController=this;
+    var thisController = this;
   
-    var activeParameter={};
+    var activeParameter = {};
     
-    this.compulsory=parameter.compulsory;
+    this.compulsory = parameter.compulsory;
     
-    this.format=parameter.format;
+    this.definition = parameter.definition;
+    
+    this.format = parameter.format;
         
-    this.hidden=parameter.hidden;
+    this.hidden = parameter.hidden;
     
-    this.paramGrpID=parameter.parametergroup;
+    this.paramGrpID = parameter.parametergroup;
     
-    this.pgnamef=parameter.pgnamef;
+    this.pgnamef = parameter.pgnamef;
     
-    this.processtype=parameter.processtype;
+    this.processtype = parameter.processtype;
         
-    this.processtypenamef=parameter.processtypenamef;
+    this.processtypenamef = parameter.processtypenamef;
           
-    this.languages=languages;
+    this.languages = languages;
   
     this.nameL1 = parameter.nameLang(languages[0].key);
   
@@ -40,26 +42,26 @@ function editSinglePOParameterController($state,$uibModal,$stateParams,$translat
     
     this.newDescL2 = this.descL2;
     
-    this.lang1=$translate.instant(languages[0].name);
+    this.lang1 = $translate.instant(languages[0].name);
   
-    this.lang2=$translate.instant(languages[1].name);
+    this.lang2 = $translate.instant(languages[1].name);
   
-    this.lang1key=$translate.instant(languages[0].key);
+    this.lang1key = $translate.instant(languages[0].key);
   
-    this.lang2key=$translate.instant(languages[1].key);
+    this.lang2key = $translate.instant(languages[1].key);
     
     if (parameter.stringkeyunit){
-	    this.unitL1=parameter.unitLang(languages[0].key);
-	    this.unitL2=parameter.unitLang(languages[1].key);
+	    this.unitL1 = parameter.unitLang(languages[0].key);
+	    this.unitL2 = parameter.unitLang(languages[1].key);
     }
   
-    this.editFieldNL1=false;
+    this.editFieldNL1 = false;
   
-    this.editFieldNL2=false;
+    this.editFieldNL2 = false;
     
-    this.unit=parameter.stringkeyunit>0;
+    this.unit = parameter.stringkeyunit>0;
     
-    this.titlefield=parameter.id_field;
+    this.titlefield = parameter.id_field;
     
     
 
