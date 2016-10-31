@@ -3,19 +3,19 @@
 
 function editPtParamsController($state,$uibModal,$stateParams,$translate,avParameters,ptypes,restfactory,processService,parameterGrp,languages,avProcessTypeService){
   
-  var thisController=this;
+  var thisController = this;
   
-  var activeParameter={};
+  var activeParameter = {};
     
   this.parameters=parameterGrp.parameters.sort(function(a,b){
 	  return a.pos-b.pos;
   });
   
-  this.strings=parameterGrp.strings;
+  this.strings = parameterGrp.strings;
   
-  this.processtype=parameterGrp.processtype;
+  this.processtype = parameterGrp.processtype;
   
-  this.languages=languages;
+  this.languages = languages;
   
   this.nameL1 = parameterGrp.nameLang(languages[0].key);
   
@@ -25,17 +25,17 @@ function editPtParamsController($state,$uibModal,$stateParams,$translate,avParam
 
   this.newNameL2 = parameterGrp.nameLang(languages[1].key);
     
-  this.lang1=$translate.instant(languages[0].name);
+  this.lang1 = $translate.instant(languages[0].name);
   
-  this.lang2=$translate.instant(languages[1].name);
+  this.lang2 = $translate.instant(languages[1].name);
   
-  this.lang1key=$translate.instant(languages[0].key);
+  this.lang1key = languages[0].key;
   
-  this.lang2key=$translate.instant(languages[1].key);
+  this.lang2key = languages[1].key;
   
-  this.editFieldNL1=false;
+  this.editFieldNL1 = false;
   
-  this.editFieldNL2=false;
+  this.editFieldNL2 = false;
   
   this.av=avParameters;
     

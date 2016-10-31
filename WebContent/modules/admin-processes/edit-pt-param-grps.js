@@ -35,10 +35,8 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,$uibMod
   
   this.newDescL2 = processType.descLang(languages[1].key);
     
-  this.lang1=$translate.instant(languages[0].name);
-  
-  this.lang2=$translate.instant(languages[1].name);
-      
+  this.lang = function(l){return $translate.instant(languages[l].name)};
+        
   
 
   
@@ -116,7 +114,7 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,$uibMod
   
   
   
-  this.down=function(index){
+  this.down = function(index){
 	  var id1=thisController.parametergrps[index].id;
 	  var id2=thisController.parametergrps[index+1].id;
 	  var pos1=thisController.parametergrps[index+1].pos;
@@ -195,7 +193,7 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,$uibMod
   
   
   
-  this.performAction=function(parametergrp,action){
+  this.performAction = function(parametergrp,action){
 	  if (action.action === "edit" && !action.disabled) {
 		  $state.go("editPtParams",{"paramGrpID":parametergrp.id})
 	  }
@@ -207,7 +205,7 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,$uibMod
   
   
   
-  this.performSRAction=function(sparam,action){
+  this.performSRAction = function(sparam,action){
 	  if (action.action === "edit" && !action.disabled) {
 		  $state.go("editSinglePOParameter",{parameterID:sparam.id})
 	  }
@@ -219,7 +217,7 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,$uibMod
   };
   
 
-  var reload=function() {
+  var reload = function() {
 	    var current = $state.current;
 	    var params = angular.copy($stateParams);
 	    return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });

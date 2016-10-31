@@ -268,8 +268,8 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 	
 	
 	
-	this.getPTypeParams=function(paramGrpID){
-		var defered=$q.defer();
+	this.getPTypeParams = function(paramGrpID){
+		var defered = $q.defer();
         var thisController=this;
 	    var promise = restfactory.GET("process-type-params?paramgrpid="+paramGrpID);
 	    promise.then(function(rest) {
@@ -278,17 +278,17 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
     			return (key2string.key2stringWithLangStrict(thisController.paramGrp.name,thisController.paramGrp.strings,lang));
 	    	};
 	    	angular.forEach(thisController.paramGrp.parameters,function(parameter) {
-	    		parameter.namef=function(){
-	    			return (key2string.key2string(parameter.name,thisController.paramGrp.strings));
+	    		parameter.namef = function(){
+	    			return key2string.key2string(parameter.name,thisController.paramGrp.strings);
 	    		};
-	    		parameter.nameLang=function(lang){
-	    			return (key2string.key2stringWithLangStrict(parameter.name,thisController.paramGrp.strings,lang));
+	    		parameter.nameLang = function(lang){
+	    			return key2string.key2stringWithLangStrict(parameter.name,thisController.paramGrp.strings,lang);
 	    		};
-	    		parameter.unitf=function(){
-	    			return (key2string.key2string(parameter.stringkeyunit,thisController.paramGrp.strings));
+	    		parameter.unitf = function(){
+	    			return key2string.key2string(parameter.stringkeyunit,thisController.paramGrp.strings);
 	    		};
-	    		parameter.unitLang=function(lang){
-	    			return (key2string.key2stringWithLangStrict(parameter.stringkeyunit,thisController.paramGrp.strings,lang));
+	    		parameter.unitLang = function(lang){
+	    			return key2string.key2stringWithLangStrict(parameter.stringkeyunit,thisController.paramGrp.strings,lang);
 	    		};
 	    		// actions for the context menu. Have to be implemented in editPtParamsCtrl.performAction
 	    		parameter.actions = [{action:"edit",name:$translate.instant("edit")},
