@@ -3,15 +3,13 @@
 
 function aProcessesController($state,$stateParams,$translate,restfactory,processService,ptypes,languages){
   
-	var thisController=this;
+	var thisController = this;
   
-	this.languages=languages;
+	this.languages = languages;
 	  
-	this.lang1=$translate.instant(languages[0].name);
-	  
-	this.lang2=$translate.instant(languages[1].name);
+	this.lang = function(l){return $translate.instant(languages[l].name)};
   
-	this.ptypes=ptypes;
+	this.ptypes = ptypes;
     
   
   
