@@ -225,8 +225,13 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	    		parameter.unitLang = function(lang){
 	    			return (key2string.key2stringWithLangStrict(parameter.stringkeyunit,thisController.paramGrp.strings,lang));
 	    		};
-	    		parameter.actions = [{action:"edit",name:$translate.instant("edit")},
-	    		                     {action:"delete",name:$translate.instant("delete"),disabled:!parameter.deletable}];
+	    		parameter.actions = [{action:"edit",name:$translate.instant("edit")}];
+	    		if (parameter.hidden) { 
+	    				parameter.actions.push({action:"show",name:$translate.instant("show again")});	
+	    			} else {
+	    				parameter.actions.push({action:"hide",name:$translate.instant("hide")});
+	    			}
+	    		parameter.actions.push({action:"delete",name:$translate.instant("delete"),disabled:!parameter.deletable});
 	    		if ("siblings" in thisController.paramGrp){
 	    			thisController.paramGrp.siblings.map(function(sibling){
 	    				var name = key2string.key2string(sibling.name,thisController.paramGrp.strings);
@@ -305,6 +310,10 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	    return defered.promise;
 	};
 	
+	
+	this.hideSTParameter = function(parameter){
+		return restfactory.PUT('update-st-parameter',{parameterid:parameter, hidden: true});
+	}
 	
 	
 	this.moveParameterToGrp = function(parameter,destination){
