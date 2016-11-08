@@ -180,7 +180,7 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 					return key2string.key2string(paramgrp.paramgrpkey,strings);
 				};
 				angular.forEach(paramgrp.parameter, function(parameter) {
-					parameter.namef=function(){
+					parameter.namef = function(){
 						return key2string.key2string(parameter.namekey,strings);
 					};
 					if (parameter.parametergroup){
@@ -189,7 +189,7 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 						};
 					}
 					if (parameter.unit){
-						parameter.unitf=function(){
+						parameter.unitf = function(){
 							return key2string.key2string(parameter.unit,strings);
 						};
 					}
