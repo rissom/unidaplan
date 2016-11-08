@@ -51,7 +51,14 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 					console.log("restfactory.GET: error: ",data);
 					defer.reject('some http error occured');
 					setFailedState($rootScope.toState,$rootScope.toStateParams);
-					if (data.status==401) {
+					if (data.status == 401) {
+						$state.go('noRights');
+					}
+					if (data.status == 511) {
+						delete $rootScope.username;
+						delete $rootScope.userid;
+						delete $rootScope.userfullname;
+						$rootScope.admin = false
 						$state.go('noRights');
 					}
 			    }
@@ -97,7 +104,14 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 					console.log("restfactory.PUT: error: ", data );
 					defer.reject('some http error occured');
 					setFailedState($rootScope.toState,$rootScope.toStateParams);
-					if (data.status==401) {
+					if (data.status == 401) {
+						$state.go('noRights');
+					}
+					if (data.status == 511) {
+						delete $rootScope.username;
+						delete $rootScope.userid;
+						delete $rootScope.userfullname;
+						$rootScope.admin = false
 						$state.go('noRights');
 					}
 			    }
@@ -141,7 +155,14 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 					console.log("restfactory.POST: error: ",data);
 					defer.reject('some http error occured Status: '+data.status);
 					setFailedState($rootScope.toState,$rootScope.toStateParams);
-					if (data.status==401) {
+					if (data.status == 401) {
+						$state.go('noRights');
+					}
+					if (data.status == 511) {
+						delete $rootScope.username;
+						delete $rootScope.userid;
+						delete $rootScope.userfullname;
+						$rootScope.admin = false
 						$state.go('noRights');
 					}
 			    }
@@ -172,7 +193,14 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 					console.log("restfactory.DELETE: error: ", data);
 					defer.reject('some http error occured');
 					setFailedState($rootScope.toState,$rootScope.toStateParams);
-					if (data.status==401) {
+					if (data.status == 401) {
+						$state.go('noRights');
+					}
+					if (data.status == 511) {
+						delete $rootScope.username;
+						delete $rootScope.userid;
+						delete $rootScope.userfullname;
+						$rootScope.admin = false
 						$state.go('noRights');
 					}
 			    }
