@@ -6,7 +6,7 @@ function sampleController(sample,$state,$stateParams,$uibModal,$filter,types,sam
 	
 	var thisController = this;
 		
-	if (sample.error) this.error=sample.error;
+	if (sample.error) this.error = sample.error;
 	this.parametergroups = sample.parametergroups;
 	this.editable = sample.editable;
 	this.files = sample.files;
@@ -24,6 +24,7 @@ function sampleController(sample,$state,$stateParams,$uibModal,$filter,types,sam
 	this.typestringkey = sample.typestringkey;
 	this.typeid = sample.typeid;
 		
+	this.dataFormatter = new DataFormatter({locale : 'en-US'});
 
 	
 	// store ancestors in database
@@ -39,7 +40,7 @@ function sampleController(sample,$state,$stateParams,$uibModal,$filter,types,sam
 	
 	// store children in database
 	this.assignChildren = function(children){
-		var c2=[];
+		var c2 = [];
 		for (var i=0; i<children.length; i++) {
 			c2.push(children[i].sampleid);
 		}		
@@ -115,7 +116,7 @@ function sampleController(sample,$state,$stateParams,$uibModal,$filter,types,sam
 					}
 			);
 		}
-		if (keyCode===27) {		// Escape key pressed
+		if (keyCode === 27) {		// Escape key pressed
 			parameter.editing=false;			
 		}
 	};
@@ -152,7 +153,7 @@ function sampleController(sample,$state,$stateParams,$uibModal,$filter,types,sam
 		});
 	    
 	  	modalInstance.result.then(function (result) {  // get the new Samplelist + Info if it is changed from Modal. 
-			if (mode=="ancestors"){ 
+			if (mode == "ancestors"){ 
 				thisController.ancestors=result.chosen;
 				if (result.changed) {
 		    	    thisController.assignAncestors(result.chosen);

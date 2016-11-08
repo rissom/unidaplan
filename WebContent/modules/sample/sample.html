@@ -3,7 +3,7 @@
 	<span ng-repeat   = "tparameter in sampleCtrl.titleparameters | orderBy: 'pos'"
 		  ng-dblclick = "tparameter.editing = sampleCtrl.editable; newValue = tparameter.data.value">
 		<span ng-hide = "tparameter.editing">
-			{{("0000"+tparameter.data.value).substr(-tparameter.format.length,tparameter.format.length)}}
+			{{sampleCtrl.dataFormatter.format(tparameter.data.value, 'Number', tparameter.format||'@').value}}
 		</span>
 		<span ng-switch on = "tparameter.datatype">
 			<input 
@@ -35,26 +35,26 @@
 
 
 <paramgrps 
-	parametergrps="sampleCtrl.parametergroups" 
-	editable="sampleCtrl.editable"
-	pupdate="sampleCtrl.saveParameter(parameter)">
+	parametergrps = "sampleCtrl.parametergroups" 
+	editable = "sampleCtrl.editable"
+	pupdate = "sampleCtrl.saveParameter(parameter)">
 </paramgrps>
 
 
 	
 <!-- Files --> 
-<h4 ng-show="sampleCtrl.editable || sampleCtrl.files.length>0">{{'Files' | translate}}</h4>
+<h4 ng-show = "sampleCtrl.editable || sampleCtrl.files.length>0">{{'Files' | translate}}</h4>
 <ul>
-	<li ng-repeat="file in sampleCtrl.files">
-		<a ng-href="file-download/{{file.id}}">
+	<li ng-repeat = "file in sampleCtrl.files">
+		<a ng-href = "file-download/{{file.id}}">
 			{{file.filename}}
 		</a>
 		<button 
-			type="button" 
-			class="btn btn-default btn-xs" 
-			ng-click="sampleCtrl.deleteFile(file.id)"
-			ng-show="sampleCtrl.editable">
-					<span class="glyphicon glyphicon-remove"></span>
+			type = "button" 
+			class = "btn btn-default btn-xs" 
+			ng-click = "sampleCtrl.deleteFile(file.id)"
+			ng-show = "sampleCtrl.editable">
+				<span class = "glyphicon glyphicon-remove"></span>
 		</button>
 	</li>
 </ul>
@@ -62,9 +62,9 @@
 
 
 
-<form id="upload_form" action="upload-file" method="post" enctype="multipart/form-data" ng-show="sampleCtrl.editable">
-	<span class="btn btn-default btn-file">
-    	{{'Add File'| translate}}<input type="file" name="file" id="file" onchange="angular.element(this).scope().sampleCtrl.upload(this)" class="file"/> <br/>
+<form id = "upload_form" action = "upload-file" method = "post" enctype = "multipart/form-data" ng-show = "sampleCtrl.editable">
+	<span class = "btn btn-default btn-file">
+    	{{'Add File'| translate}}<input type = "file" name = "file" id = "file" onchange = "angular.element(this).scope().sampleCtrl.upload(this)" class = "file"/> <br/>
 	</span>
 </form>
 <br/>
@@ -74,28 +74,28 @@
 <!-- Ancestors and children -->
 <h4>{{'hierarchy' | translate}}</h4>
 <div class=row>
-	<div class="col-md-6" ng-show="sampleCtrl.ancestors.length>0 || sampleCtrl.editable">{{'Originates from'|translate}}:<br />
-		<div ng-repeat="bsample in sampleCtrl.ancestors"> 
-			<a ui-sref="sample({sampleID:bsample.sampleid})">
+	<div class = "col-md-6" ng-show = "sampleCtrl.ancestors.length > 0 || sampleCtrl.editable">{{'Originates from'|translate}}:<br />
+		<div ng-repeat = "bsample in sampleCtrl.ancestors"> 
+			<a ui-sref = "sample({sampleID:bsample.sampleid})">
 				{{sampleCtrl.getType(bsample)}} {{bsample.name}}
 			</a><br />
 		</div> 
-		<button class="btn btn-default"
+		<button class = "btn btn-default"
 
-				ng-click="sampleCtrl.openDialog('ancestors')"
-				ng-show="sampleCtrl.editable">
+				ng-click = "sampleCtrl.openDialog('ancestors')"
+				ng-show = "sampleCtrl.editable">
 			{{'Add/Remove samples'|translate}}
 		</button>				
 	</div>
-	<div class="col-md-6" ng-show="sampleCtrl.children.length>0 || sampleCtrl.editable">{{'Is ancestor of'|translate}}:<br />
-		<div ng-repeat="bsample in sampleCtrl.children">
-			<a ui-sref="sample({sampleID:bsample.sampleid})">
+	<div class = "col-md-6" ng-show = "sampleCtrl.children.length>0 || sampleCtrl.editable">{{'Is ancestor of'|translate}}:<br />
+		<div ng-repeat = "bsample in sampleCtrl.children">
+			<a ui-sref = "sample({sampleID:bsample.sampleid})">
 				{{sampleCtrl.getType(bsample)}} {{bsample.name}}
 			</a>
 		</div>
-		<button class="btn btn-default" 
-				ng-click="sampleCtrl.openDialog('children')"
-				ng-show="sampleCtrl.editable">
+		<button class = "btn btn-default" 
+				ng-click = "sampleCtrl.openDialog('children')"
+				ng-show = "sampleCtrl.editable">
 			{{'Add/Remove samples'|translate}}
 		</button>
 <!-- 	<button type="button" class="btn btn-default" >
@@ -112,8 +112,8 @@
 <h4 ng-show="sampleCtrl.processes">{{'Finished Processes'|translate}}</h4>
 <div ng-repeat="process in sampleCtrl.processes">
 	{{process.date|date:'EEE'|translate}}, {{process.date|date:'dd-MM-yyyy, HH:mm:ss'}}&nbsp;
-	<button  class="btn btn-default"  ng-class="{'1':'ok','2':'att','3':'failed'}[process.status]"
-			 ui-sref="process({processID:process.processid})">
+	<button  class = "btn btn-default"  ng-class = "{'1':'ok','2':'att','3':'failed'}[process.status]"
+			 ui-sref = "process({processID:process.processid})">
 		{{sampleCtrl.getProcessType(process)}} {{process.number}}
 	</button>
 	<br />
@@ -125,16 +125,16 @@
 
 
 <!-- Experiments -->
-<h4 ng-show="sampleCtrl.plans.length>0">{{'Experiments'|translate}}</h4>
-	<div ng-repeat="experiment in sampleCtrl.plans">
-		<a ui-sref="experiment({experimentID:experiment.exp_id})">
+<h4 ng-show = "sampleCtrl.plans.length>0">{{'Experiments'|translate}}</h4>
+	<div ng-repeat = "experiment in sampleCtrl.plans">
+		<a ui-sref = "experiment({experimentID:experiment.exp_id})">
 			 Experiment no. {{experiment.exp_id}}, "{{experiment.namef()}}"
 		</a>
 		<ul>
-			<li ng-repeat="process in experiment.plannedprocesses">
+			<li ng-repeat = "process in experiment.plannedprocesses">
 				{{sampleCtrl.getProcessType(process)}}<span 
-				ng-show="process.notef()"><em>({{process.notef()}})</em></span><span 
-				ng-show="process.trrecipe">,&nbsp;<em>{{'recipe'|translate}}: {{process.trrecipe}}</em></span>
+				ng-show = "process.notef()"><em>({{process.notef()}})</em></span><span 
+				ng-show = "process.trrecipe">,&nbsp;<em>{{'recipe'|translate}}: {{process.trrecipe}}</em></span>
 			</li>
 		</ul>
 	</div>
@@ -142,10 +142,10 @@
 
 
 <!-- Buttonbar: previous/delete/next -->
-<div class=row>
-    <table class="text-center">
+<div class = row>
+    <table class = "text-center">
 	    <tr>
-		    <td width="300">
+		    <td width = "300">
 				<span ng-show = "sampleCtrl.previous">&#x25c0; {{'previous'|translate}} <br /> 
 				<button class = "btn btn-default" ui-sref = "sample({sampleID:sampleCtrl.previous.id})">
 						{{sampleCtrl.previous?sampleCtrl.getType(sampleCtrl.previous):''}} {{sampleCtrl.previous.name}}
@@ -153,7 +153,7 @@
 				&nbsp;	
 				</span>		
 			</td>
-			<td width="300">		
+			<td width = "300">		
 			&nbsp;
 			<br />
 				<button type = "button" 
@@ -164,10 +164,10 @@
 						{{'Delete Sample'|translate}}
 				</button> 	
 			</td>
-			<td width="300">		
+			<td width = "300">		
 				<span ng-show = "sampleCtrl.next"> &nbsp; {{'next'|translate}} &nbsp; &#9654;<br />
 					&nbsp;
-					<button class="btn btn-default" ui-sref="sample({sampleID:sampleCtrl.next.id})">
+					<button class = "btn btn-default" ui-sref = "sample({sampleID:sampleCtrl.next.id})">
 							{{sampleCtrl.next?sampleCtrl.getType(sampleCtrl.next):''}} {{sampleCtrl.next.name}}
 					</button>
 				</span>
