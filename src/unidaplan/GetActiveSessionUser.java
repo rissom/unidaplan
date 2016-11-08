@@ -35,6 +35,7 @@ import org.json.JSONObject;
 					  + "	users.id,"
 					  + "	users.fullname, " 
 					  + "	users.username, "
+					  + "	users.preferredlanguage, "	
 					  + "   NOT gm IS NULL AS admin "
 					  + "FROM users "
 					  + "LEFT JOIN groupmemberships gm ON (gm.userid = users.id AND gm.groupid = 1) " // member of Admin group? 

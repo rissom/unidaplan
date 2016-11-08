@@ -46,7 +46,6 @@ function menuf(experimentService,searchService,restfactory,$translate,
 	this.setLanguage = function(lang){  // change language and send a broadcast
 		if (this.old_language!=$translate.use()) {
 			$translate.use(lang);
-			window.localStorage.setItem("language",lang);
 			if ($rootScope.userid){
 				userService.setLanguage($rootScope.userid,lang);
 			}
@@ -66,11 +65,8 @@ function menuf(experimentService,searchService,restfactory,$translate,
 		var promise = restfactory.GET('logout');
 		promise.then(function(){
 				delete $rootScope.username;
-				window.localStorage.removeItem("username");
 				$rootScope.admin = false;
-		    	window.localStorage.removeItem("admin");
 				delete $rootScope.userid;
-		    	window.localStorage.removeItem("userid");
 				$state.go('login');
 			},
 			function(){

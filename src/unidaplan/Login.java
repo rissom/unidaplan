@@ -46,18 +46,19 @@ public class Login extends HttpServlet {
  	DBconnection dBconn = new DBconnection();
     dBconn.startDB();
     try {  
-		pstmt= dBconn.conn.prepareStatement( 	
+		pstmt = dBconn.conn.prepareStatement( 	
 		  "SELECT "
 		+ "  pw_hash, "
 		+ "  users.id, "
-		+ "  fullname, "
+		+ "  users.fullname, "
+		+ "  users.username, "
 		+ "  groupmemberships.groupid AS admin, "
-		+ "  preferredlanguage "
+		+ "  users.preferredlanguage "
 		+ "FROM users " 
 		+ "LEFT JOIN groupmemberships ON (groupid = 1 AND userid = users.id) "
 		+ "WHERE username = ?");
 		pstmt.setString(1,user);
-		hashjs=dBconn.jsonObjectFromPreparedStmt(pstmt);
+		hashjs = dBconn.jsonObjectFromPreparedStmt(pstmt);
 		pstmt.close();
 		
     }catch (SQLException e) {

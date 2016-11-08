@@ -28,18 +28,7 @@ function signupController(userService,$rootScope,$state,$translate,user,token){
 				} else {
 					$rootScope.admin = false;
 				}
-				
-				//language and username is stored in Browser storage.
-		
-			    window.localStorage.setItem("username",data.data.fullname);
-			    if (data.data.admin){
-			    	window.localStorage.setItem("admin",true);
-			    	$rootScope.admin=true;
-			    }else{
-			    	window.localStorage.setItem("admin",false);
-			    	$rootScope.admin=false;
-			    }
-			    window.localStorage.setItem("userid",data.data.id);
+			    $rootScope.admin = ( data.data.admin == 'true' );			    
 				var lang = window.localStorage.getItem("language");
 		        if(lang !== null){
 		        	  if (lang!=$translate.use()) {

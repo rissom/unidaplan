@@ -59,10 +59,13 @@ public class SignUp extends HttpServlet {
    		
    		DBconn.startDB();	 
    		PreparedStatement pstmt1 = DBconn.conn.prepareStatement( 			
-			"SELECT token, token_valid_to,"
-			+ "groupmemberships.groupid AS admin "
+			  "SELECT "
+			+ "    token,"
+			+ "    token_valid_to,"
+			+ "    preferredlanguage,"
+			+ "    NOT gm IS NULL AS admin "
 			+ "FROM users "
-			+ "LEFT JOIN groupmemberships ON (groupid = 1 AND userid = users.id) "
+			+ "LEFT JOIN groupmemberships gm ON (gm.groupid = 1 AND gm.userid = users.id) "
 			+ "WHERE users.id = ?");
 	   	pstmt1.setInt(1, id);
 	   	
@@ -110,7 +113,7 @@ public class SignUp extends HttpServlet {
 	} catch (Exception e) {
 		System.err.println("SignUp: Strange Problems");
 		status="Error SignUp";
-	} 
+	}
 	
     // tell client that everything is fine
 	response.setContentType("application/json");
