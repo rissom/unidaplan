@@ -78,7 +78,7 @@
 	</td>
 </tr>
 
-<tr ng-dblclick="editParamCtrl.edit('UL2')"  ng-show="editParamCtrl.hasUnit()">
+<tr ng-dblclick = "editParamCtrl.edit('UL2')"  ng-show = "editParamCtrl.hasUnit()">
 	<td>{{'Unit'|translate}} ({{editParamCtrl.lang2}}):</td>
 	<td>
 		<span ng-hide = "editParamCtrl.editUL2">{{editParamCtrl.unitL2}}</span>
@@ -97,12 +97,12 @@
 		<select class = "input-sm"
 				ng-options = "type as type for type in editParamCtrl.dataTypes"
 				ng-model = "editParamCtrl.dataType"
-				ng-change = "editParamCtrl.update()">
+				ng-change = "editParamCtrl.update('datatype',editParamCtrl.dataType)">
 	    </select>
     </td>
 </tr>
 
-<tr ng-dblclick="editParamCtrl.edit('format')" ng-show="editParamCtrl.showFormat()">
+<tr ng-dblclick = "editParamCtrl.edit('format')" ng-show="editParamCtrl.showFormat()">
 <td>{{'Format'|translate}}</td>
 	<td><span ng-hide = "editParamCtrl.editFormat">{{editParamCtrl.format}}</span>
 		<input ng-show = "editParamCtrl.editFormat" 
@@ -142,7 +142,7 @@
 </tr>
 
 <tr ng-dblclick = "editParamCtrl.edit('max')" 
-	ng-show="editParamCtrl.showMinMaxNumber()">
+	ng-show = "editParamCtrl.showMinMaxNumber()">
 <td>{{'Maximum'|translate}}</td>
 	<td><span ng-hide = "editParamCtrl.editMax">{{editParamCtrl.max}}</span>
 		<input ng-show = "editParamCtrl.editMax" 
@@ -179,9 +179,6 @@
 </tr>
  -->
 
-<td></td>
-<td></td>
-</tr>
 </table>
 
 
