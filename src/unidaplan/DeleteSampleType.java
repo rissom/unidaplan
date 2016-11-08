@@ -41,7 +41,7 @@ public class DeleteSampleType extends HttpServlet {
 		// get Parameter for id
 		try{
 			dBconn.startDB();
-			sampleTypeID=Integer.parseInt(request.getParameter("id")); }
+			sampleTypeID = Integer.parseInt(request.getParameter("id")); }
 		catch (Exception e1) {
 			sampleTypeID = -1;
 			System.err.print("DeleteSampleType: no sampleType ID given!");
@@ -57,7 +57,7 @@ public class DeleteSampleType extends HttpServlet {
 			        pStmt = dBconn.conn.prepareStatement(	
 			        	"SELECT string_key,description FROM objecttypes WHERE id = ?");
 					pStmt.setInt(1,sampleTypeID);
-					JSONObject ot=dBconn.jsonObjectFromPreparedStmt(pStmt);
+					JSONObject ot = dBconn.jsonObjectFromPreparedStmt(pStmt);
 					pStmt.close();
 					name = ot.getInt("string_key");
 			        if (ot.has("description")){
@@ -75,7 +75,7 @@ public class DeleteSampleType extends HttpServlet {
 				}
 		 
 	 			try {
-				 	if (sampleTypeID>0){
+				 	if (sampleTypeID > 0){
 				 		// delete the parameters
 				        pStmt = dBconn.conn.prepareStatement(	
 				        	"DELETE FROM ot_parameters WHERE objecttypesid=?");
