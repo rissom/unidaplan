@@ -34,6 +34,7 @@ import expr.Variable;
 		int userID = authentificator.GetUserID(request,response);
 		String status = "ok";
 		String privilege = "n";
+		
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
 	    JSONObject  jsonIn = null;	    
@@ -60,11 +61,13 @@ import expr.Variable;
 	 	DBconnection dBconn = new DBconnection();
 	    PreparedStatement pStmt = null;
 	    int datatype = -1;
+	    Boolean titleParameter = false;
 	    
 	    
 		try {	
 		    // look up the datatype in Database	    
 		    dBconn.startDB();
+			dBconn.conn.setAutoCommit(false);
 		    pStmt = dBconn.conn.prepareStatement( 	
 					"SELECT getSampleRights(vuserid := ?, vsample := ?)");
 			pStmt.setInt(1,userID);
@@ -89,16 +92,16 @@ import expr.Variable;
 			try{
 				pStmt = dBconn.conn.prepareStatement( 			
 						   "SELECT "
-						 + "	paramdef.datatype FROM Ot_parameters otp \n"
+						 + "	paramdef.datatype, otp.id_field FROM Ot_parameters otp \n"
 						 + "JOIN paramdef ON otp.definition=paramdef.id \n"
 						 + "WHERE otp.id = ?");
 			   	pStmt.setInt(1, pid);
-			   	JSONObject answer=dBconn.jsonObjectFromPreparedStmt(pStmt);
+			   	JSONObject answer = dBconn.jsonObjectFromPreparedStmt(pStmt);
 			   	pStmt.close();
-				datatype = answer.getInt("datatype");			
+				datatype = answer.getInt("datatype");
+				titleParameter = answer.getBoolean("id_field");
 				
-				// delete old values.
-				pStmt= dBconn.conn.prepareStatement( 			
+				pStmt = dBconn.conn.prepareStatement( 			
 						   "DELETE FROM "
 						 + "  sampledata "
 						 + "WHERE ot_parameter_id = ? AND objectid = ?");
@@ -302,6 +305,21 @@ import expr.Variable;
 								pStmt.close();
 							}
 						}
+						
+						// check for conflicts in titlenames
+						if (titleParameter){
+							pStmt = dBconn.conn.prepareStatement(
+										  "SELECT Count(id) FROM samplenames " 
+										+ "WHERE "
+										+ "	name =  (SELECT name FROM samplenames WHERE id = ? ) AND "
+										+ "	typeid = (SELECT typeid FROM samplenames WHERE id = ? ) ");
+							pStmt.setInt(1,sampleID);
+							pStmt.setInt(2,sampleID);
+							if ( dBconn.getSingleIntValue(pStmt) > 1 ){
+								dBconn.conn.rollback();
+							}
+						}
+					dBconn.conn.setAutoCommit(true);
 					dBconn.closeDB();
 				} // end of "if (json.has("data"))"
 			}
