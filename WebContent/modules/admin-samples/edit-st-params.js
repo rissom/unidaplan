@@ -33,9 +33,9 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
   
     this.lang2=$translate.instant(languages[1].name);
   
-    this.lang1key=$translate.instant(languages[0].key);
+    this.lang1key = languages[0].key;
   
-    this.lang2key=$translate.instant(languages[1].key);
+    this.lang2key = languages[1].key;
   
     this.editFieldNL1=false;
   
@@ -145,6 +145,22 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
   		// actions are defined in av-sampletype-service.getSTypeParams
   		if (action.action === "edit"  && !action.disabled){
   			$state.go('editSingleSTParameter',{parameterID:parameter.id});
+  		}
+  		if (action.action === "hide"  && !action.disabled){
+  			var promise = avSampleTypeService.updateParameter({parameterid:parameter.id,hidden:true});
+  			promise.then(function(){
+  				reload();
+  			},function(){
+  				console.log("error");
+  			});
+  		}
+  		if (action.action === "show"  && !action.disabled){
+  			var promise = avSampleTypeService.updateParameter({parameterid:parameter.id,hidden:false});
+  			promise.then(function(){
+  				reload();
+  			},function(){
+  				console.log("error");
+  			});
   		}
   		if (action.action === "delete" && !action.disabled) {
   			var promise = avSampleTypeService.deleteSTParameter(parameter.id);
