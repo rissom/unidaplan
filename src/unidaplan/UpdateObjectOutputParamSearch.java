@@ -80,7 +80,7 @@ import org.json.JSONObject;
 						pStmt.setInt(1,searchID);
 						pStmt.setInt(2,newParameters.getInt(i));
 						pStmt.setInt(3,userID);
-						System.out.println(pStmt.toString());
+//						System.out.println(pStmt.toString());
 						pStmt.addBatch();
 					}
 					pStmt.executeBatch();

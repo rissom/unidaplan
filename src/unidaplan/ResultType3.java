@@ -305,9 +305,7 @@ import org.json.JSONObject;
 						+ "LEFT JOIN samplenames sn ON sn.id = samplesinprocess.sampleid " 
 						+ "LEFT JOIN pnumbers pnum ON pnum.id = samplesinprocess.processid " +
 						  "WHERE samplesinprocess.id = ANY('{" + samBuff.toString() + "}'::int[])");
-				System.out.println("dataquery:"+pStmt.toString());
 				data = dBconn.getSearchTable(pStmt);
-				System.out.println("data"+ data.toString());
 			}
 				
 			
@@ -322,7 +320,6 @@ import org.json.JSONObject;
 					sep = ",";
 				}
 				query += buff.toString() + "}'::int[])";
-				System.out.println("q: "+query);
 				pStmt = dBconn.conn.prepareStatement(query);
 				processnumbers = dBconn.jsonArrayFromPreparedStmt(pStmt);
 			}

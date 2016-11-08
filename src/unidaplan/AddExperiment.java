@@ -42,7 +42,6 @@ public class AddExperiment extends HttpServlet {
     			dBconn.addString(stringKey,names[i],name.getString(names[i]));
     		}
     	}else{
-    		System.out.println("no name exists");
     		response.setStatus(422);
     	}
 	    
