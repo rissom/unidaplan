@@ -362,6 +362,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
         })
     
             
+        
         .state('newProcess', {
 	    	url: '/new-process',
 	        templateUrl: 'modules/process/new-process.html',
@@ -373,6 +374,8 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
         	   	    }
 	        }
         })
+        
+        
         
         .state('noRights', {
 	    	url: '/no-rights',
@@ -666,7 +669,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 
 
 
-.run(function($rootScope, restfactory) {
+.run(function($rootScope, $translate, restfactory) {
 	
 	// init function: reads the username from local Browser storage.
 	
@@ -676,17 +679,28 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 		request.open("GET", "get-active-session-user", false);  // `false` makes the request synchronous
 		request.send(null);
 		var data = JSON.parse(request.responseText);
-		console.log("data",data)
 
 		if (request.status === 200) {
 			$rootScope.userid = data.id;
+			if (data.fullname){
+				$rootScope.userfullname = data.fullname;
+			}else{
+				delete $rootScope.userfullname;
+			}
+			
 			if (data.username){
-				$rootScope.username = data.fullname;
+				$rootScope.username = data.username;
 			}else{
 				delete $rootScope.username;
 			}
 			
-			if (data.admin == "true"){
+			if(data.preferredlanguage && data.preferredlanguage !== null){
+	        	  if (data.preferredlanguage != $translate.use()) {
+	      			$translate.use(data.preferredlanguage);
+	        	  }
+	        } 
+			
+			if (data.admin === true){
 				$rootScope.admin = true;
 			}else{
 				$rootScope.admin = false;
