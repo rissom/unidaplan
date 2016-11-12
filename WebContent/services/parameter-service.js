@@ -29,9 +29,10 @@ var parameterService = function (restfactory,$q,$translate,key2string) {
 	}
 	
 	
+	
 	this.getParameters = function() {
         var defered=$q.defer();
-    	var thisController=this;
+    	var thisController = this;
     	var promise = restfactory.GET("parameter");
     	promise.then(function(rest) {
 	    	thisController.parameters = rest.data.parameters;
@@ -40,34 +41,34 @@ var parameterService = function (restfactory,$q,$translate,key2string) {
 				parameter.nameLang=function(lang){
 					return key2string.key2stringWithLangStrict(parameter.stringkeyname,thisController.strings,lang);
 				};
-				parameter.namef=function(){
+				parameter.namef = function(){
 					return key2string.key2string(parameter.stringkeyname,thisController.strings);
 				};
-				parameter.actions=[{action:"edit",name:$translate.instant("edit")},
-				  	    		    {action:"delete",name:$translate.instant("delete"),disabled:!parameter.deletable}
-				  				   ];
-				parameter.nameUnitf=function(){
-					var unit="";
+				parameter.actions = [{action : "edit", name : $translate.instant("edit")},
+				  	    		     {action : "delete", name : $translate.instant("delete"), disabled : !parameter.deletable}
+				  				    ];
+				parameter.nameUnitf = function(){
+					var unit = "";
 					if (parameter.stringkeyunit){
 						unit=key2string.key2string(parameter.stringkeyunit,thisController.strings);
-						if (unit.length>0){
+						if (unit.length > 0){
 							unit=" ("+unit+")";
 						}
 					}
-					return key2string.key2string(parameter.stringkeyname,thisController.strings)+unit;
+					return key2string.key2string(parameter.stringkeyname,thisController.strings) + unit;
 				};
-				parameter.unitLang=function(lang){
-					if (['integer','measurement','float'].indexOf(parameter.datatype)===-1) { return '-';}
+				parameter.unitLang = function(lang){
+					if (['integer','measurement','float'].indexOf(parameter.datatype) === -1) { return '-';}
 					return key2string.key2stringWithLangStrict(parameter.stringkeyunit,thisController.strings,lang);
 				};	
-				parameter.unitf=function(){
+				parameter.unitf = function(){
 					return key2string.key2string(parameter.stringkeyunit,thisController.strings);
 				};	
-				parameter.descLang=function(lang){
+				parameter.descLang = function(lang){
 					var ergebnis= key2string.key2stringWithLangStrict(parameter.description,thisController.strings,lang);
 					return ergebnis;
 				};
-				parameter.descf=function(){
+				parameter.descf = function(){
 					return key2string.key2string(parameter.description,thisController.strings);
 				};	
 	    	});
@@ -79,14 +80,15 @@ var parameterService = function (restfactory,$q,$translate,key2string) {
 	};
 
 	
-	this.reorderPossibleValues = function(parameterid,neworder){
+	
+	this.reorderPossibleValues = function(parameterid, neworder){
 		return restfactory.PUT("reorder-possible-values",{parameterid:parameterid,neworder:neworder})
 	}
 	
 	
 	
 	this.updateParameter = function(param){
-		return restfactory.PUT("update-parameter",param);
+		return restfactory.PUT("update-parameter", param);
 	}
 	
 	

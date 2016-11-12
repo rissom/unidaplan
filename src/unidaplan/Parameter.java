@@ -29,7 +29,7 @@ public class Parameter extends HttpServlet {
 	    request.setCharacterEncoding("utf-8");
 	    response.setCharacterEncoding("utf-8");
 	    PrintWriter out = response.getWriter();
-	 	DBconnection dBconn=new DBconnection();
+	 	DBconnection dBconn = new DBconnection();
 	    JSONObject result = new JSONObject();
 	    try {  
 		    dBconn.startDB();
@@ -41,22 +41,31 @@ public class Parameter extends HttpServlet {
 	    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
 	    
 	    	try{
-				pStmt= dBconn.conn.prepareStatement( 	
-				"SELECT paramdef.id,stringkeyname,stringkeyunit,datatype,format,regex,min,max,description, "
-				+"max((blabla.count)) IS NULL as deletable "
-				+"FROM paramdef "
-				+"LEFT JOIN "
-				+" (SELECT count(a.id),definition FROM p_parameters a GROUP BY definition "
-				+"  UNION ALL "
-				+"  SELECT count(b.id),definition FROM ot_parameters b GROUP BY definition "
-				+"  UNION ALL "
-				+"  SELECT count(c.id),definition FROM expp_param c GROUP BY definition "
-				+" ) AS blabla ON definition=paramdef.id "
-				+"WHERE paramdef.id>2 GROUP BY paramdef.id");
+				pStmt = dBconn.conn.prepareStatement( 	
+				  "SELECT "
+				+ "    paramdef.id,"
+				+ "	   stringkeyname,"
+				+ "    stringkeyunit,"
+				+ "    datatype,"
+				+ "    format,"
+				+ "    regex,"
+				+ "    min,"
+				+ "    max,"
+				+ "    description, "
+				+ "    max(blabla.count) IS NULL as deletable "
+				+ "FROM paramdef "
+				+ "LEFT JOIN "
+				+ "   ( SELECT count(a.id),definition FROM p_parameters a GROUP BY definition "
+				+ "     UNION ALL "
+				+ "     SELECT count(b.id),definition FROM ot_parameters b GROUP BY definition "
+				+ "     UNION ALL "
+				+ "     SELECT count(c.id),definition FROM expp_param c GROUP BY definition "
+				+ "   ) AS blabla ON definition = paramdef.id "
+				+ "WHERE paramdef.id>2 GROUP BY paramdef.id");
 				parameters=dBconn.jsonArrayFromPreparedStmt(pStmt);
 				pStmt.close();
-				  	for (int i=0; i<parameters.length();i++) {
-				  		JSONObject tempObj=parameters.getJSONObject(i);
+				  	for (int i = 0; i < parameters.length(); i++) {
+				  		JSONObject tempObj = parameters.getJSONObject(i);
 				  		if (tempObj.has("stringkeyname")){
 				  			stringkeys.add(Integer.toString(tempObj.getInt("stringkeyname")));
 				  		}
@@ -65,32 +74,35 @@ public class Parameter extends HttpServlet {
 				  		if (tempObj.has("description")){
 				  			stringkeys.add(Integer.toString(tempObj.getInt("description")));
 				  		}
-				  		int datatype=tempObj.getInt("datatype");
+				  		int datatype = tempObj.getInt("datatype");
 				  		tempObj.remove("datatype");
 				  		tempObj.put("datatype", Unidatoolkit.Datatypes[datatype]);
-				  		if (datatype==1 && tempObj.has("value")) {				      		
+				  		if (datatype == 1 && tempObj.has("value")) {				      		
 	      					int x=Integer.parseInt(tempObj.getString("value"));
 	      					tempObj.remove("value");
 	      					tempObj.put("value", x);
 				  		}
-				  		if (datatype==1 && tempObj.has("value")) {	 
+				  		if (datatype == 1 && tempObj.has("value")) {	 
 		      				double y=Double.parseDouble(tempObj.getString("value"));
 		      				tempObj.remove("value");
 		      				tempObj.put("value", y);
 				  		}
-				  		if (datatype<4){
+				  		if (datatype < 4){
 		           			if (tempObj.has("stringkeyunit")){
 		           				stringkeys.add(Integer.toString(tempObj.getInt("stringkeyunit")));
 		           			}
 				  		}else{
 		           			tempObj.remove("stringkeyunit");
 	           			}
-				  		if (datatype==6){ // Chooser
-							pStmt= dBconn.conn.prepareStatement( 	
-								  "SELECT id,position,string "
-								 +"FROM possible_values "
-								 +"WHERE parameterid=? "
-								 +"ORDER BY position");
+				  		if (datatype == 6){ // Chooser
+							pStmt = dBconn.conn.prepareStatement( 	
+								   "SELECT "
+								 + "	id,"
+								 + "	position,"
+								 + "	string "
+								 + "FROM possible_values "
+								 + "WHERE parameterid = ? "
+								 + "ORDER BY position");
 							pStmt.setInt(1, tempObj.getInt("id"));
 							JSONArray possibleValues=dBconn.jsonArrayFromPreparedStmt(pStmt);
 							tempObj.put("possiblevalues", possibleValues);
@@ -106,7 +118,6 @@ public class Parameter extends HttpServlet {
 	    	} 
 		    
 		    try {
-				  
 		        result.put("strings", dBconn.getStrings(stringkeys));
 		        result.put("parameters", parameters);
 				out.println(result.toString());
