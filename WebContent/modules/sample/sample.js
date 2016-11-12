@@ -102,18 +102,27 @@ function sampleController(sample,$state,$stateParams,$uibModal,$filter,types,sam
 			if (typeof(parameter.data) != "undefined") {
 				oldValue = parameter.data.value;
 			} else {
-				parameter.data = {};
+				if ( newValue != "" && newValue != null ){
+					parameter.data = {};
+				}
 			} 
 			parameter.data.value = newValue;
+			if ( newValue == "" || newValue == null ){
+				delete parameter.data;
+			}
 			var res;
-			res = sampleService.saveParameter(sample.id,
-					{pid : parameter.parameterid,
-					 data : {value:parameter.data.value}});
-			res.then(function() { reload(); },
-					 function() {
-						parameter.data.value = oldValue;
-						console.log('error');
-					}
+			var newParam = { pid : parameter.parameterid };
+			if (typeof(parameter.data) != "undefined"){
+				 newParam["data"] = {value:parameter.data.value};
+			}
+				
+			res = sampleService.saveParameter(sample.id,newParam);
+			res.then(
+				function() { reload(); },
+				function() {
+					parameter.data.value = oldValue;
+					console.log('error');
+				}
 			);
 		}
 		if (keyCode === 27) {		// Escape key pressed

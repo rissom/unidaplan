@@ -2,8 +2,11 @@
 <h3>{{sampleCtrl.getType({typeid:sampleCtrl.typeid})}} 
 	<span ng-repeat   = "tparameter in sampleCtrl.titleparameters | orderBy: 'pos'"
 		  ng-dblclick = "tparameter.editing = sampleCtrl.editable; newValue = tparameter.data.value">
-		<span ng-hide = "tparameter.editing">
+		<span ng-if = "!tparameter.editing && tparameter.data.value != undefined">
 			{{sampleCtrl.dataFormatter.format(tparameter.data.value, 'Number', tparameter.format||'@').value}}
+		</span>
+		<span ng-show = "tparameter.data.value == undefined && !tparameter.editing">
+			##
 		</span>
 		<span ng-switch on = "tparameter.datatype">
 			<input 
@@ -54,7 +57,7 @@
 			class = "btn btn-default btn-xs" 
 			ng-click = "sampleCtrl.deleteFile(file.id)"
 			ng-show = "sampleCtrl.editable">
-				<span class = "glyphicon glyphicon-remove"></span>
+			<span class = "glyphicon glyphicon-remove"></span>
 		</button>
 	</li>
 </ul>
@@ -62,9 +65,21 @@
 
 
 
-<form id = "upload_form" action = "upload-file" method = "post" enctype = "multipart/form-data" ng-show = "sampleCtrl.editable">
+<form 
+	id = "upload_form" 
+	action = "upload-file" 
+	method = "post" 
+	enctype = "multipart/form-data" 
+	ng-show = "sampleCtrl.editable">
 	<span class = "btn btn-default btn-file">
-    	{{'Add File'| translate}}<input type = "file" name = "file" id = "file" onchange = "angular.element(this).scope().sampleCtrl.upload(this)" class = "file"/> <br/>
+    	{{'Add File'| translate}}
+    	<input 
+    		type = "file" 
+    		name = "file" 
+    		id = "file" 
+    		onchange = "angular.element(this).scope().sampleCtrl.upload(this)" 
+    		class = "file"/> 
+    	<br/>
 	</span>
 </form>
 <br/>
@@ -74,7 +89,10 @@
 <!-- Ancestors and children -->
 <h4>{{'hierarchy' | translate}}</h4>
 <div class=row>
-	<div class = "col-md-6" ng-show = "sampleCtrl.ancestors.length > 0 || sampleCtrl.editable">{{'Originates from'|translate}}:<br />
+	<div 
+		class = "col-md-6" 
+		ng-show = "sampleCtrl.ancestors.length > 0 || sampleCtrl.editable">
+					{{'Originates from'|translate}}:<br />
 		<div ng-repeat = "bsample in sampleCtrl.ancestors"> 
 			<a ui-sref = "sample({sampleID:bsample.sampleid})">
 				{{sampleCtrl.getType(bsample)}} {{bsample.name}}
@@ -87,7 +105,10 @@
 			{{'Add/Remove samples'|translate}}
 		</button>				
 	</div>
-	<div class = "col-md-6" ng-show = "sampleCtrl.children.length>0 || sampleCtrl.editable">{{'Is ancestor of'|translate}}:<br />
+	<div 
+		class = "col-md-6" 
+		ng-show = "sampleCtrl.children.length>0 || sampleCtrl.editable">
+		{{'Is ancestor of'|translate}}:<br />
 		<div ng-repeat = "bsample in sampleCtrl.children">
 			<a ui-sref = "sample({sampleID:bsample.sampleid})">
 				{{sampleCtrl.getType(bsample)}} {{bsample.name}}
@@ -139,6 +160,7 @@
 		</ul>
 	</div>
 <br />
+
 
 
 <!-- Buttonbar: previous/delete/next -->
