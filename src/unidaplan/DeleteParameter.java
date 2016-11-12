@@ -26,9 +26,7 @@ public class DeleteParameter extends HttpServlet {
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
-		userID=userID+1;
-		userID=userID-1;
+		int userID = authentificator.GetUserID(request,response);
 		request.setCharacterEncoding("utf-8");
 	    response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
@@ -39,9 +37,9 @@ public class DeleteParameter extends HttpServlet {
 	 	
 		// get Parameter for id
 		try{
-			 processID=Integer.parseInt(request.getParameter("id")); }
+			 processID = Integer.parseInt(request.getParameter("id")); }
 		catch (Exception e1) {
-			processID=-1;
+			processID = -1;
 			System.err.print("DeleteParameter: no process ID given!");
 			status="error: no process ID";
 		}
@@ -49,15 +47,15 @@ public class DeleteParameter extends HttpServlet {
 		
 	    try {
 	    	PreparedStatement pstmt = null; 	
-		 	DBconnection dBconn=new DBconnection(); // New connection to the database
+		 	DBconnection dBconn = new DBconnection(); // New connection to the database
 		 	dBconn.startDB();
 		 	
 			if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
 		 	
-			 	if (processID>0){			
+			 	if (processID > 0){			
 					// delete the process
 			        pstmt = dBconn.conn.prepareStatement(	
-			        	"DELETE FROM paramdef WHERE id=?");
+			        	"DELETE FROM paramdef WHERE id = ?");
 					pstmt.setInt(1,processID);
 					pstmt.executeUpdate();
 					pstmt.close();
@@ -69,12 +67,12 @@ public class DeleteParameter extends HttpServlet {
 		 	dBconn.closeDB();  // close the database
 		 	
 	    } catch (SQLException eS) {
-			System.err.println("Delete Process: SQL Error");
-			status="error: SQL error";
+			System.err.println("DeleteParameter: SQL Error");
+			status = "error: SQL error";
 			response.setStatus(404);
 		} catch (Exception e) {
 			System.err.println("DeleteParameter: Some Error, probably JSON");
-			status="error: JSON error";
+			status = "error: JSON error";
 			response.setStatus(404);
  		} 
   
