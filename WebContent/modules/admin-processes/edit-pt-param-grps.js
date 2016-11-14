@@ -38,28 +38,6 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,$uibMod
   this.lang = function(l){return $translate.instant(languages[l].name)};
         
   
-
-  
-  this.addParameterGroup=function(){
- 	 // add a new ParameterGroup to the database.
- 	var name={}
- 	name[languages[0].key]=thisController.newGrpNameL1;
- 	name[languages[1].key]=thisController.newGrpNameL2;
- 	var position=0;
- 	if (thisController.parametergrps){
- 		position=thisController.parametergrps.length+1;
- 	}
- 	var promise = avProcessTypeService.addPTParameterGrp(processType.id,position,name);
- 	promise.then(function(data) {
- 			reload();
- 		 },
- 		 function(data) {
- 			console.log('error');
- 			console.log(data);
- 		 }
- 		);
-  };
-  
   
   
   this.addSRParameter = function(){
@@ -170,11 +148,10 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,$uibMod
   
   
   this.keyUpPG = function(keyCode) {
-	  if (keyCode===13) {				// Return key pressed
-		  console.log("Hallo");
+	  if (keyCode === 13) {				// Return key pressed
 		  this.addParameterGroup();
 	  }
-	  if (keyCode===27) {		// Escape key pressed
+	  if (keyCode === 27) {		// Escape key pressed
 		  this.editmode=false;
 	  }
   };
@@ -182,7 +159,23 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,$uibMod
   
   
   this.newParameterGroup = function(){
-	  thisController.editmode = true;
+	 	 // add a new ParameterGroup to the database.
+	 	var name = {};
+	 	name[languages[0].key] = $translate.instant("new parametergroup");
+	 	name[languages[1].key] = "new Parametergroup";
+	 	var position = 0;
+	 	if (thisController.parametergrps){
+	 		position = thisController.parametergrps.length + 1;
+	 	}
+	 	var promise = avProcessTypeService.addPTParameterGrp(processType.id,position,name);
+	 	promise.then(function(data) {
+	 			$state.go("editPtParams",{paramGrpID:data.data.id, newGrp:"true"}); // GOTO new parametergroup
+	 		},
+ 		 	function(data) {
+ 				console.log('error');
+	 			console.log(data);
+	 		}
+	 	);
   };
  
   

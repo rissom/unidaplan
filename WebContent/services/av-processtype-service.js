@@ -4,12 +4,12 @@
 var avProcessTypeService = function (restfactory,$q,key2string,$translate,languages) {
 	// get the available processtypes and their names and recipes.
 
-    var thisController=this;
+    var thisController = this;
 
 	
     
-	this.AddProcesstypePGParameters=function(processtype,paramgrp,parameters){
-		var tempObj={
+	this.AddProcesstypePGParameters = function(processtype,paramgrp,parameters){
+		var tempObj = {
 			processtypeid 	 : processtype,
 			parametergroupid : paramgrp,
 			parameterids     : parameters,
@@ -19,9 +19,9 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 	
 	
 	
-	this.addPTParameterGrp = function(processTypeID,position){
-		var temp={"processtypeid":processTypeID,"position":position};
-		return restfactory.POST("add-pt-parameter-grp",temp);
+	this.addPTParameterGrp = function(processTypeID,position,name){
+		var temp = {"processtypeid":processTypeID,"position":position,"name":name};
+		return restfactory.POST("add-pt-parameter-grp", temp);
 	};
 	
 	

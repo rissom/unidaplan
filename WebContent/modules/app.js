@@ -94,7 +94,8 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
         
         
         .state('editPtParams', {
-        	url: '/editprocesstypeparams/{paramGrpID:int}',
+//        	url: '/editprocesstypeparams/{paramGrpID:int}',
+	    	url: '/editprocesstypeparams?:paramGrpID&:newGrp',
 	        templateUrl: 'modules/admin-processes/edit-pt-params.html',
 	        controller:"editPtParamsController as editPtParamsCtrl",
 	        resolve:{
