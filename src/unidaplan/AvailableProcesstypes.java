@@ -42,62 +42,67 @@ public class AvailableProcesstypes extends HttpServlet {
 		 	
 	 		try{
 	 		 	DBconn.startDB();
-	 			pstmt = DBconn.conn.prepareStatement(	
-					  "WITH "
-				 	+ "  deletable AS ( "
-					+ "SELECT "
-					+ "  processtypeid, "
-					+ "  count(processtypeid) <= 3 AS deletable " // only the 3 basic Parameters exist 
-					+ "FROM p_parameters "
-					+ "GROUP BY processtypeid "
-					+ "), "
-					+ ""
-					+ "recipes AS ( "
-					+ "SELECT "
-					+ "	processtype, "
-					+ "	array_to_json ( array_agg( json_build_object( "
-					+ "     'id',id, "
-					+ "		'name',name, "
-					+ "		'position',position))) AS recipes "
-					+ "FROM processrecipes "
-					+ "GROUP BY processtype "
-					+ ") "
-					+ ""
-					+ ""
-					+ "SELECT "
-					+ "	pt.id, "
-					+ " pt.name, "
-					+ "	deletable, " 
-					+ "	recipes "
-					+ "FROM processtypes pt "
-					+ "LEFT JOIN deletable ON deletable.processtypeid = pt.id " 
-					+ "LEFT JOIN recipes ON recipes.processtype = pt.id");
-	 			processList = DBconn.jsonArrayFromPreparedStmt(pstmt); // get ResultSet from the database using the query
-	 			pstmt.close();
-	           	if (processList.length() > 0) {
-	           		for (int i = 0; i < processList.length(); i++) {
-	           			JSONObject tempObj = processList.getJSONObject(i);
-	           			stringkeys.add(Integer.toString(tempObj.getInt("name")));
-	           			if (tempObj.has("description")){
-	           				stringkeys.add(Integer.toString(tempObj.getInt("description")));
-	           			}
-	           			if (tempObj.has("recipes")){
-		           			recipes = tempObj.getJSONArray("recipes");
-		           		 	if (recipes.length() > 0) {
-		    	           		for (int j = 0; j < recipes.length(); j++) {
-		    	           			stringkeys.add(Integer.toString(recipes.getJSONObject(j).getInt("name")));
-		    	           		}
-		    	           	}
-	           			}
-	           		}
-			        JSONArray theStrings=DBconn.getStrings(stringkeys);
-			        JSONObject jsAvailable=new JSONObject();
-			        jsAvailable.put("processes", processList);
-			        jsAvailable.put("strings", theStrings);
-			        out.println(jsAvailable.toString());
-           		}else {					
-           			out.println("[]");			// return empty array
-	  	        }       
+	 		 	
+	 		 	if (userID > 0) {
+	 		 	
+		 			pstmt = DBconn.conn.prepareStatement(	
+						  "WITH "
+					 	+ "  deletable AS ( "
+						+ "SELECT "
+						+ "  processtypeid, "
+						+ "  count(processtypeid) <= 3 AS deletable " // only the 3 basic Parameters exist 
+						+ "FROM p_parameters "
+						+ "GROUP BY processtypeid "
+						+ "), "
+						+ ""
+						+ "recipes AS ( "
+						+ "SELECT "
+						+ "	processtype, "
+						+ "	array_to_json ( array_agg( json_build_object( "
+						+ "     'id',id, "
+						+ "		'name',name, "
+						+ "		'position',position))) AS recipes "
+						+ "FROM processrecipes "
+						+ "GROUP BY processtype "
+						+ ") "
+						+ ""
+						+ ""
+						+ "SELECT "
+						+ "	pt.id, "
+						+ " pt.name, "
+						+ " pt.description, "
+						+ "	deletable, " 
+						+ "	recipes "
+						+ "FROM processtypes pt "
+						+ "LEFT JOIN deletable ON deletable.processtypeid = pt.id " 
+						+ "LEFT JOIN recipes ON recipes.processtype = pt.id");
+		 			processList = DBconn.jsonArrayFromPreparedStmt(pstmt); // get ResultSet from the database using the query
+		 			pstmt.close();
+		           	if (processList.length() > 0) {
+		           		for (int i = 0; i < processList.length(); i++) {
+		           			JSONObject tempObj = processList.getJSONObject(i);
+		           			stringkeys.add(Integer.toString(tempObj.getInt("name")));
+		           			if (tempObj.has("description")){
+		           				stringkeys.add(Integer.toString(tempObj.getInt("description")));
+		           			}
+		           			if (tempObj.has("recipes")){
+			           			recipes = tempObj.getJSONArray("recipes");
+			           		 	if (recipes.length() > 0) {
+			    	           		for (int j = 0; j < recipes.length(); j++) {
+			    	           			stringkeys.add(Integer.toString(recipes.getJSONObject(j).getInt("name")));
+			    	           		}
+			    	           	}
+		           			}
+		           		}
+				        JSONArray theStrings=DBconn.getStrings(stringkeys);
+				        JSONObject jsAvailable=new JSONObject();
+				        jsAvailable.put("processes", processList);
+				        jsAvailable.put("strings", theStrings);
+				        out.println(jsAvailable.toString());
+	           		}else {					
+	           			out.println("[]");			// return empty array
+		  	        }       
+	 		 	}
 	            
 		    } catch (SQLException eS) {
 				System.err.println("Available_processtypes: SQL Error");
