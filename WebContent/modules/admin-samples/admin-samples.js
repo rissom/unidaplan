@@ -37,21 +37,7 @@ function aSamplesController($state,$stateParams,$translate,restfactory,sampleSer
 	 	);
   	};
   	
-  	
-  	
-  	this.addSampleType = function(){
-  		var name = {};
-  		name[languages[0].key] = this.newNameL1;
-  		name[languages[1].key] = this.newNameL2;
-  		var description = {};
-  		description[languages[0].key] = this.newDescL1;
-  		description[languages[1].key] = this.newDescL2; 	  
-  		var newSampleType = {"name":name,"description":description};	  
-  		var promise = sampleService.addSampleType(newSampleType);
-  		promise.then(function(){ reload(); }, function(){ console.log("error"); })
-    };
-
-  
+ 
   
     this.performAction = function(sampleType,action){
 	  	if (action.action === "edit"){
