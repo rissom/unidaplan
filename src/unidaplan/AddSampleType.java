@@ -18,10 +18,12 @@ import org.json.JSONObject;
 	  public void doPost(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {		
 		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
-		String status="ok";
+		int userID = authentificator.GetUserID(request,response);
+		String status = "ok";
 	    int stringKeyName = 0;
 	    int stringKeyDesc = 0; 
+	    int sampleTypeID = 0;
+	    int parameterID = -1;
 	    int position = 0;
 	    int otgroup = 1;
 	    PreparedStatement pStmt = null;
@@ -40,13 +42,13 @@ import org.json.JSONObject;
 		response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
 	    
-	 	DBconnection dBconn=new DBconnection();
+	 	DBconnection dBconn = new DBconnection();
 
 	    try {	
 		    dBconn.startDB();	   
 		    
 			//check if admin
-	    	int admins=1;
+	    	int admins = 1;
 			if (userID>0 && Unidatoolkit.isMemberOfGroup(userID,admins, dBconn)){
 				
 				 // generate strings for the name and the unit
@@ -54,27 +56,27 @@ import org.json.JSONObject;
 					 JSONObject name = jsonIn.getJSONObject("name");
 					 String [] names = JSONObject.getNames(name);
 					 stringKeyName = dBconn.createNewStringKey(name.getString(names[0]));
-					 for (int i=0; i<names.length; i++){
+					 for (int i = 0; i < names.length; i++){
 						 dBconn.addString(stringKeyName,names[i],name.getString(names[i]));
 					 }
 				 } else {
 					 System.out.println("no name exists");
 				 }
 				 if (jsonIn.has("description")){
-					 JSONObject description=jsonIn.getJSONObject("description");
+					 JSONObject description = jsonIn.getJSONObject("description");
 					 String[] descriptions = JSONObject.getNames(description);
-					 if (descriptions!=null && descriptions.length>0){
-						 stringKeyDesc=dBconn.createNewStringKey(description.getString(descriptions[0]));
-						 for (int i=0; i<descriptions.length; i++){
+					 if (descriptions != null && descriptions.length > 0){
+						 stringKeyDesc = dBconn.createNewStringKey(description.getString(descriptions[0]));
+						 for (int i = 0; i < descriptions.length; i++){
 							 dBconn.addString(stringKeyDesc,descriptions[i],description.getString(descriptions[i]));
 						 }	 
 					 }
 				 }
 				 if (jsonIn.has("position")){
-					 position=jsonIn.getInt("position");
+					 position = jsonIn.getInt("position");
 				 }
 				 if (jsonIn.has("otgroup")){
-					 otgroup=jsonIn.getInt("ptgroup");
+					 otgroup = jsonIn.getInt("ptgroup");
 				 }  
 				pStmt = dBconn.conn.prepareStatement( 			
 						  "INSERT INTO objecttypes ("
@@ -94,7 +96,7 @@ import org.json.JSONObject;
 			   		pStmt.setNull(4, java.sql.Types.INTEGER);
 			   	}
 			   	pStmt.setInt(5, userID);
-			   	int id = dBconn.getSingleIntValue(pStmt);
+			   	sampleTypeID = dBconn.getSingleIntValue(pStmt);
 			   	pStmt.close();
 			   	
 			   	
@@ -131,7 +133,7 @@ import org.json.JSONObject;
 			   	pStmt.setInt(2, stringKeyDescSampleNumber);
 				pStmt.setInt(3, userID);  	// lastUser 
 				
-				int parameterID = dBconn.getSingleIntValue(pStmt); 
+				parameterID = dBconn.getSingleIntValue(pStmt); 
 				pStmt.close();
 				
 			   	pStmt = dBconn.conn.prepareStatement(
@@ -143,8 +145,8 @@ import org.json.JSONObject;
 					    + "  pos, "
 					    + "  definition, "
 					    + "  lastUser ) "
-					    +"VALUES(?,?,?,?,1,?,?)");
-				pStmt.setInt(1, id);
+					    + "VALUES(?,?,?,?,1,?,?)");
+				pStmt.setInt(1, sampleTypeID);
 				pStmt.setBoolean(2, true);
 				pStmt.setBoolean(3, true);
 				pStmt.setBoolean(4, false);  	//hidden
@@ -157,7 +159,7 @@ import org.json.JSONObject;
 		    }
 			
 		} catch (SQLException e) {
-			status="SQL error";
+			status = "SQL error";
 			e.printStackTrace();
 			System.err.println("AddSampleType: Problems with SQL query");
 		} catch (Exception e) {
@@ -168,6 +170,6 @@ import org.json.JSONObject;
 	
 		
     // tell client that everything is fine
-    Unidatoolkit.sendStandardAnswer(status, response);
+    Unidatoolkit.returnID(sampleTypeID, status, response);
 	}
 }	

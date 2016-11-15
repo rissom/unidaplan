@@ -1,100 +1,101 @@
 <h3>
 	{{'Sampletypes'|translate}}
 </h3>
-<table class="table">
-	<thead class=parametertablehead>
+<table class = "table">
+	<thead class = parametertablehead>
 		<tr>
-			<td class="parametertd">
+			<td class = "parametertd">
 	 			Name ({{aSamplesCtrl.lang1}})
 			</td>
-			<td class="parametertd">
+			<td class = "parametertd">
 	 			Name ({{aSamplesCtrl.lang2}})
 			</td>
-			<td class="parametertd">
+			<td class = "parametertd">
 				{{'Description'|translate}} ({{aSamplesCtrl.lang1}})
 			</td>
-			<td class="parametertd">
+			<td class = "parametertd">
 				{{'Description'|translate}} ({{aSamplesCtrl.lang2}})
 			</td>
-			<td class="parametertd"
-				ng-hide="aSamplesCtrl.editmode">
+			<td class = "parametertd"
+				ng-hide = "aSamplesCtrl.editmode">
 			</td>
 		</tr>
 	</thead>
 	
 	
 	<tbody>
-		<tr ng-repeat="sampleType in aSamplesCtrl.types | orderBy : 'nameLang1'">
-			<td class="parametertd">
+		<tr ng-repeat = "sampleType in aSamplesCtrl.types | orderBy : 'nameLang1'">
+			<td class = "parametertd">
 	 			{{sampleType.nameLang('de')}}
 			</td>
-			<td class="parametertd">		
+			<td class = "parametertd">		
 				{{sampleType.nameLang('en')}}
 			</td>
-			<td class="parametertd">
+			<td class = "parametertd">
 				{{sampleType.descLang('de')}}
 			</td>
-			<td class="parametertd">
+			<td class = "parametertd">
 				{{sampleType.descLang('en')}}
 			</td>
-			<td class="parametertd" ng-hide="aSamplesCtrl.editmode">			
-				<div class="dropdown" uib-dropdown on-toggle="toggled(open)">
-					<a class="dropdown-toggle" uib-dropdown-toggle>
+			<td class = "parametertd" ng-hide = "aSamplesCtrl.editmode">			
+				<div class = "dropdown" uib-dropdown on-toggle = "toggled(open)">
+					<a class = "dropdown-toggle" uib-dropdown-toggle>
 			  			{{'action'|translate}} &#x25BC;
 				    </a>
 				    <ul class="dropdown-menu">
-				    	<li ng-repeat="action in sampleType.actions" ng-class="{disabled:action.disabled}">
-				        	<a ng-click="aSamplesCtrl.performAction(sampleType,action)">{{action.name}}</a>
+				    	<li ng-repeat = "action in sampleType.actions" 
+				    		ng-class = "{disabled:action.disabled}">
+				        	<a ng-click = "aSamplesCtrl.performAction(sampleType,action)">{{action.name}}</a>
 				        </li>
 				    </ul>
 	  			</div>
 			</td>
 		</tr>
-		<tr ng-show="aSamplesCtrl.editmode">
-			<td class="parametertd">
+		<tr ng-show = "aSamplesCtrl.editmode">
+			<td class = "parametertd">
 				<input 						   
-				type="text"
-			    ng-model="aSamplesCtrl.newNameL1"> 
+				type = "text"
+			    ng-model = "aSamplesCtrl.newNameL1"> 
 			</td>
-			<td class="parametertd">
+			<td class = "parametertd">
 				<input 						   
-				type="text"
-			    ng-model="aSamplesCtrl.newNameL2"> 
+				type = "text"
+			    ng-model = "aSamplesCtrl.newNameL2"> 
 			</td>
-			<td class="parametertd">
+			<td class = "parametertd">
 				<input 						   
-				type="text"
-			    ng-model="aSamplesCtrl.newDescL1"> 
+				type = "text"
+			    ng-model = "aSamplesCtrl.newDescL1"> 
 			</td>
-			<td class="parametertd">
+			<td class = "parametertd">
 				<input 						   
-				type="text"
-				ng-keyup="aSamplesCtrl.keyUp($event.keyCode)"
-			    ng-model="aSamplesCtrl.newDescL2"> 
+				type = "text"
+				ng-keyup = "aSamplesCtrl.keyUp($event.keyCode)"
+			    ng-model = "aSamplesCtrl.newDescL2"> 
 			</td>
 					
 		</tr>
 	</tbody>
 </table>
 <br />
-<button type="button" 
-		ng-hide="aSamplesCtrl.editmode"
-		class="btn btn-default" 
-		ng-click="aSamplesCtrl.newSampleType()" >
+<button type = "button" 
+		ng-hide = "aSamplesCtrl.editmode"
+		class = "btn btn-default" 
+		ng-click = "aSamplesCtrl.newSampleType()" >
 	<b>+</b> {{'Add Sampletype'|translate}}
 </button>
 
-<button type="button" 
-		ng-show="aSamplesCtrl.editmode"
-		class="btn btn-default" 
-		ng-click="aSamplesCtrl.editmode=false" >
+<button type = "button" 
+		ng-show = "aSamplesCtrl.editmode"
+		class = "btn btn-default" 
+		ng-click = "aSamplesCtrl.editmode=false" >
 	{{'Cancel'|translate}}
 </button>
 
-<button type="button" 
-		ng-show="aSamplesCtrl.editmode"
-		class="btn btn-default" 
-		ng-click="aSamplesCtrl.addSampleType()" >
+<button type = "button" 
+		ng-show = "aSamplesCtrl.editmode"
+		class = "btn btn-default" 
+		ng-click = "aSamplesCtrl.addSampleType()" >
 	{{'Add Sampletype'|translate}}
 </button>
 

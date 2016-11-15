@@ -28,13 +28,13 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
         
                 
         .state('adminProcesses', {
-	        url: '/adminprocesses',
-	        templateUrl: 'modules/admin-processes/admin-processes.html',
-	        controller:"aProcessesController as aProcessesCtrl",
-	        resolve:{
+	        url : '/adminprocesses',
+	        templateUrl : 'modules/admin-processes/admin-processes.html',
+	        controller : "aProcessesController as aProcessesCtrl",
+	        resolve: {
                	ptypes: function(avProcessTypeService){
-        	   	    	return avProcessTypeService.getProcessTypes();
-        	   	    }
+        	   	    		return avProcessTypeService.getProcessTypes();
+               			}
 			}
         })
         
@@ -152,7 +152,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
         
         
         .state('editSTParamGrps', {
-        	url : '/editsampletype/{sampleTypeID:int}',
+        	url : '/editsampletype?:sampleTypeID&:newSampletype',
 	        templateUrl : 'modules/admin-samples/edit-sample-param-grps.html',
 	        controller : "editSampleParamGrpsController as editSampleParamGrpsCtrl",
 	        resolve : {

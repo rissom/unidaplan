@@ -20,7 +20,7 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	
 	
 	
-	this.AddTitleParameters=function(sampletype,parameters){
+	this.AddTitleParameters = function(sampletype,parameters){
 		var tempObj={
 			sampletypeid 	 : sampletype,
 			parameterids     : parameters,
@@ -29,7 +29,7 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	};
 	
 	
-	this.changeOrderSTParameters=function(newPositions){
+	this.changeOrderSTParameters = function(newPositions){
 		return restfactory.PUT("change-order-st-parameters",newPositions);
 	};
 	
@@ -261,7 +261,7 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	
 	
 	 // return the translated name string of a type for a sample
-	this.getType=function(sample,types){
+	this.getType = function(sample,types){
 		var typeName;
 		 	angular.forEach(types,function(type) {
 		 		if (sample.typeid==type.id){
