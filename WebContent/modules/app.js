@@ -78,7 +78,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 
         
         .state('editPtParamGrps', {
-        	url: '/editprocesstype/{processTypeID:int}',
+        	url: '/editprocesstype?:processTypeID&:newProcesstype',
 	        templateUrl: 'modules/admin-processes/edit-pt-param-grps.html',
 	        controller:"editPtParamGrpsController as editPtParamGrpsCtrl",
 	        resolve:{

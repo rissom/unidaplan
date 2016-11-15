@@ -27,7 +27,7 @@ public class ProcessTypeParamGrps extends HttpServlet {
 		  
 		Authentificator authentificator = new Authentificator();
 		int userID=authentificator.GetUserID(request,response);
-		int processTypeID=0;
+		int processTypeID = 0;
 		request.setCharacterEncoding("utf-8");
 	    response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
@@ -43,8 +43,8 @@ public class ProcessTypeParamGrps extends HttpServlet {
 	    JSONObject processType = null;
 	    JSONArray parameterGrps = null;	
 	    JSONArray sampleRParams = null;
-	    JSONArray processTypeGrps= null;
-	 	DBconnection dBconn=new DBconnection(); // New connection to the database
+	    JSONArray processTypeGrps = null;
+	 	DBconnection dBconn = new DBconnection(); // New connection to the database
 	 	ArrayList<String> stringkeys = new ArrayList<String>(); 
 		 	
 	    try{
@@ -54,18 +54,25 @@ public class ProcessTypeParamGrps extends HttpServlet {
 		 	if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
 		 	
 	 			pStmt = dBconn.conn.prepareStatement(	
-				   "SELECT processtypes.id, processtypes.position, ptgroup, processtypes.name, "
-	 			  +"description, processtypes.lastuser "
-				  +"FROM processtypes "
-				  +"WHERE processtypes.id=?");
+						   "SELECT "
+						 + "    processtypes.id, "
+						 + "    processtypes.position, "
+						 + "    ptgroup, "
+						 + "    processtypes.name, "
+			 			 + "    description, "
+			 			 + "    processtypes.lastuser "
+						 + "FROM processtypes "
+						 + "WHERE processtypes.id = ?");
 		 		pStmt.setInt(1, processTypeID);
-	 			processType=dBconn.jsonObjectFromPreparedStmt(pStmt);
+	 			processType = dBconn.jsonObjectFromPreparedStmt(pStmt);
 	 			pStmt.close();
 	           	stringkeys.add(Integer.toString(processType.getInt("name")));
-	           	stringkeys.add(Integer.toString(processType.getInt("description")));
+	           	if (processType.has("description")){
+	           		stringkeys.add(Integer.toString(processType.getInt("description")));
+	           	}
 	           	
 	           	pStmt = dBconn.conn.prepareStatement( // not implemented in frontend yet
-	     		  	   "SELECT id, position, name FROM processtypegroups");
+	     		  	       "SELECT id, position, name FROM processtypegroups");
 				processTypeGrps=dBconn.jsonArrayFromPreparedStmt(pStmt);
 				if (processTypeGrps.length()>0) {
 	           		for (int j=0; j<processTypeGrps.length();j++) {
@@ -74,11 +81,11 @@ public class ProcessTypeParamGrps extends HttpServlet {
 	           	}		
 	           	
 	   			pStmt = dBconn.conn.prepareStatement(
-	   				"SELECT pgs.id,pgs.pos,pgs.stringkey, count(pp.id)=0 AS deletable "
-					+"FROM p_parametergrps pgs "
-					+"LEFT JOIN p_parameters pp ON pgs.id=pp.parametergroup "
-					+"WHERE pgs.processtype=? "
-					+"GROUP BY pgs.id ");
+		   				   "SELECT pgs.id,pgs.pos,pgs.stringkey, count(pp.id) = 0 AS deletable "
+						 + "FROM p_parametergrps pgs "
+						 + "LEFT JOIN p_parameters pp ON pgs.id=pp.parametergroup "
+						 + "WHERE pgs.processtype=? "
+						 + "GROUP BY pgs.id ");
 	   			pStmt.setInt(1, processTypeID);
 	   			parameterGrps=dBconn.jsonArrayFromPreparedStmt(pStmt); // get ResultSet from the database using the query
 	
@@ -91,20 +98,20 @@ public class ProcessTypeParamGrps extends HttpServlet {
 	           	
 	           	// get sample related process parameters (untested)
 	           	pStmt = dBconn.conn.prepareStatement(
-		   				"SELECT "
-						+"po_parameters.id, "
-						+"compulsory, "
-						+"hidden, "
-						+"position, "
-						+"definition, "
-						+"COALESCE(po_parameters.stringkeyname,paramdef.stringkeyname ) AS stringkey, "
-						+"NOT "
-						+"( "
-						+"	   EXISTS (SELECT 1 FROM spdata WHERE spdata.parameterid = po_parameters.id) "
-						+") AS deletable "
-						+"FROM po_parameters "
-						+"JOIN paramdef ON paramdef.id=po_parameters.definition "
-						+"WHERE processtypeid = ?");
+		   				   "SELECT "
+						 + "  po_parameters.id, "
+						 + "  compulsory, "
+						 + "  hidden, "
+						 + "  position, "
+						 + "  definition, "
+						 + "  COALESCE(po_parameters.stringkeyname,paramdef.stringkeyname ) AS stringkey, "
+						 + "  NOT "
+						 + "  ( "
+						 + "	     EXISTS (SELECT 1 FROM spdata WHERE spdata.parameterid = po_parameters.id) "
+						 + "  ) AS deletable "
+						 + "FROM po_parameters "
+						 + "JOIN paramdef ON paramdef.id = po_parameters.definition "
+						 + "WHERE processtypeid = ?");
 		   		pStmt.setInt(1, processTypeID);
 		   		sampleRParams = dBconn.jsonArrayFromPreparedStmt(pStmt); // get ResultSet from the database using the query
 		
@@ -114,8 +121,8 @@ public class ProcessTypeParamGrps extends HttpServlet {
 	           		}
 	           	}
 	     
-		        JSONObject answer=new JSONObject();
-		        answer=processType;
+		        JSONObject answer = new JSONObject();
+		        answer = processType;
 		        answer.put("samplerparams",sampleRParams);
 		        answer.put("processtypegrps", processTypeGrps);
 		        answer.put("parametergrps",parameterGrps);

@@ -36,24 +36,24 @@ import org.json.JSONObject;
 	    
  
 	    
-	    int stringKeyName=0;
-	    int stringKeyDesc=0; 
-	    int position=0;
-	    int ptgroup=1;
-	    int id=0;
+	    int stringKeyName = 0;
+	    int stringKeyDesc = 0; 
+	    int position = 0;
+	    int ptgroup = 1;
+	    int id = 0;
 
 
 	    
 	    // generate strings for the name 
 	    try {	
-		 	DBconnection dBconn=new DBconnection();
+		 	DBconnection dBconn = new DBconnection();
 		    dBconn.startDB();	  
 
-		    int admins=1;
-		    if (userID>0 && Unidatoolkit.isMemberOfGroup(userID,admins, dBconn)){
+		    int admins = 1;
+		    if (userID > 0 && Unidatoolkit.isMemberOfGroup(userID,admins, dBconn)){
 		    
 		    	if (jsonIn.has("name")){
-		    		JSONObject name=jsonIn.getJSONObject("name");
+		    		JSONObject name = jsonIn.getJSONObject("name");
 		    		String [] names = JSONObject.getNames(name);
 		    		stringKeyName=dBconn.createNewStringKey(name.getString(names[0]));
 		    		for (int i=0; i<names.length; i++){
@@ -81,7 +81,7 @@ import org.json.JSONObject;
 
   
 
-				 pStmt= dBconn.conn.prepareStatement( 			
+				 pStmt = dBconn.conn.prepareStatement( 			
 					"INSERT INTO processtypes (position,ptgroup,name,description,lastChange,lastUser) "
 					+"VALUES (?,?,?,?,NOW(),?) RETURNING id");
 				 pStmt.setInt(1, position);
@@ -149,6 +149,6 @@ import org.json.JSONObject;
 	
 		
     // tell client that everything is fine
-	    Unidatoolkit.sendStandardAnswer(status, response);
+	    Unidatoolkit.returnID(id, status, response);
 	}
 }	

@@ -3,21 +3,21 @@
 
 function editPtParamGrpsController($state,$stateParams,$translate,$scope,$uibModal,avParameters,restfactory,processService,processType,languages,avProcessTypeService){
   
-  var thisController=this;
+	var thisController = this;
     
-  this.parametergrps = processType.parametergrps.sort(
-	  function(a,b){
-		  return a.pos-b.pos;
-	  });
+	this.parametergrps = processType.parametergrps.sort(
+		function(a,b){
+			return a.pos-b.pos;
+		j});
   
   this.samplerparams = processType.samplerparams.sort(
 		  function(a,b){
 			  return a.position-b.position;
 		  });
   
-  this.strings=processType.strings;
+  this.strings = processType.strings;
   
-  this.languages=languages;
+  this.languages = languages;
   
   this.NameL1 = processType.nameLang(languages[0].key);
   
@@ -36,30 +36,32 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,$uibMod
   this.newDescL2 = processType.descLang(languages[1].key);
     
   this.lang = function(l){return $translate.instant(languages[l].name)};
-        
+       
+  this.editNL1 = $stateParams.newProcesstype === "true";
+
   
   
   
   this.addSRParameter = function(){
 	  var modalInstance = $uibModal.open({
-		    animation: false,
-		    templateUrl: 'modules/modal-parameter-choser/modal-parameter-choser.html',
-		    controller: 'modalParameterChoser as mParameterChoserCtrl',
-		    resolve: {
-		    	mode		   : function(){return 'immediate'; },
-		    	avParameters   : function(){return avParameters; },
-		    	parameters     : function(){return []; }
-			}
-		  });
-		  
-		  modalInstance.result.then(function (result) {  // get the new Parameterlist + Info if it has changed from Modal.  
-	    	  if (result.chosen.length>0){
-	    		  var promise=avProcessTypeService.addProcesstypeSRParameters($stateParams.processTypeID,result.chosen);
-	    		  promise.then(function(){reload();});		    	  
-	    	  }
-		    }, function () {
-		      console.log('Strange Error: Modal dismissed at: ' + new Date());
-		    });
+		  animation: false,
+		  templateUrl: 'modules/modal-parameter-choser/modal-parameter-choser.html',
+		  controller: 'modalParameterChoser as mParameterChoserCtrl',
+		  resolve: {
+			  mode		   : function(){return 'immediate'; },
+			  avParameters   : function(){return avParameters; },
+			  parameters     : function(){return []; }
+		  }
+	  });
+	  
+	  modalInstance.result.then(function (result) {  // get the new Parameterlist + Info if it has changed from Modal.  
+    	  if (result.chosen.length>0){
+    		  var promise=avProcessTypeService.addProcesstypeSRParameters($stateParams.processTypeID,result.chosen);
+    		  promise.then(function(){reload();});		    	  
+    	  }
+	    }, function () {
+	      console.log('Strange Error: Modal dismissed at: ' + new Date());
+	    });
   }
   
   
@@ -103,7 +105,7 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,$uibMod
   
   
   
-  this.downSR=function(index){
+  this.downSR = function(index){
 	  var id1=thisController.samplerparams[index].id;
 	  var id2=thisController.samplerparams[index+1].id;
 	  var pos1=thisController.samplerparams[index+1].position;
@@ -130,10 +132,10 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,$uibMod
   
 
   this.keyUp = function(keyCode,field) {
-	if (keyCode===13) {				// Return key pressed
+	if (keyCode === 13) {				// Return key pressed
 		this.changeField(field);
 	}
-	if (keyCode===27) {		// Escape key pressed
+	if (keyCode === 27) {		// Escape key pressed
 		thisController.editNL1 = false;
 		thisController.editNL2 = false;
 		thisController.editDL1 = false;
@@ -178,12 +180,6 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,$uibMod
 	 	);
   };
  
-  
-  
-  this.newParameter = function(){
-	  this.editmode=true;
-  };
-  
   
   
   this.performAction = function(parametergrp,action){

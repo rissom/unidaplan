@@ -102,90 +102,6 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 
 	
 	
-	this.getSinglePOParameter = function(parameterID){
-        var defered=$q.defer();
-    	var promise = restfactory.GET("single-po-parameter?parameterid="+parameterID);
-    	promise.then(function(rest) {
-	    	var parameter = rest.data;
-	    	var strings = rest.data.strings;
-	    	if (parameter.parametergroupname){
-	    		parameter.pgnamef=function(){
-	    			return (key2string.key2string(parameter.parametergroupname,strings));
-	    		};
-	    	}
-	    	parameter.processtypenamef = function(){
-				return (key2string.key2string(parameter.processtypename,strings));
-			};
-		    parameter.namef=function(){
-					return (key2string.key2string(parameter.name,strings));
-				};
-			parameter.nameLang=function(lang){
-					return (key2string.key2stringWithLangStrict(parameter.name,strings,lang));
-				};
-			parameter.descf=function(){
-					return (key2string.key2string(parameter.description,strings));
-				};
-			parameter.descLang=function(lang){
-					return (key2string.key2stringWithLangStrict(parameter.description,strings,lang));
-				};
-			parameter.unitLang=function(lang){
-					return (key2string.key2stringWithLangStrict(parameter.stringkeyunit,strings,lang));
-				};
-	        defered.resolve(parameter);
-    	}, function(rest) {
-    		console.log("Error loading processtype-parameter");
-    	});
-		return defered.promise;
-	};
-	
-	
-	
-	this.getSinglePTypeParameter = function(parameterID){
-        var defered=$q.defer();
-    	var promise = restfactory.GET("single-pt-parameter?parameterid="+parameterID);
-    	promise.then(function(rest) {
-	    	var parameter = rest.data;
-	    	var strings = rest.data.strings;
-	    	if (parameter.parametergroupname){
-	    		parameter.pgnamef=function(){
-	    			return (key2string.key2string(parameter.parametergroupname,strings));
-	    		};
-	    	}
-	    	parameter.processtypenamef=function(){
-				return (key2string.key2string(parameter.processtypename,strings));
-			};
-		    parameter.namef=function(){
-					return (key2string.key2string(parameter.name,strings));
-				};
-			parameter.nameLang=function(lang){
-					return (key2string.key2stringWithLangStrict(parameter.name,strings,lang));
-				};
-			parameter.descf=function(){
-					return (key2string.key2string(parameter.description,strings));
-				};
-			parameter.descLang=function(lang){
-					return (key2string.key2stringWithLangStrict(parameter.description,strings,lang));
-				};
-//				if (parameter.stringkeyunit){
-				parameter.unitLang=function(lang){
-					return (key2string.key2stringWithLangStrict(parameter.stringkeyunit,strings,lang));
-				};
-//				}
-				angular.forEach(parameter.otherparameters, function(parameter){
-					parameter.namef = function(){
-						return key2string.key2string(parameter.stringkeyname,strings);
-					}
-				});
-	        defered.resolve(parameter);
-    	}, function(rest) {
-    		console.log("Error loading processtype-parameter");
-    	});
-		return defered.promise;
-	};
-		     
-	
-	
-	
 	this.getProcessTypes = function() {
         var defered=$q.defer();
 	    var promise = restfactory.GET("available-processtypes");
@@ -193,23 +109,23 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 	    	var strings = rest.data.strings;
 	    	var processTypes = rest.data.processes;
 	    	angular.forEach(processTypes,function(ptype) {
-	    		ptype.namef=function(){
+	    		ptype.namef = function(){
 	    			return (key2string.key2string(ptype.name,strings));
 	    		};
-	    		ptype.nameLang=function(lang){
+	    		ptype.nameLang = function(lang){
 	    			return (key2string.key2stringWithLangStrict(ptype.name,strings,lang));
 	    		};
-	    		ptype.descf=function(){
+	    		ptype.descf = function(){
 	    			return (key2string.key2string(ptype.description,strings));
 	    		};
-	    		ptype.descLang=function(lang){
+	    		ptype.descLang = function(lang){
 	    			return (key2string.key2stringWithLangStrict(ptype.description,strings,lang));
 	    		};
 	    		ptype.actions= [{action:"edit",     name:$translate.instant("edit")},
 	    		                {action:"duplicate",name:$translate.instant("duplicate")},
 	    		                {action:"delete",   name:$translate.instant("delete"), disabled:!ptype.deletable}];
 	    		angular.forEach(ptype.recipes, function(recipe) {
-	    			recipe.namef=function(){
+	    			recipe.namef = function(){
 	    				return (key2string.key2string(recipe.name,strings));
 	    			};
 	    		});
@@ -302,6 +218,90 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 	    return defered.promise;
 	};
 
+
+	
+	this.getSinglePOParameter = function(parameterID){
+        var defered=$q.defer();
+    	var promise = restfactory.GET("single-po-parameter?parameterid="+parameterID);
+    	promise.then(function(rest) {
+	    	var parameter = rest.data;
+	    	var strings = rest.data.strings;
+	    	if (parameter.parametergroupname){
+	    		parameter.pgnamef=function(){
+	    			return (key2string.key2string(parameter.parametergroupname,strings));
+	    		};
+	    	}
+	    	parameter.processtypenamef = function(){
+				return (key2string.key2string(parameter.processtypename,strings));
+			};
+		    parameter.namef = function(){
+					return (key2string.key2string(parameter.name,strings));
+				};
+			parameter.nameLang = function(lang){
+					return (key2string.key2stringWithLangStrict(parameter.name,strings,lang));
+				};
+			parameter.descf = function(){
+					return (key2string.key2string(parameter.description,strings));
+				};
+			parameter.descLang = function(lang){
+					return (key2string.key2stringWithLangStrict(parameter.description,strings,lang));
+				};
+			parameter.unitLang = function(lang){
+					return (key2string.key2stringWithLangStrict(parameter.stringkeyunit,strings,lang));
+				};
+	        defered.resolve(parameter);
+    	}, function(rest) {
+    		console.log("Error loading processtype-parameter");
+    	});
+		return defered.promise;
+	};
+	
+	
+	
+	this.getSinglePTypeParameter = function(parameterID){
+        var defered=$q.defer();
+    	var promise = restfactory.GET("single-pt-parameter?parameterid="+parameterID);
+    	promise.then(function(rest) {
+	    	var parameter = rest.data;
+	    	var strings = rest.data.strings;
+	    	if (parameter.parametergroupname){
+	    		parameter.pgnamef=function(){
+	    			return (key2string.key2string(parameter.parametergroupname,strings));
+	    		};
+	    	}
+	    	parameter.processtypenamef=function(){
+				return (key2string.key2string(parameter.processtypename,strings));
+			};
+		    parameter.namef=function(){
+					return (key2string.key2string(parameter.name,strings));
+				};
+			parameter.nameLang=function(lang){
+					return (key2string.key2stringWithLangStrict(parameter.name,strings,lang));
+				};
+			parameter.descf=function(){
+					return (key2string.key2string(parameter.description,strings));
+				};
+			parameter.descLang=function(lang){
+					return (key2string.key2stringWithLangStrict(parameter.description,strings,lang));
+				};
+//				if (parameter.stringkeyunit){
+				parameter.unitLang=function(lang){
+					return (key2string.key2stringWithLangStrict(parameter.stringkeyunit,strings,lang));
+				};
+//				}
+				angular.forEach(parameter.otherparameters, function(parameter){
+					parameter.namef = function(){
+						return key2string.key2string(parameter.stringkeyname,strings);
+					}
+				});
+	        defered.resolve(parameter);
+    	}, function(rest) {
+    		console.log("Error loading processtype-parameter");
+    	});
+		return defered.promise;
+	};
+		     
+	
 	
 	this.updateParamGrp = function (name, language, paramgrpid){
 		return restfactory.PUT("update-pt-paramgrp",{"newname":name, "paramgrpid":paramgrpid, "language":language});

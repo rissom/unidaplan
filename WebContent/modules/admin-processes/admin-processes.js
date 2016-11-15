@@ -13,10 +13,28 @@ function aProcessesController($state,$stateParams,$translate,restfactory,process
     
   
   
-	this.newProcessType=function(){
-		this.editmode=true;
-	};
-  
+	this.newProcessType = function(){
+  		// add a new processtype to the database.
+	 	var name = {};
+	 	name[languages[0].key] = $translate.instant("new processtype");
+	 	name[languages[1].key] = "new processtype";
+	 	var position = 0;
+	 	if (thisController.types){
+	 		position = thisController.ptypes.length + 1;
+	 	}
+	  	var newProcessType = { "name" : name };
+	 	var promise = processService.addProcessType(newProcessType);
+	 	promise.then(
+	 		function(data) {
+	 			$state.go("editPtParamGrps",{processTypeID:data.data.id, newProcesstype:"true"}); 
+	 		},
+		 	function(data) {
+				console.log('error');
+	 			console.log(data);
+	 		}
+	 	);
+  	};
+  	
   
   
 	this.performAction = function(process,action){
@@ -36,31 +54,17 @@ function aProcessesController($state,$stateParams,$translate,restfactory,process
   
   
 	this.keyUp = function(keyCode) {
-		if (keyCode===13) {				// Return key pressed
+		if (keyCode === 13) {				// Return key pressed
 			this.addProcessType();
 		}
-		if (keyCode===27) {		// Escape key pressed
+		if (keyCode === 27) {		// Escape key pressed
 			this.editmode=false;
 		}
 	};
-  
-  
-  
-	this.addProcessType=function(){
-		var name={};
-		name[languages[0].key]=this.newNameL1;
-		name[languages[1].key]=this.newNameL2;
-		var description={};
-		description[languages[0].key]=this.newDescL1;
-		description[languages[1].key]=this.newDescL2; 	  
-		var newProcessType={"name":name,"description":description};	  
-		var promise = processService.addProcessType(newProcessType);
-		promise.then(function(){ reload();},function(){console.log("error");});
-	};
 	
 	
 	
-	var reload=function() {
+	var reload = function() {
 		var current = $state.current;
 		var params = angular.copy($stateParams);
 		return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
