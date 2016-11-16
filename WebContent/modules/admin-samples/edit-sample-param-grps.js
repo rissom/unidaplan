@@ -40,6 +40,8 @@ function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
   this.editNL1 = $stateParams.newSampletype;
   
   
+  
+  
   this.addParameter = function () {
 		var modalInstance = $uibModal.open({
 		    animation: false,
@@ -65,12 +67,13 @@ function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
 	};
 	
 	
-	
-	this.addParameterGroup=function(){
+	  
+	  
+	this.newParameterGroup = function(){
 		 // add a new ParameterGroup to the database.
 		var name = {}
-		name[languages[0].key] = thisController.newGrpNameL1;
-		name[languages[1].key] = thisController.newGrpNameL2;
+		name[languages[0].key] = $translate.instant("new Parametergroup");
+		name[languages[1].key] = "new Parametergroup";
 		var position = 0;
 		if (thisController.parametergrps){
 			position = thisController.parametergrps.length + 1;
@@ -78,7 +81,7 @@ function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
 		var promise = avSampleTypeService.addSTParameterGrp(sampleType.id,position,name);
 		promise.then(
 			function(data) {
-				reload();
+	 			$state.go("editSTParams",{paramGrpID:data.data.id, newParamGrp:"true"}); // go to the new parametergroup
 			},
 			function(data) {
 				console.log('error');
@@ -168,18 +171,6 @@ function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
 		if (keyCode === 27) {		// Escape key pressed
 			this.editmode=false;
 		}
-	};
-  
-  
-  
-	this.newParameterGroup = function(){
-		thisController.editmode = true;
-	};
-	
-	
-	
-	this.newParameter = function(){
-		this.editmode = true;
 	};
   
 	

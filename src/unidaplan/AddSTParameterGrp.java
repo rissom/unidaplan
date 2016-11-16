@@ -18,19 +18,20 @@ import org.json.JSONObject;
 	  public void doPost(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {		
 		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
-		String status="ok";
-		int sampleTypeID=0;
-		int position=0;
-	    int stringKeyName=0;
+		int userID = authentificator.GetUserID(request,response);
+		String status = "ok";
+		int sampleTypeID = 0;
+		int parameterGroupID = -1;
+		int position = 0;
+	    int stringKeyName = 0;
 	    request.setCharacterEncoding("utf-8");
 	    PreparedStatement pStmt = null;
 	    JSONObject  jsonIn = null;
 	    
 	    try {
 			jsonIn = new JSONObject(request.getReader().readLine());
-			sampleTypeID=jsonIn.getInt("sampletypeid");
-			position=jsonIn.getInt("position");
+			sampleTypeID = jsonIn.getInt("sampletypeid");
+			position = jsonIn.getInt("position");
 		} catch (JSONException e) {
 			System.err.println("AddSTParameterGrp: Input is not valid JSON");
 		}
@@ -58,10 +59,10 @@ import org.json.JSONObject;
 			try{
 			
 				if (jsonIn.has("name")){
-					 JSONObject name=jsonIn.getJSONObject("name");
+					 JSONObject name = jsonIn.getJSONObject("name");
 					 String [] names = JSONObject.getNames(name);
 					 stringKeyName=dBconn.createNewStringKey(name.getString(names[0]));
-					 for (int i=0; i<names.length; i++){
+					 for (int i = 0; i < names.length; i++){
 						 dBconn.addString(stringKeyName,names[i],name.getString(names[i]));
 					 }
 				}else{
@@ -77,10 +78,10 @@ import org.json.JSONObject;
   
 		    // get current max position and add 1
 		    try {	
-				pStmt= dBconn.conn.prepareStatement( 			
+				pStmt = dBconn.conn.prepareStatement( 			
 						"SELECT max(pos) FROM ot_parametergrps WHERE ot_id=?");
 			   	pStmt.setInt(1, sampleTypeID);
-			   	position=dBconn.getSingleIntValue(pStmt)+1;
+			   	position = dBconn.getSingleIntValue(pStmt) + 1;
 			} catch (SQLException e) {
 				System.err.println("AddSTParameterGrp: Problems with SQL query");
 				response.setStatus(404);
@@ -93,13 +94,14 @@ import org.json.JSONObject;
 	    
 		    // add entry to database
 			try {	
-				pStmt= dBconn.conn.prepareStatement( 			
-						"INSERT INTO ot_parametergrps values(default,?,?,?, NOW(),?)");
+				pStmt = dBconn.conn.prepareStatement( 			
+						  "INSERT INTO ot_parametergrps values(default,?,?,?, NOW(),?)"
+						+ "RETURNING id ");
 			   	pStmt.setInt(1, sampleTypeID);
 			   	pStmt.setInt(2, stringKeyName);
 			   	pStmt.setInt(3, position);
 			   	pStmt.setInt(4, userID);
-			   	pStmt.executeUpdate();
+			   	parameterGroupID = dBconn.getSingleIntValue(pStmt);
 			} catch (SQLException e) {
 				System.err.println("AddSTParameterGrp: Problems with SQL query");
 				response.setStatus(404);
@@ -113,6 +115,6 @@ import org.json.JSONObject;
 	
 		
 	    // tell client that everything is fine
-	    Unidatoolkit.sendStandardAnswer(status, response);
+	    Unidatoolkit.returnID(parameterGroupID, status, response);
 	}
 }	

@@ -210,7 +210,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 
         
         .state('editSTParams', {
-        	url: '/editsampletypeparams/{paramGrpID:int}',
+        	url: '/editsampletypeparams/?:paramGrpID&:newParamGrp',
 	        templateUrl: 'modules/admin-samples/edit-st-params.html',
 	        controller:"editSTParamsController as editSTParamsCtrl",
 	        resolve:{

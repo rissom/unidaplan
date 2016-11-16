@@ -10,34 +10,34 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,$uibMod
 			return a.pos-b.pos;
 		j});
   
-  this.samplerparams = processType.samplerparams.sort(
+	this.samplerparams = processType.samplerparams.sort(
 		  function(a,b){
 			  return a.position-b.position;
 		  });
   
-  this.strings = processType.strings;
+	this.strings = processType.strings;
   
-  this.languages = languages;
+	this.languages = languages;
   
-  this.NameL1 = processType.nameLang(languages[0].key);
+	this.NameL1 = processType.nameLang(languages[0].key);
   
-  this.newNameL1 = processType.nameLang(languages[0].key);
+	this.newNameL1 = processType.nameLang(languages[0].key);
   
-  this.NameL2 = processType.nameLang(languages[1].key);
+	this.NameL2 = processType.nameLang(languages[1].key);
 
-  this.newNameL2 = processType.nameLang(languages[1].key);
+	this.newNameL2 = processType.nameLang(languages[1].key);
   
-  this.DescL1 = processType.descLang(languages[0].key);
+	this.DescL1 = processType.descLang(languages[0].key);
 
-  this.newDescL1 = processType.descLang(languages[0].key);
+	this.newDescL1 = processType.descLang(languages[0].key);
   
-  this.DescL2 = processType.descLang(languages[1].key);
+	this.DescL2 = processType.descLang(languages[1].key);
   
-  this.newDescL2 = processType.descLang(languages[1].key);
+	this.newDescL2 = processType.descLang(languages[1].key);
     
-  this.lang = function(l){return $translate.instant(languages[l].name)};
+	this.lang = function(l){return $translate.instant(languages[l].name)};
        
-  this.editNL1 = $stateParams.newProcesstype === "true";
+	this.editNL1 = $stateParams.newProcesstype === "true";
 
   
   

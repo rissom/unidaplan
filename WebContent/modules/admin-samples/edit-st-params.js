@@ -37,7 +37,7 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
   
     this.lang2key = languages[1].key;
   
-    this.editFieldNL1=false;
+    this.editFieldNL1 =	$stateParams.newParamGrp === 'true';
   
     this.editFieldNL2=false;
       
@@ -51,8 +51,8 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
   
   
     this.edit = function(field){
-	    thisController.editFieldNL1 = (field=="NL1");
-	    thisController.editFieldNL2 = (field=="NL2");
+	    thisController.editFieldNL1 = (field == "NL1");
+	    thisController.editFieldNL2 = (field == "NL2");
 	    thisController.newNameL1 = thisController.nameL1;
 	    thisController.newNameL2 = thisController.nameL2;
     };
@@ -79,7 +79,7 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
   
   
   	this.setHidden = function(parameter){
-	    var tempParameter={ 
+	    var tempParameter = { 
 	    		parameterid : parameter.id, 
 	    		hidden : parameter.hidden
 	    };
@@ -108,7 +108,7 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
   	
   
 	this.setIDField = function(parameter){
-  		var tempParameter={ 
+  		var tempParameter = { 
   			parameterid : parameter.id,
 			id_field : parameter.id_field};
   		var promise= avSampleTypeService.updateParameter(tempParameter);
