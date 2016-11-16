@@ -49,7 +49,7 @@ public class AddExperiment extends HttpServlet {
 				 "INSERT INTO experiments (name,number,creator,status,lastUser) "
 			   + "VALUES ("
 			   + "	?,"
-			   + "	(SELECT max(number) + 1 FROM experiments),"
+			   + "	COALESCE ( (SELECT max(number) + 1 FROM experiments), 1),"
 			   + "	?,"
 			   + "	1,"
 			   + "	?) "
