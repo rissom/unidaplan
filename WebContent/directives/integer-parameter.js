@@ -21,7 +21,9 @@ var integerParameter = function() {
 		},
 		controller: function($scope){
 			
-			this.newValue=$scope.parameter.data.value;
+			this.newValue = $scope.parameter.data.value;
+			
+			console.log(hallo)
 			
 			this.keyUp = function(keyCode) {
 				if (keyCode===13) {				// Return key pressed
@@ -39,6 +41,15 @@ var integerParameter = function() {
 			this.keyDown = function(keyCode) {
 				if (keyCode===9) {		// Tab key pressed
 					$scope.parameter.editing = false; 
+					$scope.parameter.data.value = this.newValue;
+					$scope.pupdate({parameter:$scope.parameter});
+				}
+			}
+			
+			this.blur = function(keyCode) {
+				console.log("blur")
+				$scope.parameter.editing = false; 
+				if ($scope.parameter.data.value != this.newValue){
 					$scope.parameter.data.value = this.newValue;
 					$scope.pupdate({parameter:$scope.parameter});
 				}

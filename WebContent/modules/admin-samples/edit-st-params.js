@@ -33,11 +33,11 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
   
     this.lang2=$translate.instant(languages[1].name);
   
-    this.lang1key=$translate.instant(languages[0].key);
+    this.lang1key = languages[0].key;
   
-    this.lang2key=$translate.instant(languages[1].key);
+    this.lang2key = languages[1].key;
   
-    this.editFieldNL1=false;
+    this.editFieldNL1 =	$stateParams.newParamGrp === 'true';
   
     this.editFieldNL2=false;
       
@@ -51,8 +51,8 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
   
   
     this.edit = function(field){
-	    thisController.editFieldNL1 = (field=="NL1");
-	    thisController.editFieldNL2 = (field=="NL2");
+	    thisController.editFieldNL1 = (field == "NL1");
+	    thisController.editFieldNL2 = (field == "NL2");
 	    thisController.newNameL1 = thisController.nameL1;
 	    thisController.newNameL2 = thisController.nameL2;
     };
@@ -79,7 +79,7 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
   
   
   	this.setHidden = function(parameter){
-	    var tempParameter={ 
+	    var tempParameter = { 
 	    		parameterid : parameter.id, 
 	    		hidden : parameter.hidden
 	    };
@@ -108,7 +108,7 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
   	
   
 	this.setIDField = function(parameter){
-  		var tempParameter={ 
+  		var tempParameter = { 
   			parameterid : parameter.id,
 			id_field : parameter.id_field};
   		var promise= avSampleTypeService.updateParameter(tempParameter);
@@ -145,6 +145,22 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
   		// actions are defined in av-sampletype-service.getSTypeParams
   		if (action.action === "edit"  && !action.disabled){
   			$state.go('editSingleSTParameter',{parameterID:parameter.id});
+  		}
+  		if (action.action === "hide"  && !action.disabled){
+  			var promise = avSampleTypeService.updateParameter({parameterid:parameter.id,hidden:true});
+  			promise.then(function(){
+  				reload();
+  			},function(){
+  				console.log("error");
+  			});
+  		}
+  		if (action.action === "show"  && !action.disabled){
+  			var promise = avSampleTypeService.updateParameter({parameterid:parameter.id,hidden:false});
+  			promise.then(function(){
+  				reload();
+  			},function(){
+  				console.log("error");
+  			});
   		}
   		if (action.action === "delete" && !action.disabled) {
   			var promise = avSampleTypeService.deleteSTParameter(parameter.id);

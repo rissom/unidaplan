@@ -20,13 +20,14 @@ import org.json.JSONObject;
 		
 		Authentificator authentificator;
 		int userID;
-		String status="ok";
-		int processTypeID=0;
-		int position=0;
+		String status = "ok";
+		int processTypeID = 0;
+		int position = 0;
+		int newParametergroupID = -1;
 		String in;
 		
 		authentificator = new Authentificator();
-		userID=authentificator.GetUserID(request,response);
+		userID = authentificator.GetUserID(request,response);
 
 	    request.setCharacterEncoding("utf-8");
 	    in = request.getReader().readLine();
@@ -46,50 +47,48 @@ import org.json.JSONObject;
 	    
 	    
 
-	    int stringKeyName=0;
+	    int stringKeyName = 0;
 	    
 	    // generate strings for the name
 	    try {			 	
-	    	DBconnection dBconn=new DBconnection();
+	    	DBconnection dBconn = new DBconnection();
 	    	dBconn.startDB();	   
 	    	
 	    	//check if admin
-	    	int admins=1;
-			if (userID>0 && Unidatoolkit.isMemberOfGroup(userID,admins, dBconn)){
-	    	
-				
+	    	int admins = 1;
+			if (userID > 0 && Unidatoolkit.isMemberOfGroup(userID, admins, dBconn)){
+				JSONObject name = new JSONObject();
+					name.put("en", "new processtype");
 				if (jsonIn.has("name")){
-					 JSONObject name=jsonIn.getJSONObject("name");
-					 String [] names = JSONObject.getNames(name);
-					 stringKeyName=dBconn.createNewStringKey(name.getString(names[0]));
-					 for (int i=0; i<names.length; i++){
-						 dBconn.addString(stringKeyName,names[i],name.getString(names[i]));
-					 }
-				 }else
-				 {
-					 status="error: no name given";
-					 response.setStatus(404);
-				 }
-	
-			
+					name = jsonIn.getJSONObject("name");
+				}
+				String [] names = JSONObject.getNames(name);
+				stringKeyName=dBconn.createNewStringKey(name.getString(names[0]));
+				for (int i = 0; i < names.length; i++){
+					dBconn.addString(stringKeyName,names[i],name.getString(names[i]));
+				}
+				 
+				
 	  
 				 // get current max position and add 1
 			    PreparedStatement pStmt = null;
 			    
-				pStmt= dBconn.conn.prepareStatement( 			
+				pStmt = dBconn.conn.prepareStatement( 			
 						"SELECT max(pos) FROM p_parametergrps WHERE processtype=?");
 			   	pStmt.setInt(1, processTypeID);
-			   	position=dBconn.getSingleIntValue(pStmt)+1;
+			   	position = dBconn.getSingleIntValue(pStmt) + 1;
 			   	pStmt.close();
 		
 			   	// add entry to database
-				pStmt= dBconn.conn.prepareStatement( 			
-						"INSERT INTO p_parametergrps values(default,?,?,?, NOW(),?)");
+				pStmt = dBconn.conn.prepareStatement( 			
+						  "INSERT INTO p_parametergrps (processtype, stringkey, pos, lastuser) "
+						+ "VALUES (?,?,?,?) "
+						+ "RETURNING id");
 			   	pStmt.setInt(1, processTypeID);
 			   	pStmt.setInt(2, stringKeyName);
 			   	pStmt.setInt(3, position);
 			   	pStmt.setInt(4, userID);
-			   	pStmt.executeUpdate();
+			   	newParametergroupID = dBconn.getSingleIntValue(pStmt);
 			   	pStmt.close();
 			} else {
 				response.setStatus(401);
@@ -97,6 +96,7 @@ import org.json.JSONObject;
 			dBconn.closeDB();
 		} catch (SQLException e) {
 			System.err.println("AddPTParameterGrp: Problems with SQL query");
+			e.printStackTrace();
 		} catch (Exception e) {
 			System.err.println("AddPTParameterGrp: Strange Problems");
 		}	
@@ -104,6 +104,6 @@ import org.json.JSONObject;
 	
 		
     // tell client that everything is fine
-	   Unidatoolkit.sendStandardAnswer(status, response);
+	   Unidatoolkit.returnID(newParametergroupID, status, response);
 	}
 }	

@@ -38,11 +38,11 @@ public class Showsample extends HttpServlet {
 	    request.setCharacterEncoding("utf-8");
 	    response.setCharacterEncoding("utf-8");
 	    PrintWriter out = response.getWriter();
-	 	DBconnection dBconn=new DBconnection();
+	 	DBconnection dBconn = new DBconnection();
 		int sampleID = 1;      // variable initialisation
 		int typeid = 1;
 		String privilege = "";
-		JSONObject jsSample=new JSONObject(); // variable initialisation
+		JSONObject jsSample = new JSONObject(); // variable initialisation
 		
 		// get Parameter for id
 		try{
@@ -56,13 +56,13 @@ public class Showsample extends HttpServlet {
 	    try{
 	        dBconn.startDB();
 	        pStmt = dBconn.conn.prepareStatement( 	
-					"SELECT getSampleRights(vuserid:=?,vsample:=?)");
+					"SELECT getSampleRights(vuserid := ?, vsample := ?)");
 			pStmt.setInt(1,userID);
 			pStmt.setInt(2,sampleID);
 			privilege=dBconn.getSingleStringValue(pStmt);
 			pStmt.close();
 	        
-	        editable= privilege!=null && privilege.equals("w");
+	        editable = privilege != null && privilege.equals("w");
 	        
 		} catch (SQLException e) {
 			System.err.println("Showsample: Problems with SQL query for sample name");
@@ -76,7 +76,6 @@ public class Showsample extends HttpServlet {
 	    
 	    // dingstest
 	    
-	        
 		if (editable || (privilege != null && privilege.equals("r"))){
 			try {
 		        pStmt = dBconn.conn.prepareStatement( 	
@@ -199,12 +198,12 @@ public class Showsample extends HttpServlet {
 			pStmt.setInt(1,sampleID);
 			pStmt.setInt(2,typeid);
 			JSONArray parameters = dBconn.jsonArrayFromPreparedStmt(pStmt);
-			if (parameters.length()>0 && parametergrps!=null && parametergrps.length()>0) {
-				for (int j=0;j<parametergrps.length();j++){
-					JSONArray prmgrpprms=new JSONArray();
-					JSONObject prmgrp=parametergrps.getJSONObject(j);
+			if (parameters.length()>0 && parametergrps != null && parametergrps.length() > 0) {
+				for (int j = 0; j < parametergrps.length(); j++){
+					JSONArray prmgrpprms = new JSONArray();
+					JSONObject prmgrp = parametergrps.getJSONObject(j);
 		      		stringkeys.add(Integer.toString(prmgrp.getInt("paramgrpkey")));				
-			      	for (int i=0; i<parameters.length();i++) {
+			      	for (int i = 0; i < parameters.length(); i++) {
 			      		JSONObject tParam=(JSONObject) parameters.get(i);
 			      		stringkeys.add(Integer.toString(tParam.getInt("namekey")));
 			      		if (tParam.has("parametergroup")&&
@@ -278,16 +277,16 @@ public class Showsample extends HttpServlet {
 	//	   	Timestamp validToDate = Timestamp.valueOf(validToString); 
 			if (processes.length()>0) { // TODO: Why not directly? Timestamp???
 				JSONArray processes2 = new JSONArray();
-		      	for (int i=0; i<processes.length();i++) {	      		
+		      	for (int i = 0; i < processes.length(); i++) {	      		
 		      		JSONObject tempObj = (JSONObject) processes.get(i);
 		      		JSONObject tempObj2 = new JSONObject();
-		      		int number= ((JSONObject) processes.get(i)).getInt("number");
+		      		int number = ((JSONObject) processes.get(i)).getInt("number");
 		      		tempObj2.put("number",number);
-		      		int ptype= ((JSONObject) processes.get(i)).getInt("processtype");
+		      		int ptype = ((JSONObject) processes.get(i)).getInt("processtype");
 		      		tempObj2.put("processtype",ptype);
-		      		int processid= ((JSONObject) processes.get(i)).getInt("processid");
+		      		int processid = ((JSONObject) processes.get(i)).getInt("processid");
 		      		tempObj2.put("processid",processid);
-		      		int status= ((JSONObject) processes.get(i)).getInt("status");
+		      		int status = ((JSONObject) processes.get(i)).getInt("status");
 		      		tempObj2.put("status",status);
 		    	   	String dateString = tempObj.getString("date");
 		      		tempObj2.put("date", dateString);	      		
@@ -344,7 +343,7 @@ public class Showsample extends HttpServlet {
 	      		int experimentID=eps.getJSONObject(i).getInt("exp_id");
 	      		pStmt.setInt(2,experimentID);
 	      		JSONArray pprocesses = dBconn.jsonArrayFromPreparedStmt(pStmt);
-	      		for (int j=0; j<pprocesses.length();j++){
+	      		for (int j = 0; j < pprocesses.length(); j++){
 	      			if (pprocesses.getJSONObject(j).has("recipename")){
 	      				stringkeys.add(Integer.toString(pprocesses.getJSONObject(j).getInt("recipename")));
 	      			}

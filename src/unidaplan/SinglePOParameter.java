@@ -63,8 +63,8 @@ public class SinglePOParameter extends HttpServlet {
 	 					+"JOIN paramdef ON (definition=paramdef.id) " 
 	 					+"LEFT JOIN  processtypes ON (processtypes.id=po_parameters.processtypeid) "  
 	 					+"LEFT JOIN ( "
-	 					+"	SELECT count(a.id),parameterid FROM spdata a GROUP BY po_parameter_id "   
-	 					+") AS blabla ON blabla.po_parameter_id=po_parameters.id "
+	 					+"	SELECT count(a.id),parameterid FROM spdata a GROUP BY a.parameterid "   
+	 					+") AS blabla ON blabla.parameterid = po_parameters.id "
 	 					+"WHERE po_parameters.id=?");
 				pStmt.setInt(1, parameterID);
 				parameter=dBconn.jsonObjectFromPreparedStmt(pStmt);

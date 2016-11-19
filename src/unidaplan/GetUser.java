@@ -30,10 +30,10 @@ import org.json.JSONObject;
 	    response.setContentType("application/json");
 	    request.setCharacterEncoding("utf-8");
 	    response.setCharacterEncoding("utf-8");
-	    int id=-1;
+	    int id = -1;
 		// get Parameter for id
 		try{
-			 id=Integer.parseInt(request.getParameter("id"));
+			 id = Integer.parseInt(request.getParameter("id"));
 		}
 		catch (Exception e1) {
 			System.err.print("User: no user ID given!");
@@ -83,7 +83,8 @@ import org.json.JSONObject;
 				// Get processtypes
 				pStmt = dBconn.conn.prepareStatement(
 						"SELECT "
-					  + "processtype AS id, permission "
+					  + "	processtype AS id, "
+					  + "	permission "
 					  + "FROM rightsprocesstypeuser "
 					  + "WHERE userid=?");
 				pStmt.setInt(1, id);

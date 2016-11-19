@@ -6,7 +6,7 @@ function sampleController(sample,$state,$stateParams,$uibModal,$filter,types,sam
 	
 	var thisController = this;
 		
-	if (sample.error) this.error=sample.error;
+	if (sample.error) this.error = sample.error;
 	this.parametergroups = sample.parametergroups;
 	this.editable = sample.editable;
 	this.files = sample.files;
@@ -24,6 +24,7 @@ function sampleController(sample,$state,$stateParams,$uibModal,$filter,types,sam
 	this.typestringkey = sample.typestringkey;
 	this.typeid = sample.typeid;
 		
+	this.dataFormatter = new DataFormatter({locale : 'en-US'});
 
 	
 	// store ancestors in database
@@ -39,7 +40,7 @@ function sampleController(sample,$state,$stateParams,$uibModal,$filter,types,sam
 	
 	// store children in database
 	this.assignChildren = function(children){
-		var c2=[];
+		var c2 = [];
 		for (var i=0; i<children.length; i++) {
 			c2.push(children[i].sampleid);
 		}		
@@ -99,23 +100,32 @@ function sampleController(sample,$state,$stateParams,$uibModal,$filter,types,sam
 			parameter.editing = false;
 			var oldValue 
 			if (typeof(parameter.data) != "undefined") {
-				oldvalue = parameter.data.value;
+				oldValue = parameter.data.value;
 			} else {
-				parameter.data = {};
+				if ( newValue != "" && newValue != null ){
+					parameter.data = {};
+				}
 			} 
 			parameter.data.value = newValue;
+			if ( newValue == "" || newValue == null ){
+				delete parameter.data;
+			}
 			var res;
-			res = sampleService.saveParameter(sample.id,
-					{pid : parameter.parameterid,
-					 data : {value:parameter.data.value}});
-			res.then(function() { reload(); },
-					 function() {
-						parameter.data.value = oldValue;
-						console.log('error');
-					}
+			var newParam = { pid : parameter.parameterid };
+			if (typeof(parameter.data) != "undefined"){
+				 newParam["data"] = {value:parameter.data.value};
+			}
+				
+			res = sampleService.saveParameter(sample.id,newParam);
+			res.then(
+				function() { reload(); },
+				function() {
+					parameter.data.value = oldValue;
+					console.log('error');
+				}
 			);
 		}
-		if (keyCode===27) {		// Escape key pressed
+		if (keyCode === 27) {		// Escape key pressed
 			parameter.editing=false;			
 		}
 	};
@@ -152,7 +162,7 @@ function sampleController(sample,$state,$stateParams,$uibModal,$filter,types,sam
 		});
 	    
 	  	modalInstance.result.then(function (result) {  // get the new Samplelist + Info if it is changed from Modal. 
-			if (mode=="ancestors"){ 
+			if (mode == "ancestors"){ 
 				thisController.ancestors=result.chosen;
 				if (result.changed) {
 		    	    thisController.assignAncestors(result.chosen);

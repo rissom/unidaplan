@@ -28,13 +28,13 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
         
                 
         .state('adminProcesses', {
-	        url: '/adminprocesses',
-	        templateUrl: 'modules/admin-processes/admin-processes.html',
-	        controller:"aProcessesController as aProcessesCtrl",
-	        resolve:{
+	        url : '/adminprocesses',
+	        templateUrl : 'modules/admin-processes/admin-processes.html',
+	        controller : "aProcessesController as aProcessesCtrl",
+	        resolve: {
                	ptypes: function(avProcessTypeService){
-        	   	    	return avProcessTypeService.getProcessTypes();
-        	   	    }
+        	   	    		return avProcessTypeService.getProcessTypes();
+               			}
 			}
         })
         
@@ -78,7 +78,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 
         
         .state('editPtParamGrps', {
-        	url: '/editprocesstype/{processTypeID:int}',
+        	url: '/editprocesstype?:processTypeID&:newProcesstype',
 	        templateUrl: 'modules/admin-processes/edit-pt-param-grps.html',
 	        controller:"editPtParamGrpsController as editPtParamGrpsCtrl",
 	        resolve:{
@@ -94,7 +94,8 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
         
         
         .state('editPtParams', {
-        	url: '/editprocesstypeparams/{paramGrpID:int}',
+//        	url: '/editprocesstypeparams/{paramGrpID:int}',
+	    	url: '/editprocesstypeparams?:paramGrpID&:newGrp',
 	        templateUrl: 'modules/admin-processes/edit-pt-params.html',
 	        controller:"editPtParamsController as editPtParamsCtrl",
 	        resolve:{
@@ -151,7 +152,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
         
         
         .state('editSTParamGrps', {
-        	url : '/editsampletype/{sampleTypeID:int}',
+        	url : '/editsampletype?:sampleTypeID&:newSampletype',
 	        templateUrl : 'modules/admin-samples/edit-sample-param-grps.html',
 	        controller : "editSampleParamGrpsController as editSampleParamGrpsCtrl",
 	        resolve : {
@@ -209,7 +210,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 
         
         .state('editSTParams', {
-        	url: '/editsampletypeparams/{paramGrpID:int}',
+        	url: '/editsampletypeparams/?:paramGrpID&:newParamGrp',
 	        templateUrl: 'modules/admin-samples/edit-st-params.html',
 	        controller:"editSTParamsController as editSTParamsCtrl",
 	        resolve:{
@@ -362,6 +363,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
         })
     
             
+        
         .state('newProcess', {
 	    	url: '/new-process',
 	        templateUrl: 'modules/process/new-process.html',
@@ -373,6 +375,8 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
         	   	    }
 	        }
         })
+        
+        
         
         .state('noRights', {
 	    	url: '/no-rights',
@@ -666,30 +670,45 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 
 
 
-
-.run(function($rootScope, restfactory) {
+.run(function($rootScope, $translate, restfactory) {
 	
 	// init function: reads the username from local Browser storage.
 	
 	
+	
+		var request = new XMLHttpRequest();
+		request.open("GET", "get-active-session-user", false);  // `false` makes the request synchronous
+		request.send(null);
+		var data = JSON.parse(request.responseText);
 
-	var username=window.localStorage.getItem("username");
-	if (username){
-		$rootScope.username=username;
-	}else{
-		$rootScope.username="User";
-	}
+		if (request.status === 200) {
+			$rootScope.userid = data.id;
+			if (data.fullname){
+				$rootScope.userfullname = data.fullname;
+			}else{
+				delete $rootScope.userfullname;
+			}
+			
+			if (data.username){
+				$rootScope.username = data.username;
+			}else{
+				delete $rootScope.username;
+			}
+			
+			if(data.preferredlanguage && data.preferredlanguage !== null){
+	        	  if (data.preferredlanguage != $translate.use()) {
+	      			$translate.use(data.preferredlanguage);
+	        	  }
+	        } 
+			
+			if (data.admin === true){
+				$rootScope.admin = true;
+			}else{
+				$rootScope.admin = false;
+			}
+		};
+		
 	
-	if (window.localStorage.getItem("admin")=="true"){
-		$rootScope.admin=true;
-	}else{
-		$rootScope.admin=false;
-	}
-	
-	var userid=window.localStorage.getItem("userid");
-	if (userid){
-		$rootScope.userid=userid;
-	}
 		
 	
 	

@@ -34,6 +34,7 @@ import expr.Variable;
 		int userID = authentificator.GetUserID(request,response);
 		String status = "ok";
 		String privilege = "n";
+		
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
 	    JSONObject  jsonIn = null;	    
@@ -60,16 +61,18 @@ import expr.Variable;
 	 	DBconnection dBconn = new DBconnection();
 	    PreparedStatement pStmt = null;
 	    int datatype = -1;
+	    Boolean titleParameter = false;
 	    
 	    
 		try {	
 		    // look up the datatype in Database	    
 		    dBconn.startDB();
+			dBconn.conn.setAutoCommit(false);
 		    pStmt = dBconn.conn.prepareStatement( 	
 					"SELECT getSampleRights(vuserid := ?, vsample := ?)");
 			pStmt.setInt(1,userID);
 			pStmt.setInt(2,sampleID);
-			privilege=dBconn.getSingleStringValue(pStmt);
+			privilege = dBconn.getSingleStringValue(pStmt);
 			pStmt.close();
 		} catch (SQLException e) {
 			System.err.println("SaveSampleParameter: Problems with SQL query");
@@ -89,16 +92,16 @@ import expr.Variable;
 			try{
 				pStmt = dBconn.conn.prepareStatement( 			
 						   "SELECT "
-						 + "	paramdef.datatype FROM Ot_parameters otp \n"
+						 + "	paramdef.datatype, otp.id_field FROM Ot_parameters otp \n"
 						 + "JOIN paramdef ON otp.definition=paramdef.id \n"
 						 + "WHERE otp.id = ?");
 			   	pStmt.setInt(1, pid);
-			   	JSONObject answer=dBconn.jsonObjectFromPreparedStmt(pStmt);
+			   	JSONObject answer = dBconn.jsonObjectFromPreparedStmt(pStmt);
 			   	pStmt.close();
-				datatype = answer.getInt("datatype");			
+				datatype = answer.getInt("datatype");
+				titleParameter = answer.getBoolean("id_field");
 				
-				// delete old values.
-				pStmt= dBconn.conn.prepareStatement( 			
+				pStmt = dBconn.conn.prepareStatement( 			
 						   "DELETE FROM "
 						 + "  sampledata "
 						 + "WHERE ot_parameter_id = ? AND objectid = ?");
@@ -129,7 +132,7 @@ import expr.Variable;
 				if (jsonIn.has("data")){
 					JSONObject inData = jsonIn.getJSONObject("data");
 					switch (datatype) {
-			        case 1:	if (inData.has("value") && !inData.isNull("value")){  // Integer values
+			        case 1:	if (inData.has("value") && !inData.isNull("value") ){  // Integer values
 			        			data.put("value", inData.getInt("value"));
 			        			needsRecalc = true;
 			        		}
@@ -198,7 +201,7 @@ import expr.Variable;
 			        case 11: if (inData.has("value") && !inData.isNull("value")){ // e-mail
 			        			data.put("value", inData.getString("value"));
 			        		}
-		        		break;
+		        			break;
 					} // end of switch Statement
 					
 					pStmt = dBconn.conn.prepareStatement( 			// Integer values
@@ -302,18 +305,33 @@ import expr.Variable;
 								pStmt.close();
 							}
 						}
+					}
+					
+					// check for conflicts in titlenames
+					if (titleParameter){
+						pStmt = dBconn.conn.prepareStatement(
+									  "SELECT Count(id) FROM samplenames " 
+									+ "WHERE "
+									+ "	name =  (SELECT name FROM samplenames WHERE id = ? ) AND "
+									+ "	typeid = (SELECT typeid FROM samplenames WHERE id = ? ) ");
+						pStmt.setInt(1,sampleID);
+						pStmt.setInt(2,sampleID);
+						if ( dBconn.getSingleIntValue(pStmt) > 1 ){
+							dBconn.conn.rollback();
+						} 
+					}
+					dBconn.conn.setAutoCommit(true);
 					dBconn.closeDB();
 				} // end of "if (json.has("data"))"
+			} catch (SQLException e) {
+				System.err.println("SaveSampleParameter: More Problems with SQL query");
+				e.printStackTrace();
+			} catch (JSONException e){
+				System.err.println("SaveSampleParameter: More Problems creating JSON");
+				e.printStackTrace();
+			} catch (Exception e) {
+				System.err.println("SaveSampleParameter: More Strange Problems");
 			}
-		} catch (SQLException e) {
-			System.err.println("SaveSampleParameter: More Problems with SQL query");
-			e.printStackTrace();
-		} catch (JSONException e){
-			System.err.println("SaveSampleParameter: More Problems creating JSON");
-			e.printStackTrace();
-		} catch (Exception e) {
-			System.err.println("SaveSampleParameter: More Strange Problems");
-		}
 		}else{
 			response.setStatus(401);
 			status = "insufficient rights";

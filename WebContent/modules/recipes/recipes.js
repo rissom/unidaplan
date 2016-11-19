@@ -36,7 +36,7 @@ function recipesController(restfactory,$state,$stateParams,$translate,stypes,pty
 			var promise = processService.addProcessRecipe(name,thisController.processType.id);
 		} else {
 			name = {en: "new Sample Recipe", de : "neues Probenrezept"};
-			var promise = sampleService.addSampleRecipe(name,thisController.processType.id);
+			var promise = sampleService.addSampleRecipe(name,thisController.sampleType.id);
 		}
 		promise.then(function(rest){
 			if (rest.data.status === "ok") {

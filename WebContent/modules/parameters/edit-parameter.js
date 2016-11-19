@@ -309,49 +309,7 @@ function editParamController($scope,$state,$stateParams,
   
   
   
-  this.update = function(field,newValue){
-	  
-	  	console.log("field",field)
-	  	console.log("newValue",newValue)
-//		  thisController.regex = thisController.newRegex;
-//		  thisController.format = thisController.newFormat;
-//		  thisController.min = thisController.newMin;
-//		  thisController.max = thisController.newMax;
-//		  var name = {};
-//		  name[thisController.lang1Key] = thisController.newNameL1;
-//		  name[thisController.lang2Key] = thisController.newNameL2;
-//		  var description={};
-//		  description[thisController.lang1Key] = thisController.newDescL1;
-//		  description[thisController.lang2Key] = thisController.newDescL2;
-
-//		  var newParam = {
-//			name:name,
-//			description:description,
-//			regex: thisController.regex,
-//			format:thisController.format,
-//			min:thisController.min,
-//			max:thisController.max,
-//			datatype:thisController.dataType,
-//			parameterid:$stateParams.parameterID
-//		  }
-		  
-		
-	  			
-		  
-		  
-//		  var unit = {};
-//		  if (thisController.newUnitL1 && thisController.newUnitL1!=""){
-//			  unit[thisController.lang1Key]=thisController.newUnitL1;
-//		  }
-//		  if (thisController.newUnitL2 && thisController.newUnitL2!=""){
-//			  unit[thisController.lang2Key]=thisController.newUnitL2;
-//		  }
-//		  		  
-//		  if (thisController.hasUnit() && Object.keys(unit).length>0){
-//			  newParam.unit = unit;
-//		  }
-		
-  }
+ 
   
   var reload = function(newPossvalue) {
   	var current = $state.current;
@@ -360,6 +318,17 @@ function editParamController($scope,$state,$stateParams,
   	params.newParameter=false;
   	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
   };
+  
+  
+  
+  this.update = function(field,newValue){
+	var parameter = { parameterid : $stateParams.parameterID };
+	console.log ("parameter1", parameter);
+	parameter[field] = newValue;
+	console.log ("parameter2", parameter);
+	parameterService.updateParameter(parameter);
+  }
+	
   
 };
 

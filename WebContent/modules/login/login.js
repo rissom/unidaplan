@@ -1,43 +1,47 @@
 (function(){
 'use strict';
 
-var loginController=function($state,restfactory,$scope,$rootScope,$translate){
+var loginController = function($state,restfactory,$scope,$rootScope,$translate){
 	
-	var thisController=this;
+	var thisController = this;
 	
-	this.error="";
+	this.error = "";
 	
 	
 	
 	this.userLogin = function(){
 		// is called when the user logs in.
-		var promise=restfactory.GET('login?user='+this.userinput+'&pw='+CryptoJS.SHA256(this.pwinput).toString(CryptoJS.enc.Base64));
+		var promise = restfactory.GET('login?user='+this.userinput+'&pw='+CryptoJS.SHA256(this.pwinput).toString(CryptoJS.enc.Base64));
 		promise.then(function(data){
-				thisController.error="";
-				$rootScope.username=data.data.fullname;
-				$rootScope.userid=data.data.id;
+				thisController.error = "";
+				console.log("data:",data)
+				if (data.data.fullname){
+					console.log("alles jut")
+					$rootScope.userfullname = data.data.fullname;
+				}else{
+					delete $rootScope.userfullname;
+				}
+				if (data.data.username){
+					$rootScope.username = data.data.username;
+				}else{
+					delete $rootScope.username;
+				}
+				$rootScope.userid = data.data.id;
 				if(data.data.admin){
-					$rootScope.admin=data.data.admin;
+					$rootScope.admin = data.data.admin;
 				} else {
-					$rootScope.admin=false;
+					$rootScope.admin = false;
 				}
 				
-				//language and username is stored in Browser storage.
-		
-			    window.localStorage.setItem("username",data.data.fullname);
-			    if (data.data.admin){
-			    	window.localStorage.setItem("admin",true);
-			    	$rootScope.admin=true;
+			    if (data.data.admin){ 
+			    	$rootScope.admin = true;
 			    }else{
-			    	window.localStorage.setItem("admin",false);
-			    	$rootScope.admin=false;
+			    	$rootScope.admin = false;
 			    }
-			    window.localStorage.setItem("userid",data.data.id);
 			    
-				window.localStorage.setItem("language",data.data.preferredlanguage);
 
 		        if(data.data.preferredlanguage && data.data.preferredlanguage !== null){
-		        	  if (data.data.preferredlanguage!=$translate.use()) {
+		        	  if (data.data.preferredlanguage != $translate.use()) {
 		      			$translate.use(data.data.preferredlanguage);
 		        	  }
 		        } 
@@ -49,14 +53,14 @@ var loginController=function($state,restfactory,$scope,$rootScope,$translate){
 					$state.go('sampleChoser');
 				}
 			}, function(data){
-				thisController.error=$translate.instant("unknown user or wrong password");
+				thisController.error = $translate.instant("unknown user or wrong password");
 			}
 		)
 	}
 	
 	
 	this.keyUp = function(keyCode) {
-		if (keyCode===13) {  	// Log in user if Return key is pressed in pw-inputfield
+		if (keyCode === 13) {  	// Log in user if Return key is pressed in pw-inputfield
 			this.userLogin();
 		}
 	}

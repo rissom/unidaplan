@@ -15,11 +15,11 @@
 <tr ng-dblclick = "editSampleParamGrpsCtrl.edit('NL1')">
 	<td>Name ({{editSampleParamGrpsCtrl.lang1}}):</td>
 	<td>
-		<span ng-hide="editSampleParamGrpsCtrl.editNL1">{{editSampleParamGrpsCtrl.NameL1}}</span>
-		<input ng-show="editSampleParamGrpsCtrl.editNL1" 
-			   ng-keyup="editSampleParamGrpsCtrl.keyUp($event.keyCode,'NL1')"
-			   type="text"
-			   ng-model="editSampleParamGrpsCtrl.newNameL1">
+		<span ng-hide = "editSampleParamGrpsCtrl.editNL1">{{editSampleParamGrpsCtrl.NameL1}}</span>
+		<input ng-show = "editSampleParamGrpsCtrl.editNL1" 
+			   ng-keyup = "editSampleParamGrpsCtrl.keyUp($event.keyCode,'NL1')"
+			   type = "text"
+			   ng-model = "editSampleParamGrpsCtrl.newNameL1">
 	</td>
 </tr>
 <tr ng-dblclick = "editSampleParamGrpsCtrl.edit('NL2')">
@@ -108,62 +108,34 @@
 	  			</div>
 			</td>
 		</tr>
-		<tr ng-show = "editSampleParamGrpsCtrl.editmode">
-			<td></td>
-			<td class="parametertd">
-				<input 						   
-				type="text"
-			    ng-model = "editSampleParamGrpsCtrl.newGrpNameL1"> 
-			</td>
-			<td class="parametertd">
-				<input 						   
-				type="text"
-				ng-keyup="editSampleParamGrpsCtrl.keyUpPG($event.keyCode)"
-			    ng-model="editSampleParamGrpsCtrl.newGrpNameL2"> 
-			</td>
-		</tr>
 	</tbody>
 </table>
 
 <button type = "button" 
-		ng-hide = "editSampleParamGrpsCtrl.editmode"
 		class = "btn btn-default" 
 		ng-click = "editSampleParamGrpsCtrl.newParameterGroup()" >
 	<b>+</b> {{'Add parametergroup'|translate}}
 </button>
 
-<button type = "button" 
-		ng-show = "editSampleParamGrpsCtrl.editmode"
-		class = "btn btn-default" 
-		ng-click = "editSampleParamGrpsCtrl.editmode=false" >
-	{{'Cancel'|translate}}
-</button>
-
-<button type = "button" 
-		ng-show = "editSampleParamGrpsCtrl.editmode"
-		class = "btn btn-default" 
-		ng-click = "editSampleParamGrpsCtrl.addParameterGroup()" >
-	{{'Save Parametergroup'|translate}}
-</button>
 
 <br/><br/><br/>
 
 <h4>{{'Titleparameters'|translate}}</h4>
 
-<table class="table">
+<table class = "table">
 	<thead class=parametertablehead>
 		<tr>
 			<td></td>
-			<td class="parametertd">
+			<td class = "parametertd">
 	 			{{'Name'|translate}} ({{editSampleParamGrpsCtrl.lang1}})
 			</td>
-			<td class="parametertd">
+			<td class = "parametertd">
 	 			{{'Name'|translate}} ({{editSampleParamGrpsCtrl.lang2}})
 			</td>
-			<td class="parametertd">
+			<td class = "parametertd">
 	 			{{'Format'|translate}}
 			</td>
-			<td class="parametertd" ng-hide="editSampleParamGrpsCtrl.editmode">
+			<td class = "parametertd" ng-hide = "editSampleParamGrpsCtrl.editmode">
 				{{'action'|translate}}
 			</td>
 		</tr>

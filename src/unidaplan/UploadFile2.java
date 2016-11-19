@@ -83,7 +83,7 @@ import javax.servlet.http.Part;
 		PreparedStatement pStmt;
 
 	    try {
-	    	dBconn=new DBconnection();
+	    	dBconn = new DBconnection();
 			dBconn.startDB();
 			if (!Unidatoolkit.isMemberOfGroup(userID, 1, dBconn)){
 				response.setStatus(401);
@@ -92,7 +92,7 @@ import javax.servlet.http.Part;
 	    	
 			
 			
-			pStmt= dBconn.conn.prepareStatement(
+			pStmt = dBconn.conn.prepareStatement(
 					"INSERT INTO files (filename, sample, process, lastuser) VALUES (?,?,?,?) RETURNING ID");
 			pStmt.setString(1, fileName);
 			if (sampleString!=null){

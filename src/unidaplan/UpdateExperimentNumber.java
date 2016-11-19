@@ -87,7 +87,6 @@ public class UpdateExperimentNumber extends HttpServlet {
 				System.err.println("SaveSampleParameter: Strange Problems");
 				status="SaveSampleParameter: Strange Problems";
 				response.setStatus(404);
-		   		System.out.println("2nd");
 			}
 			
 	    // tell client that everything is fine

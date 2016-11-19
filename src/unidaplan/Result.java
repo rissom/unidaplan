@@ -209,7 +209,7 @@ import org.json.JSONObject;
 			query += " WHERE "+ where +" GROUP BY " + tString + ".id";
 //			System.out.println(query);
 			pStmt = dBconn.conn.prepareStatement(query);
-			System.out.println(query);
+//			System.out.println(query);
 			sResults = dBconn.jsonArrayFromPreparedStmt(pStmt);
 			pStmt.close();
 			

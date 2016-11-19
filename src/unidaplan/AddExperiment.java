@@ -42,7 +42,6 @@ public class AddExperiment extends HttpServlet {
     			dBconn.addString(stringKey,names[i],name.getString(names[i]));
     		}
     	}else{
-    		System.out.println("no name exists");
     		response.setStatus(422);
     	}
 	    
@@ -50,7 +49,7 @@ public class AddExperiment extends HttpServlet {
 				 "INSERT INTO experiments (name,number,creator,status,lastUser) "
 			   + "VALUES ("
 			   + "	?,"
-			   + "	(SELECT max(number) + 1 FROM experiments),"
+			   + "	COALESCE ( (SELECT max(number) + 1 FROM experiments), 1),"
 			   + "	?,"
 			   + "	1,"
 			   + "	?) "

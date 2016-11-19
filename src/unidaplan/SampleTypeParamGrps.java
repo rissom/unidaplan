@@ -27,13 +27,13 @@ public class SampleTypeParamGrps extends HttpServlet {
 		  
 		Authentificator authentificator = new Authentificator();
 		int userID = authentificator.GetUserID(request,response);
-		int sampleTypeID=0;
+		int sampleTypeID = 0;
 		request.setCharacterEncoding("utf-8");
 	    response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
 	    PrintWriter out = response.getWriter(); 
 	  	  	try  {
-	  	  		sampleTypeID=Integer.parseInt(request.getParameter("sampletypeid")); 
+	  	  		sampleTypeID = Integer.parseInt(request.getParameter("sampletypeid")); 
 	  	  	}
 	  	  	catch (Exception e1) {
 	  	  		System.err.print("SampleTypeParameters: no sampleTypeID given!");
@@ -64,7 +64,7 @@ public class SampleTypeParamGrps extends HttpServlet {
 				   + "FROM objecttypes "
 				   + "WHERE objecttypes.id = ?");
 		 		pStmt.setInt(1, sampleTypeID);
-	 			sampleType=dBconn.jsonObjectFromPreparedStmt(pStmt); 
+	 			sampleType = dBconn.jsonObjectFromPreparedStmt(pStmt); 
 	 			// get ResultSet from the database using the query
 	 			pStmt.close();
 	 			if (sampleType.has("string_key")){
@@ -130,8 +130,8 @@ public class SampleTypeParamGrps extends HttpServlet {
 	           		}
 	           	}
 	     
-		        JSONObject answer=new JSONObject();
-		        answer=sampleType;
+		        JSONObject answer = new JSONObject();
+		        answer = sampleType;
 		        answer.put("titleparameters",titleParameters);
 		        answer.put("sampletypegrps", sampleTypeGrps);
 		        answer.put("parametergrps",parameterGrps);

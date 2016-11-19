@@ -22,6 +22,7 @@ public class Logout extends HttpServlet {
 	    PrintWriter out = response.getWriter();
 		HttpSession session = request.getSession();
 		session.removeAttribute("userID");
+		session.invalidate();
 		out.println("{\"status\":\"Logged out\"}");
 	} catch (Exception e2) {
 		System.err.println("Logout: Strange Problem while trying to log out");

@@ -3,19 +3,19 @@
 
 function editPtParamsController($state,$uibModal,$stateParams,$translate,avParameters,ptypes,restfactory,processService,parameterGrp,languages,avProcessTypeService){
   
-  var thisController=this;
-  
-  var activeParameter={};
+  var thisController = this;
+    
+  var activeParameter = {};
     
   this.parameters=parameterGrp.parameters.sort(function(a,b){
 	  return a.pos-b.pos;
   });
   
-  this.strings=parameterGrp.strings;
+  this.strings = parameterGrp.strings;
   
-  this.processtype=parameterGrp.processtype;
+  this.processtype = parameterGrp.processtype;
   
-  this.languages=languages;
+  this.languages = languages;
   
   this.nameL1 = parameterGrp.nameLang(languages[0].key);
   
@@ -25,19 +25,19 @@ function editPtParamsController($state,$uibModal,$stateParams,$translate,avParam
 
   this.newNameL2 = parameterGrp.nameLang(languages[1].key);
     
-  this.lang1=$translate.instant(languages[0].name);
+  this.lang1 = $translate.instant(languages[0].name);
   
-  this.lang2=$translate.instant(languages[1].name);
+  this.lang2 = $translate.instant(languages[1].name);
   
-  this.lang1key=$translate.instant(languages[0].key);
+  this.lang1key = languages[0].key;
   
-  this.lang2key=$translate.instant(languages[1].key);
+  this.lang2key = languages[1].key;
   
-  this.editFieldNL1=false;
+  this.editFieldNL1 = $stateParams.newGrp === "true";
   
-  this.editFieldNL2=false;
+  this.editFieldNL2 = false;
   
-  this.av=avParameters;
+  this.av = avParameters;
     
   
 
@@ -66,7 +66,7 @@ function editPtParamsController($state,$uibModal,$stateParams,$translate,avParam
   
   
 
-  this.down=function(index){  // exchange two parameter positions
+  this.down = function(index){  // exchange two parameter positions
 	  var newPositions=[];
 	  newPositions.push({"id":thisController.parameters[index].id,"position":thisController.parameters[index+1].pos});
 	  newPositions.push({"id":thisController.parameters[index+1].id,"position":thisController.parameters[index].pos});
@@ -76,7 +76,7 @@ function editPtParamsController($state,$uibModal,$stateParams,$translate,avParam
 
   
   
-  this.getGrpName=function(grp,lang){
+  this.getGrpName = function(grp,lang){
 	  key2string.key2stringWithLangStrict(grp.name,thisController.strings,lang);
   };
   
@@ -91,7 +91,7 @@ function editPtParamsController($state,$uibModal,$stateParams,$translate,avParam
 	
   
   
-  this.editNL1= function(parameter){
+  this.editNL1 = function(parameter){
 	  thisController.editmode=true;
 	  parameter.editNL1=true;
 	  parameter.newParameterNameL1=parameter.nameLang(thisController.lang1key);
@@ -116,9 +116,9 @@ function editPtParamsController($state,$uibModal,$stateParams,$translate,avParam
   
   
   this.keyUp = function(keyCode,name,language) {
-	if (keyCode===13) {				// Return key pressed
-		var promise=avProcessTypeService.updateParamGrp(name, language, parameterGrp.id);
-		promise.then(function(){reload();},function(){console.log("error")});
+	if (keyCode === 13) {				// Return key pressed
+		var promise = avProcessTypeService.updateParamGrp(name, language, parameterGrp.id);
+		promise.then(function(){ reload(); },function(){console.log("error")});
 	}
 	if (keyCode===27) {		// Escape key pressed
 		  thisController.editmode=false;
@@ -170,7 +170,7 @@ function editPtParamsController($state,$uibModal,$stateParams,$translate,avParam
   
   
   
-  this.submitParameter=function(){
+  this.submitParameter = function(){
 	  this.editmode=false;
 	  var tempParameter={parameterid:activeParameter.id, name:{}};
 	  if (activeParameter.editNL1){
@@ -197,9 +197,10 @@ function editPtParamsController($state,$uibModal,$stateParams,$translate,avParam
   
   
   
-  var reload=function() {
+  var reload = function() {
 	  var current = $state.current;
 	  var params = angular.copy($stateParams);
+	  params.newGrp = false;
 	  return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
   };
 
