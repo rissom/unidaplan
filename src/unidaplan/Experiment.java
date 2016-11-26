@@ -215,6 +215,7 @@ public class Experiment extends HttpServlet {
 									+ "  expp_param.id, "
 									+ "  expp_param.definition, "
 									+ "  expp_param.pos, "
+									+ "	 paramdef.format, "
 									+ "  COALESCE (expp_param.stringkeyname, paramdef.stringkeyname) AS stringkeyname, "
 									+ "  ed.data, "
 									+ "  paramdef.datatype, "

@@ -93,42 +93,44 @@
 <!-- processes -->
 <h4>{{'Processes'|translate}}</h4>
 
-<ol ng-if="!experimentCtrl.editmode" 
-	ng-repeat="sample in experimentCtrl.experiment.samples | orderBy : 'position'" 
-	class="exp_ol">
+<ol ng-if = "!experimentCtrl.editmode" 
+	ng-repeat = "sample in experimentCtrl.experiment.samples | orderBy : 'position'" 
+	class = "exp_ol">
 	<li class="exp_li"> 
 
-		<ol class="exp_ol2" >
-			<li class="exp_li2 title"> {{'Sample'|translate}} </li>
-			<li class="exp_li2 button_li">
-				<div class="dropdown" uib-dropdown on-toggle="toggled(open)">
-					<button class="btn btn-default" ui-sref="sample({sampleID:sample.sampleid})" >
+		<ol class = "exp_ol2" >
+			<li class = "exp_li2 title"> {{'Sample'|translate}} </li>
+			<li class = "exp_li2 button_li">
+				<div class = "dropdown" 
+					uib-dropdown 
+					on-toggle = "toggled(open)">
+					<button class = "btn btn-default" ui-sref = "sample({sampleID:sample.sampleid})" >
 						{{experimentCtrl.getSampleType(sample)}} {{sample.name}}
 					</button>
 			 	</div>
 			</li>
 		</ol>
 	</li>
-	<li class="exp_li noleftborder"> 
-		<ol class="exp_ol2">
-			<li class="exp_li2 title "> {{'Comment'|translate}}</li>
-			<li class="exp_li2 button_li" >{{sample.trnote}}</li>
+	<li class = "exp_li noleftborder"> 
+		<ol class = "exp_ol2">
+			<li class = "exp_li2 title "> {{'Comment'|translate}}</li>
+			<li class = "exp_li2 button_li" >{{sample.trnote}}</li>
 		</ol>
 	</li>
-	<li class="exp_li noleftborder" ng-repeat="process in sample.mprocesses"> 
-		<ol class="exp_ol2">
-			<li class="exp_li2 title ">&nbsp;
-				<span ng-show="process.pprocess.processtype">
+	<li class = "exp_li noleftborder" ng-repeat = "process in sample.mprocesses"> 
+		<ol class = "exp_ol2">
+			<li class = "exp_li2 title ">&nbsp;
+				<span ng-show = "process.pprocess.processtype">
 					{{experimentCtrl.getProcessType({"processtype":process.pprocess.processtype})}}
 				</span>
 				<span ng-show="process.pprocess.note">
 					({{process.pprocess.trnote}})
 				</span>
 			</li>
-			<li class="exp_li2 button_li" ng-class="{'1':'ok','2':'att','3':'failed'}[process.fprocess.status]"> 
-				<button class="btn btn-default" 
-						ui-sref="process({processID:process.fprocess.processid})" 
-						ng-show=process.fprocess.number>
+			<li class = "exp_li2 button_li" ng-class = "{'1':'ok','2':'att','3':'failed'}[process.fprocess.status]"> 
+				<button class = "btn btn-default" 
+						ui-sref = "process({processID:process.fprocess.processid})" 
+						ng-show = process.fprocess.number>
 					{{experimentCtrl.getProcessType({"processtype":process.fprocess.processtype})}} 
 					{{process.fprocess.number}}
 				</button>
@@ -139,42 +141,42 @@
 
 
 <!-- editmode -->
-<div  ng-if="experimentCtrl.editmode" style="overflow: auto; width:'100%';" >
-	<div ng-style="experimentCtrl.getWidth()">
-		<table class="exptable"> 
+<div  ng-if = "experimentCtrl.editmode" style = "overflow: auto; width:'100%';" >
+	<div ng-style = "experimentCtrl.getWidth()">
+		<table class = "exptable"> 
 			<tr>
-				<td class="exptdtitle"> {{'Sample'|translate}} </td>
-				<td class="exptdtitle"> {{'Comment'|translate}}</td>
-				<td class="exptdtitle" 
-					ng-repeat="process in  experimentCtrl.experiment.processes | orderBy : 'position'">
-					<div style="white-space: nowrap">
+				<td class = "exptdtitle"> {{'Sample'|translate}} </td>
+				<td class = "exptdtitle"> {{'Comment'|translate}}</td>
+				<td class = "exptdtitle" 
+					ng-repeat = "process in  experimentCtrl.experiment.processes | orderBy : 'position'">
+					<div style = "white-space: nowrap">
 						<!--  move process left --> 
-								<button ng-hide=$first type="button" class="btn btn-default btn-xs pull-left"
-								ng-click="experimentCtrl.moveProcessLeft(process)"> 
+								<button ng-hide = $first type = "button" class = "btn btn-default btn-xs pull-left"
+								ng-click = "experimentCtrl.moveProcessLeft(process)"> 
 					    	&#9668;
 					    </button>
-						<!--  <span class="glyphicon glyphicon-menu-hamburger sideways"></span> -->   
-						<button type="button" class="btn btn-default btn-xs" 
-								ng-click="experimentCtrl.deleteProcess(process)">
-								<span class="glyphicon glyphicon-remove"></span>
+						<!--  <span class = "glyphicon glyphicon-menu-hamburger sideways"></span> -->   
+						<button type = "button" class = "btn btn-default btn-xs" 
+								ng-click = "experimentCtrl.deleteProcess(process)">
+								<span class = "glyphicon glyphicon-remove"></span>
 						</button>
 						{{experimentCtrl.getProcessType(process)}}
 						
 						<!--  move process right -->  
-						<button  ng-hide=$last type="button" class="btn btn-default btn-xs pull-right" 
-								 ng-click="experimentCtrl.moveProcessRight(process)"> 
+						<button  ng-hide = $last type = "button" class = "btn btn-default btn-xs pull-right" 
+								 ng-click = "experimentCtrl.moveProcessRight(process)"> 
 								 &#9658;
 						</button>
 					</div>
 				</td>
-				<td class="dropdown" uib-dropdown on-toggle="toggled(open)">
+				<td class = "dropdown" uib-dropdown on-toggle = "toggled(open)">
 					&nbsp;
-					<button type="button" class="btn btn-default btn-xs dropdown-toggle" uib-dropdown-toggle>
+					<button type = "button" class = "btn btn-default btn-xs dropdown-toggle" uib-dropdown-toggle>
 						<b>+</b> {{'Add process'|translate}}
 					</button>
-					<ul class="dropdown-menu">
-			        	<li ng-repeat="processtype in experimentCtrl.avProcesses">
-			          		<a ng-click="experimentCtrl.addProcessToExperiment(processtype)">
+					<ul class = "dropdown-menu">
+			        	<li ng-repeat = "processtype in experimentCtrl.avProcesses">
+			          		<a ng-click = "experimentCtrl.addProcessToExperiment(processtype)">
 			          			{{processtype.namef()}}
 			          		
 			          		</a>
@@ -193,19 +195,19 @@
 					</button>
 					
 					<button type = "button" class = "btn btn-default btn-xs" 
-							ng-click="experimentCtrl.deleteSample(sample)">
-						<span class="glyphicon glyphicon-remove"></span>
+							ng-click = "experimentCtrl.deleteSample(sample)">
+						<span class = "glyphicon glyphicon-remove"></span>
 					</button>
 						{{experimentCtrl.getSampleType(sample)}} {{sample.name}}
 					</span>
 	  			</td>
-		  		<td class="exptd" ng-dblclick="sample.editing = true; newValue = sample.trnote">
+		  		<td class = "exptd" ng-dblclick = "sample.editing = true; newValue = sample.trnote">
 		  			<span ng-hide = "sample.editing">
 					 	  {{sample.trnote}}
 					</span>
 					<input 						   
 						ng-keyup = "experimentCtrl.commentKeyUp($event.keyCode,newValue,sample)"
-						ng-show = "sample.editing" type="text"
+						ng-show = "sample.editing" type = "text"
 					    ng-model = "newValue" 
 					    ng-blur = "sample.editing=false">
 		  		</td>
@@ -245,17 +247,17 @@
 	  		</tr> 
 	  		<tr>
 		  		<td>
-		  			<button type="button" 
-		  					class="btn btn-default btn-xs" 
-		  					ng-click="experimentCtrl.addSample()" >
+		  			<button type = "button" 
+		  					class = "btn btn-default btn-xs" 
+		  					ng-click = "experimentCtrl.addSample()" >
 						<b>+</b> {{'Add Sample'|translate}}
 					</button>
 				</td>
 				<td>
 				</td>
-				<td ng-repeat="process in  experimentCtrl.experiment.processes | orderBy : 'position'">
-					<button class="btn btn-default btn-xs" 
-							ng-click="experimentCtrl.markColumn(process.id)">
+				<td ng-repeat = "process in  experimentCtrl.experiment.processes | orderBy : 'position'">
+					<button class = "btn btn-default btn-xs" 
+							ng-click = "experimentCtrl.markColumn(process.id)">
 						{{'Mark all'|translate}} &#10003;
 					</button>
 				</td>
@@ -270,13 +272,13 @@
 </div>
 <br />
 
-<button ng-show="experimentCtrl.editmode" class="btn btn-default" 
-					ui-sref="experiment({experimentID:experimentCtrl.experiment.id,editmode:'false'})">
+<button ng-show = "experimentCtrl.editmode" class = "btn btn-default" 
+					ui-sref = "experiment({experimentID:experimentCtrl.experiment.id,editmode:'false'})">
 				{{'Finished'|translate}}
 </button>
 
-<button ng-hide="experimentCtrl.editmode" 
-		class="btn btn-default" 
-		ui-sref="experiment({experimentID:experimentCtrl.experiment.id,editmode:'true'})">
+<button ng-hide = "experimentCtrl.editmode" 
+		class = "btn btn-default" 
+		ui-sref = "experiment({experimentID:experimentCtrl.experiment.id,editmode:'true'})">
 	{{'Edit Experiment'|translate}}
 </button>
