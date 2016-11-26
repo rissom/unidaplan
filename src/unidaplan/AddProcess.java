@@ -65,7 +65,7 @@ public class AddProcess extends HttpServlet {
 		    
 		    // check privilege
 		    pStmt = dBconn.conn.prepareStatement( 	
-					"SELECT getProcessTypeRights(vuserid:=?,vprocesstype:=?)");
+					"SELECT getProcessTypeRights(vuserid := ?, vprocesstype := ?)");
 			pStmt.setInt(1,userID);
 			pStmt.setInt(2,processTypeID);
 			privilege = dBconn.getSingleStringValue(pStmt);
@@ -77,7 +77,7 @@ public class AddProcess extends HttpServlet {
 				// find the current maximum of process number parameter
 				pStmt = dBconn.conn.prepareStatement( 	
 						  "SELECT "
-						+ " p_number AS maximum "
+						+ "  p_number AS maximum "
 						+ "FROM pnumbers "
 						+ "WHERE (pnumbers.processtype = ?) "
 						+ "ORDER BY p_number DESC "
@@ -103,7 +103,7 @@ public class AddProcess extends HttpServlet {
 		    			  "INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser) "
 		    			+ "VALUES( "
 		    			+ " ?,"
-		    			+ " (SELECT id FROM P_Parameters WHERE definition=8 AND processtypeid=?),"
+		    			+ " (SELECT id FROM P_Parameters WHERE definition = 8 AND processtypeid = ?),"
 		    			+ " ?, ?)");
 		    	pStmt.setInt(1, id);
 		    	pStmt.setInt(2, processTypeID);
@@ -118,7 +118,7 @@ public class AddProcess extends HttpServlet {
 		    			  "INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser) "
 		    			+ "VALUES ( "
 		    			+ "  ?, "
-		    			+ "  (SELECT id FROM P_Parameters WHERE definition=1 AND processtypeid=?), "
+		    			+ "  (SELECT id FROM P_Parameters WHERE definition=1 AND processtypeid = ?), "
 		    			+ "  ?, ?)");
 		    	pStmt.setInt(1, id);
 		    	pStmt.setInt(2, processTypeID);
@@ -132,7 +132,7 @@ public class AddProcess extends HttpServlet {
 		    	pStmt= dBconn.conn.prepareStatement("SELECT id FROM p_parameters pp "
 		    			+ "WHERE (pp.definition=10 AND pp.processtypeid=?)");
 		    	pStmt.setInt(1, processTypeID);
-			   	JSONObject dateIDObj=dBconn.jsonObjectFromPreparedStmt(pStmt);
+			   	JSONObject dateIDObj = dBconn.jsonObjectFromPreparedStmt(pStmt);
 			   	int dateID = dateIDObj.getInt("id");
 			   	pStmt.close();
 			   	
@@ -153,22 +153,17 @@ public class AddProcess extends HttpServlet {
 		    	pStmt.setInt(4, userID);
 		    	pStmt.executeUpdate();
 		    	pStmt.close();
-		    	
-		    	pStmt = dBconn.conn.prepareStatement(	
-	   	   				"REFRESH MATERIALIZED VIEW pnumbers");
-	   	   		pStmt.executeUpdate();
-	   	   		pStmt.close();
 	   	   		
 	   	   		
 	   	   		// fill in default parameter values from recipe
-	   	   		if (recipe>0){
+	   	   		if (recipe > 0){
 			   	   	pStmt = dBconn.conn.prepareStatement(	
 				   	   	  "INSERT INTO processdata (processid, parameterid, data, lastuser) "
 			   	   		+ "SELECT "
-				   	 	+ "? AS processid, "
-				   	 	+ "parameterid, "
-				   	 	+ "data, "
-				   	 	+ "? AS lastuser " 
+				   	 	+ "  ? AS processid, "
+				   	 	+ "  parameterid, "
+				   	 	+ "  data, "
+				   	 	+ "  ? AS lastuser " 
 			   	   		+ "FROM processrecipedata " 
 			   	   		+ "WHERE recipeid = ? ");
 			   	   	pStmt.setInt(1, id);
@@ -187,20 +182,21 @@ public class AddProcess extends HttpServlet {
 
 		} catch (SQLException e) {
 			System.err.println("AddProcess: Problems with SQL query2");
-			status="SQL error";
+			status = "SQL error";
+			e.printStackTrace();
 		} catch (JSONException e){
 			e.printStackTrace();
 			System.err.println("AddProcess: Problems creating JSON later");
-			status="JSON error";
+			status = "JSON error";
 		} catch (Exception e) {
 			System.err.println("AddProcess: Strange Problems");
-			status="error";
+			status = "error";
 		}
 		
 			
 	    // tell client the new id and that everything is fine
 	    PrintWriter out = response.getWriter();
-	    out.print("{\"id\":"+id+",");
-		out.println("\"status\":\""+status+"\"}");
+	    out.print("{\"id\":" + id + ",");
+		out.println("\"status\":\"" + status + "\"}");
 	}
 }	

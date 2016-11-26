@@ -79,10 +79,6 @@ public class DeleteProcess extends HttpServlet {
 						pStmt.setInt(1,processID);
 						pStmt.executeUpdate();
 						pStmt.close();
-						pStmt = dBconn.conn.prepareStatement(	
-									"REFRESH MATERIALIZED VIEW pnumbers");
-						pStmt.executeUpdate();
-						pStmt.close();
 					} else {
 						response.setStatus(403);
 						status = "not deleted, files are attached";

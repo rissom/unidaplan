@@ -60,7 +60,7 @@ var processService = function (restfactory,$q,$translate,key2string) {
 	
 	
 	this.getProcess = function(id) {
-        var defered=$q.defer();
+        var defered = $q.defer();
 		var promise = restfactory.GET("process?id="+id);
     	promise.then(function(rest) {
     	thisController.process = rest.data;
@@ -70,27 +70,26 @@ var processService = function (restfactory,$q,$translate,key2string) {
 	    	thisController.process.fprocesstype = function(){
 	    		return key2string.key2string(thisController.process.pt_string_key,strings);
 	    	};
-	    	thisController.process.trprocesstype = key2string.key2string(thisController.process.pt_string_key,strings);
 			angular.forEach(thisController.process.parametergroups, function(paramgrp) {
-				paramgrp.grpnamef=function(){
+				paramgrp.grpnamef = function(){
 					return key2string.key2string(paramgrp.paramgrpkey,strings);
 				};
 				angular.forEach(paramgrp.parameter, function(parameter) {
-					parameter.namef=function(){
+					parameter.namef = function(){
 						return key2string.key2string(parameter.stringkeyname,strings);
 					};
 					if (parameter.parametergroup){
-						parameter.grpnamef=function(){
+						parameter.grpnamef = function(){
 							return key2string.key2string(parameter.parametergrp_key,strings);
 						};
 					}
 					if (parameter.unit){
-						parameter.unitf=function(){
+						parameter.unitf = function(){
 							return key2string.key2string(parameter.unit,strings); 
 						};
 					}
-					if (parameter.datatype==="date" || parameter.datatype==="timestamp"){			
-						parameter.newDate=new Date(parameter.value);
+					if (parameter.datatype === "date" || parameter.datatype === "timestamp"){			
+						parameter.newDate = new Date(parameter.value);
 					}
 				});
 			});

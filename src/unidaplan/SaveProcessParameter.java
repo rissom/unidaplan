@@ -205,11 +205,6 @@ import expr.Variable;
         			id = dBconn.getSingleIntValue(pStmt);
 		   	   		pStmt.close();
 		   	   		
-		   	   		pStmt = dBconn.conn.prepareStatement(	
-		   	   				"REFRESH MATERIALIZED VIEW pnumbers");
-		   	   		pStmt.executeUpdate();
-		   	   		pStmt.close();
-		   	   		
 			   	   	if (needsRecalc){
 						
 						// query hierarchy

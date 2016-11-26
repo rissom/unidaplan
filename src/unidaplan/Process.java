@@ -139,13 +139,15 @@ public class Process extends HttpServlet {
 			if (found){
 			    // get next process
 			    try {      
-					pStmt=dBconn.conn.prepareStatement( 
-					  "SELECT "
-					+ "  id,"
-					+ "  p_number "
-					+ "FROM pnumbers "
-					+ "WHERE (p_number > ? AND processtype = ?) "
-					+ "ORDER BY p_number LIMIT 1");
+					pStmt = dBconn.conn.prepareStatement( 
+							  "WITH pn AS ( "
+							+ "SELECT * FROM pnumbers) "
+							+ "SELECT "
+							+ "  id,"
+							+ "  p_number "
+							+ "FROM pn "
+							+ "WHERE (p_number > ? AND pn.processtype = ?) "
+							+ "ORDER BY p_number LIMIT 1");
 					pStmt.setInt(1,pnumber);
 					pStmt.setInt(2,processTypeID);
 					JSONObject next = dBconn.jsonObjectFromPreparedStmt(pStmt);
@@ -165,12 +167,14 @@ public class Process extends HttpServlet {
 			    // get previous process
 			    try {       
 					pStmt = dBconn.conn.prepareStatement( 
-					  "SELECT "
-					+ "  id,"
-					+ "  p_number "
-					+ "FROM pnumbers "
-					+ "WHERE (p_number < ? AND processtype = ?) "
-					+ "ORDER BY p_number DESC LIMIT 1");
+							  "WITH pn AS ( "
+							+ "SELECT * FROM pnumbers) "
+							+ "SELECT "
+							+ "  id,"
+							+ "  p_number "
+							+ "FROM pn "
+							+ "WHERE (p_number < ? AND pn.processtype = ?) "
+							+ "ORDER BY p_number DESC LIMIT 1");
 					pStmt.setInt(1,pnumber);
 					pStmt.setInt(2,processTypeID);
 					JSONObject previous = dBconn.jsonObjectFromPreparedStmt(pStmt);
@@ -227,6 +231,7 @@ public class Process extends HttpServlet {
 					+ "  p_parametergrps.id AS pgrpid, " 
 					+ "  p_parametergrps.stringkey as parametergrp_key, "
 					+ "  paramdef.datatype, "
+					+ "  paramdef.format, "					
 					+ "  paramdef.stringkeyunit as unit, "
 					+ "  p_parameters.definition, "
 					+ "  p_parameters.formula, "
@@ -249,8 +254,8 @@ public class Process extends HttpServlet {
 							JSONObject prmgrp = parametergrps.getJSONObject(j);
 				      		stringkeys.add(Integer.toString(prmgrp.getInt("paramgrpkey")));				
 				      		
-					      	for (int i = 0; i < parameters.length(); i++) {  
-					      		JSONObject tParam=parameters.getJSONObject(i);
+					      	for ( int i = 0; i < parameters.length(); i++ ) {  
+					      		JSONObject tParam = parameters.getJSONObject(i);
 					      		stringkeys.add(Integer.toString(tParam.getInt("stringkeyname")));
 					      		if (tParam.has("parametergroup")&&
 						      		tParam.getInt("parametergroup") == prmgrp.getInt("parametergroup")){		
@@ -258,7 +263,7 @@ public class Process extends HttpServlet {
 						      		if (tParam.has("unit")){
 							      		stringkeys.add(Integer.toString(tParam.getInt("unit")));
 						      		}
-					      			int datatype=tParam.getInt("datatype");
+					      			int datatype = tParam.getInt("datatype");
 						      		tParam.remove("datatype");
 						      		switch (datatype) {
 						      		case 1: tParam.put("datatype", "integer"); 
@@ -283,8 +288,9 @@ public class Process extends HttpServlet {
 						      				break;
 						      		case 6: tParam.put("datatype","chooser"); 
 								      		pStmt = dBconn.conn.prepareStatement(
-								      					"SELECT string FROM possible_values "
-								      					+"WHERE parameterid=? ORDER BY position");
+								      					"SELECT string "
+								      				  + "FROM possible_values "
+								      				  + "WHERE parameterid = ? ORDER BY position");
 								      		pStmt.setInt(1, tParam.getInt("definition"));
 								      		JSONArray pvalues=dBconn.ArrayFromPreparedStmt(pStmt);
 								      		tParam.put("possiblevalues", pvalues);
@@ -298,11 +304,11 @@ public class Process extends HttpServlet {
 												tParam.put("value", v);
 											}
 						      				break;
-						      		case 9: tParam.put("datatype","timestamp");
+						      		case 9: tParam.put("datatype", "timestamp");
 						      				break;
-						      		case 10: tParam.put("datatype","URL");
+						      		case 10: tParam.put("datatype", "URL");
 						      				break;
-						      		default: tParam.put("datatype","undefined"); 
+						      		default: tParam.put("datatype", "undefined"); 
 						      				break;	    
 					      		}
 							    prmgrpprms.put(tParam);
@@ -327,27 +333,26 @@ public class Process extends HttpServlet {
 			    // get sample related parameters
 			    try{
 			    	pStmt = dBconn.conn.prepareStatement(
-			    	  "SELECT " 
-			    	 +"COALESCE(po_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname, "
-			    	 +"COALESCE(po_parameters.description,paramdef.description) AS description, "
-			    	 +"  po_parameters.id, "
-					 +"	 hidden, "
-					 +"  compulsory, "
-					 +"  position, "
-					 +"  paramdef.stringkeyunit AS unit, "
-					 +"  paramdef.datatype, "
-					 +"  paramdef.format, "
-					 +"  paramdef.regex, "
-					 +"  paramdef.min, "
-					 +"  paramdef.max "
-					 +"FROM po_parameters "
-					 +"JOIN paramdef ON po_parameters.definition=paramdef.id "
-					 +"WHERE processtypeid = (SELECT processtypesid FROM processes WHERE id=?) "
-					 +"ORDER BY position ");
-			    	pStmt.setInt(1,processID);
+				    	   "SELECT " 
+				    	 + "COALESCE(po_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname, "
+				    	 + "COALESCE(po_parameters.description,paramdef.description) AS description, "
+				    	 + "  po_parameters.id, "
+						 + "	 hidden, "
+						 + "  compulsory, "
+						 + "  position, "
+						 + "  paramdef.stringkeyunit AS unit, "
+						 + "  paramdef.datatype, "
+						 + "  paramdef.regex, "
+						 + "  paramdef.min, "
+						 + "  paramdef.max "
+						 + "FROM po_parameters "
+						 + "JOIN paramdef ON po_parameters.definition=paramdef.id "
+						 + "WHERE processtypeid = (SELECT processtypesid FROM processes WHERE id=?) "
+						 + "ORDER BY position ");
+			    	pStmt.setInt(1, processID);
 					fields = dBconn.jsonArrayFromPreparedStmt(pStmt);
-					if (fields.length()>0){
-						for (int i=0 ; i<fields.length(); i++){
+					if (fields.length() > 0){
+						for (int i = 0 ; i < fields.length(); i++){
 							JSONObject field = fields.getJSONObject(i);
 			  	  			stringkeys.add(Integer.toString(field.getInt("description")));
 			  	  			stringkeys.add(Integer.toString(field.getInt("stringkeyname")));
@@ -372,10 +377,10 @@ public class Process extends HttpServlet {
 			    // get the assigned objects 
 			    try{
 			    	pStmt = dBconn.conn.prepareStatement(
-			    	  "SELECT sp.sampleid, sn.name, sn.typeid, sp.id AS opid  "
-			    	+ "FROM samplesinprocess sp "
-			    	+ "JOIN samplenames sn ON sp.sampleid=sn.id "
-			    	+ "WHERE ProcessID = ?");
+					    	  "SELECT sp.sampleid, sn.name, sn.typeid, sp.id AS opid  "
+					    	+ "FROM samplesinprocess sp "
+					    	+ "JOIN samplenames sn ON sp.sampleid=sn.id "
+					    	+ "WHERE ProcessID = ?");
 			    	pStmt.setInt(1,processID);
 					JSONArray samples=dBconn.jsonArrayFromPreparedStmt(pStmt);
 					
@@ -387,6 +392,7 @@ public class Process extends HttpServlet {
 				    			"SELECT "
 				    			+ "spd.data, "
 				    			+ "paramdef.datatype, "
+				    			+ "paramdef.format,"
 				    			+ "pop.definition, "
 				    			+ "pop.id AS parameterid "
 				    			+"FROM po_parameters pop "
@@ -396,7 +402,7 @@ public class Process extends HttpServlet {
 				    			+"ORDER BY pop.position");
 				    	pStmt.setInt(1, sample.getInt("opid"));
 						JSONArray poParameters = dBconn.jsonArrayFromPreparedStmt(pStmt);
-						for (int j=0; j<poParameters.length(); j++ ){
+						for (int j = 0; j < poParameters.length(); j++ ){
 							JSONObject p = poParameters.getJSONObject(j);
 							if (p.has("datatype")){
 								int dt = p.getInt("datatype");
@@ -405,7 +411,7 @@ public class Process extends HttpServlet {
 							if (p.getString("datatype").equals("chooser")) {	// chooser 
 				      			pStmt= dBconn.conn.prepareStatement(
 				      					"SELECT string FROM possible_values "
-				      					+"WHERE parameterid=? ORDER BY position");
+				      					+"WHERE parameterid = ? ORDER BY position");
 				      			pStmt.setInt(1, p.getInt("definition"));
 				      			JSONArray pvalues=dBconn.ArrayFromPreparedStmt(pStmt);
 				      			p.put("possiblevalues", pvalues);
@@ -438,8 +444,8 @@ public class Process extends HttpServlet {
 				// Find all corresponding files
 		    	try{
 				    pStmt =  dBconn.conn.prepareStatement( 	
-					"SELECT files.id,filename "+
-					"FROM files "+
+					"SELECT files.id,filename " +
+					"FROM files " +
 					"WHERE files.process = ?");
 					pStmt.setInt(1,processID);
 					JSONArray files = dBconn.jsonArrayFromPreparedStmt(pStmt);
@@ -449,7 +455,7 @@ public class Process extends HttpServlet {
 			    		deletable = false;
 			    	}
 			    	
-					if (files.length()>0) {
+					if (files.length() > 0) {
 						jsProcess.put("files",files); 
 					}
 			    } catch (SQLException e) {
@@ -466,7 +472,7 @@ public class Process extends HttpServlet {
 		
 				// get the strings
 				try{
-			        jsProcess.put("strings",dBconn.getStrings(stringkeys));
+			        jsProcess.put("strings", dBconn.getStrings(stringkeys));
 			        jsProcess.put("editable", editable);
 			        jsProcess.put("deletable", deletable);
 				} catch (JSONException e) {
