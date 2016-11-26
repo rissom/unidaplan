@@ -1,71 +1,46 @@
 package unidaplan;
 import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-//import java.sql.Types;
 import java.util.ArrayList;
-//import java.util.HashMap;
-//import java.util.Map;
-//import java.lang.reflect.Field;
-
-
-
+import javax.naming.*;
+import javax.sql.DataSource;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-//import java.util.Properties;
-/** Simple servlet for testing deployment on server.
- *  <p>
- *  From <a href="http://courses.coreservlets.com/Course-Materials/">the
- *  coreservlets.com tutorials on servlets, JSP, Struts, JSF, Ajax, GWT, 
- *  Spring, Hibernate/JPA, and Java programming</a>.
- */
 
 
 
 public class DBconnection  {
 	Connection conn = null;
-	
-////	 local DB
-//	static Boolean localDB = true;
-//	static String dbURL2 = "jdbc:postgresql://127.0.0.1/thorse";
-//	static String user = "thorse";
-//	static String pass = "jame765!";
-
-
-	// remote DB
-	static Boolean localDB = false;
-	static String dbURL2 = "jdbc:postgresql://85.199.143.79/mo";
-	static String user = "mo";
-	static String pass = "hgfzzt!11";
-
-  
-	private static final String DEFAULT_DRIVER = "org.postgresql.Driver";
-
-    
+    static Boolean localDB = false;
     
   public void startDB() throws Exception {
-	try {
-		Class.forName(DEFAULT_DRIVER);
-		conn = DriverManager.getConnection(dbURL2, user, pass);
-	} catch (SQLException e) {
-		e.printStackTrace();
-		System.err.println("DBconnection: Error connecting to database! Is PostgreSQL running?");
-		throw new Exception();
-	} catch (ClassNotFoundException e) {
-		System.err.println("DBconnection: Error connecting to database. Class not found.");
-		throw new Exception();
-	}
-  	if (conn==null) {
-    	System.err.println("DBconnection: conn null! " );
-    	System.err.println("DBconnection: Error connecting to database");
-		throw new Exception();
-    } 
+
+	  String DATASOURCE_CONTEXT = "java:/comp/env/jdbc/postgres";
+	    
+	    try {
+	      Context initialContext = new InitialContext();
+	      DataSource datasource = (DataSource)initialContext.lookup(DATASOURCE_CONTEXT);
+	      if (datasource != null) {
+	        conn = datasource.getConnection();
+	      }
+	      else {
+	    	  System.err.println("Failed to lookup datasource.");
+	      }
+	    }
+	    catch ( NamingException ex ) {
+	    	System.err.println("DBconnection1: Cannot get connection: " + ex);
+	    	ex.printStackTrace();
+	    }
+	    catch(SQLException ex){
+	    	System.err.println("DBconnection: Cannot get connection: " + ex);
+	    	ex.printStackTrace();
+	    }	  
   }
   
   
@@ -97,7 +72,7 @@ public class DBconnection  {
 	  ResultSet queryresult=null;
 	  	  try {
 	          stmt = conn.createStatement();
-	          if (stmt==null) {
+	          if (stmt == null) {
 		          System.err.println("DBconnection: statement null! " );
 	      }
           queryresult = stmt.executeQuery(query);
@@ -124,10 +99,10 @@ public class DBconnection  {
 	  ResultSet queryResult=null;
 	  	  try {
 	  		queryResult = cs.executeQuery();
-          if (queryResult==null) {
+          if (queryResult == null) {
         	  System.err.println("DBconnection: statement result null! ");
           } else {
-        	  result=new JSONArray();
+        	  result = new JSONArray();
         	  queryResult.next();
         	  result.put(queryResult.getObject(1));;
         	  queryResult.close();
