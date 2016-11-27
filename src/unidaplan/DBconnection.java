@@ -26,6 +26,7 @@ public class DBconnection  {
 	    try {
 	      Context initialContext = new InitialContext();
 	      DataSource datasource = (DataSource)initialContext.lookup(DATASOURCE_CONTEXT);
+		  
 	      if (datasource != null) {
 	        conn = datasource.getConnection();
 	      }
@@ -40,8 +41,11 @@ public class DBconnection  {
 	    catch(SQLException ex){
 	    	System.err.println("DBconnection: Cannot get connection: " + ex);
 	    	ex.printStackTrace();
-	    }	  
+	    }
+	    
+	
   }
+  
   
   
   public void closeDB() {
@@ -92,6 +96,7 @@ public class DBconnection  {
 	  }
 	  return result;
   }
+  
   
   
   public JSONArray jsonArrayFromCS(CallableStatement cs) throws Exception{
