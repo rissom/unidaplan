@@ -9,7 +9,7 @@ https://www.youtube.com/watch?v=gAOdfen3yqU
 
 The software is NOT FINISHED yet. Allthough all basic functionality is there, there still are tons of bugs. The software
 is free to use for public research facilities and universities. But there will be a fee for private companies, once it is
-finished. 
+finished.
 
 
 *setting it up*
@@ -18,31 +18,42 @@ You need an E-Mail account, an Apache Tomcat Web Application Server and an insta
 information in an Context.xml file which should be placed in the WebContent/META-INF directory. The file should have the
 following content:
 
-> <?xml version = "1.0" encoding = "UTF-8"?>
+> &lt;?xml version = "1.0" encoding = "UTF-8"?&gt;
 > 
-> <Context 
->	  path = "/unidaplan" 
->   docBase = "unidaplan"
->   crossContext = "true"
->   reloadable = "true" 
->    debug = "1">
+>   &lt;Context <br>
+>   &nbsp;&nbsp; path = "/unidaplan" <br>
+>   &nbsp;&nbsp; docBase = "unidaplan" <br>
+>   &nbsp;&nbsp; crossContext = "true" <br>
+>   &nbsp;&nbsp; reloadable = "true" <br>
+>    debug = "1"><br>
+>	<br>
+>  &lt;Resource name = "jdbc/postgres" <br>
+>  &nbsp;&nbsp; auth = "Container" <br>
+>  &nbsp;&nbsp; type = "javax.sql.DataSource" <br>
+>  &nbsp;&nbsp; maxActive = "100" <br>
+>  &nbsp;&nbsp; maxIdle = "30" <br>
+>  &nbsp;&nbsp; maxWait = "10000" <br>
+>  &nbsp;&nbsp; username = "theDatabaseUsername" <br>
+>  &nbsp;&nbsp; password = "theDatabasePassword" <br>
+>  &nbsp;&nbsp; driverClassName ="org.postgresql.Driver" <br>
+>  &nbsp;&nbsp; url = "jdbc:postgresql://127.0.0.1:5432/your-database" /&gt; 
+>             
 >
->    <Resource name = "jdbc/postgres" 
->              auth = "Container" 
->              type = "javax.sql.DataSource" 
->              maxActive = "100" 
->              maxIdle = "30" 
->              maxWait = "10000" 
->              username = "theDatabaseUsername" 
->              password = "theDatabasePassword"
->              driverClassName = "org.postgresql.Driver" 
->              url = "jdbc:postgresql://127.0.0.1:5432/your-database" /> 
->              
->
->    <Environment name = "smtpserver" value = "your.smtp.server" type = "java.lang.String"/>
->    <Environment name = "IPAdress" value = "automatic" type = "java.lang.String"/>
->    <Environment name = "smtpport"   value = "587" 		 type = "java.lang.Integer"/>          
-> </Context>
+> &lt;Environment <br>
+> &nbsp;&nbsp; name = "smtpserver" <br>
+> &nbsp;&nbsp; value = "your.smtp.server" > <br>
+> &nbsp;&nbsp; type = "java.lang.String"/> <br>
+> &nbsp;&nbsp; <br>
+> &lt;Environment <br>
+> &nbsp;&nbsp; name = "IPAdress" <br>
+> &nbsp;&nbsp; value = "automatic" <br>
+> &nbsp;&nbsp; type = "java.lang.String"/&gt; <br>
+> &nbsp;&nbsp; <br>
+> &lt;Environment <br>
+> &nbsp;&nbsp; name = "smtpport" <br>
+> &nbsp;&nbsp; value = "587" <br>
+> &nbsp;&nbsp; type = "java.lang.Integer"/&gt;  <br>        
+> &lt;/Context&gt;
 
-Also you need to initialize the database. This can be done by running the SQL scripts in the SQL directory (which I will 
-add in a minute).
+
+Also you need to initialize the database. This can be done by running the SQL scripts in the SQL directory.
