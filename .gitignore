@@ -2,3 +2,5 @@
 /node_modules/
 /WebContent/bootstrap/*
 /.elasticbeanstalk/
+/WebContent/META-INF/context.xml
+
