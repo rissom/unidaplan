@@ -30,7 +30,7 @@ public class Showsample extends HttpServlet {
 	
 	Authentificator authentificator = new Authentificator();
 	int userID = authentificator.GetUserID(request,response);
-	if (userID>0){
+	if (userID > 0){
 	 	ArrayList<String> stringkeys = new ArrayList<String>(); 
 	 	Boolean deletable = true;
 	 	Boolean editable = false;
@@ -51,6 +51,7 @@ public class Showsample extends HttpServlet {
 			sampleID = 1;
 			System.err.print("Showsample: no sample ID given!");
 		}
+		
 		   
 	    // check privileges
 	    try{
