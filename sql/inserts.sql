@@ -30,12 +30,12 @@ INSERT INTO string_key_table VALUES (default, 'first experiment', NOW());
 INSERT INTO string_key_table VALUES (default, 'second experiment', NOW());
 INSERT INTO string_key_table VALUES (default, 'thickness', NOW());
 INSERT INTO string_key_table VALUES (default, 'thickness description', NOW());
-INSERT INTO string_key_table VALUES (default, 'polieren', NOW());
+INSERT INTO string_key_table VALUES (default, 'sputtern', NOW());
 INSERT INTO string_key_table VALUES (default, 'batch', NOW());
 INSERT INTO string_key_table VALUES (default, 'batchdescription', NOW());
 INSERT INTO string_key_table VALUES (default, 'processnumber', NOW());
 INSERT INTO string_key_table VALUES (default, 'visual inspection', NOW());
-INSERT INTO string_key_table VALUES (default, '', NOW());
+INSERT INTO string_key_table VALUES (default, 'example sample process search');
 INSERT INTO string_key_table VALUES (default, 'cold fusion');
 INSERT INTO string_key_table VALUES (default, 'date');
 INSERT INTO string_key_table VALUES (default, 'date of process');
@@ -48,7 +48,7 @@ INSERT INTO string_key_table VALUES (default, 'nice solar cell');
 INSERT INTO string_key_table VALUES (default, 'extra white');
 INSERT INTO string_key_table VALUES (default, 'handwashed');
 INSERT INTO string_key_table VALUES (default, 'solarcell');
-INSERT INTO string_key_table VALUES (default, 'powdercell');
+INSERT INTO string_key_table VALUES (default, 'powder sample');
 INSERT INTO string_key_table VALUES (default, 'washing description');
 INSERT INTO string_key_table VALUES (default, 'sputtering description');
 INSERT INTO string_key_table VALUES (default, 'miscellanous processes');
@@ -81,10 +81,10 @@ INSERT INTO stringtable VALUES (default,  3, 'de', 'Nummer des Experiments', NOW
 INSERT INTO stringtable VALUES (default,  3, 'en', 'number of experiment', NOW());
 INSERT INTO stringtable VALUES (default,  4, 'de', 'Number of an experiment');
 INSERT INTO stringtable VALUES (default,  4, 'en', 'this parameter stores the number of an experiment');
-INSERT INTO stringtable VALUES (default,  5, 'en', 'number for a batch of samples. First part of the samplenumber', NOW());
-INSERT INTO stringtable VALUES (default,  5, 'de', 'Batchnummer. Erster Teil der Probennummer', NOW());
-INSERT INTO stringtable VALUES (default,  6, 'en', 'samplenumber in Batch', NOW());
-INSERT INTO stringtable VALUES (default,  6, 'de', 'Probennumber in Batch', NOW());
+INSERT INTO stringtable VALUES (default,  5, 'en', 'samplenumber in Batch', NOW());
+INSERT INTO stringtable VALUES (default,  5, 'de', 'Probennumber in Batch', NOW());
+INSERT INTO stringtable VALUES (default,  6, 'en', 'number of sample in Batch. Second part of the samplenumber', NOW());
+INSERT INTO stringtable VALUES (default,  6, 'de', 'Probenummer in Batch. Zweiter Teil der Probennummer', NOW());
 INSERT INTO stringtable VALUES (default,  7, 'de', 'Standard Prozessparameter');
 INSERT INTO stringtable VALUES (default,  7, 'en', 'standard processparameters');
 INSERT INTO stringtable VALUES (default,  8, 'de', 'Länge', NOW());
@@ -137,14 +137,14 @@ INSERT INTO stringtable VALUES (default, 33, 'de', 'sputtern', NOW());
 INSERT INTO stringtable VALUES (default, 33, 'en', 'sputtering', NOW());
 INSERT INTO stringtable VALUES (default, 34, 'en', 'batch', NOW());
 INSERT INTO stringtable VALUES (default, 34, 'de', 'Batch', NOW());
-INSERT INTO stringtable VALUES (default, 35, 'en', 'number of sample in Batch. Second part of the samplenumber', NOW());
-INSERT INTO stringtable VALUES (default, 35, 'de', 'Probenummer in Batch. Zweiter Teil der Probennummer', NOW());
+INSERT INTO stringtable VALUES (default, 35, 'en', 'number for a batch of samples. First part of the samplenumber', NOW());
+INSERT INTO stringtable VALUES (default, 35, 'de', 'Batchnummer. Erster Teil der Probennummer', NOW());
 INSERT INTO stringtable VALUES (default, 36, 'de', 'Prozessnummer', NOW());
 INSERT INTO stringtable VALUES (default, 36, 'en', 'Processnumber', NOW());
 INSERT INTO stringtable VALUES (default, 37, 'en', 'Visual inspection', NOW());
 INSERT INTO stringtable VALUES (default, 37, 'de', 'visueller Eindruck', NOW());
-INSERT INTO stringtable VALUES (default, 38, 'en', '');
-INSERT INTO stringtable VALUES (default, 38, 'de', '');
+INSERT INTO stringtable VALUES (default, 38, 'de', 'Beispiel Proben-Prozesssuche');
+INSERT INTO stringtable VALUES (default, 38, 'en', 'example sample process search');
 INSERT INTO stringtable VALUES (default, 39, 'en', 'cold fusion', NOW());
 INSERT INTO stringtable VALUES (default, 39, 'de', 'Kalte Kernfusion', NOW());
 INSERT INTO stringtable VALUES (default, 40, 'en', 'date', NOW());
@@ -199,8 +199,7 @@ INSERT INTO stringtable VALUES (default, 64, 'de', 'Beispiel Probensuche');
 INSERT INTO stringtable VALUES (default, 64, 'en', 'example sample search');
 INSERT INTO stringtable VALUES (default, 65, 'de', 'Beispiel Prozesssuche');
 INSERT INTO stringtable VALUES (default, 65, 'en', 'example process search');
-INSERT INTO stringtable VALUES (default, 66, 'de', 'Beispiel Proben-Prozesssuche');
-INSERT INTO stringtable VALUES (default, 66, 'en', 'example sample process search');
+
  /* stringID        INTEGER NOT NULL PRIMARY KEY,
   string_key      INTEGER NOT NULL REFERENCES string_key_table,
   language        INTEGER NOT NULL REFERENCES languages(ID),
@@ -279,17 +278,17 @@ INSERT INTO paramdef (StringKeyName,StringKeyUnit,Datatype,description,min,max,l
 INSERT INTO paramdef (StringKeyName,StringKeyUnit,Datatype,description,lastUser ) 
 	VALUES ( 3, NULL,1, 4, 1); -- 2 number of experiment
 INSERT INTO paramdef (StringKeyName,StringKeyUnit,Datatype,description,lastUser ) 
-	VALUES (10, NULL,  6, 11, 1); -- 3 Substrat (chose one)
+	VALUES (10, NULL,  6, NULL , 1); -- 3 Substrat (chose one)
 INSERT INTO paramdef (StringKeyName,StringKeyUnit,Datatype,description,lastUser ) 
-	VALUES (25, NULL,  4, 11, 1); -- 4 worker (String)
+	VALUES (25, NULL,  4, 26, 1); -- 4 worker (String)
 INSERT INTO paramdef (StringKeyName,StringKeyUnit,Datatype,description,min,lastUser ) 
 	VALUES (31, 19,  2, 32, 0,1); -- 5 thickness
 INSERT INTO paramdef (StringKeyName,StringKeyUnit,Datatype,description,min,format,lastUser ) 
-	VALUES (34, NULL,  1, 33, 0, '0000',1); -- 6 Batch
+	VALUES (34, NULL,  1, 35, 0, '0000',1); -- 6 Batch
 INSERT INTO paramdef (StringKeyName,StringKeyUnit,Datatype,description,min,format,lastUser ) 
 	VALUES (5, NULL,  1, 35, 0, '00',1); -- 7 Samplenumber
 INSERT INTO paramdef (StringKeyName,StringKeyUnit,Datatype,description,min,lastUser ) 
-	VALUES (36, NULL,  1, 35, 0, 1); -- 8 Processnumber
+	VALUES (36, NULL,  1, NULL, 0, 1); -- 8 Processnumber
 INSERT INTO paramdef (StringKeyName,StringKeyUnit,Datatype,description,lastUser ) 
 	VALUES (37, NULL,  4, 37, 1); -- 9 Visual inspection
 INSERT INTO paramdef (StringKeyName,StringKeyUnit,Datatype,description,lastUser ) 

@@ -320,7 +320,3 @@ $$
 LANGUAGE plpgsql;
 
 
-
-
-REFRESH MATERIALIZED VIEW pnumbers;
-

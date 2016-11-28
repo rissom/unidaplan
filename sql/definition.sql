@@ -563,7 +563,7 @@ GROUP BY id ;
 
 
 
-CREATE MATERIALIZED VIEW pnumbers AS
+CREATE VIEW pnumbers AS
 SELECT 
   processes.id, 
   processes.processtypesid as processtype, 
