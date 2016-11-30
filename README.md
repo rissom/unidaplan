@@ -56,4 +56,5 @@ following content:
 > &lt;/Context&gt;
 
 
-Also you need to initialize the database. This can be done by running the SQL scripts in the SQL directory.
+Also you need to initialize the database. This can be done by running the SQL scripts in the SQL directory. 
+ 
