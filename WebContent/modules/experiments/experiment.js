@@ -178,6 +178,13 @@ function experimentController($uibModal,$scope,editmode,experimentService,langua
 	
 	
 	
+	this.deleteFile = function (fileID){
+		var promise = experimentService.deleteFile(fileID);
+		promise.then (function(){reload()});
+	}
+	
+	
+	
 	this.deleteSample = function(sample){
 		var promise= experimentService.deleteSampleFromExperiment(sample.id);
 		promise.then(function(){reload();});
@@ -402,7 +409,25 @@ function experimentController($uibModal,$scope,editmode,experimentService,langua
 		sample.mprocesses=mprocesses;
 	});
 		
+	
 			
+	this.upload = function(element) {
+		thisController.file = element.files[0].name;
+		var file = element.files[0].name;
+		var xhr = new XMLHttpRequest();
+		xhr.addEventListener('load', function(event) {
+			reload();
+		});
+		
+		xhr.open("POST", 'upload-file2?experiment=' + $stateParams.experimentID); // xhr.open("POST", 'upload-file',true); ???
+		
+		// formdata
+		var formData = new FormData();
+		formData.append("file", element.files[0]);
+		xhr.send(formData);
+    };
+	
+	
 	
 	this.keyUp = function(keyCode,newValue,parameter) {
 		if (keyCode===13) {				// Return key pressed

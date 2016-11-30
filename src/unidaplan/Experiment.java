@@ -205,6 +205,29 @@ public class Experiment extends HttpServlet {
 				} catch (Exception e2) {
 					System.err.println("Experiments: Strange Problem while getting processes");
 				}
+				
+				
+				// Find all corresponding files
+		    	try{
+				    pStmt = dBconn.conn.prepareStatement( 	
+								  "SELECT "
+								+ "  files.id,"
+								+ "  filename "
+								+ "FROM files "
+								+ "WHERE files.experiment = ?");
+					pStmt.setInt(1,id);
+					JSONArray files = dBconn.jsonArrayFromPreparedStmt(pStmt);
+					if (files.length()>0) {
+						experiment.put("files",files); 
+					}
+			    } catch (SQLException e) {
+		    		System.err.println("Showsample: Problems with SQL query for child samples");
+				} catch (JSONException e2) {
+					System.err.println("Showsample: JSON Problem while getting child samples");
+				} catch (Exception e3) {
+					System.err.println("Showsample: Strange Problem while getting child samples");
+		    	}
+				
 	
 				try {
 					stringkeys.add(Integer.toString(experiment.getInt("name")));

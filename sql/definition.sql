@@ -521,6 +521,7 @@ CREATE TABLE files (
   filename        VARCHAR(250),
   sample          INTEGER REFERENCES samples,
   process         INTEGER REFERENCES processes,
+  experiment      INTEGER REFERENCES experiments,
   lastChange      TIMESTAMP,
   lastUser        INTEGER REFERENCES users(ID) ON DELETE SET NULL
 );

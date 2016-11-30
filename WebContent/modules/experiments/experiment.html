@@ -73,20 +73,59 @@
 			<tparameter parameter = "parameter" pupdate="experimentCtrl.submitParameter(parameter)"></tparameter>
 		</td>
 	</tr>
-	<tr ng-hide="experimentCtrl.editmode">
+	<tr ng-hide = "experimentCtrl.editmode">
 		<td></td>
 		<td></td>
 	</tr>
 </table>
 
-<button type="button" 
-		class="btn btn-default" 
-		ng-show="experimentCtrl.editmode"
-		ng-click="experimentCtrl.addParameter()" >
+<button type = "button" 
+		class = "btn btn-default" 
+		ng-show = "experimentCtrl.editmode"
+		ng-click = "experimentCtrl.addParameter()" >
 	<b>+</b> {{'Add Parameter'|translate}}
 </button>
 
 <br /><br />
+
+
+<!-- Files --> 
+<h4 ng-show = "experimentCtrl.experiment.editable || experimentCtrl.files.length > 0">{{'Files' | translate}}</h4>
+<ul>
+	<li ng-repeat = "file in experimentCtrl.experiment.files">
+		<a ng-href = "file-download/{{file.id}}">
+			{{file.filename}}
+		</a>
+		<button 
+			type = "button" 
+			class = "btn btn-default btn-xs" 
+			ng-click = "experimentCtrl.deleteFile(file.id)"
+			ng-show = "experimentCtrl.experiment.editable">
+			<span class = "glyphicon glyphicon-remove"></span>
+		</button>
+	</li>
+</ul>
+
+
+<form 
+	id = "upload_form" 
+	action = "upload-file" 
+	method = "post" 
+	enctype = "multipart/form-data" 
+	ng-show = "experimentCtrl.experiment.editable">
+	<span class = "btn btn-default btn-file">
+    	{{'Add File'| translate}}
+    	<input 
+    		type = "file" 
+    		name = "file" 
+    		id = "file" 
+    		onchange = "angular.element(this).scope().experimentCtrl.upload(this)" 
+    		class = "file"/> 
+    	<br/>
+	</span>
+</form>
+<br/>
+<br/>
 
 
 

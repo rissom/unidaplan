@@ -7,8 +7,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
@@ -26,10 +24,10 @@ import javax.servlet.http.Part;
 		public void doPost(HttpServletRequest request, HttpServletResponse response)
 				throws ServletException, IOException {		
 		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
+		int userID = authentificator.GetUserID(request,response);
 		DBconnection dBconn=null;
 		int id = -1;
-		String fileType="dat";
+//		String fileType = "dat";
 
 	    
 
@@ -62,17 +60,18 @@ import javax.servlet.http.Part;
 		// get id of process or object
 		String sampleString = request.getParameter("sample");
 		String processString = request.getParameter("process");
+		String experimentString = request.getParameter("experiment");
 
 		// get the filename
 		final Part filePart = request.getPart("file");
-		String fileName=null;
+		String fileName = null;
 	    for (String content : filePart.getHeader("content-disposition").split(";")) {
 	        if (content.trim().startsWith("filename")) {
 	            fileName = content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
-	            int i = fileName.lastIndexOf('.');
-	            if (i > 0) {
-	                fileType = fileName.substring(i+1);
-	            }
+//	            int i = fileName.lastIndexOf('.');
+//	            if (i > 0) {
+//	                fileType = fileName.substring(i+1);
+//	            }
 
 	        }
 	    }
@@ -93,23 +92,31 @@ import javax.servlet.http.Part;
 			
 			
 			pStmt = dBconn.conn.prepareStatement(
-					"INSERT INTO files (filename, sample, process, lastuser) VALUES (?,?,?,?) RETURNING ID");
+					"INSERT INTO files (filename, sample, process, experiment, lastuser) VALUES (?,?,?,?,?) RETURNING ID");
 			pStmt.setString(1, fileName);
-			if (sampleString!=null){
+			if (sampleString != null){
 				pStmt.setInt(2, Integer.parseInt(sampleString));
 				pStmt.setNull(3, java.sql.Types.INTEGER);
+				pStmt.setNull(4, java.sql.Types.INTEGER);
 			} else {
-				pStmt.setNull(2, java.sql.Types.INTEGER);
-				pStmt.setInt(3, Integer.parseInt(processString));
+				if (experimentString != null){
+						pStmt.setInt(4, Integer.parseInt(experimentString));
+						pStmt.setNull(3, java.sql.Types.INTEGER);
+						pStmt.setNull(2, java.sql.Types.INTEGER);
+				} else {
+					pStmt.setNull(2, java.sql.Types.INTEGER);
+					pStmt.setInt(3, Integer.parseInt(processString));
+					pStmt.setInt(4, Integer.parseInt(processString));
+				}
 			}
-			pStmt.setInt(4, userID);
+			pStmt.setInt(5, userID);
 			id = dBconn.getSingleIntValue(pStmt);
 			pStmt.close();
 			dBconn.closeDB();
 			
 			
 			// Save file to disk with an 10-digit number as filename
-	    	File dings=new File(path + File.separator + String.format("%010d", id));
+	    	File dings = new File(path + File.separator + String.format("%010d", id));
 	        out = new FileOutputStream(dings);
 	        filecontent = filePart.getInputStream();
 

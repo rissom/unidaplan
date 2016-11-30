@@ -32,6 +32,13 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 	
 	
 	
+	// delete an attached file
+	this.deleteFile = function(fileID){
+		return restfactory.DELETE("delete-file?fileid="+fileID)
+	}
+	
+	
+	
 	this.ExpStepChangeRecipe = function(id,recipe) {
 		return restfactory.POST("exp-step-change-recipe?processstepid="+id+"&recipe="+recipe);
 	};

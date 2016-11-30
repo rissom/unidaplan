@@ -135,12 +135,12 @@ function sampleController(sample,$state,$stateParams,$uibModal,$filter,types,sam
 	this.openDialog = function (mode) {			
 		var mSamples;
 		var eSamples;
-		if (mode=="ancestors"){ 		
-			mSamples=this.ancestors;
-			eSamples=this.children;
+		if (mode == "ancestors"){ 		
+			mSamples = this.ancestors;
+			eSamples = this.children;
 		} else {
-			mSamples=this.children;
-			eSamples=this.ancestors;
+			mSamples = this.children;
+			eSamples = this.ancestors;
 		}		
 			
 	    var modalInstance = $uibModal.open({
@@ -218,7 +218,7 @@ function sampleController(sample,$state,$stateParams,$uibModal,$filter,types,sam
 	
 	
 	
-	var reload=function() {
+	var reload = function() {
 	    var current = $state.current;
 	    var params = angular.copy($stateParams);
 	    return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
