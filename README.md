@@ -52,7 +52,17 @@ following content:
 > &lt;Environment <br>
 > &nbsp;&nbsp; name = "smtpport" <br>
 > &nbsp;&nbsp; value = "587" <br>
-> &nbsp;&nbsp; type = "java.lang.Integer"/&gt;  <br>        
+> &nbsp;&nbsp; type = "java.lang.Integer"/&gt;  <br> 
+> &nbsp;&nbsp; <br>
+> &lt;Environment <br>
+> &nbsp;&nbsp; name = "username" <br>
+> &nbsp;&nbsp; value = "your-username-for-email" <br>
+> &nbsp;&nbsp; type = "java.lang.String"/&gt;  <br> 
+> &nbsp;&nbsp; <br>
+> &lt;Environment <br>
+> &nbsp;&nbsp; name = "password" <br>
+> &nbsp;&nbsp; value = "your-password-for-email" <br>
+> &nbsp;&nbsp; type = "java.lang.String"/&gt;  <br>           
 > &lt;/Context&gt;
 
 
