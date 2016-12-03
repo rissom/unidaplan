@@ -14,9 +14,7 @@ var loginController = function($state,restfactory,$scope,$rootScope,$translate){
 		var promise = restfactory.GET('login?user='+this.userinput+'&pw='+CryptoJS.SHA256(this.pwinput).toString(CryptoJS.enc.Base64));
 		promise.then(function(data){
 				thisController.error = "";
-				console.log("data:",data)
 				if (data.data.fullname){
-					console.log("alles jut")
 					$rootScope.userfullname = data.data.fullname;
 				}else{
 					delete $rootScope.userfullname;
