@@ -37,7 +37,7 @@ public class SendMail {
 			props.put("mail.smtp.starttls.enable", "true");
 			props.put("mail.smtp.host", smtpserver);
 			props.put("mail.smtp.port", smtpport);
-			
+						
 			Session session = Session.getInstance(props,
 					  new javax.mail.Authenticator() {
 						protected PasswordAuthentication getPasswordAuthentication() {
@@ -45,7 +45,7 @@ public class SendMail {
 						}
 					  });
 			Message message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("unidaplan@" + smtpserver));
+			message.setFrom(new InternetAddress(username));
 			message.setRecipients(Message.RecipientType.TO,
 				InternetAddress.parse(recipient));
 			message.setSubject(subject);
