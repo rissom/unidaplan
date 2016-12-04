@@ -39,11 +39,11 @@ public class SendMail {
 			props.put("mail.smtp.port", smtpport);
 						
 			Session session = Session.getInstance(props,
-					  new javax.mail.Authenticator() {
-						protected PasswordAuthentication getPasswordAuthentication() {
-							return new PasswordAuthentication(username, password);
-						}
-					  });
+				new javax.mail.Authenticator() {
+					protected PasswordAuthentication getPasswordAuthentication() {
+						return new PasswordAuthentication(username, password);
+					}
+				});
 			Message message = new MimeMessage(session);
 			message.setFrom(new InternetAddress(username));
 			message.setRecipients(Message.RecipientType.TO,
@@ -54,7 +54,6 @@ public class SendMail {
 			Transport.send(message);
 			
 		} catch (NamingException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (MessagingException e) {
 			throw new RuntimeException(e);
