@@ -4,24 +4,35 @@
 function signupController(userService,$rootScope,$state,$translate,user,token){
 	
 	var thisController = this;
-	this.fullname = "";
-	this.username = "";
-	this.email = "";
-	
-	this.user={};
-	
+	thisController.fullname = user.fullname;
+	thisController.username = user.username;
+	thisController.email = user.email;
+		
 	this.signup = function(){
+		//Send new Userdata + Password to server
 		var userData = {
 			id : user.id,
 			token : token,
-			fullname : this.fullname,
-			username : this.username,
-			email : this.email,
-			password :  CryptoJS.SHA256(this.pwinput).toString(CryptoJS.enc.Base64),
+			fullname : thisController.fullname,
+			username : thisController.username,
+			email : thisController.email,
+			password : CryptoJS.SHA256(this.pwinput).toString(CryptoJS.enc.Base64),
 		};
 		userService.signUpUser(userData).then(
-			function(data, status, headers, config){
-				$rootScope.username = data.data.fullname;
+			function(data){				
+				$rootScope.userid = data.data.id;
+				if (data.data.fullname){
+					$rootScope.userfullname = data.data.fullname;
+				}else{
+					delete $rootScope.userfullname;
+				}
+				
+				if (data.data.username){
+					$rootScope.username = data.data.username;
+				}else{
+					delete $rootScope.username;
+				}
+				
 				$rootScope.userid = data.data.id;
 				if(data.data.admin){
 					$rootScope.admin = data.data.admin;
@@ -29,26 +40,19 @@ function signupController(userService,$rootScope,$state,$translate,user,token){
 					$rootScope.admin = false;
 				}
 			    $rootScope.admin = ( data.data.admin == 'true' );			    
-				var lang = window.localStorage.getItem("language");
+				var lang = data.data.language;
 		        if(lang !== null){
-		        	  if (lang!=$translate.use()) {
-		      			$translate.use(lang);
-		        	  }
-		        } 
+		        	if (lang != $translate.use()) {
+		        		$translate.use(lang);
+		        	}
+		        }
 				$state.go("sampleChoser");
-			 },
-			 function(data, status, headers, config){
-			 }
-			 
+			},
+			function(data){
+				console.log("error signing in");
+			}
 		); 
 	};
-	
-	
-	// activate Function
-	thisController.fullname = user.fullname;
-	thisController.username = user.username;
-	thisController.email = user.email;
-
 }
 
 
