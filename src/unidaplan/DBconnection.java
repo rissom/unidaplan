@@ -35,10 +35,12 @@ public class DBconnection  {
 	      }
 	    }
 	    catch ( NamingException ex ) {
+	    	System.err.println("Naming Exception");
 	    	System.err.println("DBconnection1: Cannot get connection: " + ex);
 	    	ex.printStackTrace();
 	    }
 	    catch(SQLException ex){
+	    	System.err.println("SQL Exception");
 	    	System.err.println("DBconnection: Cannot get connection: " + ex);
 	    	ex.printStackTrace();
 	    }
@@ -655,7 +657,7 @@ public class DBconnection  {
 	        	return;
 	        }
 	        String sql;
-	        sql = "select value from stringtable where stringID=5";
+	        sql = "select value from stringtable where stringID = 5";
 	        ResultSet rs = stmt.executeQuery(sql);
 	        if (rs==null) {
 	        	System.err.print("DBconnection: statement result null! " + sql);
