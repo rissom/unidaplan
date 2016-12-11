@@ -18,36 +18,35 @@ public class DeleteExperimentParameter extends HttpServlet {
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
+		int userID = authentificator.GetUserID(request,response);
 		String privilege = "n";
 		request.setCharacterEncoding("utf-8");
-	    String status="ok";
+	    String status = "ok";
 	    
 		PreparedStatement pStmt = null; 	// Declare variables
 		int experimentID;
 		int parameterID = 0;
-	 	DBconnection dBconn=new DBconnection(); // New connection to the database
+	 	DBconnection dBconn = new DBconnection(); // New connection to the database
 	 	
 		// get Parameter for id
 		try{
-			parameterID=Integer.parseInt(request.getParameter("id")); }
+			parameterID = Integer.parseInt(request.getParameter("id")); }
 		catch (Exception e1) {
-			experimentID=-1;
+			experimentID = -1;
 			System.err.print("DeleteExperimentParameter: no experiment Parameter ID given!");
-			status="error: no experiment ID";
+			status = "error: no experiment ID";
 		}
 	 	
 		
 	    try {
 		 	dBconn.startDB();
-		 	if (parameterID>0){
+		 	if ( parameterID > 0 ){
 		 		
 		 		// get Experiment ID
 			    pStmt = dBconn.conn.prepareStatement( 	
 						"SELECT exp_plan_id FROM expp_param WHERE id=?");
 				pStmt.setInt(1,parameterID);
 				experimentID = dBconn.getSingleIntValue(pStmt);
-				pStmt.close();
 		 		
 		 		// check privileges
 			    pStmt = dBconn.conn.prepareStatement( 	
@@ -55,7 +54,6 @@ public class DeleteExperimentParameter extends HttpServlet {
 				pStmt.setInt(1,userID);
 				pStmt.setInt(2,experimentID);
 				privilege = dBconn.getSingleStringValue(pStmt);
-				pStmt.close();
 			    
 				if (privilege.equals("w")){
 			 		

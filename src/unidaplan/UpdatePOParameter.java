@@ -64,7 +64,7 @@ import org.json.JSONObject;
 			try {
 			    dBconn.startDB();	   
 			    
-			    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+			    if (dBconn.isAdmin(userID)){
 
 					// find the stringkey
 					pStmt = dBconn.conn.prepareStatement(
@@ -120,7 +120,7 @@ import org.json.JSONObject;
 		if (jsonIn.has("compulsory")){
 			try {
 			    dBconn.startDB();	
-			    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+			    if (dBconn.isAdmin(userID)){
 
 					boolean compulsory=jsonIn.getBoolean("compulsory");
 					pStmt=dBconn.conn.prepareStatement(
@@ -162,7 +162,7 @@ import org.json.JSONObject;
 			try {
 			    dBconn.startDB();	   
 			    
-			    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+			    if (dBconn.isAdmin(userID)){
 
 					// find the stringkey
 					pStmt=dBconn.conn.prepareStatement(
@@ -220,7 +220,7 @@ import org.json.JSONObject;
 		if (jsonIn.has("hidden")){
 			try {
 			    dBconn.startDB();	   
-			    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+			    if (dBconn.isAdmin(userID)){
 	
 					boolean hidden=jsonIn.getBoolean("hidden");
 					pStmt=dBconn.conn.prepareStatement(

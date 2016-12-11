@@ -37,7 +37,7 @@ import org.json.JSONObject;
 			jsonIn = new JSONObject(in);
 		} catch (JSONException e) {
 			System.err.println("AddSampleType: Input is not valid JSON");
-			status="input error";
+			status = "input error";
 		}
 		response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
@@ -49,7 +49,7 @@ import org.json.JSONObject;
 		    
 			//check if admin
 	    	int admins = 1;
-			if (userID>0 && Unidatoolkit.isMemberOfGroup(userID,admins, dBconn)){
+			if (userID>0 && Unidatoolkit.isMemberOfGroup(userID, admins, dBconn)){
 				
 				 // generate strings for the name and the unit
 				if (jsonIn.has("name")){
@@ -96,9 +96,7 @@ import org.json.JSONObject;
 			   		pStmt.setNull(4, java.sql.Types.INTEGER);
 			   	}
 			   	pStmt.setInt(5, userID);
-			   	sampleTypeID = dBconn.getSingleIntValue(pStmt);
-			   	pStmt.close();
-			   	
+			   	sampleTypeID = dBconn.getSingleIntValue(pStmt);			   	
 			   	
 			   	
 			   	
@@ -132,9 +130,7 @@ import org.json.JSONObject;
 			   	pStmt.setInt(1, stringKeySampleNumber);
 			   	pStmt.setInt(2, stringKeyDescSampleNumber);
 				pStmt.setInt(3, userID);  	// lastUser 
-				
 				parameterID = dBconn.getSingleIntValue(pStmt); 
-				pStmt.close();
 				
 			   	pStmt = dBconn.conn.prepareStatement(
 				  		  "INSERT INTO ot_parameters ("
@@ -153,6 +149,7 @@ import org.json.JSONObject;
 				pStmt.setInt(5, parameterID);  	// parameterID 
 				pStmt.setInt(6, userID);  		// lastUser 
 				pStmt.executeUpdate();
+				pStmt.close();
 			   	
 		    } else {
 		    	response.setStatus(401);

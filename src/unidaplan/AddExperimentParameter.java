@@ -39,9 +39,7 @@ public class AddExperimentParameter extends HttpServlet {
 				"SELECT getExperimentRights(vuserid := ?,vexperimentid := ?)");
 		pStmt.setInt(1,userID);
 		pStmt.setInt(2,jsonIn.getInt("experimentid"));
-		privilege = dBconn.getSingleStringValue(pStmt);
-		pStmt.close();
-	    
+		privilege = dBconn.getSingleStringValue(pStmt);	    
 		
 		if (privilege.equals("w")){
 	   
@@ -62,6 +60,7 @@ public class AddExperimentParameter extends HttpServlet {
 				pStmt.addBatch();
 			}
 			pStmt.executeBatch();
+			pStmt.close();
 		} else{
 			response.setStatus(401);
 		}

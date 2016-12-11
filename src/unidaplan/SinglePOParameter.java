@@ -43,7 +43,7 @@ public class SinglePOParameter extends HttpServlet {
 		 	
 	    try{
 		 	dBconn.startDB();
-		 	if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+		 	if (dBconn.isAdmin(userID)){
 	 			pStmt = dBconn.conn.prepareStatement(
 	 					 "SELECT "
 	 					+"	po_parameters.id, " 

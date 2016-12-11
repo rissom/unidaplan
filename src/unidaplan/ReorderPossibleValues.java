@@ -21,7 +21,7 @@ import org.json.JSONObject;
 		
 		Authentificator authentificator = new Authentificator();
 		String status="ok";
-		int userID=authentificator.GetUserID(request,response);
+		int userID = authentificator.GetUserID(request,response);
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
 	    JSONObject  jsonIn = null;	    
@@ -31,26 +31,22 @@ import org.json.JSONObject;
 			System.err.println("ReorderPossibleValues: Input is not valid JSON");
 		}
 
-	    
-	    
 	   
 	    try {
 		    // Initialize Database
-			DBconnection dBconn=new DBconnection();
+			DBconnection dBconn = new DBconnection();
 		    dBconn.startDB();
 		    
 		 	// check if admin
-		 	if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+		 	if (dBconn.isAdmin(userID)){
 		    
 			    PreparedStatement pStmt = null;
-	    		int parameterID=jsonIn.getInt("parameterid");
-	    		//TODO: check privileges.
 	    		
-	    		JSONArray newOrder=jsonIn.getJSONArray("neworder");
+	    		JSONArray newOrder = jsonIn.getJSONArray("neworder");
 	
 	    		pStmt= dBconn.conn.prepareStatement( 			
 						 "UPDATE possible_values SET (position,lastchange,lastuser)=(?,now(),?) WHERE id=?");
-		    	for (int i=0;i<newOrder.length();i++){
+		    	for (int i=0; i<newOrder.length(); i++){
 				   	pStmt.setInt(1, i+1);
 				   	pStmt.setInt(2, userID);
 				   	pStmt.setInt(3, newOrder.getInt(i));

@@ -47,7 +47,6 @@ public class AddProcessToExperiment extends HttpServlet {
 			pStmt.setInt(1,userID);
 			pStmt.setInt(2,experimentID);
 			privilege = dBconn.getSingleStringValue(pStmt);
-			pStmt.close();
 			
 			if (privilege.equals("w")){	    
 		    
@@ -69,10 +68,10 @@ public class AddProcessToExperiment extends HttpServlet {
 			
 		} catch (SQLException e) {
 			System.err.println("AddProcessToExperiment: Problems with SQL query");
-			status="SQL Error; AddProcessToExperiment";
+			status = "SQL Error; AddProcessToExperiment";
 		} catch (Exception e) {
 			System.err.println("AddProcessToExperiment: Strange Problems");
-			status="Error AddProcessToExperiment";
+			status = "Error AddProcessToExperiment";
 		}	
 		
 	    // tell client that everything is fine

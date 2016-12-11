@@ -20,7 +20,7 @@ public class DeleteSample extends HttpServlet {
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
+		int userID = authentificator.GetUserID(request,response);
 	   	String privilege = "n";
 		request.setCharacterEncoding("utf-8");
 	    response.setContentType("application/json");
@@ -30,11 +30,11 @@ public class DeleteSample extends HttpServlet {
 	    
 		PreparedStatement pStmt = null; 	// Declare variables
 		int sampleID;
-	 	DBconnection dBconn=new DBconnection(); // New connection to the database
+	 	DBconnection dBconn = new DBconnection(); // New connection to the database
 	 	
 		// get Parameter for id
 		try{
-			 sampleID=Integer.parseInt(request.getParameter("id")); }
+			 sampleID = Integer.parseInt(request.getParameter("id")); }
 		catch (Exception e1) {
 			sampleID=-1;
 			System.err.print("Delete Sample: no object ID given!");
@@ -44,7 +44,7 @@ public class DeleteSample extends HttpServlet {
 	    try {
 		 	dBconn.startDB();
 
-		 	if (sampleID>0){
+		 	if ( sampleID > 0 ){
 		 		
 		 		// Check privileges
 			    pStmt = dBconn.conn.prepareStatement( 	
@@ -52,48 +52,52 @@ public class DeleteSample extends HttpServlet {
 				pStmt.setInt(1,userID);
 				pStmt.setInt(2,sampleID);
 				privilege = dBconn.getSingleStringValue(pStmt);
-				pStmt.close();
 				
 				if (privilege.equals("w")){
-		 		
-			 		
-			 		Boolean DeletionPossible=true;			
+			 		Boolean DeletionPossible = true;			
 	
 			 		// Check if processes with this sample exist
 			        pStmt = dBconn.conn.prepareStatement(	
-			    	"SELECT processid, sampleid FROM samplesinprocess "
-			 		+"WHERE sampleid=?");
+					    	  "SELECT "
+					    	+ "    processid,"
+					    	+ "    sampleid "
+					    	+ "FROM samplesinprocess "
+					 		+ "WHERE sampleid = ?");
 					pStmt.setInt(1,sampleID);
-					ResultSet resultset=pStmt.executeQuery();
+					ResultSet resultset = pStmt.executeQuery();
 					if (resultset.next()) {DeletionPossible=false;}
 					pStmt.close();
 					
 					// Check if experiments with this sample exist
 			        pStmt = dBconn.conn.prepareStatement(	
-			        	"SELECT id FROM expp_samples WHERE sample=?");
+				        	  "SELECT id "
+				        	+ "FROM expp_samples "
+				        	+ "WHERE sample = ?");
 					pStmt.setInt(1,sampleID);
-					resultset=pStmt.executeQuery();
-					if (resultset.next()) {DeletionPossible=false;}
+					resultset = pStmt.executeQuery();
+					if (resultset.next()) {
+						DeletionPossible = false;
+					}
 					pStmt.close();
 					
 					if (DeletionPossible){  // Really deleting the sample (OMG!)
 				        pStmt = dBconn.conn.prepareStatement(	
-						"DELETE FROM sampledata WHERE objectid=?"); 
-						pStmt.setInt(1,sampleID);
+				        		"DELETE FROM sampledata WHERE objectid = ?"); 
+						pStmt.setInt(1, sampleID);
 						pStmt.executeUpdate();
 						pStmt.close();	    
 						
 				        pStmt = dBconn.conn.prepareStatement(	
-						"DELETE FROM originates_from WHERE parent=? OR child=?");
-						pStmt.setInt(1,sampleID);
-						pStmt.setInt(2,sampleID);
+				        		"DELETE FROM originates_from WHERE parent = ? OR child = ?");
+						pStmt.setInt(1, sampleID);
+						pStmt.setInt(2, sampleID);
 						pStmt.executeUpdate();
 						pStmt.close();
 						
 						// objectinprocess
 				        pStmt = dBconn.conn.prepareStatement(	
-						"DELETE FROM samples WHERE id=?"); 
-						pStmt.setInt(1,sampleID);
+				        		"DELETE FROM samples WHERE id=?"); 
+						pStmt.setInt(1, sampleID);
 						pStmt.executeUpdate();
 						pStmt.close();					
 					} else {
@@ -125,9 +129,5 @@ public class DeleteSample extends HttpServlet {
 				e.printStackTrace();
 		   	}
         }
-
-		
 	}
-
-
 }

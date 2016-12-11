@@ -44,8 +44,8 @@ import org.json.JSONObject;
 	    JSONArray ids = null;
 
 	    try {
-			 parameterGrpID=jsonIn.getInt("parametergroupid");
-			 processTypeID=jsonIn.getInt("processtypeid");	
+			 parameterGrpID = jsonIn.getInt("parametergroupid");
+			 processTypeID = jsonIn.getInt("processtypeid");	
      		 ids=jsonIn.getJSONArray("parameterids");
 		} catch (JSONException e) {
 			System.err.println("AddProcesstypePGParameters: Error parsing ID-Field");
@@ -59,7 +59,7 @@ import org.json.JSONObject;
 	    // add Parameters to the parametergroup
 		try {	
 		    // Initialize Database
-			DBconnection dBconn=new DBconnection();
+			DBconnection dBconn = new DBconnection();
 		    dBconn.startDB();
 		    
 		    int admins=1;
@@ -85,8 +85,8 @@ import org.json.JSONObject;
 				   	pStmt.setInt(4, ids.getInt(i));
 				   	pStmt.setInt(5, userID);
 					pStmt.executeUpdate();
+					pStmt.close();
 				}
-				pStmt.close();
 		    } else {
 		    	response.setStatus(401);
 		    }

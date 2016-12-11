@@ -1,5 +1,5 @@
-	package unidaplan;
-	import java.io.IOException;
+package unidaplan;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -14,8 +14,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-	public class Experiments extends HttpServlet {
-		private static final long serialVersionUID = 1L;
+public class Experiments extends HttpServlet {
+	private static final long serialVersionUID = 1L;
 
 	@Override
 	  public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -45,13 +45,12 @@ import org.json.JSONObject;
 					+ "FROM experiments "
 					+ "JOIN users ON users.id = experiments.creator "
 					+ "WHERE getExperimentRights(?,experiments.id)>'n'");
-			pStmt.setInt(1,userID);
+			pStmt.setInt( 1, userID );
 			experiments = dBconn.jsonArrayFromPreparedStmt(pStmt);
-			pStmt.close();
-			  for (int i=0; i<experiments.length();i++) {
-	      		  JSONObject tempObj=(JSONObject) experiments.get(i);
-	      		  stringkeys.add(Integer.toString(tempObj.getInt("name")));
-	      	  }
+			for (int i = 0; i < experiments.length(); i++) {
+				JSONObject tempObj = (JSONObject) experiments.get(i);
+	      		stringkeys.add(Integer.toString(tempObj.getInt("name")));
+	      	}
     	} catch (SQLException e) {
     		System.err.println("Experiments: Problems with SQL query for Stringkeys");
     		response.setStatus(404);
@@ -62,7 +61,6 @@ import org.json.JSONObject;
 			System.err.println("Experiments: Strange Problem while getting Stringkeys");
 			response.setStatus(404);
     	} try {
-			  
 	        expPlans.put("strings", dBconn.getStrings(stringkeys));
 	        expPlans.put("experiments", experiments);
 			out.println(expPlans.toString());
@@ -74,4 +72,5 @@ import org.json.JSONObject;
 			System.err.println("Experiments: Strange Problem while getting Stringkeys");
 			response.setStatus(404);
     	}
-	}}	
+	}
+}	

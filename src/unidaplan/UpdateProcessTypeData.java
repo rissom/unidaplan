@@ -45,30 +45,17 @@ import org.json.JSONObject;
 
 	    try {
 		    dBconn.startDB();
-		    
-		    
-	    } catch (SQLException e) {
-			System.err.println("UpdateProcessTypeData: More Problems with SQL query");
-			status = "SQL Error";
-		} catch (JSONException e) {
-			System.err.println("UpdateProcessTypeData: Error parsing ID-Field");
-			status = "Error parsing ID-Field";
-			response.setStatus(404);
-		}   catch (Exception e) {
-			System.err.println("UpdateProcessTypeData: More Strange Problems");
-			status = "Misc. Error";
-		}
+	  
 	    
+		    if (dBconn.isAdmin(userID)){
 	    
-	    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
-	    
-		    try{
+		 
 				processTypeID = jsonIn.getInt("processtypeid");
 				String field = jsonIn.getString("field");
-				lang=jsonIn.getString("lang");
+				lang = jsonIn.getString("lang");
 				newValue=jsonIn.getString("newvalue");
 				
-				pStmt= dBconn.conn.prepareStatement( 			
+				pStmt = dBconn.conn.prepareStatement( 			
 						 "SELECT name,description FROM processtypes WHERE processtypes.id=?");
 				pStmt.setInt(1,  processTypeID);
 				JSONObject pt=dBconn.jsonObjectFromPreparedStmt(pStmt);
@@ -78,7 +65,7 @@ import org.json.JSONObject;
 				} else{
 					stringkey=pt.getInt("description");
 				}
-				pStmt= dBconn.conn.prepareStatement( 			
+				pStmt = dBconn.conn.prepareStatement( 			
 							 "SELECT st.id FROM stringtable st "
 						   + "WHERE st.string_key=? AND st.language=?");
 			   	pStmt.setInt(1,stringkey);
@@ -86,19 +73,7 @@ import org.json.JSONObject;
 			   	id=dBconn.getSingleIntValue(pStmt);
 			   	pStmt.close();
 	
-			} catch (SQLException e) {
-				System.err.println("UpdateProcessTypeData: More Problems with SQL query");
-				status = "SQL Error";
-			} catch (JSONException e) {
-				System.err.println("UpdateProcessTypeData: Error parsing ID-Field");
-				status = "Error parsing ID-Field";
-				response.setStatus(404);
-			}   catch (Exception e) {
-				System.err.println("UpdateProcessTypeData: More Strange Problems");
-				status = "Misc. Error";
-			}
-	
-		    try {	   
+		
 		    	pStmt= dBconn.conn.prepareStatement( 			
 						 "INSERT INTO stringtable VALUES (default, ?, ?,?,NOW(),?)");
 			    if (id<1) { // No id, new Entry
@@ -116,20 +91,26 @@ import org.json.JSONObject;
 				pStmt.executeUpdate();
 				pStmt.close();
 				dBconn.closeDB();
-			} catch (SQLException e) {
-				System.err.println("UpdateProcessTypeData: Even More Problems with SQL query");
-				status = "SQL Error";
-			} catch (Exception e) {
-				System.err.println("UpdateProcessTypeData: More Strange Problems");
-				status = "Misc. Error";
-			}
-	    } else {
-	    	response.setStatus(401);
-	    }
-		
-	    
-    // tell client that everything is fine
-    PrintWriter out = response.getWriter();
-	out.println("{\"status\":\""+status+"\"}");
+			
+		    } else {
+		    	response.setStatus(401);
+		    }
+		    
+		} catch (SQLException e) {
+			System.err.println("UpdateProcessTypeData: More Problems with SQL query");
+			status = "SQL Error";
+		} catch (JSONException e) {
+			System.err.println("UpdateProcessTypeData: Error parsing ID-Field");
+			status = "Error parsing ID-Field";
+			response.setStatus(404);
+		}   catch (Exception e) {
+			System.err.println("UpdateProcessTypeData: More Strange Problems");
+			status = "Misc. Error";
+		}
+			
+		    
+	    // tell client that everything is fine
+	    PrintWriter out = response.getWriter();
+		out.println("{\"status\":\""+status+"\"}");
 	}
 }	

@@ -54,7 +54,7 @@ import org.json.JSONObject;
 	        random.nextBytes(token);
 		 	DBconnection dBconn = new DBconnection();
 		    dBconn.startDB();
-			if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+			if (dBconn.isAdmin(userID)){
 			    PreparedStatement pStmt = null;
 				pStmt = dBconn.conn.prepareStatement( 			
 						  "INSERT INTO users ("
@@ -74,7 +74,6 @@ import org.json.JSONObject;
 			   	pStmt.setString(5, PasswordHash.toHex(token));
 			   	pStmt.setTimestamp(6, expirationDate);
 			   	id = dBconn.getSingleIntValue(pStmt);
-				pStmt.close();
 				dBconn.closeDB();
 				if (id > 0){
 					

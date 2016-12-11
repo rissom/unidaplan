@@ -20,12 +20,12 @@ import org.json.JSONObject;
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
 	    String status = "ok";
-	    int newGroupID=-1;
+	    int newGroupID = -1;
 	    
 
 	    JSONObject  jsonIn = null;	    
 	    try { 
-	    	  if (in!=null && in.length()>2){
+	    	  if ( in!=null && in.length()>2 ){
 	    		  jsonIn = new JSONObject(in);
 			  }
 		} catch (JSONException e) {
@@ -36,7 +36,7 @@ import org.json.JSONObject;
 	    response.setCharacterEncoding("utf-8");
 	    
 	    // get the sample id
-	    String groupName="new Group";
+	    String groupName = "new Group";
 	    try {
 	    	if (jsonIn !=null && jsonIn.has("groupname")){
 	    		groupName=jsonIn.getString("groupname");
@@ -50,8 +50,8 @@ import org.json.JSONObject;
 	    
 		
 		try {	
-			int admins=1;
-		 	DBconnection dBconn=new DBconnection();
+			int admins = 1;
+		 	DBconnection dBconn = new DBconnection();
 		    dBconn.startDB();	   
 			if (userID>0 && Unidatoolkit.isMemberOfGroup(userID,admins, dBconn)){
 			    PreparedStatement pStmt = null;
@@ -59,8 +59,7 @@ import org.json.JSONObject;
 						"INSERT INTO groups (name,lastchange,lastuser) VALUES (?,NOW(),?) RETURNING id");
 				pStmt.setString(1, groupName);
 				pStmt.setInt(2, userID);
-				newGroupID=dBconn.getSingleIntValue(pStmt);
-			 	pStmt.close();
+				newGroupID = dBconn.getSingleIntValue(pStmt);
 			}
 			dBconn.closeDB();
 

@@ -46,7 +46,7 @@ public class SingleSTParameter extends HttpServlet {
 		 	
 	    try{
 		 	dBconn.startDB();
-		 	if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+		 	if (dBconn.isAdmin(userID)){
 	 			pStmt = dBconn.conn.prepareStatement(
 	 					    "SELECT "
 	 					  + "  ot_parameters.id, "

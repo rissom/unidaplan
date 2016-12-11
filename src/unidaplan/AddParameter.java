@@ -19,20 +19,20 @@ import org.json.JSONObject;
 	  public void doPost(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {		
 		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
-		String status="ok";
-		int dataType=0;
+		int userID = authentificator.GetUserID(request,response);
+		String status = "ok";
+		int dataType = 0;
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
-	    int id=0;
+	    int id = 0;
 	    JSONObject  jsonIn = null;
 	    
 	    try {
 			jsonIn = new JSONObject(in);
-			String dataTypeString= jsonIn.getString("datatype");
+			String dataTypeString = jsonIn.getString("datatype");
 			for (int i=0; i<Unidatoolkit.Datatypes.length; i++){
 				if (Unidatoolkit.Datatypes[i].equalsIgnoreCase(dataTypeString)){
-					dataType=i;
+					dataType = i;
 				}
 			}
 		} catch (JSONException e) {
@@ -40,19 +40,17 @@ import org.json.JSONObject;
 			System.err.println("AddParameter: Input is not valid JSON");
 		}
 	    
-
-	    
-	    int stringKeyName=0;
-	    int stringKeyUnit=0;
-	    int stringKeyDesc=0;
+	    int stringKeyName = 0;
+	    int stringKeyUnit = 0;
+	    int stringKeyDesc = 0;
 
 	    
 	    // generate strings for the name and the unit
 	    try {	
-		 	DBconnection dBconn=new DBconnection();
+		 	DBconnection dBconn = new DBconnection();
 		    dBconn.startDB();	   
 		    
-			int admins=1;
+			int admins = 1;
 		    if (userID>0 && Unidatoolkit.isMemberOfGroup(userID,admins, dBconn)){
 				if (jsonIn.has("name")){
 					 JSONObject name=jsonIn.getJSONObject("name");
@@ -66,7 +64,7 @@ import org.json.JSONObject;
 					System.err.println("no name exists");
 				}
 				if (jsonIn.has("unit")){
-					 JSONObject unit=jsonIn.getJSONObject("unit");
+					 JSONObject unit = jsonIn.getJSONObject("unit");
 					 String [] units = JSONObject.getNames(unit);
 					 if (units!=null) {
 						 if (units.length>0){
@@ -80,7 +78,7 @@ import org.json.JSONObject;
 	
 				if (jsonIn.has("description")){
 					 JSONObject description = jsonIn.getJSONObject("description");
-					 if (description.length()>0){
+					 if ( description.length()>0 ){
 						 String [] descriptions = JSONObject.getNames(description);
 						 stringKeyDesc = dBconn.createNewStringKey(description.getString(descriptions[0]));
 						 for (int i = 0; i < descriptions.length; i++){
@@ -95,42 +93,42 @@ import org.json.JSONObject;
 						"INSERT INTO paramdef (StringKeyName,StringKeyUnit,Datatype,format,regex,min,max,description,lastChange,lastUser) "
 						+ "VALUES (?,?,?,?,?,?,?,?,NOW(),?) RETURNING id");
 			   	pStmt.setInt(1, stringKeyName);
-			   	if (stringKeyUnit>0){
+			   	if ( stringKeyUnit>0 ){
 			   		pStmt.setInt(2, stringKeyUnit);
 			   	}else{
 			   		pStmt.setNull(2, Types.INTEGER);
 			   	}
 			   	pStmt.setInt(3, dataType);
-			   	if (jsonIn.has("format")){
+			   	if ( jsonIn.has("format") ){
 			   		pStmt.setString(4, jsonIn.getString("format"));
 			   	}else{
 			   		pStmt.setNull(4, Types.VARCHAR);
 			   	}
-			   	if (jsonIn.has("regex")){
+			   	if ( jsonIn.has("regex") ){
 			   		pStmt.setString(5, jsonIn.getString("regex"));
 			   	}else{
 			   		pStmt.setNull(5, Types.VARCHAR);
 			   	}
-			   	if (jsonIn.has("min")){
+			   	if ( jsonIn.has("min") ){
 			   		pStmt.setDouble(6, jsonIn.getDouble("min"));
 			   	}else{
 			   		pStmt.setNull(6, Types.DOUBLE);
 			   	}
-			   	if (jsonIn.has("max")){
+			   	if ( jsonIn.has("max") ){
 			   		pStmt.setDouble(7, jsonIn.getDouble("max"));
 			   	}else{
 			   		pStmt.setNull(7, Types.DOUBLE);
 			   	}
-			   	if (jsonIn.has("description")){
+			   	if ( jsonIn.has("description") ){
 			   		pStmt.setInt(8, stringKeyDesc);	
 			   	}else{
 			   		pStmt.setNull(8,Types.INTEGER);
 			   	}
 			   	pStmt.setInt(9, userID);
-				if (dataType>0 && dataType<11){
-				   	id =  dBconn.getSingleIntValue(pStmt);
+				if ( dataType>0 && dataType<11 ){
+				   	id = dBconn.getSingleIntValue(pStmt);
 				}else{
-					status="illegal datatype";
+					status = "illegal datatype";
 				}
 				pStmt.close();
 				Unidatoolkit.returnID(id, status, response);
@@ -151,7 +149,5 @@ import org.json.JSONObject;
 			e.printStackTrace();
 		}					
     // tell client that everything is fine
-	   
-	;
 	}
 }	

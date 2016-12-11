@@ -21,7 +21,7 @@ public class AddExperiment extends HttpServlet {
 	String status = "ok";
     request.setCharacterEncoding("utf-8");
     String in = request.getReader().readLine();
-    JSONObject  jsonIn = null;
+    JSONObject jsonIn = null;
     PreparedStatement pStmt = null;
     int stringKey = 0;
     int experimentID = 0;
@@ -34,7 +34,7 @@ public class AddExperiment extends HttpServlet {
 	 	DBconnection dBconn = new DBconnection();
 	    dBconn.startDB();
 	    
-    	if (jsonIn.has("name")){
+    	if ( jsonIn.has("name") ){
     		JSONObject name = jsonIn.getJSONObject("name");
     		String [] names = JSONObject.getNames(name);
     		stringKey = dBconn.createNewStringKey(name.getString(names[0]));

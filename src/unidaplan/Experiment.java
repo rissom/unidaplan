@@ -18,6 +18,11 @@ import org.json.JSONObject;
 public class Experiment extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+	
+	 public Experiment() {
+	        super();
+	 };
+	
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -40,105 +45,88 @@ public class Experiment extends HttpServlet {
 
 		try {
 			id = Integer.parseInt(request.getParameter("id"));
-		} catch (Exception e1) {
-			System.err.println("no experiment ID given!");
-			response.setStatus(404);
-		}
-		try {
-			dBconn.startDB();
-
-			// check privileges
-			dBconn.startDB();
-			pStmt = dBconn.conn.prepareStatement(
-					"SELECT getExperimentRights(vuserid:=?,vexperimentid:=?)");
-			pStmt.setInt(1, userID);
-			pStmt.setInt(2, id);
-			privilege = dBconn.getSingleStringValue(pStmt);
-			pStmt.close();
-
-			editable = privilege != null && privilege.equals("w");
-		} catch (Exception e) {
-			System.err.println("Experiments: Problems with SQL query for experiment");
-		}
 		
-		if (privilege.equals("w")||privilege.equals("r")){
-		
-			try{
-				// get basic experiment data (creator, id, name, status, number)
-				pStmt = dBconn.conn.prepareStatement("SELECT "
-						+ "  experiments.id," + "  users.fullname as creator, "
-						+ "  experiments.name," + "  status, "
-						+ "  experiments.number " + "FROM experiments "
-						+ "JOIN users ON (users.id = experiments.Creator) "
-						+ "WHERE experiments.id = ?");
-				pStmt.setInt(1, id);
-				experiment = dBconn.jsonObjectFromPreparedStmt(pStmt);
-				pStmt.close();
-			} catch (SQLException e) {
-				System.err.println("Experiments: Problems with SQL query for experiment");
-			} catch (JSONException e) {
-				System.err.println("Experiments: JSON Problem while getting experiment");
-			} catch (Exception e2) {
-				System.err.println("Experiments: Strange Problem while getting experiment");
-			}
+			if (id > 0){
+				dBconn.startDB();
 	
-			if (experiment.length() > 0) {
-				try {
-					// Get the default processes for this experiment
-					pStmt = dBconn.conn.prepareStatement(
-									  "SELECT "
-									+ "  exp_plan_processes.id, "
-									+ "  processrecipes.name AS recipename, "
-									+ "  exp_plan_processes.position AS position, "
-									+ "  ptid AS processtype, "
-									+ "  recipe, "
-									+ "  note "
-									+ "FROM exp_plan_processes "
-									+ "LEFT JOIN processrecipes ON (processrecipes.id = exp_plan_processes.recipe) "
-									+ "WHERE expp_id = ? ORDER BY exp_plan_processes.position");
+				// check privileges
+				pStmt = dBconn.conn.prepareStatement(
+						"SELECT getExperimentRights(vuserid := ?, vexperimentid := ?)");
+				pStmt.setInt(1, userID);
+				pStmt.setInt(2, id);
+				privilege = dBconn.getSingleStringValue(pStmt);
+	
+				editable = privilege != null && privilege.equals("w");
+			
+				if ( privilege.equals("w") || privilege.equals("r") ){
+				
+					// get basic experiment data (creator, id, name, status, number)
+					pStmt = dBconn.conn.prepareStatement("SELECT "
+							+ "  experiments.id," + "  users.fullname as creator, "
+							+ "  experiments.name," + "  status, "
+							+ "  experiments.number " + "FROM experiments "
+							+ "JOIN users ON (users.id = experiments.Creator) "
+							+ "WHERE experiments.id = ?");
 					pStmt.setInt(1, id);
-					processes = dBconn.jsonArrayFromPreparedStmt(pStmt);
-					if (processes.length() > 0) {
-						// get keys for the names of the receipes:
-						for (int i = 0; i < processes.length(); i++) {
-							JSONObject tempObj = processes.getJSONObject(i);
-							if (!tempObj.isNull("recipename")) {
-								int receipename = tempObj.getInt("recipename");
-								stringkeys.add(Integer.toString(receipename));
+					experiment = dBconn.jsonObjectFromPreparedStmt(pStmt);
+				
+			
+					if (experiment.length() > 0) {
+						// Get the default processes for this experiment
+						pStmt = dBconn.conn.prepareStatement(
+										  "SELECT "
+										+ "  exp_plan_processes.id, "
+										+ "  processrecipes.name AS recipename, "
+										+ "  exp_plan_processes.position AS position, "
+										+ "  ptid AS processtype, "
+										+ "  recipe, "
+										+ "  note "
+										+ "FROM exp_plan_processes "
+										+ "LEFT JOIN processrecipes ON (processrecipes.id = exp_plan_processes.recipe) "
+										+ "WHERE expp_id = ? ORDER BY exp_plan_processes.position");
+						pStmt.setInt(1, id);
+						processes = dBconn.jsonArrayFromPreparedStmt(pStmt);
+						if (processes.length() > 0) {
+							// get keys for the names of the receipes:
+							for (int i = 0; i < processes.length(); i++) {
+								JSONObject tempObj = processes.getJSONObject(i);
+								if (!tempObj.isNull("recipename")) {
+									int receipename = tempObj.getInt("recipename");
+									stringkeys.add(Integer.toString(receipename));
+								}
+								if (!tempObj.isNull("note")) {
+									int note = tempObj.getInt("note");
+									stringkeys.add(Integer.toString(note));
+								}
 							}
-							if (!tempObj.isNull("note")) {
-								int note = tempObj.getInt("note");
-								stringkeys.add(Integer.toString(note));
-							}
+							experiment.put("processes", processes);
 						}
-						experiment.put("processes", processes);
-					}
-					
-	
-					// Get the associated samples and their associated processes
-					pStmt = dBconn.conn.prepareStatement(
-									  "SELECT "
-									+ "  expp_samples.id,"
-									+ "  expp_samples.position AS sampleposition,"
-									+ "  expp_samples.sample AS sampleid, "
-									+ "  samplenames.typeid, "
-									+ "  samplenames.name, "
-									+ "  note "
-									+ "FROM expp_samples "
-									+ "JOIN samplenames ON expp_samples.sample = samplenames.id "
-									+ "WHERE expp_samples.expp_id = ? ORDER BY sampleposition");
-					pStmt.setInt(1, id);
-					samples = dBconn.jsonArrayFromPreparedStmt(pStmt);
-					if (samples.length() > 0) {
-						for (int i = 0; i < samples.length(); i++) {
-							JSONObject tempSample = samples.getJSONObject(i);
-							if (!tempSample.isNull("note")) {
-								int sampleNote = tempSample.getInt("note");
-								stringkeys.add(Integer.toString(sampleNote));
-							}
-	
-							// get planned Processes for a sample
-							pStmt = dBconn.conn.prepareStatement(
+						
+		
+						// Get the associated samples and their associated processes
+						pStmt = dBconn.conn.prepareStatement(
+										  "SELECT "
+										+ "  expp_samples.id,"
+										+ "  expp_samples.position AS sampleposition,"
+										+ "  expp_samples.sample AS sampleid, "
+										+ "  samplenames.typeid, "
+										+ "  samplenames.name, "
+										+ "  note "
+										+ "FROM expp_samples "
+										+ "JOIN samplenames ON expp_samples.sample = samplenames.id "
+										+ "WHERE expp_samples.expp_id = ? ORDER BY sampleposition");
+						pStmt.setInt(1, id);
+						samples = dBconn.jsonArrayFromPreparedStmt(pStmt);
+						if (samples.length() > 0) {
+							for (int i = 0; i < samples.length(); i++) {
+								JSONObject tempSample = samples.getJSONObject(i);
+								if (!tempSample.isNull("note")) {
+									int sampleNote = tempSample.getInt("note");
+									stringkeys.add(Integer.toString(sampleNote));
+								}
+		
+								// get planned Processes for a sample
+								pStmt = dBconn.conn.prepareStatement(
 											  "SELECT "
 											+ "  eps.id as process_step_id, "
 											+ "  epp.position AS processposition, "
@@ -152,27 +140,25 @@ public class Experiment extends HttpServlet {
 											+ "LEFT JOIN processrecipes ON (processrecipes.id = eps.recipe) "
 											+ "WHERE eps.expp_s_id = ? "
 											+ "ORDER BY processposition");
-							pStmt.setInt(1, samples.getJSONObject(i).getInt("id"));
-							JSONArray pprocesses = dBconn
-									.jsonArrayFromPreparedStmt(pStmt);
-							if (pprocesses.length() > 0) {
-								samples.getJSONObject(i).put("pprocesses",
-										pprocesses);
-								for (int j = 0; j < pprocesses.length(); j++) {
-									JSONObject tempPProcess = pprocesses
-											.getJSONObject(j);
-									if (!tempPProcess.isNull("note")) {
-										int processNote = tempPProcess
-												.getInt("note");
-										stringkeys.add(Integer
-												.toString(processNote));
+								pStmt.setInt(1, samples.getJSONObject(i).getInt("id"));
+								JSONArray pprocesses = dBconn.jsonArrayFromPreparedStmt(pStmt);
+								if (pprocesses.length() > 0) {
+									samples.getJSONObject(i).put("pprocesses",
+											pprocesses);
+									for (int j = 0; j < pprocesses.length(); j++) {
+										JSONObject tempPProcess = pprocesses
+												.getJSONObject(j);
+										if (!tempPProcess.isNull("note")) {
+											int processNote = tempPProcess
+													.getInt("note");
+											stringkeys.add(Integer
+													.toString(processNote));
+										}
 									}
 								}
-							}
-	
-							// get finished Processes for a sample
-							pStmt = dBconn.conn
-									.prepareStatement(
+		
+								// get finished Processes for a sample
+								pStmt = dBconn.conn.prepareStatement(
 											  "SELECT "
 											+ "  samplesinprocess.processid, "
 											+ "  processes.processtypesid AS processtype, "
@@ -189,123 +175,110 @@ public class Experiment extends HttpServlet {
 											+ "JOIN processdata n ON (n.ProcessID = samplesinprocess.processid AND n.parameterID = pp2.id) "
 											+ "JOIN processdata n2 ON (n2.ProcessID = samplesinprocess.processid AND n2.parameterID = pp3.id) "
 											+ "WHERE sampleid = ?");
-							pStmt.setInt(1,samples.getJSONObject(i).getInt("sampleid"));
-							JSONArray fprocesses = dBconn.jsonArrayFromPreparedStmt(pStmt);
-							if (fprocesses.length() > 0) {
-								samples.getJSONObject(i).put("fprocesses",fprocesses);
+								pStmt.setInt(1,samples.getJSONObject(i).getInt("sampleid"));
+								JSONArray fprocesses = dBconn.jsonArrayFromPreparedStmt(pStmt);
+								if (fprocesses.length() > 0) {
+									samples.getJSONObject(i).put("fprocesses", fprocesses);
+								}
 							}
+							experiment.put("samples", samples);
 						}
-						experiment.put("samples", samples);
-					}
-	
-				} catch (SQLException e) {
-					System.err.println("Experiments: Problems with SQL query for processes");
-				} catch (JSONException e) {
-					System.err.println("Experiments: JSON Problem while getting processes");
-				} catch (Exception e2) {
-					System.err.println("Experiments: Strange Problem while getting processes");
-				}
-				
-				
-				// Find all corresponding files
-		    	try{
-				    pStmt = dBconn.conn.prepareStatement( 	
-								  "SELECT "
-								+ "  files.id,"
-								+ "  filename "
-								+ "FROM files "
-								+ "WHERE files.experiment = ?");
-					pStmt.setInt(1,id);
-					JSONArray files = dBconn.jsonArrayFromPreparedStmt(pStmt);
-					if (files.length()>0) {
-						experiment.put("files",files); 
-					}
-			    } catch (SQLException e) {
-		    		System.err.println("Showsample: Problems with SQL query for child samples");
-				} catch (JSONException e2) {
-					System.err.println("Showsample: JSON Problem while getting child samples");
-				} catch (Exception e3) {
-					System.err.println("Showsample: Strange Problem while getting child samples");
-		    	}
-				
-	
-				try {
-					stringkeys.add(Integer.toString(experiment.getInt("name")));
-	
-					// Query the parameters
-					pStmt = dBconn.conn.prepareStatement(
+			
+					
+					
+						// Find all corresponding files
+					    pStmt = dBconn.conn.prepareStatement( 	
 									  "SELECT "
-									+ "  expp_param.id, "
-									+ "  expp_param.definition, "
-									+ "  expp_param.pos, "
-									+ "	 paramdef.format, "
-									+ "  COALESCE (expp_param.stringkeyname, paramdef.stringkeyname) AS stringkeyname, "
-									+ "  ed.data, "
-									+ "  paramdef.datatype, "
-									+ "  paramdef.stringkeyunit AS unit "
-									+ "FROM expp_param "
-									+ "JOIN paramdef ON (paramdef.id=expp_param.definition) "
-									+ "LEFT JOIN experimentdata ed ON  "
-									+ "(ed.experimentid = expp_param.exp_plan_id AND ed.parameterid = expp_param.id ) "
-									+ "WHERE expp_param.exp_plan_id=? AND hidden=false "
-									+ "ORDER BY pos ");
-					pStmt.setInt(1, id);
-					JSONArray parameters = dBconn.jsonArrayFromPreparedStmt(pStmt);
-					pStmt.close();
-					if (parameters.length() > 0) {
-						for (int i = 0; i < parameters.length(); i++) {
-							JSONObject tParam = parameters.getJSONObject(i);
-							stringkeys.add(Integer.toString(tParam
-									.getInt("stringkeyname")));
-							if (tParam.has("unit")) {
-								stringkeys.add(Integer.toString(tParam
-										.getInt("unit")));
-							}
-							int datatype = tParam.getInt("datatype");
-							if (datatype==6) {	// chooser 
-				      			pStmt = dBconn.conn.prepareStatement(
-				      					"SELECT string FROM possible_values "
-				      					+"WHERE parameterid=? ORDER BY position");
-				      			pStmt.setInt(1, tParam.getInt("definition"));
-				      			JSONArray pvalues=dBconn.ArrayFromPreparedStmt(pStmt);
-				      			tParam.put("possiblevalues", pvalues);
-				      			pStmt.close();
-		      				}
-							if (datatype>3 && tParam.has("unit")) {	 
-			      				tParam.remove("unit");
-		      				}
-							parameters.getJSONObject(i).remove("datatype");
-							parameters.getJSONObject(i).put("datatype", Unidatoolkit.Datatypes[datatype]);
+									+ "  files.id,"
+									+ "  filename "
+									+ "FROM files "
+									+ "WHERE files.experiment = ?");
+						pStmt.setInt(1,id);
+						JSONArray files = dBconn.jsonArrayFromPreparedStmt(pStmt);
+						if (files.length() > 0) {
+							experiment.put("files",files); 
 						}
-						experiment.put("parameters", parameters);
+				  
+					
+			
+				
+						stringkeys.add(Integer.toString(experiment.getInt("name")));
+		
+						// Query the parameters
+						pStmt = dBconn.conn.prepareStatement(
+										  "SELECT "
+										+ "  expp_param.id, "
+										+ "  expp_param.definition, "
+										+ "  expp_param.pos, "
+										+ "	 paramdef.format, "
+										+ "  COALESCE (expp_param.stringkeyname, paramdef.stringkeyname) AS stringkeyname, "
+										+ "  ed.data, "
+										+ "  paramdef.datatype, "
+										+ "  paramdef.stringkeyunit AS unit "
+										+ "FROM expp_param "
+										+ "JOIN paramdef ON (paramdef.id=expp_param.definition) "
+										+ "LEFT JOIN experimentdata ed ON  "
+										+ "(ed.experimentid = expp_param.exp_plan_id AND ed.parameterid = expp_param.id ) "
+										+ "WHERE expp_param.exp_plan_id = ? AND hidden = false "
+										+ "ORDER BY pos ");
+						pStmt.setInt(1, id);
+						JSONArray parameters = dBconn.jsonArrayFromPreparedStmt(pStmt);
+						if (parameters.length() > 0) {
+							for (int i = 0; i < parameters.length(); i++) {
+								JSONObject tParam = parameters.getJSONObject(i);
+								stringkeys.add(Integer.toString(tParam
+										.getInt("stringkeyname")));
+								if (tParam.has("unit")) {
+									stringkeys.add(Integer.toString(tParam
+											.getInt("unit")));
+								}
+								int datatype = tParam.getInt("datatype");
+								if ( datatype == 6 ) {	// chooser 
+					      			pStmt = dBconn.conn.prepareStatement(
+					      					  "SELECT string FROM possible_values "
+					      					+ "WHERE parameterid = ? ORDER BY position");
+					      			pStmt.setInt(1, tParam.getInt("definition"));
+					      			JSONArray pvalues = dBconn.ArrayFromPreparedStmt(pStmt);
+					      			tParam.put("possiblevalues", pvalues);
+			      				}
+								if ( datatype > 3 && tParam.has("unit") ) {	 
+				      				tParam.remove("unit");
+			      				}
+								parameters.getJSONObject(i).remove("datatype");
+								parameters.getJSONObject(i).put("datatype", Unidatoolkit.Datatypes[datatype]);
+							}
+							experiment.put("parameters", parameters);
+						}
+				
+
+
+			
+						// Output data
+						
+						experiment.put("editable", editable);
+						answer.put("experiment", experiment);
+						answer.put("strings", dBconn.getStrings(stringkeys));
+						out.println(answer.toString());
+						
+						// close database connection
+						dBconn.closeDB();
+						dBconn = null;
+						answer = null;
+					} else {
+						Unidatoolkit.notFound(response);
 					}
-				} catch (SQLException e) {
-					System.err.println("Experiments: Problems with SQL query for Parameters");
-				} catch (JSONException e) {
-					System.err.println("Experiments: JSON Problem while getting Parameters");
-					e.printStackTrace();
-				} catch (Exception e2) {
-					System.err.println("Experiments: Strange Problem while getting Parameters");
+				}else{
+					response.setStatus(401);
 				}
-	
-				// Output data
-				try {
-					experiment.put("editable", editable);
-					answer.put("experiment", experiment);
-					answer.put("strings", dBconn.getStrings(stringkeys));
-					out.println(answer.toString());
-				} catch (JSONException e) {
-					System.err.println("Experiments: JSON Problem while getting Stringkeys");
-				} catch (Exception e2) {
-					System.err.println("Experiments: Strange Problem while getting Stringkeys");
-				}
-	
-			} else {
-				Unidatoolkit.notFound(response);
 			}
-		}else{
-			response.setStatus(401);
+		} catch (SQLException e) {
+			System.err.println("Showsample: Problems with SQL query for child samples");
+		} catch (JSONException e2) {
+			System.err.println("Showsample: JSON Problem while getting child samples");
+		} catch (Exception e3) {
+			System.err.println("Showsample: Strange Problem while getting child samples");
+		} finally{
+			if (dBconn != null){ dBconn.closeDB();}
 		}
-		dBconn.closeDB();
-	}			
+	}
 }

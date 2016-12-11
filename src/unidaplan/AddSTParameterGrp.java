@@ -66,7 +66,7 @@ import org.json.JSONObject;
 						 dBconn.addString(stringKeyName,names[i],name.getString(names[i]));
 					 }
 				}else{
-				 status="error: no name given";
+				 status = "error: no name given";
 				}
 			} catch (JSONException e) {
 				System.err.println("AddSTParameterGrp: Error creating Strings");

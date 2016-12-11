@@ -3,13 +3,10 @@ package unidaplan;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.json.JSONArray;
 
 public class DeleteProcess extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -36,41 +33,40 @@ public class DeleteProcess extends HttpServlet {
 	    
 		PreparedStatement pStmt = null; 	// Declare variables
 		int processID;
-	 	DBconnection dBconn=new DBconnection(); // New connection to the database
+	 	DBconnection dBconn = new DBconnection(); // New connection to the database
 	 	
 		// get Parameter for id
 		try{
 			 processID=Integer.parseInt(request.getParameter("id")); }
 		catch (Exception e1) {
-			processID=-1;
+			processID = -1;
 			System.err.print("Delete Process: no process ID given!");
-			status="error: no process ID";
+			status = "error: no process ID";
 		}
 	 	
 		
 	    try {
 		 	dBconn.startDB();
-		 	if (processID>0){		
+		 	if ( processID > 0 ){		
 		 		 // Check privileges
 			    pStmt = dBconn.conn.prepareStatement( 	
 						"SELECT getProcessRights(vuserid:=?,vprocess:=?)");
 				pStmt.setInt(1,userID);
 				pStmt.setInt(2,processID);
 				privilege = dBconn.getSingleStringValue(pStmt);
-				pStmt.close();
 				
-				if (privilege.equals("w")){
+				if ( privilege.equals("w") ){
 					
 					// check if files are attached to process
-				    pStmt =  dBconn.conn.prepareStatement( 	
-					"SELECT true "+
-					"FROM files "+
-					"WHERE files.process = ?");
+				    pStmt = dBconn.conn.prepareStatement( 	
+				    			"SELECT "
+				    		  + "true "
+				    		  + "FROM files "
+				    		  + "WHERE files.process = ?");
 					pStmt.setInt(1,processID);
 					if (dBconn.getSingleBooleanValue(pStmt)) { 
 						deletable = false; 
 					}
-					pStmt.close();
 			 		
 					// delete the process
 					if (deletable){

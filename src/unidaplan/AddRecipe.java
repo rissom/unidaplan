@@ -18,7 +18,7 @@ import org.json.JSONObject;
 	  public void doPost(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {		
 		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
+		int userID = authentificator.GetUserID(request,response);
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
 	    String status = "ok";
@@ -65,7 +65,7 @@ import org.json.JSONObject;
 		
 		try {	
 	   
-			if (userID > 0 && Unidatoolkit.userHasAdminRights(userID, dBconn)){
+			if (userID > 0 && dBconn.isAdmin(userID)){
 			    PreparedStatement pStmt = null;
 			    if (jsonIn.getString("type").equals("process")){
 				    pStmt = dBconn.conn.prepareStatement( 
@@ -78,19 +78,18 @@ import org.json.JSONObject;
 					pStmt.setInt(3, jsonIn.getInt("processtype"));
 					pStmt.setInt(4, userID);
 			    } else {
-			    	 pStmt = dBconn.conn.prepareStatement( 
+			    	pStmt = dBconn.conn.prepareStatement( 
 					    		"INSERT INTO samplerecipes (name,sampletype,position,owner) "
 					    		+ "VALUES (?,?,"
 					    		+ "(SELECT max(b.position)+1 FROM samplerecipes b WHERE sampletype = ?), ?) "
 					    		+ "RETURNING id");
-						pStmt.setInt(1, stringKeyName);
-						pStmt.setInt(2, jsonIn.getInt("sampletype"));
-						pStmt.setInt(3, jsonIn.getInt("sampletype"));
-						pStmt.setInt(4, userID);
+					pStmt.setInt(1, stringKeyName);
+					pStmt.setInt(2, jsonIn.getInt("sampletype"));
+					pStmt.setInt(3, jsonIn.getInt("sampletype"));
+					pStmt.setInt(4, userID);
 			    }
 				pStmt.setInt(3, userID);
 				newRecipeID = dBconn.getSingleIntValue(pStmt);
-			 	pStmt.close();
 			}
 			dBconn.closeDB();
 

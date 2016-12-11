@@ -32,11 +32,11 @@ import org.json.JSONObject;
 	  	  	catch (Exception e1) {
 	  	  		System.err.print("DeleteProcessFromExperiment: no user ID given!");
 	  	  	}
-	    String status="ok";
+	    String status = "ok";
 
 	    try {
 		    // Connect to database	    
-		 	DBconnection dBconn=new DBconnection();
+		 	DBconnection dBconn = new DBconnection();
 		    dBconn.startDB();	   
 		    
 		    // Check privileges
@@ -45,11 +45,8 @@ import org.json.JSONObject;
 			pStmt.setInt(1,userID);
 			pStmt.setInt(2,id);
 			privilege = dBconn.getSingleStringValue(pStmt);
-			pStmt.close();
 			
 			if (privilege.equals("w")){
-		    
-		    
 			    // decrease positions behind the sample to delete
 			    pStmt = dBconn.conn.prepareStatement(    		
 		    		"UPDATE exp_plan_processes SET position = position - 1 "
@@ -58,7 +55,7 @@ import org.json.JSONObject;
 		    	pStmt.setInt(1,id);
 		    	pStmt.setInt(2,id);
 		    	pStmt.executeUpdate();
-				pStmt= dBconn.conn.prepareStatement( 			
+				pStmt = dBconn.conn.prepareStatement( 			
 						"DELETE FROM exp_plan_processes WHERE id=?");
 			   	pStmt.setInt(1, id);
 			   	pStmt.executeUpdate();

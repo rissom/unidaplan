@@ -23,7 +23,7 @@ import org.json.JSONObject;
 		int userID=authentificator.GetUserID(request,response);
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
-	   	String privilege="n";
+	   	String privilege = "n";
 	    String status = "ok";
 
 	    JSONObject  jsonIn = null;	    
@@ -67,8 +67,9 @@ import org.json.JSONObject;
 				pStmt= dBconn.conn.prepareStatement( 
 						"SELECT sampleid FROM samplesinprocess WHERE processid=?");
 				pStmt.setInt(1, processid);
-				JSONArray assignedSamples=dBconn.jsonArrayFromPreparedStmt(pStmt);
-			 	JSONArray newlyCreatedSamples= new JSONArray();
+				JSONArray assignedSamples = dBconn.jsonArrayFromPreparedStmt(pStmt);
+				pStmt.close();
+			 	JSONArray newlyCreatedSamples = new JSONArray();
 				ArrayList<Integer> assignedSamplesList = new ArrayList<Integer>();
 			 	ArrayList<Integer> newlyCreatedSamplesList = new ArrayList<Integer>();
 			 	ArrayList<Integer> newSamplesList = new ArrayList<Integer>();
@@ -82,7 +83,7 @@ import org.json.JSONObject;
 			 	// insert database entries for not already assigned samples
 				pStmt= dBconn.conn.prepareStatement( 			
 						 "INSERT INTO samplesinprocess values(default,?,?,NOW(),?)");
-				for (int i=0;i<samples.length();i++){
+				for (int i=0; i<samples.length(); i++){
 					JSONObject sample=(JSONObject)samples.get(i);
 					newSamplesList.add(sample.getInt("sampleid"));
 					if (!assignedSamplesList.contains(sample.getInt("sampleid"))){
@@ -105,7 +106,7 @@ import org.json.JSONObject;
 				}
 				
 				// Delete the samples
-				pStmt= dBconn.conn.prepareStatement( 			
+				pStmt = dBconn.conn.prepareStatement( 			
 						 "DELETE FROM samplesinprocess WHERE sampleid=? AND processid=?");
 				for(Integer sample: samplesToDeleteList){
 					pStmt.setInt(1, sample);

@@ -21,9 +21,9 @@ import org.json.JSONObject;
 		
 		Authentificator authentificator;
 		int userID;
-		String status="ok";
+		String status = "ok";
 		Boolean compulsory = false;
-		int processTypeID=0;
+		int processTypeID = 0;
 	    JSONArray ids = null;
 		PreparedStatement pStmt = null;
 		String in;
@@ -47,23 +47,19 @@ import org.json.JSONObject;
 		response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
 	    
-	    
-
-	    int stringKeyName=0;
-	    
+	    	    
 	    // generate strings for the name
 	    try {			 	
 	    	DBconnection dBconn=new DBconnection();
 	    	dBconn.startDB();	   
 	    	
 	    	//check if admin
-	    	int admins=1;
-			if (userID>0 && Unidatoolkit.isMemberOfGroup(userID,admins, dBconn)){
+			if (userID>0 && dBconn.isAdmin(userID)){
 			   	
-				for (int i=0; i<ids.length();i++){
+				for (int i=0; i<ids.length(); i++){
 
 				   	// add entry to database
-					pStmt= dBconn.conn.prepareStatement( 			
+					pStmt = dBconn.conn.prepareStatement( 			
 							"INSERT INTO po_parameters ("
 							+ "processtypeid,"
 							+ "compulsory,"

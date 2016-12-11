@@ -41,9 +41,7 @@ import org.json.JSONObject;
 					  + "LEFT JOIN groupmemberships gm ON (gm.userid = users.id AND gm.groupid = 1) " // member of Admin group? 
 					  + "WHERE users.id = ?");
 				pStmt.setInt(1, userID);
-				user = dBconn.jsonObjectFromPreparedStmt(pStmt);
-				pStmt.close();
-					
+				user = dBconn.jsonObjectFromPreparedStmt(pStmt);					
 			    
 				dBconn.closeDB();
 				out.println(user.toString());

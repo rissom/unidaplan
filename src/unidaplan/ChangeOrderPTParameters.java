@@ -20,7 +20,7 @@ import org.json.JSONObject;
 	      throws ServletException, IOException {
 		
 		Authentificator authentificator = new Authentificator();
-		String status="ok";
+		String status = "ok";
 		int userID=authentificator.GetUserID(request,response);
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
@@ -37,14 +37,14 @@ import org.json.JSONObject;
 	    try {
 	    	
 		    // Initialize Database
-			DBconnection dBconn=new DBconnection();
+			DBconnection dBconn = new DBconnection();
 		    dBconn.startDB();	
 		    int admins = 1;
 		 	if (Unidatoolkit.isMemberOfGroup(userID, admins, dBconn)){
 
 		    
 
-		    	for (int i=0;i<jsonIn.length();i++){
+		    	for (int i = 0; i < jsonIn.length(); i++){
 		    		JSONObject parameter=jsonIn.getJSONObject(i);
 		    		pStmt= dBconn.conn.prepareStatement( 			
 							 "UPDATE p_parameters SET (pos,lastuser)=(?,?) WHERE id=?");

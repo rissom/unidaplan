@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 	      throws ServletException, IOException {		
 	    
 		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
+		int userID = authentificator.GetUserID(request,response);
 		
 		DBconnection dBconn = null;
 	    PreparedStatement pStmt = null;
@@ -26,20 +26,20 @@ import javax.servlet.http.HttpServletResponse;
 		request.setCharacterEncoding("utf-8");
 	    int id=0;
 	  	  try  {
-	   		 id=Integer.parseInt(request.getParameter("id")); 
+	   		 id = Integer.parseInt(request.getParameter("id")); 
 	       }
 	   	  catch (Exception e1) {
 	   		System.err.print("DeletePTParameter: no parameter ID given!");
 	   	  }
-	    String status="ok";
+	    String status = "ok";
 
 	    try {
 		    // Delete the parameter
-		 	dBconn=new DBconnection();
+		 	dBconn = new DBconnection();
 		    dBconn.startDB();	   
 		    
-			if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
-				pStmt= dBconn.conn.prepareStatement( 			
+			if (dBconn.isAdmin(userID)){
+				pStmt = dBconn.conn.prepareStatement( 			
 						"DELETE FROM p_parameters WHERE id=? \n");
 			   	pStmt.setInt(1, id);
 			   	pStmt.executeUpdate();
@@ -50,10 +50,10 @@ import javax.servlet.http.HttpServletResponse;
 		
 		} catch (SQLException e) {
 			System.err.println("DeletePTParameter: Problems with SQL query");
-			status="SQL Error; DeletePTParameter";
+			status = "SQL Error; DeletePTParameter";
 		} catch (Exception e) {
 			System.err.println("DeletePTParameter: Strange Problems");
-			status="Error DeletePTParameter";
+			status = "Error DeletePTParameter";
 		}	
 		dBconn.closeDB();
 

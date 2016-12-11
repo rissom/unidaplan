@@ -20,35 +20,35 @@ import org.json.JSONObject;
 	      throws ServletException, IOException {		
 	    
 		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
+		int userID = authentificator.GetUserID(request,response);
 		request.setCharacterEncoding("utf-8");
-	    int id=0;
+	    int id = 0;
 	  	  try  {
-	   		 id=Integer.parseInt(request.getParameter("id")); 
+	   		 id = Integer.parseInt(request.getParameter("id")); 
 	       }
 	   	  catch (Exception e1) {
 	   		System.err.print("DeleteUser: no user ID given!");
 	   	  }
-	    String status="ok";
+	    String status = "ok";
 
 	    try {
 			// connect to database
-		 	DBconnection dBconn=new DBconnection();
+		 	DBconnection dBconn = new DBconnection();
 		    dBconn.startDB();	   
 		    
-		    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+		    if (dBconn.isAdmin(userID)){
 		    	
 			    // Delete the user from the database	    
 			    PreparedStatement pstmt = null;
 			    
-			    pstmt= dBconn.conn.prepareStatement( 			
-						"DELETE FROM language_preferences WHERE user_id=?");
+			    pstmt = dBconn.conn.prepareStatement( 			
+						"DELETE FROM language_preferences WHERE user_id = ?");
 			   	pstmt.setInt(1, id);
 			   	pstmt.executeUpdate();
 				pstmt.close();
 			    
 				pstmt= dBconn.conn.prepareStatement( 			
-						"DELETE FROM users WHERE id=?");
+						"DELETE FROM users WHERE id = ?");
 			   	pstmt.setInt(1, id);
 			   	pstmt.executeUpdate();
 				pstmt.close();
@@ -56,11 +56,11 @@ import org.json.JSONObject;
 			dBconn.closeDB();
 		} catch (SQLException e) {
 			System.err.println("DeleteUser: Problems with SQL query");
-			status="SQL Error; DeleteUser";
+			status = "SQL Error; DeleteUser";
 			e.printStackTrace();
 		} catch (Exception e) {
 			System.err.println("DeleteUser: Strange Problems");
-			status="Error DeleteUser";
+			status = "Error DeleteUser";
 		}	
 		
 	    // tell client that everything is fine

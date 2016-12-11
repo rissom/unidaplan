@@ -32,20 +32,19 @@ public class DeleteProcessRecipe extends HttpServlet {
 		catch (Exception e1) {
 			recipeID = -1;
 			System.err.print("DeleteProcessRecipe: no recipe ID given!");
-			status="error: no process ID";
+			status = "error: no process ID";
 		}
 	 	
 		
 	    try {
 		 	dBconn.startDB();
-		 	if (recipeID>0){		
+		 	if ( recipeID > 0 ){		
 		 		 // Check privileges
 			    pStmt = dBconn.conn.prepareStatement( 	
-						"SELECT getProcessRecipeRights(vuserid :=?, vprocessrecipe := ? )");
+						"SELECT getProcessRecipeRights(vuserid := ?, vprocessrecipe := ? )");
 				pStmt.setInt(1,userID);
 				pStmt.setInt(2,recipeID);
 				privilege = dBconn.getSingleStringValue(pStmt);
-				pStmt.close();
 				
 				if (privilege.equals("w")){
 					
@@ -53,9 +52,7 @@ public class DeleteProcessRecipe extends HttpServlet {
 				    pStmt = dBconn.conn.prepareStatement(	
 					        	"SELECT name FROM processrecipes WHERE id = ?");
 					pStmt.setInt(1,recipeID);
-					stringkey = dBconn.getSingleIntValue(pStmt);
-					pStmt.close();
-							
+					stringkey = dBconn.getSingleIntValue(pStmt);							
 			 		
 					// delete the processrecipe
 			        pStmt = dBconn.conn.prepareStatement(	
@@ -77,28 +74,23 @@ public class DeleteProcessRecipe extends HttpServlet {
 		 	}
 	    } catch (SQLException eS) {
 			System.err.println("DeleteProcessRecipe: SQL Error");
-			status="error: SQL error";
+			status = "error: SQL error";
 			eS.printStackTrace();
 		} catch (Exception e) {
 			System.err.println("DeleteProcessRecipe: Some Error, probably JSON");
-			status="error: JSON error";
+			status = "error: JSON error";
 			e.printStackTrace();
 		} finally {
-		try{	
-	         
+			try{	
 	    	   if (dBconn.conn != null) { 
 	    		   dBconn.closeDB();  // close the database 
 	    	   }
 	        } catch (Exception e) {
-				status="error: error closing the database";
+				status = "error: error closing the database";
 				System.err.println("DeleteProcessRecipe: Some Error closing the database");
 				e.printStackTrace();
 		   	}
         }
 	    Unidatoolkit.sendStandardAnswer(status, response);
-
-		
 	}
-
-
 }

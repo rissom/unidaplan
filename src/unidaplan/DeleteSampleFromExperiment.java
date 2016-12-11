@@ -22,11 +22,11 @@ import org.json.JSONObject;
 		Authentificator authentificator = new Authentificator();
 	   	String privilege = "n";
 	   	PreparedStatement pStmt = null;
-		int userID=authentificator.GetUserID(request,response);
+		int userID = authentificator.GetUserID(request,response);
 		request.setCharacterEncoding("utf-8");
-	    int id=0;
+	    int id = 0;
 	  	  	try{
-	  	  		id=Integer.parseInt(request.getParameter("id")); 
+	  	  		id = Integer.parseInt(request.getParameter("id")); 
 	  	  	}
 	  	  	catch (Exception e1) {
 	  	  		System.err.print("DeleteSampleFromExperiment: no user ID given!");
@@ -40,9 +40,9 @@ import org.json.JSONObject;
 		    
 		    // Check privileges
 		    pStmt = dBconn.conn.prepareStatement( 	
-					"SELECT getExperimentRights(vuserid:=?,vexperimentid:=?)");
-			pStmt.setInt(1,userID);
-			pStmt.setInt(2,id);
+					"SELECT getExperimentRights(vuserid := ?, vexperimentid := ?)");
+			pStmt.setInt(1, userID);
+			pStmt.setInt(2, id);
 			privilege = dBconn.getSingleStringValue(pStmt);
 			pStmt.close();
 			
@@ -51,14 +51,14 @@ import org.json.JSONObject;
 			
 			    // decrease positions behind the sample to delete
 			    pStmt = dBconn.conn.prepareStatement(    		
-		    		"UPDATE expp_samples SET position = position - 1 "
-		    		+"WHERE expp_id=(SELECT expp_id FROM expp_samples WHERE id=?) "
-		    		+" AND position>(SELECT position FROM expp_samples WHERE id=?)");
+			    		"UPDATE expp_samples SET position = position - 1 "
+		    		  + "WHERE expp_id = (SELECT expp_id FROM expp_samples WHERE id = ?) "
+		    		  + "  AND position > (SELECT position FROM expp_samples WHERE id = ?)");
 		    	pStmt.setInt(1,id);
 		    	pStmt.setInt(2,id);
 		    	pStmt.executeUpdate();
-				pStmt= dBconn.conn.prepareStatement( 			
-						"DELETE FROM expp_samples WHERE id=?");
+				pStmt = dBconn.conn.prepareStatement( 			
+						"DELETE FROM expp_samples WHERE id = ?");
 			   	pStmt.setInt(1, id);
 			   	pStmt.executeUpdate();
 				pStmt.close();
@@ -69,10 +69,10 @@ import org.json.JSONObject;
 			
 		} catch (SQLException e) {
 			System.err.println("DeleteSampleFromExperiment: Problems with SQL query");
-			status="SQL Error; DeleteSampleFromExperiment";
+			status = "SQL Error; DeleteSampleFromExperiment";
 		} catch (Exception e) {
 			System.err.println("DeleteSampleFromExperiment: Strange Problems");
-			status="Error DeleteSampleFromExperiment";
+			status = "Error DeleteSampleFromExperiment";
 		}	
 		
 	    // tell client that everything is fine

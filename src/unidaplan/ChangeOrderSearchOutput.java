@@ -20,12 +20,12 @@ import org.json.JSONObject;
 	      throws ServletException, IOException {
 		
 		Authentificator authentificator = new Authentificator();
-		String status="ok";
-		int userID=authentificator.GetUserID(request,response);
+		String status = "ok";
+		int userID = authentificator.GetUserID(request,response);
 	    request.setCharacterEncoding("utf-8");
 	    int searchID = 0;
-	   	String privilege="n";
-	    String table="";
+	   	String privilege = "n";
+	    String table = "";
 	    String type = "";
 	    PreparedStatement pStmt = null;
 	    JSONObject  jsonIn = null;
@@ -48,9 +48,9 @@ import org.json.JSONObject;
 		    dBconn.startDB();	
 		    
 		    switch (type) {
-			    case "o"  : table="osearchoutput";  break;
-			    case "p"  : table="psearchoutput";  break;
-			    case "po" : table="posearchoutput"; break;
+			    case "o"  : table = "osearchoutput";  break;
+			    case "p"  : table = "psearchoutput";  break;
+			    case "po" : table = "posearchoutput"; break;
 		    }		    
 
 		    // Check privileges
@@ -59,23 +59,19 @@ import org.json.JSONObject;
 					"SELECT search FROM "+table+" WHERE id=?");
 			pStmt.setInt(1,outputid);
 			searchID = dBconn.getSingleIntValue(pStmt);
-			pStmt.close();
 		    
 		    pStmt = dBconn.conn.prepareStatement( 	
 					"SELECT getExperimentRights(vuserid:=?,vexperimentid:=?)");
 			pStmt.setInt(1,userID);
 			pStmt.setInt(2,searchID);
 			privilege = dBconn.getSingleStringValue(pStmt);
-			pStmt.close();
 						
 			if (privilege.equals("w")){
-		    
-		   
 			   
-		    	for (int i=0;i<output.length();i++){
+		    	for (int i = 0; i < output.length(); i++){
 		    		JSONObject parameter = output.getJSONObject(i);
 		    		pStmt= dBconn.conn.prepareStatement( 			
-							 "UPDATE "+table+" SET (position,lastuser)=(?,?) WHERE id=?");
+							 "UPDATE " + table + " SET (position,lastuser) = (?,?) WHERE id = ?");
 				   	pStmt.setInt(1, parameter.getInt("position"));
 				   	pStmt.setInt(2, userID);
 				   	pStmt.setInt(3, parameter.getInt("outputid"));

@@ -51,7 +51,7 @@ public class SampleTypeParamGrps extends HttpServlet {
 		 	dBconn.startDB();
 		 	
 		 	// check if admin
-		 	if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+		 	if (dBconn.isAdmin(userID)){
 		 	
 	 			pStmt = dBconn.conn.prepareStatement(	
 				   "SELECT "

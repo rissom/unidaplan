@@ -56,7 +56,7 @@ public class UpdateUserData extends HttpServlet {
 			    PreparedStatement pStmt = null;
 			    dBconn.startDB();
 			    
-			  	if (dataUserID==userID || Unidatoolkit.userHasAdminRights(userID, dBconn)){
+			  	if (dataUserID==userID || dBconn.isAdmin(userID)){
 
 				    
 				    // update preferred language

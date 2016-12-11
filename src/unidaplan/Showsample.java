@@ -564,20 +564,22 @@ public class Showsample extends HttpServlet {
 				System.err.println("Showsample: Strange Problem while getting deletable");
 			}
 				
-			try{
-		        jsSample.put("strings", dBconn.getStrings(stringkeys));
-	    	} catch (JSONException e) {
-				System.err.println("Showsample: JSON Problem while getting Stringkeys");
-	    	} catch (Exception e2) {
-				System.err.println("Showsample: Strange Problem while getting Stringkeys");
-	    	}
-	    }
-		out.println(jsSample.toString());
-		} else {
-			String status = "insufficient rights";
-			response.setStatus(401);
-			Unidatoolkit.sendStandardAnswer(status, response);
+				try{
+			        jsSample.put("strings", dBconn.getStrings(stringkeys));
+		    	} catch (JSONException e) {
+					System.err.println("Showsample: JSON Problem while getting Stringkeys");
+		    	} catch (Exception e2) {
+					System.err.println("Showsample: Strange Problem while getting Stringkeys");
+		    	}
+		    }
+				dBconn.closeDB();
+				out.println(jsSample.toString());
+			} else {
+				dBconn.closeDB();
+				String status = "insufficient rights";
+				response.setStatus(401);
+				Unidatoolkit.sendStandardAnswer(status, response);
+			}
 		}
-		dBconn.closeDB();}
   	} 
 }

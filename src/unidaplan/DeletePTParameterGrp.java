@@ -23,23 +23,23 @@ import javax.servlet.http.HttpServletResponse;
 
 		
 		request.setCharacterEncoding("utf-8");
-	    String status="ok";
-	    int id=0;
+	    String status = "ok";
+	    int id = 0;
 	  	  try  {
 	   		 id=Integer.parseInt(request.getParameter("id")); 
 	       }
 	   	  catch (Exception e1) {
 	   		System.err.print("DeletePTParameterGrp: no parametergroup ID given!");
-	   		status="no parametergroup";
+	   		status = "no parametergroup";
 	   	  }
 
 
 	    try {
 		    // Delete the user to the database	    
-		 	dBconn=new DBconnection();
+		 	dBconn = new DBconnection();
 		    dBconn.startDB();	   
-		    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
-				pStmt= dBconn.conn.prepareStatement( 			
+		    if (dBconn.isAdmin(userID)){
+				pStmt = dBconn.conn.prepareStatement( 			
 						"DELETE FROM p_parametergrps WHERE id=? \n");
 			   	pStmt.setInt(1, id);
 			   	pStmt.executeUpdate();

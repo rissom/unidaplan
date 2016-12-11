@@ -15,17 +15,6 @@ import org.json.JSONObject;
 public class ExchangePosPTSRParameter extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public ExchangePosPTSRParameter() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
-
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		Authentificator authentificator = new Authentificator();
@@ -34,7 +23,7 @@ public class ExchangePosPTSRParameter extends HttpServlet {
 	    response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
 		String in = request.getReader().readLine();
-	    String status="ok";
+	    String status = "ok";
 	    
 		PreparedStatement pStmt = null; 	// Declare variables
 		int paramGrpID1 = 0;
@@ -54,7 +43,7 @@ public class ExchangePosPTSRParameter extends HttpServlet {
 			pos2 = jsonIn.getInt("pos2");
 		} catch (JSONException e) {
 			System.err.println("ExchangePosPTSRParameter: Input is not valid JSON");
-			status="error:invalid json";
+			status = "error:invalid json";
 		}
 
 	 	
@@ -62,7 +51,7 @@ public class ExchangePosPTSRParameter extends HttpServlet {
 	    try {
 		 	dBconn.startDB();
 
-			if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+			if (dBconn.isAdmin(userID)){
 
 				// set new position id for PG 1.
 		        pStmt = dBconn.conn.prepareStatement(	
@@ -110,5 +99,6 @@ public class ExchangePosPTSRParameter extends HttpServlet {
 	    
 	    Unidatoolkit.sendStandardAnswer(status, response);
 
-}}
+	}
+}
 

@@ -20,29 +20,29 @@ import org.json.JSONObject;
 	      throws ServletException, IOException {		
 	    
 		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
+		int userID = authentificator.GetUserID(request,response);
 	    PreparedStatement pStmt = null;
-	   	String privilege="n";
-	    int experimentID=0;
-	    int position=0;
-	    int sampleID=0;
+	   	String privilege = "n";
+	    int experimentID = 0;
+	    int position = 0;
+	    int sampleID = 0;
 
 		request.setCharacterEncoding("utf-8");
 
 
 	  	  	try{
-	  	  		experimentID=Integer.parseInt(request.getParameter("experimentid")); 
-	  	  		position=Integer.parseInt(request.getParameter("position")); 
-	  	  		sampleID=Integer.parseInt(request.getParameter("sampleid")); 
+	  	  		experimentID = Integer.parseInt(request.getParameter("experimentid")); 
+	  	  		position = Integer.parseInt(request.getParameter("position")); 
+	  	  		sampleID = Integer.parseInt(request.getParameter("sampleid")); 
 	  	  	}
 	  	  	catch (Exception e1) {
 	  	  		System.err.print("AddSampleToExperiment: Parameters missing!");
 	  	  	}
-	    String status="ok";
+	    String status = "ok";
 
 	    try {
 		    // Delete the user to the database	    
-		 	DBconnection dBconn=new DBconnection();
+		 	DBconnection dBconn = new DBconnection();
 		    dBconn.startDB();	   
 		    
 		    
@@ -53,7 +53,6 @@ import org.json.JSONObject;
 			pStmt.setInt(1,userID);
 			pStmt.setInt(2,experimentID);
 			privilege = dBconn.getSingleStringValue(pStmt);
-			pStmt.close();
 		    
 			if (privilege.equals("w")){
 		    

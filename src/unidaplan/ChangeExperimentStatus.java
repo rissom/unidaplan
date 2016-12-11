@@ -19,22 +19,22 @@ public class ChangeExperimentStatus extends HttpServlet {
 			
 			Authentificator authentificator = new Authentificator();
 		    PreparedStatement pStmt = null;
-		   	String privilege="n";
-			int userID=authentificator.GetUserID(request,response);
+		   	String privilege = "n";
+			int userID = authentificator.GetUserID(request,response);
 
-			String status="ok";
+			String status = "ok";
 		    request.setCharacterEncoding("utf-8");
 		    // look up the datatype in Database	    
-		    int experimentID=-1;
-		    int processstatus=-1;
+		    int experimentID = -1;
+		    int processstatus = -1;
 		  	try {
-		   		 experimentID=Integer.parseInt(request.getParameter("id")); 
+		   		 experimentID = Integer.parseInt(request.getParameter("id")); 
 		    } catch (Exception e1) {
 		   		System.err.println("no experiment ID given!");
 				response.setStatus(404);
 		   	}
 		    try {
-		    	processstatus=Integer.parseInt(request.getParameter("status")); 
+		    	processstatus = Integer.parseInt(request.getParameter("status")); 
 			} catch (Exception e1) {
 		   		System.err.println("no status given!");
 		   		status="no status given!";
@@ -44,7 +44,7 @@ public class ChangeExperimentStatus extends HttpServlet {
 
 			try {	
 				// Connect to database
-			 	DBconnection dBconn=new DBconnection();
+			 	DBconnection dBconn = new DBconnection();
 			    dBconn.startDB();	   
 			    
 			    // Check privileges
@@ -53,11 +53,10 @@ public class ChangeExperimentStatus extends HttpServlet {
 				pStmt.setInt(1,userID);
 				pStmt.setInt(2,experimentID);
 				privilege = dBconn.getSingleStringValue(pStmt);
-				pStmt.close();
 				
 				if (privilege.equals("w")){
 			    
-					pStmt= dBconn.conn.prepareStatement( 			
+					pStmt = dBconn.conn.prepareStatement( 			
 							 "UPDATE experiments SET status=? WHERE id=?");
 				   	pStmt.setInt(2, experimentID);
 				   	pStmt.setInt(1, processstatus);
@@ -69,11 +68,11 @@ public class ChangeExperimentStatus extends HttpServlet {
 				dBconn.closeDB();
 			} catch (SQLException e) {
 				System.err.println("SaveSampleParameter: Problems with SQL query");
-				status="SaveSampleParameter: Problems with SQL query";
+				status = "SaveSampleParameter: Problems with SQL query";
 				response.setStatus(404);
 			} catch (Exception e) {
 				System.err.println("SaveSampleParameter: Strange Problems");
-				status="SaveSampleParameter: Strange Problems";
+				status = "SaveSampleParameter: Strange Problems";
 				response.setStatus(404);
 			}
 			

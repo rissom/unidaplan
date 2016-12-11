@@ -21,7 +21,7 @@ import org.json.JSONObject;
 		
 	
 		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
+		int userID = authentificator.GetUserID(request,response);
 		int id = -1;
 	    PreparedStatement pStmt = null;
 		String status = "ok";
@@ -39,7 +39,7 @@ import org.json.JSONObject;
 			jsonIn = new JSONObject(in);
 		} catch (JSONException e) {
 			System.err.println("AddProcessType: Input is not valid JSON");
-			status="input error";
+			status = "input error";
 		}
 	    
 	    // get the sampletypeID
@@ -57,7 +57,7 @@ import org.json.JSONObject;
 
 	    
 	    // create entry in the database	    
-	 	DBconnection dBconn=new DBconnection();
+	 	DBconnection dBconn = new DBconnection();
 	 	
 		try {
 		    dBconn.startDB();	 
@@ -68,7 +68,6 @@ import org.json.JSONObject;
 			pStmt.setInt(1,userID);
 			pStmt.setInt(2,sampletypeID);
 			privilege = dBconn.getSingleStringValue(pStmt);
-			pStmt.close();
 
 			if (privilege.equals("w")){	 	
   
@@ -80,7 +79,6 @@ import org.json.JSONObject;
 			   	pStmt.setInt(2, userID);
 			   	pStmt.setInt(3, userID);
 				id = dBconn.getSingleIntValue(pStmt);
-			   	pStmt.close();
 			
 				// find the current maximum of sample name parameters
 				pStmt = dBconn.conn.prepareStatement( 	
@@ -95,7 +93,6 @@ import org.json.JSONObject;
 			   	if (answer.length() > 0){
 			   		lastSampleID = answer.getInt("id");
 			   	} 
-				pStmt.close();
 				
 				JSONArray lastTitleIntParameters = null;
 				
@@ -113,7 +110,6 @@ import org.json.JSONObject;
 							+ "ORDER BY pos DESC");
 				   	pStmt.setInt(1, lastSampleID);
 				   	lastTitleIntParameters = dBconn.jsonArrayFromPreparedStmt(pStmt);
-					pStmt.close();
 
 				} else {
 					// List of titleparameters without any values.
@@ -126,7 +122,6 @@ import org.json.JSONObject;
 							+ "ORDER BY pos DESC");
 					pStmt.setInt(1, sampletypeID);
 				   	lastTitleIntParameters = dBconn.jsonArrayFromPreparedStmt(pStmt);
-					pStmt.close();
 				}
 				Boolean intParameterExists = false;
 
@@ -169,11 +164,10 @@ import org.json.JSONObject;
 					+ "ORDER BY pos DESC");
 			   	pStmt.setInt(1, lastSampleID);
 			   	JSONArray lastTitleStrParameters = dBconn.jsonArrayFromPreparedStmt(pStmt);
-				pStmt.close();
 				
 				
 				// copy old string parameters and increase replace the last string parameter
-		        for (int i=0; i<lastTitleStrParameters.length();i++){   
+		        for (int i=0; i<lastTitleStrParameters.length(); i++){   
 		        	JSONObject parameter=(JSONObject) lastTitleStrParameters.get(i);
 		        	pStmt = dBconn.conn.prepareStatement(
 		        			  "INSERT INTO sampledata (objectid, ot_parameter_id, data, lastuser)"
@@ -181,9 +175,6 @@ import org.json.JSONObject;
 		        	pStmt.setInt(1, id);
 		        	pStmt.setInt(2, parameter.getInt("id"));
 		        	JSONObject data = null;
-//		        	System.out.println("intParameterExists: " + intParameterExists);
-//		        	System.out.println("i: "+i);
-//		        	System.out.println("lastTitleStrParameters.length: "+lastTitleStrParameters.length());
 		        	if (!intParameterExists && i+1 == lastTitleStrParameters.length()){
 		        		data = new JSONObject();
 		        		data.put("value", "new");
@@ -213,6 +204,7 @@ import org.json.JSONObject;
 			   	   	pStmt.setInt(2, userID);
 			   	   	pStmt.setInt(3, recipe);
 		   	   		pStmt.executeUpdate();
+		   	   		pStmt.close();
 	   	   		}
 		        
 		        

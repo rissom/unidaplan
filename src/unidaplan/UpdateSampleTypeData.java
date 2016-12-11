@@ -47,7 +47,7 @@ import org.json.JSONObject;
 
 	    try {
 		    dBconn.startDB();
-		    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){		    
+		    if ( dBconn.isAdmin(userID) ){		    
 
 				objectTypeID = jsonIn.getInt("sampletypeid");
 				String field = jsonIn.getString("field");

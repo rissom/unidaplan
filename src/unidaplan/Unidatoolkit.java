@@ -144,45 +144,6 @@ public class Unidatoolkit {
     	return answer;
     }
     
-    
-    public static Boolean userHasAdminRights (int userID, DBconnection dBconn){
-    	Boolean answer=false;
-    	Boolean blocked=true;
-
-    	try {		
-    		
-    		if (userID>0) {
-    			
-		    	// check if user is member of group admins
-        		PreparedStatement pStmt = null;
-        		
-        		pStmt = dBconn.conn.prepareStatement(
-    			       	"SELECT blocked FROM users WHERE id=?");
-				pStmt.setInt(1,userID);
-				blocked = dBconn.getSingleBooleanValue(pStmt);
-				pStmt.close();
-        		
-				if (!blocked){
-					pStmt = dBconn.conn.prepareStatement(
-				       	"SELECT count(userid)>0 FROM groupmemberships WHERE groupID=1 AND userid=?");
-					pStmt.setInt(1,userID);
-					answer = dBconn.getSingleBooleanValue(pStmt);
-					pStmt.close();
-				}
-				
-    		} else{
-    			System.err.println("Unidatoolkit:hasAdminRights: No userid given.");
-    		}
-			
-		} catch (SQLException e) {
-			System.err.println("SQL-Error copying Strings");
-			e.printStackTrace();
-		} catch (Exception e) {
-			System.err.println("Misc error copying Strings");
-			e.printStackTrace();
-		}
-    	return answer;
-    }
 
 
 }

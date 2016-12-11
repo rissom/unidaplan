@@ -30,7 +30,7 @@ public class DeleteParameter extends HttpServlet {
 		request.setCharacterEncoding("utf-8");
 	    response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
-	    String status="ok";
+	    String status = "ok";
 		int processID;
 
 	
@@ -41,7 +41,7 @@ public class DeleteParameter extends HttpServlet {
 		catch (Exception e1) {
 			processID = -1;
 			System.err.print("DeleteParameter: no process ID given!");
-			status="error: no process ID";
+			status = "error: no process ID";
 		}
 	 	
 		
@@ -50,7 +50,7 @@ public class DeleteParameter extends HttpServlet {
 		 	DBconnection dBconn = new DBconnection(); // New connection to the database
 		 	dBconn.startDB();
 		 	
-			if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+			if (dBconn.isAdmin(userID)){
 		 	
 			 	if (processID > 0){			
 					// delete the process

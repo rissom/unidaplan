@@ -18,46 +18,45 @@ public class DeleteExperiment extends HttpServlet {
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
+		int userID = authentificator.GetUserID(request,response);
 		request.setCharacterEncoding("utf-8");
-	    String status="ok";
-		int experimentID=-1;
+	    String status = "ok";
+		int experimentID = -1;
 		String privilege = "n";
 
 
 	 	
 		// get Parameter for id
 		try{
-			 experimentID=Integer.parseInt(request.getParameter("id")); }
+			 experimentID = Integer.parseInt(request.getParameter("id")); }
 		catch (Exception e1) {
-			experimentID=-1;
+			experimentID = -1;
 			System.err.print("Delete Experiment: no experiment ID given!");
-			status="error: no experiment ID";
+			status = "error: no experiment ID";
 		}
 	 	
 		
 	    try {
 			PreparedStatement pStmt = null; 	// Declare variables
-		 	DBconnection dBconn=new DBconnection(); // New connection to the database
+		 	DBconnection dBconn = new DBconnection(); // New connection to the database
 		 	dBconn.startDB();
 		 	
 		 	
 		 	
-		 	if (experimentID>0){	
+		 	if ( experimentID > 0 ){	
 		 		
 		 		// check privileges
 			    pStmt = dBconn.conn.prepareStatement( 	
 						"SELECT getExperimentRights(vuserid:=?,vexperimentid:=?)");
-				pStmt.setInt(1,userID);
-				pStmt.setInt(2,experimentID);
+				pStmt.setInt(1, userID);
+				pStmt.setInt(2, experimentID);
 				privilege = dBconn.getSingleStringValue(pStmt);
-				pStmt.close();
 			    
 				if (privilege.equals("w")){
 				  
 					// delete the experiment
 			        pStmt = dBconn.conn.prepareStatement(	
-			        	"DELETE FROM experiments WHERE id=?");
+			        	"DELETE FROM experiments WHERE id = ?");
 					pStmt.setInt(1,experimentID);
 					pStmt.executeUpdate();
 					pStmt.close();
@@ -67,18 +66,13 @@ public class DeleteExperiment extends HttpServlet {
 
 	    } catch (SQLException eS) {
 			System.err.println("Delete Experiment: SQL Error");
-			status="error: SQL error";
+			status = "error: SQL error";
 			response.setStatus(404);
 		} catch (Exception e) {
 			System.err.println("Delete Experiment: Some Error, probably JSON");
-			status="error: JSON error";
+			status = "error: JSON error";
 			response.setStatus(404);
 		}
-	    
-	    
 	    Unidatoolkit.sendStandardAnswer(status, response);
-
 	}
-
-
 }

@@ -18,8 +18,8 @@ import org.json.JSONObject;
 	  public void doPost(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {		
 		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
-		String status="ok";
+		int userID = authentificator.GetUserID(request,response);
+		String status = "ok";
 	    request.setCharacterEncoding("utf-8");
 	    PreparedStatement pStmt = null;
 	    String in = request.getReader().readLine();
@@ -29,7 +29,7 @@ import org.json.JSONObject;
 			jsonIn = new JSONObject(in);
 		} catch (JSONException e) {
 			System.err.println("AddProcessType: Input is not valid JSON");
-			status="input error";
+			status = "input error";
 		}
 		response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
@@ -65,15 +65,15 @@ import org.json.JSONObject;
 		    	if (jsonIn.has("description")){
 		    		JSONObject description=jsonIn.getJSONObject("description");
 		    		String [] descriptions = JSONObject.getNames(description);
-		    		if (descriptions!=null && descriptions.length>0){
-		    			stringKeyDesc=dBconn.createNewStringKey(description.getString(descriptions[0]));
+		    		if (descriptions != null && descriptions.length > 0){
+		    			stringKeyDesc = dBconn.createNewStringKey(description.getString(descriptions[0]));
 		    			for (int i=0; i<descriptions.length; i++){
 		    				dBconn.addString(stringKeyDesc,descriptions[i],description.getString(descriptions[i]));
 		    			} 
 		    		}
 		    	}
 				if (jsonIn.has("position")){
-					position=jsonIn.getInt("position");
+					position = jsonIn.getInt("position");
 				}
 				if (jsonIn.has("ptgroup")){
 					ptgroup=jsonIn.getInt("ptgroup");
@@ -87,14 +87,13 @@ import org.json.JSONObject;
 				 pStmt.setInt(1, position);
 				 pStmt.setInt(2, ptgroup);
 				 pStmt.setInt(3, stringKeyName);
-			   	 if (stringKeyDesc>0){
+			   	 if ( stringKeyDesc>0 ){
 			   		pStmt.setInt(4, stringKeyDesc);
 			   	}else{
 			   		pStmt.setNull(4, java.sql.Types.INTEGER);
 			   	}
 			   	pStmt.setInt(5, userID);
-			   	id=dBconn.getSingleIntValue(pStmt);
-			   	pStmt.close();
+			   	id = dBconn.getSingleIntValue(pStmt);
 		
 //			int parameterGrp=0;
 //			pStmt= dBconn.conn.prepareStatement( 			

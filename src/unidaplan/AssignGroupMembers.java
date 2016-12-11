@@ -35,17 +35,17 @@ import org.json.JSONObject;
 		}
 		
 
-	    JSONArray members=null;// get parameters
+	    JSONArray members = null;// get parameters
 	    
 	    try {
-	         groupID=jsonIn.getInt("id");
-			 members=jsonIn.getJSONArray("members");
+	         groupID = jsonIn.getInt("id");
+			 members = jsonIn.getJSONArray("members");
 		} catch (JSONException e) {
 			System.err.println("AssignGroupMembers: Error parsing ID-Field or members");
 			response.setStatus(404);
 		}
 	    
-	 	DBconnection dBconn=new DBconnection(); // initialize database
+	 	DBconnection dBconn = new DBconnection(); // initialize database
 	    PreparedStatement pStmt = null;
 	    
 		
@@ -56,14 +56,14 @@ import org.json.JSONObject;
 
 				// delete old entries
 				pStmt = dBconn.conn.prepareStatement(
-						"DELETE FROM groupmemberships WHERE groupid=?");
+						"DELETE FROM groupmemberships WHERE groupid = ?");
 				pStmt.setInt(1,groupID);
 				pStmt.executeUpdate();
 				pStmt.close();
 				
 			
 				// Insert new members into database
-				if (members.length()>0){
+				if (members.length() > 0){
 					pStmt = dBconn.conn.prepareStatement( 			
 							 "INSERT INTO groupmemberships (groupid, userid,lastchange,lastuser) VALUES (?,?,NOW(),?)");
 					for (int i=0;i<members.length();i++){

@@ -23,7 +23,7 @@ public class DeleteFile extends HttpServlet {
         throws ServletException, IOException {
 		
 		Authentificator authentificator = new Authentificator();
-	 	DBconnection dBconn=new DBconnection();
+	 	DBconnection dBconn = new DBconnection();
 		PreparedStatement pStmt;
 		int fileID;
 
@@ -32,36 +32,36 @@ public class DeleteFile extends HttpServlet {
 	 		dBconn.startDB();
 			int userID = authentificator.GetUserID(request,response);
 			fileID = Integer.parseInt(request.getParameter("fileid"));
-		    String privilege="n";
+		    String privilege = "n";
 
 			// Check priveleges 
 		    if (Unidatoolkit.isMemberOfGroup(userID, 1, dBconn)){
-		    	privilege="w";
+		    	privilege = "w";
 		    } else {
-				pStmt= dBconn.conn.prepareStatement( 	
+				pStmt = dBconn.conn.prepareStatement( 	
 						"SELECT sample,process FROM files WHERE files.id=?");
 		 		pStmt.setInt(1, fileID);
 		 		JSONObject fileData = dBconn.jsonObjectFromPreparedStmt(pStmt);
-		 		String query="";
-		 		String type="";
+		 		String query = "";
+		 		String type = "";
 		 		if (fileData.has("sample")){
-		 			type = "sample";
-		 			query="SELECT getSampleRights(vuserid:=?,vsample:=?)";
+		 			type  = "sample";
+		 			query = "SELECT getSampleRights(vuserid := ?, vsample := ?)";
 		 		} else { // file is attached to a process
 		 			type = "process";
-		 			query="SELECT getProcessRights(vuserid:=?,vprocess:=?)";
+		 			query="SELECT getProcessRights(vuserid := ?, vprocess := ?)";
 		 		}
 		 		pStmt = dBconn.conn.prepareStatement(query);
-	 		    pStmt.setInt(1,userID);
+	 		    pStmt.setInt(1, userID);
 	 			pStmt.setInt(2, fileData.getInt(type));
-	 		    privilege=dBconn.getSingleStringValue(pStmt);
+	 		    privilege = dBconn.getSingleStringValue(pStmt);
 		 		pStmt.close();
 		    }
 			
 			// Get filename and type
 	 		if (privilege.equals("w")||privilege.equals("r")){
-		 		pStmt= dBconn.conn.prepareStatement( 	
-						"DELETE FROM files WHERE files.id=?");
+		 		pStmt = dBconn.conn.prepareStatement( 	
+						"DELETE FROM files WHERE files.id = ?");
 		 		pStmt.setInt(1, fileID);
 		 		pStmt.executeUpdate();
 		 		

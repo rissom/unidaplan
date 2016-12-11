@@ -31,14 +31,14 @@ import javax.servlet.http.HttpServletResponse;
 	   	  catch (Exception e1) {
 	   		System.err.print("DeletePTSRParameter: no parameter ID given!");
 	   	  }
-	    String status="ok";
+	    String status = "ok";
 
 	    try {
 		    // Delete the parameter
-		 	dBconn=new DBconnection();
+		 	dBconn = new DBconnection();
 		    dBconn.startDB();	   
 		    
-			if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+			if (dBconn.isAdmin(userID)){
 				pStmt = dBconn.conn.prepareStatement(
 						 "DELETE FROM po_parameters WHERE id=? ");
 			   	pStmt.setInt(1, id);
@@ -50,10 +50,10 @@ import javax.servlet.http.HttpServletResponse;
 		
 		} catch (SQLException e) {
 			System.err.println("DeletePTSRParameter: Problems with SQL query");
-			status="SQL Error; DeletePTSRParameter";
+			status = "SQL Error; DeletePTSRParameter";
 		} catch (Exception e) {
 			System.err.println("DeletePTSRParameter: Strange Problems");
-			status="Error DeletePTSRParameter";
+			status = "Error DeletePTSRParameter";
 		}	
 		dBconn.closeDB();
 

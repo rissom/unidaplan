@@ -52,19 +52,11 @@ import org.json.JSONObject;
 	    
 	    try{ 
 		    dBconn.startDB();	   
-	    } catch (SQLException e) {
-			System.err.println("UpdateParameter: Problems initializing Database");
-			status="SQL error";
-		} catch (Exception e) {
-			System.err.println("UpdateParameter: Problems initializing Database");
-			status="SQL error";
-			e.printStackTrace();
-		}
 	    
-	    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
-	    
-			if (jsonIn.has("datatype")){
-				try {
+		    if (dBconn.isAdmin(userID)){
+		    
+				if (jsonIn.has("datatype")){
+				
 					String datatype = jsonIn.getString("datatype");
 					int dt = 0;
 					for (int i = 0; i < Unidatoolkit.Datatypes.length; i++){
@@ -78,26 +70,13 @@ import org.json.JSONObject;
 					pStmt.setInt(2,parameterID);				
 					pStmt.executeUpdate();
 					pStmt.close();	
-				} catch (SQLException e){
-					System.err.println("UpdateParameter: SQL error reading format field");
-					status="SQL error, format field";
-				}catch(JSONException e) {
-					System.err.println("UpdateParameter: JSON error reading format field");
-					status="JSON error, format field";
+				
 				}
-			}
-		    
-	
-			if (jsonIn.has("name")){
-			    try{
+			    
+		
+				if (jsonIn.has("name")){
 					 newName = jsonIn.getJSONObject("name");
-				} catch (JSONException e) {
-					System.err.println("UpdateParameter: Error parsing ID-Field or comment");
-					e.printStackTrace();
-					response.setStatus(404);
-				}
-			   
-				try {
+
 					// find the stringkey
 					pStmt = dBconn.conn.prepareStatement(
 							"SELECT stringkeyname FROM paramdef WHERE id = ?");
@@ -128,20 +107,10 @@ import org.json.JSONObject;
 						pStmt.executeUpdate();
 						pStmt.close();
 					}
-					
-				} catch (SQLException e) {
-					System.err.println("UpdateParameter: Problems with SQL query");
-					status = "SQL error";
-				} catch (Exception e) {
-					System.err.println("UpdateParameter: some error occured");
-					e.printStackTrace();
-					status = "misc error";
 				}
-			}
-			
-			
-			if (jsonIn.has("description")){
-			    try{
+				
+				
+				if (jsonIn.has("description")){
 					newDesc = jsonIn.getJSONObject("description");
 					String[] descriptions = JSONObject.getNames(newDesc);
 	
@@ -185,24 +154,16 @@ import org.json.JSONObject;
 						pStmt.executeUpdate();
 						pStmt.close();
 					}
-				} catch (SQLException e) {
-					System.err.println("UpdateParameter: Problems with SQL query");
-					status="SQL error";
-				} catch (Exception e) {
-					System.err.println("UpdateParameter: some error occured");
-					e.printStackTrace();
-					status="misc error";
 				}
-			}
 			
+				
 			
-			if (jsonIn.has("unit")){
-			    try{
+				if (jsonIn.has("unit")){
 					newUnit = jsonIn.getJSONObject("unit");
 					String[] units = JSONObject.getNames(newUnit);
 	
 					// find the stringkey
-					pStmt=dBconn.conn.prepareStatement(
+					pStmt = dBconn.conn.prepareStatement(
 							"SELECT stringkeyunit FROM paramdef WHERE id = ?");
 					pStmt.setInt(1,parameterID);
 					int unitKey = dBconn.getSingleIntValue(pStmt);
@@ -218,10 +179,7 @@ import org.json.JSONObject;
 						pStmt.executeUpdate();
 						pStmt.close();
 					}
-					
-					
-					
-					
+				
 					// create database entries for the new units
 					for (int i = 0; i < units.length; i++){
 						
@@ -243,37 +201,22 @@ import org.json.JSONObject;
 						pStmt.executeUpdate();
 						pStmt.close();
 					}
-				} catch (SQLException e) {
-					System.err.println("UpdateParameter: Problems with SQL query");
-					status = "SQL error";
-				} catch (Exception e) {
-					System.err.println("UpdateParameter: some error occured");
-					e.printStackTrace();
-					status = "misc error";
 				}
-			}
-			
-			
-			if (jsonIn.has("regex")){
-				try {
+					
+				
+				
+					
+				if (jsonIn.has("regex")){
 					pStmt = dBconn.conn.prepareStatement(
 							"UPDATE paramdef SET regex=? WHERE id=?");
 					pStmt.setString(1, jsonIn.getString("regex"));
 					pStmt.setInt(2,parameterID);				
 					pStmt.executeUpdate();
 					pStmt.close();	
-				} catch (SQLException e){
-					System.err.println("UpdateParameter: SQL error reading regex field");
-					status = "SQL error, compulsory field";
-				}catch(JSONException e) {
-					System.err.println("UpdateParameter: JSON error reading regex field");
-					status = "JSON error, regex field";
 				}
-			}
-			
-			
-			if (jsonIn.has("min")){
-				try {
+				
+				
+				if (jsonIn.has("min")){
 					pStmt = dBconn.conn.prepareStatement(
 							"UPDATE paramdef SET min=? WHERE id=?");
 					if (jsonIn.optString("min").equals("")){
@@ -284,18 +227,9 @@ import org.json.JSONObject;
 					pStmt.setInt(2,parameterID);				
 					pStmt.executeUpdate();
 					pStmt.close();	
-				} catch (SQLException e){
-					System.err.println("UpdateParameter: SQL error reading min field");
-					status = "SQL error, min field";
-				}catch(JSONException e) {
-					System.err.println("UpdateParameter: JSON error reading min field");
-					status = "JSON error, min field";
-					e.printStackTrace();
 				}
-			}
-	
-			if (jsonIn.has("max")){
-				try {
+		
+				if (jsonIn.has("max")){
 					pStmt=dBconn.conn.prepareStatement(
 							"UPDATE paramdef SET max=? WHERE id=?");
 					if (jsonIn.optString("max").equals("")){
@@ -306,38 +240,30 @@ import org.json.JSONObject;
 					pStmt.setInt(2,parameterID);				
 					pStmt.executeUpdate();
 					pStmt.close();	
-				} catch (SQLException e){
-					System.err.println("UpdateParameter: SQL error reading max field");
-					status="SQL error, max field";
-				}catch(JSONException e) {
-					System.err.println("UpdateParameter: JSON error reading max field");
-					status="JSON error, max field";
 				}
-			}
-		
-			if (jsonIn.has("format")){
-				try {
+			
+				if (jsonIn.has("format")){
 					pStmt = dBconn.conn.prepareStatement(
 							"UPDATE paramdef SET format = ? WHERE id = ?");
 					pStmt.setString(1, jsonIn.getString("format"));
 					pStmt.setInt(2, parameterID);	
 					pStmt.executeUpdate();
 					pStmt.close();	
-				} catch (SQLException e){
-					System.err.println("UpdateParameter: SQL error reading format field");
-					status="SQL error, format field";
-				}catch(JSONException e) {
-					System.err.println("UpdateParameter: JSON error reading format field");
-					status="JSON error, format field";
 				}
-			}
-	    } else {
-	    	response.setStatus(401);
-	    }
-
+					
+			} else {
+				response.setStatus(401);
+			} 
+	    }catch (SQLException e) {
+			System.err.println("UpdateParameter: Problems initializing Database");
+			status="SQL error";
+		} catch (Exception e) {
+			System.err.println("UpdateParameter: Problems initializing Database");
+			status="SQL error";
+			e.printStackTrace();
+		}
 	
-	
-			dBconn.closeDB();
+		dBconn.closeDB();
 
 	    // tell client that everything is fine
 	    Unidatoolkit.sendStandardAnswer(status,response);

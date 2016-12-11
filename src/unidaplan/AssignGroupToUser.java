@@ -37,14 +37,14 @@ import org.json.JSONObject;
 	    JSONArray groups=null;// get parameters
 	    
 	    try {
-	         id=jsonIn.getInt("userid");
-	         groups=jsonIn.getJSONArray("groups");
+	         id = jsonIn.getInt("userid");
+	         groups = jsonIn.getJSONArray("groups");
 		} catch (JSONException e) {
 			System.err.println("AssignGroupToUser: Error parsing user ID or groups");
 			response.setStatus(404);
 		}
 	    
-	 	DBconnection dBconn=new DBconnection(); // initialize database
+	 	DBconnection dBconn = new DBconnection(); // initialize database
 	    PreparedStatement pStmt = null;
 	    
 		
@@ -66,7 +66,7 @@ import org.json.JSONObject;
 				if (groups.length()>0){
 					pStmt= dBconn.conn.prepareStatement( 			
 							 "INSERT INTO groupmemberships (groupid,userid,lastuser) VALUES (?,?,?)");
-					for (int i=0;i<groups.length();i++){
+					for (int i=0; i < groups.length(); i++){
 						pStmt.setInt(1,groups.getInt(i));
 						pStmt.setInt(2,id);
 						pStmt.setInt(3,userID);
@@ -82,10 +82,10 @@ import org.json.JSONObject;
 			
 		} catch (SQLException e) {
 			System.err.println("AssignGroupToUser: Problems with SQL query");
-			status="SQL error";
+			status = "SQL error";
 		} catch (Exception e) {
 			System.err.println("AssignGroupToUser: some error occured");
-			status="misc error";
+			status = "misc error";
 		}
 		
 		dBconn.closeDB();

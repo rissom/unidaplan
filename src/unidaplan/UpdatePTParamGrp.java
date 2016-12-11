@@ -18,7 +18,7 @@ import org.json.JSONObject;
 	  public void doPut(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {		
 		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
+		int userID = authentificator.GetUserID(request,response);
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
 	    String status = "ok";
@@ -52,7 +52,7 @@ import org.json.JSONObject;
 		
 		try {
 		    dBconn.startDB();
-		    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){		    
+		    if (dBconn.isAdmin(userID)){		    
 
 				// find the stringkey
 				pStmt=dBconn.conn.prepareStatement(

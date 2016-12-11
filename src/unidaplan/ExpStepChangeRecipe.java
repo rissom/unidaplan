@@ -1,21 +1,15 @@
 package unidaplan;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+public class ExpStepChangeRecipe extends HttpServlet {
+	private static final long serialVersionUID = 1L;
 
-	public class ExpStepChangeRecipe extends HttpServlet {
-		private static final long serialVersionUID = 1L;
-
-	@SuppressWarnings("resource")
 	@Override
 	  public void doPost(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {		
@@ -54,7 +48,6 @@ import org.json.JSONObject;
 					"SELECT expp_s_id FROM exp_plan_steps WHERE id=?");
 			pStmt.setInt(1,processStepID);
 			experimentID = dBconn.getSingleIntValue(pStmt);
-			pStmt.close();
 	
 	 		// check privileges
 		    pStmt = dBconn.conn.prepareStatement( 	
@@ -62,7 +55,6 @@ import org.json.JSONObject;
 			pStmt.setInt(1,userID);
 			pStmt.setInt(2,experimentID);
 			privilege = dBconn.getSingleStringValue(pStmt);
-			pStmt.close();
 		    
 			if (privilege.equals("w")){
 				
@@ -86,7 +78,7 @@ import org.json.JSONObject;
 		} catch (Exception e) {
 			System.err.println("ExpStepChangeRecipe: Strange Problems");
 			status="Error ExpStepChangeRecipe";
-		}	
+		}
 		
 	    // tell client that everything is fine
 		Unidatoolkit.sendStandardAnswer(status, response);

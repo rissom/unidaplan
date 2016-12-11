@@ -21,17 +21,17 @@ public class DeleteSearch extends HttpServlet {
 		int userID=authentificator.GetUserID(request,response);
 		String privilege = "n";
 		request.setCharacterEncoding("utf-8");
-	    String status="ok";
-		int searchID=-1;
+	    String status = "ok";
+		int searchID = -1;
 
 	 	
 		// get the id
 		try{
-			 searchID=Integer.parseInt(request.getParameter("searchid")); }
+			 searchID = Integer.parseInt(request.getParameter("searchid")); }
 		catch (Exception e1) {
-			searchID=-1;
+			searchID = -1;
 			System.err.print("DeleteSearch: no search ID given!");
-			status="error: no search ID";
+			status = "error: no search ID";
 			response.setStatus(404);
 		}
 	 	
@@ -57,7 +57,7 @@ public class DeleteSearch extends HttpServlet {
 		 		
 					// delete the search
 			        pStmt = dBconn.conn.prepareStatement(	
-			        	"DELETE FROM searches WHERE id=?");
+			        	"DELETE FROM searches WHERE id = ?");
 					pStmt.setInt(1,searchID);
 					pStmt.executeUpdate();
 					pStmt.close();
@@ -69,18 +69,13 @@ public class DeleteSearch extends HttpServlet {
 
 	    } catch (SQLException eS) {
 			System.err.println("DeleteSearch: SQL Error");
-			status="error: SQL error";
+			status = "error: SQL error";
 			response.setStatus(404);
 		} catch (Exception e) {
 			System.err.println("DeleteSearch: Some Error, probably JSON");
-			status="error: JSON error";
+			status = "error: JSON error";
 			response.setStatus(404);
 		}
-	    
-	    
 	    Unidatoolkit.sendStandardAnswer(status, response);
-
 	}
-
-
 }

@@ -21,7 +21,7 @@ import org.json.JSONObject;
 	  public void doPost(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {		
 		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
+		int userID = authentificator.GetUserID(request,response);
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
 	    String status = "ok";
@@ -38,7 +38,7 @@ import org.json.JSONObject;
 	    response.setCharacterEncoding("utf-8");
 	    
 	    // get the sample id
-	    int sampleID=-1;
+	    int sampleID = -1;
 	    try {
 			 sampleID=jsonIn.getInt("sampleid");
 		} catch (JSONException e) {
@@ -59,38 +59,38 @@ import org.json.JSONObject;
 					"SELECT getSampleRights(vuserid:=?,vsample:=?)");
 			pStmt.setInt(1,userID);
 			pStmt.setInt(2,sampleID);
-			privilege=dBconn.getSingleStringValue(pStmt);
-			if (privilege==null){
-				privilege="n";
-			}
+			privilege = dBconn.getSingleStringValue(pStmt);
 			pStmt.close();
-		    
+			if ( privilege == null ){
+				privilege = "n";
+			}
+
 			if (privilege.equals("w")){
 				if (jsonIn.has("ancestors")){
 					JSONArray newAncestors=(JSONArray) jsonIn.get("ancestors");
 					pStmt= dBconn.conn.prepareStatement( 
 						"SELECT parent FROM originates_from WHERE child=?");
 					pStmt.setInt(1, sampleID);
-					JSONArray oldAncestors=dBconn.jsonArrayFromPreparedStmt(pStmt);
+					JSONArray oldAncestors = dBconn.jsonArrayFromPreparedStmt(pStmt);
+					pStmt.close();
 					ArrayList<Integer> assignedAncestorList = new ArrayList<Integer>();
 				 	ArrayList<Integer> newlyCreatedAncestorsList = new ArrayList<Integer>();
 				 	ArrayList<Integer> newAncestorsList = new ArrayList<Integer>();
 				 	ArrayList<Integer> AncestorsToDeleteList = new ArrayList<Integer>();
 	
 			 	// create a List of already assigned Samples
-				for (int i=0;i<oldAncestors.length();i++){ 
+				for (int i = 0; i < oldAncestors.length(); i++){ 
 					assignedAncestorList.add((Integer)((JSONObject)oldAncestors.get(i)).getInt("parent"));
 				}
 	
 			 	
 			 	// insert database entries for not already assigned samples
-				pStmt= dBconn.conn.prepareStatement( 			
+				pStmt = dBconn.conn.prepareStatement( 			
 						 "INSERT INTO originates_from VALUES(default,?,?,NOW(),?)");
-				for (int i=0;i<newAncestors.length();i++){
-					int ancestor=newAncestors.getInt(i);
+				for (int i = 0; i < newAncestors.length(); i++){
+					int ancestor = newAncestors.getInt(i);
 					newAncestorsList.add(ancestor);
 					if (!assignedAncestorList.contains(ancestor)){
-	//					newlyCreatedAncestors.put(ancestor);
 						newlyCreatedAncestorsList.add(ancestor);
 						pStmt.setInt(1, ancestor);
 						pStmt.setInt(2, sampleID);					
@@ -110,7 +110,7 @@ import org.json.JSONObject;
 				}
 	
 				// Delete the samples
-				pStmt= dBconn.conn.prepareStatement( 			
+				pStmt = dBconn.conn.prepareStatement( 			
 						 "DELETE FROM originates_from WHERE child=? AND parent=?");
 				for(Integer ancestor: AncestorsToDeleteList){
 					pStmt.setInt(1, sampleID);

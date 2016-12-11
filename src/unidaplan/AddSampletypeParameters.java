@@ -22,8 +22,8 @@ import org.json.JSONObject;
 		Authentificator authentificator = new Authentificator();
 	    PreparedStatement pStmt = null;
 		String status="ok";
-		int userID=authentificator.GetUserID(request,response);
-		int sampleTypeID=0;
+		int userID = authentificator.GetUserID(request,response);
+		int sampleTypeID = 0;
 	    JSONObject jsonIn = null;	    
 
 		
@@ -43,9 +43,9 @@ import org.json.JSONObject;
 
 	    try {
 	    	 if (jsonIn.has("parametergroupid")){
-	    		 parameterGrpID=jsonIn.getInt("parametergroupid");
+	    		 parameterGrpID = jsonIn.getInt("parametergroupid");
 	    	 } else {
-	    		 sampleTypeID=jsonIn.getInt("sampletypeid");
+	    		 sampleTypeID = jsonIn.getInt("sampletypeid");
 	    	 }
      		 ids=jsonIn.getJSONArray("parameterids");
 		} catch (JSONException e) {
@@ -59,7 +59,7 @@ import org.json.JSONObject;
 	    // add Parameters 
 		try {	
 		    // Initialize Database
-			DBconnection dBconn=new DBconnection();
+			DBconnection dBconn = new DBconnection();
 		    dBconn.startDB();
 		    
 		    //check if admin
@@ -80,9 +80,10 @@ import org.json.JSONObject;
 					   	pStmt.setInt(5, userID);
 		//				pStmt.addBatch();  // Does not work. I don't know why.
 					   	pStmt.executeUpdate();
+						pStmt.close();
 					}
 				} else {   // add Titleparameters 
-					for (int i=0; i<ids.length();i++){
+					for (int i=0; i<ids.length(); i++){
 						pStmt= dBconn.conn.prepareStatement( 			
 							 "INSERT INTO ot_parameters (objecttypesID,compulsory,id_field,hidden,pos,definition,lastuser) "
 							 + " VALUES(?,True,True,False,("
@@ -93,6 +94,7 @@ import org.json.JSONObject;
 					   	pStmt.setInt(3, ids.getInt(i));
 					   	pStmt.setInt(4, userID);
 					   	pStmt.executeUpdate();
+						pStmt.close();
 					}
 				}
 				pStmt.close();

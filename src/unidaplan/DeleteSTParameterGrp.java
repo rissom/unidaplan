@@ -17,31 +17,31 @@ import javax.servlet.http.HttpServletResponse;
 	      throws ServletException, IOException {		
 	    
 		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
+		int userID = authentificator.GetUserID(request,response);
 		
-		String status="ok";
+		String status = "ok";
 		request.setCharacterEncoding("utf-8");
-	    int id=0;
+	    int id = 0;
 	  	  try  {
-	   		 id=Integer.parseInt(request.getParameter("id")); 
+	   		 id = Integer.parseInt(request.getParameter("id")); 
 	       }
 	   	  catch (Exception e1) {
 	   		response.setStatus(404);
-	   		status="no parametergroup ID given!";
+	   		status = "no parametergroup ID given!";
 	   		System.err.print("DeleteSTParameterGrp: no parametergroup ID given!");
 	   	  }
 
 	    try {   
 	    
 		// connect to database
-	 	DBconnection dBconn=new DBconnection();
+	 	DBconnection dBconn = new DBconnection();
 	    dBconn.startDB();
 	    
-	    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+	    if (dBconn.isAdmin(userID)){
 		    // Delete the user to the database	    
 
 		    PreparedStatement pStmt = null;
-				pStmt= dBconn.conn.prepareStatement( 			
+				pStmt = dBconn.conn.prepareStatement( 			
 						"DELETE FROM ot_parametergrps WHERE id=? ");
 			   	pStmt.setInt(1, id);
 			   	pStmt.executeUpdate();
@@ -52,12 +52,12 @@ import javax.servlet.http.HttpServletResponse;
 		    }
 		} catch (SQLException e) {
 			System.err.println("DeleteSTParameterGrp: Problems with SQL query");
-			status="SQL Error; DeleteSTParameterGrp";
+			status = "SQL Error; DeleteSTParameterGrp";
 			e.printStackTrace();
 			response.setStatus(403);
 		} catch (Exception e) {
 			System.err.println("DeleteSTParameterGrp: Strange Problems");
-			status="Error DeleteSTParameterGrp";
+			status = "Error DeleteSTParameterGrp";
 			response.setStatus(403);
 		}	
 		

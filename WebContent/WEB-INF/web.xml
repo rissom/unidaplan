@@ -561,6 +561,17 @@
   </servlet-mapping>
   
   <servlet>
+    <description>Hello World</description>
+    <display-name>HelloWorld</display-name>
+    <servlet-name>HelloWorld</servlet-name>
+    <servlet-class>unidaplan.HelloWorld</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>HelloWorld</servlet-name>
+    <url-pattern>/hello-world</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
     <description>Sign Up</description>
     <display-name>SignUp</display-name>
     <servlet-name>SignUp</servlet-name>

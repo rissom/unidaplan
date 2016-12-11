@@ -19,7 +19,7 @@ public class AddProcess extends HttpServlet {
 		Authentificator authentificator = new Authentificator();
 		int userID = authentificator.GetUserID(request,response);
 		int id = -1;
-		String status="ok";
+		String status = "ok";
 	    request.setCharacterEncoding("utf-8");
 		response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
@@ -38,7 +38,7 @@ public class AddProcess extends HttpServlet {
 			jsonIn = new JSONObject(in);
 		} catch (JSONException e) {
 			System.err.println("AddProcessType: Input is not valid JSON");
-			status="input error";
+			status = "input error";
 		}
 		
 	    try {
@@ -85,7 +85,6 @@ public class AddProcess extends HttpServlet {
 			   	pStmt.setInt(1, processTypeID);
 			   	lastProcessID = dBconn.getSingleIntValue(pStmt);
 			   	if (lastProcessID < 1) { lastProcessID = 1;};
-				pStmt.close();
 	
 				// Create new database entry
 				pStmt = dBconn.conn.prepareStatement( 			
@@ -94,9 +93,7 @@ public class AddProcess extends HttpServlet {
 					   + "RETURNING id");
 			   	pStmt.setInt(1, processTypeID);
 			   	pStmt.setInt(2, userID);
-				id = dBconn.getSingleIntValue(pStmt);
-			   	pStmt.close();
-	
+				id = dBconn.getSingleIntValue(pStmt);	
 		   	
 				// write processnumber 
 		    	pStmt = dBconn.conn.prepareStatement(

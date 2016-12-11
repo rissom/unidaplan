@@ -21,20 +21,20 @@ import org.json.JSONObject;
 		// Add a processstep to an experiment
 	    
 		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
+		int userID = authentificator.GetUserID(request,response);
 		request.setCharacterEncoding("utf-8");
-	    int experimentID=0;
-	    int expProcessID=0;
+	    int experimentID = 0;
+	    int expProcessID = 0;
 	    PreparedStatement pStmt = null;
-	    String status="ok";
-	   	String privilege="n";
+	    String status = "ok";
+	   	String privilege = "n";
 
 
 
 
   	  	try{
-  	  		experimentID=Integer.parseInt(request.getParameter("expsample")); 
-  	  		expProcessID=Integer.parseInt(request.getParameter("pprocess")); 
+  	  		experimentID = Integer.parseInt(request.getParameter("expsample")); 
+  	  		expProcessID = Integer.parseInt(request.getParameter("pprocess")); 
   	  	}
   	  	catch (Exception e1) {
   	  		System.err.print("AddProcessStep: Parameters missing!");
@@ -42,7 +42,7 @@ import org.json.JSONObject;
 
 	    try {
 	    // Delete the user to the database	    
-	 	DBconnection dBconn=new DBconnection();
+	 	DBconnection dBconn = new DBconnection();
 	    dBconn.startDB();	   
 	    
 	    // Check privileges
@@ -55,7 +55,7 @@ import org.json.JSONObject;
 		
 		if (privilege.equals("w")){
 	    
-			pStmt= dBconn.conn.prepareStatement( 			
+			pStmt = dBconn.conn.prepareStatement( 			
 					"INSERT INTO exp_plan_steps VALUES(default,?,?,"+
 					"(SELECT recipe FROM exp_plan_processes WHERE exp_plan_processes.id=?),NULL,NOW(),?);");
 		   	pStmt.setInt(1, expProcessID);
@@ -70,10 +70,10 @@ import org.json.JSONObject;
 			dBconn.closeDB();
 		} catch (SQLException e) {
 			System.err.println("AddProcessStep: Problems with SQL query");
-			status="SQL Error; AddProcessStep";
+			status = "SQL Error; AddProcessStep";
 		} catch (Exception e) {
 			System.err.println("AddProcessStep: Strange Problems");
-			status="Error AddProcessStep";
+			status = "Error AddProcessStep";
 		}	
 		
 	    // tell client that everything is fine

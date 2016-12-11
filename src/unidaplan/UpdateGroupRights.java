@@ -49,7 +49,7 @@ import org.json.JSONObject;
 	 	DBconnection dBconn=new DBconnection();
 	    try{   
 		    dBconn.startDB();
-			if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+			if (dBconn.isAdmin(userID)){
 	
 			    // for sampletypes
 			    if (jsonIn.has("updatedSTrights")){

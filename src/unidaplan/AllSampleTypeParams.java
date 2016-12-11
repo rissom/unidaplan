@@ -32,32 +32,34 @@ public class AllSampleTypeParams extends HttpServlet {
 	    response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
 	    PrintWriter out = response.getWriter(); 
-	    int sampleTypeID=0;
+	    int sampleTypeID = 0;
 	  	try {
-	  		sampleTypeID=Integer.parseInt(request.getParameter("sampletypeid")); 
+	  		sampleTypeID = Integer.parseInt(request.getParameter("sampletypeid")); 
 	    } catch (Exception e1) {
 	   		// return parameters of the first sampletype
 	   	}
 	  	
 		PreparedStatement pStmt = null; 	// Declare variables
-	    JSONArray parameterGrps= null;		
-	    JSONArray parameters= null;
-	 	DBconnection dBconn=new DBconnection(); // New connection to the database
+	    JSONArray parameterGrps = null;		
+	    JSONArray parameters = null;
+	 	DBconnection dBconn = new DBconnection(); // New connection to the database
 	 	ArrayList<String> stringkeys = new ArrayList<String>(); 
-        JSONObject answer=new JSONObject();
+        JSONObject answer = new JSONObject();
 
 		 	
 	    try{
 		 	dBconn.startDB();
 		 	
 		 	// if the sampletypeid is 0, set it to the first existing sample type 
-		 	if (sampleTypeID==0){
+		 	if ( sampleTypeID == 0 ){
 		 		pStmt = dBconn.conn.prepareStatement(
-					  	   "SELECT id FROM objecttypes "
-						  +"ORDER BY position "
-						  +"LIMIT 1");
+					  		"SELECT "
+					  	  + "    id"
+					  	  + "FROM objecttypes "
+						  + "ORDER BY position "
+						  + "LIMIT 1");
 		 		sampleTypeID = dBconn.getSingleIntValue(pStmt);
-		 		if (sampleTypeID<1) {
+		 		if ( sampleTypeID<1 ) {
 		 			System.err.println("No sampletypes in database!");
 					response.setStatus(404);
 		 			throw new Exception();
@@ -69,12 +71,16 @@ public class AllSampleTypeParams extends HttpServlet {
 		 	
 		 	// get the parametergroups
 		 	pStmt = dBconn.conn.prepareStatement(
-				  	   "SELECT id,pos,stringkey FROM ot_parametergrps "
-					  +"WHERE (ot_parametergrps.ot_id=?) ");
+				  	    "SELECT "
+				  	  + "    id,"
+				  	  + "    pos,"
+				  	  + "    stringkey "
+				  	  + "FROM ot_parametergrps "
+					  + "WHERE (ot_parametergrps.ot_id = ?)");
    			pStmt.setInt(1, sampleTypeID);
-   			parameterGrps=dBconn.jsonArrayFromPreparedStmt(pStmt); 
+   			parameterGrps = dBconn.jsonArrayFromPreparedStmt(pStmt); 
    			if (parameterGrps.length()>0) {
-           		for (int j=0; j<parameterGrps.length();j++) {
+           		for (int j = 0; j < parameterGrps.length(); j++) {
            			if (parameterGrps.getJSONObject(j).has("stringkey")){
            				stringkeys.add(Integer.toString(parameterGrps.getJSONObject(j).getInt("stringkey")));
            			}
@@ -84,19 +90,25 @@ public class AllSampleTypeParams extends HttpServlet {
    			
    			// get the parameters
            	pStmt = dBconn.conn.prepareStatement(
-     		  	   "SELECT ot_parameters.id, compulsory, formula, hidden, pos, definition, "
-           		  +"  COALESCE (ot_parameters.stringkeyname,paramdef.stringkeyname) AS name, "
-     		  	  +"  stringkeyunit, parametergroup " 
-     		  	  +"FROM ot_parameters " 
-     		  	  +"JOIN paramdef ON (definition=paramdef.id)"
-				  +"WHERE objecttypesid=?"); // status, processnumber and date cannot be edited
+     		  	    "SELECT "
+     		  	  + "   ot_parameters.id,"
+     		  	  + "   compulsory,"
+     		  	  + "   formula,"
+     		  	  + "   hidden,"
+     		  	  + "   pos,"
+     		  	  + "   definition, "
+           		  + "COALESCE (ot_parameters.stringkeyname,paramdef.stringkeyname) AS name, "
+     		  	  + "   stringkeyunit, parametergroup " 
+     		  	  + "FROM ot_parameters " 
+     		  	  + "JOIN paramdef ON (definition = paramdef.id)"
+				  + "WHERE objecttypesid = ?"); // status, processnumber and date cannot be edited
 	 		pStmt.setInt(1, sampleTypeID);
-			parameters=dBconn.jsonArrayFromPreparedStmt(pStmt); // get ResultSet from the database using the query
+			parameters = dBconn.jsonArrayFromPreparedStmt(pStmt); // get ResultSet from the database using the query
 			
-			if (parameters.length()>0) {
+			if ( parameters.length() > 0 ) {
 				// get all the stringkeys from the parameters
-           		for (int j=0; j<parameters.length();j++) {
-           			JSONObject parameter=parameters.getJSONObject(j);
+           		for (int j = 0; j < parameters.length(); j++) {
+           			JSONObject parameter = parameters.getJSONObject(j);
            			stringkeys.add(Integer.toString(parameter.getInt("name")));
            			if (parameter.has("stringkeyunit")){
            				stringkeys.add(Integer.toString(parameters.getJSONObject(j).getInt("stringkeyunit")));

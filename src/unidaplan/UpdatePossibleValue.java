@@ -37,7 +37,7 @@ import org.json.JSONObject;
 		try {
 		    dBconn.startDB();
 		    
-		    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+		    if (dBconn.isAdmin(userID)){
 
 		
 				// create database entry for the new name

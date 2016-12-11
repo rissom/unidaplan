@@ -51,7 +51,7 @@ public class SampleTypeParams extends HttpServlet {
 		 	dBconn.startDB();
 		 	
 		 	// check if admin
-		 	if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+		 	if (dBconn.isAdmin(userID)){
 	 			pStmt = dBconn.conn.prepareStatement(	
 				   "SELECT ot_parametergrps.id,ot_id AS sampletype,ot_parametergrps.stringkey AS name, "
 	   		  	  +" objecttypes.string_key AS sampletypename "

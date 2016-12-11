@@ -31,35 +31,32 @@ public class Login extends HttpServlet {
     PrintWriter out = response.getWriter();
 	HttpSession session = request.getSession();
 	JSONObject hashjs = null;
-	String preferredLanguage = "";
-	String pw="";
-	String user="";
+	String pw = "";
+	String user = "";
 	  try  {
 		 pw=request.getParameter("pw"); 
 		 user=request.getParameter("user");
 	  }
 	  catch (Exception e1) {
 		 System.err.print("no password or userID given!");
-//		 e1.printStackTrace();
 	  }
 	  try{    
  	DBconnection dBconn = new DBconnection();
     dBconn.startDB();
     try {  
 		pstmt = dBconn.conn.prepareStatement( 	
-		  "SELECT "
-		+ "  pw_hash, "
-		+ "  users.id, "
-		+ "  users.fullname, "
-		+ "  users.username, "
-		+ "  groupmemberships.groupid AS admin, "
-		+ "  users.preferredlanguage "
-		+ "FROM users " 
-		+ "LEFT JOIN groupmemberships ON (groupid = 1 AND userid = users.id) "
-		+ "WHERE username = ?");
+			  "SELECT "
+			+ "  pw_hash, "
+			+ "  users.id, "
+			+ "  users.fullname, "
+			+ "  users.username, "
+			+ "  groupmemberships.groupid AS admin, "
+			+ "  users.preferredlanguage "
+			+ "FROM users " 
+			+ "LEFT JOIN groupmemberships ON (groupid = 1 AND userid = users.id) "
+			+ "WHERE username = ?");
 		pstmt.setString(1,user);
 		hashjs = dBconn.jsonObjectFromPreparedStmt(pstmt);
-		pstmt.close();
 		
     }catch (SQLException e) {
 		System.err.println("Login: Problems with SQL query1");

@@ -42,7 +42,6 @@ import javax.servlet.http.HttpServletResponse;
 					"SELECT expp_s_id FROM exp_plan_steps WHERE id=?");
 			pStmt.setInt(1,processStepID);
 			experimentID = dBconn.getSingleIntValue(pStmt);
-			pStmt.close();
 		    
 		    // check privileges
 		    pStmt = dBconn.conn.prepareStatement( 	
@@ -50,24 +49,22 @@ import javax.servlet.http.HttpServletResponse;
 			pStmt.setInt(1,userID);
 			pStmt.setInt(2,experimentID);
 			privilege = dBconn.getSingleStringValue(pStmt);
-			pStmt.close();
 		    
 			if (privilege.equals("w")){
 			    // TODO: decrease positions behind the sample to delete
 			    pStmt = dBconn.conn.prepareStatement(    	
-					"DELETE FROM exp_plan_steps WHERE id=?");
+					"DELETE FROM exp_plan_steps WHERE id = ?");
 			   	pStmt.setInt(1, processStepID);
 			   	pStmt.executeUpdate();
 				pStmt.close();
-			}
-			
+			}		
 			dBconn.closeDB();
 		} catch (SQLException e) {
 			System.err.println("DeactivateProcessStep: Problems with SQL query");
-			status="SQL Error; DeactivateProcessStep";
+			status = "SQL Error; DeactivateProcessStep";
 		} catch (Exception e) {
 			System.err.println("DeactivateProcessStep: Strange Problems");
-			status="Error DeactivateProcessStep";
+			status = "Error DeactivateProcessStep";
 		}	
 		
 	    // tell client that everything is fine

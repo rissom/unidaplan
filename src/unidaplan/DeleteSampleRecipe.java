@@ -32,13 +32,13 @@ public class DeleteSampleRecipe extends HttpServlet {
 		} catch (Exception e1) {
 			recipeID = -1;
 			System.err.print("DeleteSampleRecipe: no recipe ID given!");
-			status="error: no sample ID";
+			status = "error: no sample ID";
 		}
 	 	
 		
 	    try {
 		 	dBconn.startDB();
-		 	if (recipeID>0){		
+		 	if ( recipeID > 0 ){		
 		 		 // Check privileges
 			    pStmt = dBconn.conn.prepareStatement( 	
 							"SELECT getSampleRecipeRights(vuserid := ?, vsamplerecipe := ? )");
@@ -47,15 +47,13 @@ public class DeleteSampleRecipe extends HttpServlet {
 				privilege = dBconn.getSingleStringValue(pStmt);
 				pStmt.close();
 				
-				if (privilege.equals("w")){
+				if ( privilege.equals("w") ){
 					
 					// get stringkey for the name
 				    pStmt = dBconn.conn.prepareStatement(	
 					        	"SELECT name FROM samplerecipes WHERE id = ?");
 					pStmt.setInt(1,recipeID);
 					stringkey = dBconn.getSingleIntValue(pStmt);
-					pStmt.close();
-							
 			 		
 					// delete the samplerecipe
 			        pStmt = dBconn.conn.prepareStatement(	
@@ -75,30 +73,25 @@ public class DeleteSampleRecipe extends HttpServlet {
 					response.setStatus(401);
 				}
 		 	}
-	    } catch (SQLException eS) {
+	    } catch ( SQLException eS ) {
 			System.err.println("DeleteSampleRecipe: SQL Error");
-			status="error: SQL error";
+			status = "error: SQL error";
 			eS.printStackTrace();
 		} catch (Exception e) {
 			System.err.println("DeleteSampleRecipe: Some Error, probably JSON");
-			status="error: JSON error";
+			status = "error: JSON error";
 			e.printStackTrace();
 		} finally {
-		try{	
-	         
-	    	   if (dBconn.conn != null) { 
+			try{	
+	    	   if ( dBconn.conn != null ) { 
 	    		   dBconn.closeDB();  // close the database 
 	    	   }
-	        } catch (Exception e) {
-				status="error: error closing the database";
+	        } catch ( Exception e ) {
+				status = "error: error closing the database";
 				System.err.println("DeleteSampleRecipe: Some Error closing the database");
 				e.printStackTrace();
 		   	}
         }
-	    Unidatoolkit.sendStandardAnswer(status, response);
-
-		
+	    Unidatoolkit.sendStandardAnswer(status, response);	
 	}
-
-
 }

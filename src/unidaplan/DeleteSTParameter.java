@@ -15,42 +15,42 @@ import javax.servlet.http.HttpServletResponse;
 	      throws ServletException, IOException {		
 	    
 		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
+		int userID = authentificator.GetUserID(request,response);
 		request.setCharacterEncoding("utf-8");
-	    int id=0;
+	    int id = 0;
 	  	  try  {
-	   		 id=Integer.parseInt(request.getParameter("id")); 
+	   		 id = Integer.parseInt(request.getParameter("id")); 
 	       }
 	   	  catch (Exception e1) {
 	   		System.err.print("DeleteSTParameter: no parameter ID given!");
 	   	  }
-	    String status="ok";
+	    String status = "ok";
 
 	    try {
 	    	// connect to database
-		 	DBconnection dBconn=new DBconnection();
+		 	DBconnection dBconn = new DBconnection();
 		    dBconn.startDB();
 		    
-		    if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+		    if (dBconn.isAdmin(userID)){
 		    	
 			    // Delete the parameter
 			    PreparedStatement pStmt = null;
-				pStmt= dBconn.conn.prepareStatement( 			
+				pStmt = dBconn.conn.prepareStatement( 			
 						"DELETE FROM ot_parameters WHERE id=? ");
 			   	pStmt.setInt(1, id);
 			   	pStmt.executeUpdate();
 				pStmt.close();
-		    }else{ // no admin rights
+		    } else { // no admin rights
 		    	response.setStatus(401);
 		    }
 			dBconn.closeDB();
 		} catch (SQLException e) {
 			System.err.println("DeleteSTParameter: Problems with SQL query");
-			status="SQL Error; DeleteSTParameter";
+			status = "SQL Error; DeleteSTParameter";
 			response.setStatus(403);
 		} catch (Exception e) {
 			System.err.println("DeleteSTParameter: Strange Problems");
-			status="Error DeleteSTParameter";
+			status = "Error DeleteSTParameter";
 			response.setStatus(403);
 		}	
 		

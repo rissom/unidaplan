@@ -35,8 +35,8 @@ import org.json.JSONObject;
 	    
 	    try {
 			jsonIn = new JSONObject(in);
-			processTypeID=jsonIn.getInt("processtypeid");
-			position=jsonIn.getInt("position");
+			processTypeID = jsonIn.getInt("processtypeid");
+			position = jsonIn.getInt("position");
 		} catch (JSONException e) {
 			System.err.println("AddPTParameterGrp: Input is not valid JSON");
 		}
@@ -63,7 +63,7 @@ import org.json.JSONObject;
 					name = jsonIn.getJSONObject("name");
 				}
 				String [] names = JSONObject.getNames(name);
-				stringKeyName=dBconn.createNewStringKey(name.getString(names[0]));
+				stringKeyName = dBconn.createNewStringKey(name.getString(names[0]));
 				for (int i = 0; i < names.length; i++){
 					dBconn.addString(stringKeyName,names[i],name.getString(names[i]));
 				}
@@ -77,7 +77,6 @@ import org.json.JSONObject;
 						"SELECT max(pos) FROM p_parametergrps WHERE processtype=?");
 			   	pStmt.setInt(1, processTypeID);
 			   	position = dBconn.getSingleIntValue(pStmt) + 1;
-			   	pStmt.close();
 		
 			   	// add entry to database
 				pStmt = dBconn.conn.prepareStatement( 			
@@ -89,7 +88,6 @@ import org.json.JSONObject;
 			   	pStmt.setInt(3, position);
 			   	pStmt.setInt(4, userID);
 			   	newParametergroupID = dBconn.getSingleIntValue(pStmt);
-			   	pStmt.close();
 			} else {
 				response.setStatus(401);
 			}

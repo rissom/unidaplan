@@ -15,9 +15,7 @@ import org.json.JSONObject;
 public class ExchangePosSTParameterGrp extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
+    
     public ExchangePosSTParameterGrp() {
         super();
         // TODO Auto-generated constructor stub
@@ -34,27 +32,27 @@ public class ExchangePosSTParameterGrp extends HttpServlet {
 	    response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
 		String in = request.getReader().readLine();
-	    String status="ok";
+	    String status = "ok";
 	    
 		PreparedStatement pStmt = null; 	// Declare variables
 		int paramGrpID1 = 0;
 		int paramGrpID2 = 0;
-		int pos1=0;
-		int pos2=0;
-	 	DBconnection dBconn=new DBconnection(); // New connection to the database
+		int pos1 = 0;
+		int pos2 = 0;
+	 	DBconnection dBconn = new DBconnection(); // New connection to the database
 
 		
 
 	    JSONObject jsonIn = null;	    
 	    try {
 	    	jsonIn = new JSONObject(in);
-			paramGrpID1=jsonIn.getInt("id1"); 
-			paramGrpID2=jsonIn.getInt("id2"); 
-			pos1=jsonIn.getInt("pos1");
-			pos2=jsonIn.getInt("pos2");
+			paramGrpID1 = jsonIn.getInt("id1"); 
+			paramGrpID2 = jsonIn.getInt("id2"); 
+			pos1 = jsonIn.getInt("pos1");
+			pos2 = jsonIn.getInt("pos2");
 		} catch (JSONException e) {
 			System.err.println("ExchangePosSTParameterGrp: Input is not valid JSON");
-			status="error:invalid json";
+			status = "error:invalid json";
 		}
 
 	 	
@@ -62,7 +60,7 @@ public class ExchangePosSTParameterGrp extends HttpServlet {
 	    try {
 		 	dBconn.startDB();
 
-			if (Unidatoolkit.userHasAdminRights(userID, dBconn)){
+			if (dBconn.isAdmin(userID)){
 
 				// set new position id for PG 1.
 		        pStmt = dBconn.conn.prepareStatement(	
@@ -102,13 +100,13 @@ public class ExchangePosSTParameterGrp extends HttpServlet {
 	    		   dBconn.closeDB();  // close the database 
 	    	   }
 	        } catch (Exception e) {
-				status="error: error closing the database";
+				status = "error: error closing the database";
 				System.err.println("ExchangePosSTParameterGrp: Some Error closing the database");
 				e.printStackTrace();
 		   	}
         }
 	    
 	    Unidatoolkit.sendStandardAnswer(status, response);
-
-}}
+	}
+}
 
