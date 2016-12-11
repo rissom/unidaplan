@@ -46,9 +46,9 @@ function editSinglePOParameterController($state,$uibModal,$stateParams,$translat
   
     this.lang2 = $translate.instant(languages[1].name);
   
-    this.lang1key = $translate.instant(languages[0].key);
+    this.lang1key = languages[0].key;
   
-    this.lang2key = $translate.instant(languages[1].key);
+    this.lang2key = languages[1].key;
     
     if (parameter.stringkeyunit){
 	    this.unitL1 = parameter.unitLang(languages[0].key);
@@ -129,15 +129,15 @@ function editSinglePOParameterController($state,$uibModal,$stateParams,$translat
   
   
   
-    this.keyUp = function(keyCode,value,language) {
-  	    if (keyCode===13) {				// Return key pressed
+    this.keyUp = function(keyCode,value,languageKey) {
+  	    if ( keyCode === 13 ) {				// Return key pressed
   	    	var tParameter={parameterid:parameter.id};
   	    	if (thisController.editFieldDL1 || thisController.editFieldDL2){
   	    		tParameter.description={};
-  	    		tParameter.description[language]=value;
+  	    		tParameter.description[languageKey]=value;
   	    	} else{
   	    		tParameter.name={};
-  	    		tParameter.name[language]=value;
+  	    		tParameter.name[languageKey]=value;
   	    	}
   		  	var promise = avProcessTypeService.updatePOParameter(tParameter);
 		    promise.then(function(){
@@ -146,14 +146,14 @@ function editSinglePOParameterController($state,$uibModal,$stateParams,$translat
 		    	console.log("error");
 		    });
 	    }
-	    if (keyCode===27) {		// Escape key pressed
+	    if ( keyCode === 27 ) {		// Escape key pressed
 		    thisController.editmode=false;
 	    }
     };
 
   
   
-    var reload=function() {
+    var reload = function() {
     	var current = $state.current;
   	  	var params = angular.copy($stateParams);
   	  	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });

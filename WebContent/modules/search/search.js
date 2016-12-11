@@ -59,9 +59,9 @@ function searchController(restfactory,$state,$stateParams,$translate,
 	  
 	this.lang2 = $translate.instant(languages[1].name);
 	  
-	this.lang1key = $translate.instant(languages[0].key);
+	this.lang1key = languages[0].key;
 	  
-	this.lang2key = $translate.instant(languages[1].key);
+	this.lang2key = languages[1].key;
 	 	  
 	this.editFieldNL2 = false;
 		

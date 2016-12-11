@@ -26,10 +26,10 @@ import org.json.JSONException;
 //	    Authentificator authentificator = new Authentificator();
 //		int userID=authentificator.GetUserID(request,response);
 	    PrintWriter out = response.getWriter();
-	 	DBconnection DBconn = new DBconnection();
+	 	DBconnection dBconn = new DBconnection();
 	    try {  
-		    DBconn.startDB();
-			pStmt = DBconn.conn.prepareStatement( 	
+		    dBconn.startDB();
+			pStmt = dBconn.conn.prepareStatement( 	
 					  "SELECT users.id, "
 					+ "  users.fullname, "
 					+ "  users.username, "
@@ -39,10 +39,10 @@ import org.json.JSONException;
 				    + "CASE Coalesce((SELECT count(ep.creator) from experiments ep WHERE users.id=ep.creator " 
 				    + "GROUP BY ep.creator),0) WHEN 0 THEN true ELSE false END AS deletable "
 				    + "FROM users");
-			JSONArray users = DBconn.jsonArrayFromPreparedStmt(pStmt);
-			pStmt.close();			
+			JSONArray users = dBconn.jsonArrayFromPreparedStmt(pStmt);
+			pStmt.close();	
+			dBconn.closeDB();
 			out.println(users.toString());
-			DBconn.closeDB();
     	} catch (SQLException e) {
     		System.err.println("GetUsers: Problems with SQL query");
     	} catch (JSONException e) {

@@ -63,9 +63,9 @@ public class SingleSTParameter extends HttpServlet {
 	 					  + "  paramdef.min, "
 	 					  + "  paramdef.max, "
 	 					  + "  objecttypes.string_key AS sampletypename, " 
-		           		  + "  COALESCE(ot_parameters.stringkeyname,paramdef.stringkeyname) as name, "
+		           		  + "  COALESCE(ot_parameters.stringkeyname,paramdef.stringkeyname) AS name, "
 		     		  	  + "  (blabla.count) IS NULL as deletable, stringkeyunit, paramdef.datatype, " 
-		     		  	  + "  COALESCE(ot_parameters.description,paramdef.description) as description, "
+		     		  	  + "  COALESCE(ot_parameters.description,paramdef.description) AS description, "
 		     		  	  + "  (blabla.count) IS NULL as deletable, stringkeyunit, paramdef.datatype " 
 		     		  	  + "FROM ot_parameters " 
 		     		  	  + "JOIN paramdef ON (definition = paramdef.id) "
@@ -82,11 +82,12 @@ public class SingleSTParameter extends HttpServlet {
 						  + "WHERE ot_parameters.id = ?");
 				pStmt.setInt(1, parameterID);
 				parameter = dBconn.jsonObjectFromPreparedStmt(pStmt);
-				pStmt.close();
 				int datatype = parameter.getInt("datatype");
 				parameter.put("datatype", Unidatoolkit.Datatypes[datatype]);
 				stringkeys.add(Integer.toString(parameter.getInt("name")));
-				stringkeys.add(Integer.toString(parameter.getInt("description")));
+				if (parameter.has("description")){
+					stringkeys.add(Integer.toString(parameter.getInt("description")));
+				}
 				if (parameter.has("parametergroupname")){
 					stringkeys.add(Integer.toString(parameter.getInt("parametergroupname")));
 				}

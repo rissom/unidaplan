@@ -51,9 +51,9 @@ function editSingleSTParameterController($state,$uibModal,
   
     this.lang2 = $translate.instant(languages[1].name);
   
-    this.lang1key = $translate.instant(languages[0].key);
+    this.lang1key = languages[0].key;
   
-    this.lang2key = $translate.instant(languages[1].key);
+    this.lang2key = languages[1].key;
     
     if (parameter.stringkeyunit){
 	    this.unitL1=parameter.unitLang(languages[0].key);
@@ -153,16 +153,16 @@ function editSingleSTParameterController($state,$uibModal,
   	
   	
   	
-    this.keyUp = function(keyCode, value, language) {
+    this.keyUp = function(keyCode, value, languageKey) {
   	    if (keyCode === 13) {				// Return key pressed
   	    	var tParameter = {parameterid:parameter.id};
   	    	if (thisController.activeField === 'DL1' || thisController.activeField === 'DL2'){
   	    		tParameter.description = {};
-  	    		tParameter.description[language] = value;
+  	    		tParameter.description[languageKey] = value;
   	    	} 
   	    	if (thisController.activeField === 'NL1' || thisController.activeField === 'NL2'){
   	    		tParameter.name = {};
-  	    		tParameter.name[language] = value;
+  	    		tParameter.name[languageKey] = value;
   	    	}
   		  	var promise = avSampleTypeService.updateParameter(tParameter);
 		    promise.then(function(){

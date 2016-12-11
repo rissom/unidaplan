@@ -61,9 +61,9 @@ public class SinglePTParameter extends HttpServlet {
 	 					  + "  pgs.stringkey AS parametergroupname, \n"
 	 					  + "  paramdef.format, \n"
 	 					  + "  processtypes.name AS processtypename, \n" 
-		           		  + "  COALESCE(p_parameters.stringkeyname,paramdef.stringkeyname) as name, \n"
+		           		  + "  COALESCE(p_parameters.stringkeyname,paramdef.stringkeyname) AS name, \n"
 		     		  	  + "  (blabla.count) IS NULL as deletable, stringkeyunit, paramdef.datatype, \n" 
-		     		  	  + "  COALESCE(p_parameters.description,paramdef.description) as description, \n"
+		     		  	  + "  COALESCE(p_parameters.description,paramdef.description) AS description, \n"
 		     		  	  + "  (blabla.count) IS NULL as deletable, stringkeyunit, paramdef.datatype \n" 
 		     		  	  + "FROM p_parameters \n" 
 		     		  	  + "JOIN paramdef ON (definition = paramdef.id) \n"
@@ -84,7 +84,9 @@ public class SinglePTParameter extends HttpServlet {
 				int datatype = parameter.getInt("datatype");
 				parameter.put("datatype", Unidatoolkit.Datatypes[datatype]);
 				stringkeys.add(Integer.toString(parameter.getInt("name")));
-				stringkeys.add(Integer.toString(parameter.getInt("description")));
+				if (parameter.has("description")){
+					stringkeys.add(Integer.toString(parameter.getInt("description")));
+				}
 				if (parameter.has("parametergroupname")){
 					stringkeys.add(Integer.toString(parameter.getInt("parametergroupname")));
 				}

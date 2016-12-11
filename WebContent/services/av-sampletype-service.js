@@ -321,8 +321,8 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	}
 	
 	
-	this.updateSampleTypeData=function(sampletypeID,field,value,lang){
-		var tempObj={"sampletypeid":sampletypeID,"field":field,"newvalue":value,"lang":lang};
+	this.updateSampleTypeData = function(sampletypeID,field,value,lang){
+		var tempObj = {"sampletypeid":sampletypeID,"field":field,"newvalue":value,"lang":lang};
 		return restfactory.POST('update-sample-type-data',tempObj);
 	};
 	
