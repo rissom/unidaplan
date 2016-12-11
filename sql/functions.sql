@@ -96,7 +96,7 @@ IF ( SELECT NOT blocked FROM users WHERE users.id = vuserid ) THEN
 		SELECT 'w' AS permission FROM groupmemberships WHERE groupid = 1 AND userid = vuserid
 	) t GROUP BY TRUE;
 END IF;
-rights:=COALESCE(rights,'n');
+rights := COALESCE(rights,'n');
 END;
 $$
 LANGUAGE plpgsql;
