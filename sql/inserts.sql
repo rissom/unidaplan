@@ -207,15 +207,9 @@ INSERT INTO stringtable VALUES (default, 65, 'en', 'example process search');
   lastChange      timestamp */
 
 
-INSERT INTO users (fullname,username,email,blocked,preferredlanguage,pw_hash) 
-		VALUES ('Thorsten Rissom', 'thorsten', 'rissom@posteo.de', false,'de',
-			'1000:510c721d230d7db1e386bacee7d51b5b9962a9e49215aadaf4d45cb06edfea31:3e059b1f40b2f049313464da1f9f0efad49373da535233445aa4633502b46d7e');
-INSERT INTO users (fullname,username,email,blocked,preferredlanguage,pw_hash) 
-		VALUES ('Hans Mustermann', 'mustermann', 'rissom@posteo.de',false,'de',
-			'1000:510c721d230d7db1e386bacee7d51b5b9962a9e49215aadaf4d45cb06edfea31:3e059b1f40b2f049313464da1f9f0efad49373da535233445aa4633502b46d7e');
-INSERT INTO users (fullname,username,email,blocked,preferredlanguage,pw_hash) 
-		VALUES ('Emmett Brown', 'brown', 'rissom@posteo.de',false,'en',
-			'1000:510c721d230d7db1e386bacee7d51b5b9962a9e49215aadaf4d45cb06edfea31:3e059b1f40b2f049313464da1f9f0efad49373da535233445aa4633502b46d7e');
+INSERT INTO users (fullname,username,blocked,pw_hash) 
+		VALUES ('Administrator', 'admin', false, 
+			'1000:5dbc873658d054afbbb2cb7dea7570b91830831d728949a06352402f21b37e9f:19d3c64bfd5e5b15b53dad560a517cb9d2b98f5b3828cf546f1dc1d0fc39a7dd');
 -- CREATE TABLE users (
 --   ID                SERIAL PRIMARY KEY, 
 --   fullname          VARCHAR(200),
@@ -231,8 +225,6 @@ INSERT INTO users (fullname,username,email,blocked,preferredlanguage,pw_hash)
 
 
 INSERT INTO language_preferences VALUES (default, 1, 'de', 1);
-INSERT INTO language_preferences VALUES (default, 2, 'en', 2);
-INSERT INTO language_preferences VALUES (default, 2, 'de', 1);
 -- CREATE TABLE language_preferences (
 --   ID              SERIAL PRIMARY KEY,
 --   user_id         INTEGER REFERENCES users(ID),
@@ -520,7 +512,6 @@ definition,lastUser) VALUES (2,NULL,True, False,True, 1, 1, 1); -- status
 
 
 INSERT INTO groupmemberships VALUES (default,1,1,NOW()); -- User 1 is admin
-INSERT INTO groupmemberships VALUES (default,2,2,NOW()); -- Thorse is admin
 -- CREATE TABLE groupmemberships(
 --   ID              INTEGER NOT NULL PRIMARY KEY, 
 --   groupID         INTEGER NOT NULL REFERENCES groups(ID),
@@ -607,21 +598,21 @@ INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser)
 INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser) 
 		VALUES (2, 1, '{"value":2}', 1);
 INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser) 
-		VALUES (3, 1, '{"value":3}', 3);
+		VALUES (3, 1, '{"value":3}', 1);
 INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser) 
-		VALUES (4, 6, '{"value":1}', 2);
+		VALUES (4, 6, '{"value":1}', 1);
 INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser) 
-		VALUES (5, 6, '{"value":2}', 2);
+		VALUES (5, 6, '{"value":2}', 1);
 INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser) 
 		VALUES (1, 3, '{"value":1}', 1);
 INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser) 
 		VALUES (2, 3, '{"value":1}', 1);
 INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser) 
-		VALUES (3, 3, '{"value":3}', 2);
+		VALUES (3, 3, '{"value":3}', 1);
 INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser) 
-		VALUES (4, 9, '{"value":2}', 2);
+		VALUES (4, 9, '{"value":2}', 1);
 INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser) 
-		VALUES (5, 9, '{"value":3}', 2);
+		VALUES (5, 9, '{"value":3}', 1);
 -- Floating point data
 INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser) 
 		VALUES (1, 8, '{"value":1.1111}', 1);
@@ -796,9 +787,9 @@ INSERT INTO oSearchOutput (search,position,otparameter) VALUES (1,6,6);
 INSERT INTO experiments (Name,Number,Creator,Status,lastUser) 
 	VALUES (29,5,1,3,1);  -- status: abgeschlossen
 INSERT INTO experiments (Name,Number,Creator,Status,lastUser) 
-	VALUES (30,6,1,1,2);  -- status: geplant
+	VALUES (30,6,1,1,1);  -- status: geplant
 INSERT INTO experiments (Name,Number,Creator,Status,lastUser) 
-	VALUES (39,8,2,2,2);  -- status: in Durchführung
+	VALUES (39,8,1,2,1);  -- status: in Durchführung
 -- CREATE TABLE experiments (
 --   ID              SERIAL PRIMARY KEY,
 --   Name            INTEGER NOT NULL REFERENCES string_key_table(ID),
