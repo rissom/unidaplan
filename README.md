@@ -66,5 +66,9 @@ following content:
 > &lt;/Context&gt;
 
 
-Also you need to initialize the database. This can be done by running the SQL scripts in the SQL directory. 
- 
+Also you need to initialize the database. This can be done by running the SQL scripts in the SQL directory. Go to shell and use:
+> psql -f definitions.sql <br/>
+> psql -f functions.sql <br/>
+> psql -f inserts.sql <br/>
+
+The first and only user is called "admin" and has the password "admin". When logged in go to menu "Admin." and select users. Then click "action"->"edit" in the row of the user "Administrator". Double-click the e-mail field and enter your e-mail. Press the button "back to users" at the top of the page. Click "action"->"resend token". If everything is set up right, you should receive an e-mail which contains a link that allows you to change name and password of the admin account. 
