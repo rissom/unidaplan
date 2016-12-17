@@ -1,11 +1,17 @@
-# unidaplan
-**Sample management software for Scientists**
+# Unidaplan
 
-This software is made for scientists who need to manage their samples, plan experiments with them and do processes on them. 
+*What it is*
+
+Unidaplan is a sample management software for scientists. This software is made for scientists who need to manage their samples, plan experiments and do processes on them. 
+
 It is written in Java and Javascript with Angular.js and needs a PostgreSQL database. An old outdated video on what is about,
 can be seen here (in german, sorry):
 
 https://www.youtube.com/watch?v=gAOdfen3yqU
+
+If you want to try it out, you can play with the sample installation at:
+
+http://unidaplan.com:8080/unidaplan/
 
 The software is NOT FINISHED yet. Allthough all basic functionality is there, there still are tons of bugs. The software
 is free to use for public research facilities and universities. But there will be a fee for private companies, once it is
