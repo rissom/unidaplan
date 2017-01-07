@@ -61,26 +61,31 @@ public class Login extends HttpServlet {
     }catch (SQLException e) {
 		System.err.println("Login: Problems with SQL query1");
 	}try{
-		
+		String hash;
+		if (hashjs.has("pw_hash")){
+			hash = hashjs.getString("pw_hash");
 
-		String hash = hashjs.getString("pw_hash");
-		int id = hashjs.getInt("id");
-		if (PasswordHash.validatePassword(pw,hash)){
-			JSONObject answer=new JSONObject();
-			answer.put("status","Password correct");
-			answer.put("fullname",hashjs.getString("fullname"));
-			answer.put("id",id);
-			if (hashjs.has("preferredlanguage")){
-				answer.put("preferredlanguage",hashjs.getString("preferredlanguage"));
+			int id = hashjs.getInt("id");
+			if (PasswordHash.validatePassword(pw,hash)){
+				JSONObject answer=new JSONObject();
+				answer.put("status","Password correct");
+				answer.put("fullname",hashjs.getString("fullname"));
+				answer.put("id",id);
+				if (hashjs.has("preferredlanguage")){
+					answer.put("preferredlanguage",hashjs.getString("preferredlanguage"));
+				}
+				if (hashjs.has("admin")){
+					answer.put("admin",true);
+				}
+				out.println(answer.toString());
+			}else{
+				response.setStatus(401);
+				out.println("{\"status\":\"Password incorrect or user unknown\"}");
 			}
-			if (hashjs.has("admin")){
-				answer.put("admin",true);
-			}
-			out.println(answer.toString());
 		session.setAttribute("userID",id);
 		}else{
 			response.setStatus(401);
-			out.println("{\"status\":\"Password incorrect\"}");
+			out.println("{\"status\":\"Password incorrect or user unknown\"}");
 		}
 		dBconn.closeDB();
 		
