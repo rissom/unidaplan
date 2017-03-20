@@ -125,20 +125,20 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	    		sampleType.namef=function(){
 					return (key2string.key2string(sampleType.string_key,thisController.strings));
 				};
-	    		sampleType.nameLang=function(lang){
+	    		sampleType.nameLang = function(lang){
 					return (key2string.key2stringWithLangStrict(sampleType.string_key,thisController.strings,lang));
 				};
-	    		sampleType.descf=function(){
+	    		sampleType.descf = function(){
 					return (key2string.key2string(sampleType.description,thisController.strings));
 				};
 	    		sampleType.descLang=function(lang){
 					return (key2string.key2stringWithLangStrict(sampleType.description,thisController.strings,lang));
 				};
-	    		sampleType.actions= [ {action:"edit",name: $translate.instant("edit")},
-	    		                      {action:"delete",name: $translate.instant("delete") , disabled:!sampleType.deletable}
+	    		sampleType.actions= [ {action:"edit",  namef: function() { return $translate.instant("edit")}  },
+	    		                      {action:"delete",namef: function() { return $translate.instant("delete") }, disabled:!sampleType.deletable}
 	    						    ];
 				angular.forEach(sampleType.recipes, function(recipe) {
-					recipe.namef=function(){
+					recipe.namef = function(){
 						return (key2string.key2string(recipe.name,thisController.strings));
 					};
 				});
