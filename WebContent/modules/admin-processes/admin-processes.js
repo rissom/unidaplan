@@ -38,15 +38,15 @@ function aProcessesController($state,$stateParams,$translate,restfactory,process
   
   
 	this.performAction = function(process,action){
-		if (action.action==="edit"){
+		if (action.action === "edit"){
 			$state.go("editPtParamGrps",{processTypeID:process.id});
 		}
-		if (action.action==="duplicate"){
-	  	  	var promise=processService.duplicateProcessType(process.id);
+		if (action.action === "duplicate"){
+	  	  	var promise = processService.duplicateProcessType(process.id);
 	  	  	promise.then(function(){reload();},function(){console.log("error");});
 		}
-		if (action.action==="delete" && process.deletable){
-	  	  	var promise2=processService.deleteProcessType(process.id);
+		if (action.action === "delete" && process.deletable){
+	  	  	var promise2 = processService.deleteProcessType(process.id);
 	  	  	promise2.then(function(){reload();},function(){console.log("error");});
 		}
 	};

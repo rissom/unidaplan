@@ -36,14 +36,14 @@
 			<td class = "parametertd">
 				{{process.descLang(aProcessesCtrl.languages[1].key)}}
 			</td>
-			<td class="parametertd" ng-hide="aProcessesCtrl.editmode">			
-				<div class="dropdown" uib-dropdown on-toggle="toggled(open)">
-					<a class="dropdown-toggle" uib-dropdown-toggle>
+			<td class = "parametertd" ng-hide = "aProcessesCtrl.editmode">			
+				<div class = "dropdown" uib-dropdown on-toggle = "toggled(open)">
+					<a class = "dropdown-toggle" uib-dropdown-toggle>
 			  			{{'action'|translate}} &#x25BC;
 				    </a>
-				    <ul class="dropdown-menu">
-				    	<li ng-repeat="action in process.actions" ng-class={disabled:action.disabled}>
-				        	<a ng-click="aProcessesCtrl.performAction(process,action)">{{action.name}}</a>
+				    <ul class = "dropdown-menu">
+				    	<li ng-repeat = "action in process.actions" ng-class = {disabled:action.disabled}>
+				        	<a ng-click = "aProcessesCtrl.performAction(process,action)">{{action.namef()}}</a>
 				        </li>
 				    </ul>
 	  			</div>

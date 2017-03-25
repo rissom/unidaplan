@@ -74,15 +74,15 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
     			return (key2string.key2stringWithLangStrict(thisController.sampleType.description,thisController.strings,lang));
 	    	};
 	    	angular.forEach(thisController.sampleType.parametergrps,function(stgrp) {
-	    		stgrp.namef=function(){
+	    		stgrp.namef = function(){
 	    			return (key2string.key2string(stgrp.stringkey,thisController.strings));
 	    		};
-	    		stgrp.nameLang=function(lang){
+	    		stgrp.nameLang = function(lang){
 	    			return (key2string.key2stringWithLangStrict(stgrp.stringkey,thisController.strings,lang));
 	    		};
 
-	    		stgrp.actions=[{action:"edit",name:$translate.instant("edit")},
-	    		               {action:"delete",name:$translate.instant("delete"),disabled:!stgrp.deletable}
+	    		stgrp.actions=[{action:"edit",namef: function() { return $translate.instant("edit") }},
+	    		               {action:"delete",namef: function() { return $translate.instant("delete")},disabled:!stgrp.deletable}
 	    					  ];
 	        });
 	    	angular.forEach(thisController.sampleType.titleparameters,function(tparam) {
@@ -93,17 +93,21 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	    			return (key2string.key2stringWithLangStrict(tparam.name,thisController.strings,lang));
 	    		};
 	    		tparam.actions = [{ action   : "edit",
-	    						    name	 : $translate.instant("edit")
+	    						    namef	 : function () { return $translate.instant("edit"); }
 	    						  },
 	    		                  { action	 : "delete",
-	    						    name	 : $translate.instant("delete"),
+	    						    namef	 : function() { return $translate.instant("delete"); },
 	    						    disabled : thisController.sampleType.titleparameters.length == 1 || !tparam.deletable
 	    						  }];
-	    		for (var i=0; i< rest.data.parametergrps.length; i++){
-	    			tparam.actions.push({ action	  : "move",
-						name		: $translate.instant("move to")+" "+thisController.sampleType.parametergrps[i].namef(),
-						destination : thisController.sampleType.parametergrps[i].id
-					})
+	    		for (var k = 0; k < rest.data.parametergrps.length; k++){
+	    			tparam.actions.push(
+	    				{ action	: "move",
+	    					   j	:  k,
+						   namef	: function () {							  	
+								return $translate.instant("move to")+" " + thisController.sampleType.parametergrps[this.j].namef();
+							},
+						  destination : thisController.sampleType.parametergrps[k].id
+					    })
 	    		}
 	        });
 	    	defered.resolve(thisController.sampleType); 	
@@ -131,7 +135,7 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	    		sampleType.descf = function(){
 					return (key2string.key2string(sampleType.description,thisController.strings));
 				};
-	    		sampleType.descLang=function(lang){
+	    		sampleType.descLang = function(lang){
 					return (key2string.key2stringWithLangStrict(sampleType.description,thisController.strings,lang));
 				};
 	    		sampleType.actions= [ {action:"edit",  namef: function() { return $translate.instant("edit")}  },
@@ -160,7 +164,7 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	    	var parameter = rest.data;
 	    	var strings = rest.data.strings;
 	    	if (parameter.parametergroupname){
-	    		parameter.pgnamef=function(){
+	    		parameter.pgnamef = function(){
 	    			return (key2string.key2string(parameter.parametergroupname,strings));
 	    		};
 	    	}
@@ -225,19 +229,31 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	    		parameter.unitLang = function(lang){
 	    			return (key2string.key2stringWithLangStrict(parameter.stringkeyunit,thisController.paramGrp.strings,lang));
 	    		};
-	    		parameter.actions = [{action:"edit",name:$translate.instant("edit")}];
+	    		parameter.actions = [
+	    		    { action :"edit",
+	    		      namef  : function (){ return $translate.instant("edit")}
+	    		    }];
 	    		if (parameter.hidden) { 
-	    				parameter.actions.push({action:"show",name:$translate.instant("show again")});	
+	    				parameter.actions.push({
+	    					action:"show",
+	    					namef : function() {return $translate.instant("show again")}
+	    				});	
 	    			} else {
-	    				parameter.actions.push({action:"hide",name:$translate.instant("hide")});
+	    				parameter.actions.push({
+	    					action :"hide",
+	    					namef  : function() {return $translate.instant("hide")}
+	    				});
 	    			}
-	    		parameter.actions.push({action:"delete",name:$translate.instant("delete"),disabled:!parameter.deletable});
+	    		parameter.actions.push(
+	    				{  action  : "delete",
+	    				   namef   : function() { return $translate.instant("delete")},
+	    			       disabled: !parameter.deletable});
 	    		if ("siblings" in thisController.paramGrp){
 	    			thisController.paramGrp.siblings.map(function(sibling){
 	    				var name = key2string.key2string(sibling.name,thisController.paramGrp.strings);
 	    				parameter.actions.push(
     						{ action	  : "move",
-    						  name		  : $translate.instant("move to")+" "+name,
+    						  namef		  : function() { return $translate.instant("move to") + " " + name },
     						  destination : sibling.id
     						}
     					);
@@ -246,7 +262,7 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	    		if (parameter.datatype == 'string' || parameter.datatype == 'integer'){
 	    			parameter.actions.push({
 	    				action : 'title',
-	    				name	: $translate.instant("make titleparameter")
+	    				namef	: function() { return $translate.instant("make titleparameter") }
 	    			});
 	    		}
 	        });
@@ -264,8 +280,8 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	this.getType = function(sample,types){
 		var typeName;
 		 	angular.forEach(types,function(type) {
-		 		if (sample.typeid==type.id){
-		 			typeName=type.namef();
+		 		if (sample.typeid == type.id){
+		 			typeName = type.namef();
 		 		}
 		 	});
 		return typeName;

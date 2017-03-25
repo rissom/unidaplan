@@ -5,32 +5,32 @@
   
 <!-- type choser -->  
 {{'Available sample types'|translate}} <br />
-<select multiple="multiple"
-		id="typeSelector"
-		style="width: 300px;"
-  		ng-model="sampleChoserCtrl.selectedtypes" 
-  		ng-options="type.namef() for type in sampleChoserCtrl.selectorTypes"
-  		size="10">
+<select multiple = "multiple"
+		id = "typeSelector"
+		style = "width: 300px;"
+  		ng-model = "sampleChoserCtrl.selectedtypes" 
+  		ng-options = "type.namef() for type in sampleChoserCtrl.selectorTypes"
+  		size = "10">
 </select>
 <br /><br />
 
 
 <!-- search field -->
 <label>Name: </label>
-<input type="text" 
-	   ng-model="sampleChoserCtrl.userinput"
-	   style="width: 253px;" 
-	   placeholder="{{'Enter samplename here'|translate}}">
+<input type = "text" 
+	   ng-model = "sampleChoserCtrl.userinput"
+	   style = "width: 253px;" 
+	   placeholder = "{{'Enter samplename here'|translate}}">
 <br />
 <br />
 <br />
 
 <!--  list of fitting samples  -->
 <ul> 
- 	<li ng-repeat="sample in sampleChoserCtrl.samples | filter:{name:sampleChoserCtrl.userinput} | orderBy: ['typeid','name']" 
- 		ng-show="sampleChoserCtrl.typeSelected(sample)">
+ 	<li ng-repeat = "sample in sampleChoserCtrl.samples | filter:{name:sampleChoserCtrl.userinput} | orderBy: ['typeid','name']" 
+ 		ng-show = "sampleChoserCtrl.typeSelected(sample)">
 					<!-- show only selected sample types -->
-		<a ui-sref="sample({sampleID:sample.sampleid})">
+		<a ui-sref = "sample({sampleID:sample.sampleid})">
 			{{sampleChoserCtrl.getType(sample)}} {{sample.name}}
 		</a>							
 	</li>   

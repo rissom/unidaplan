@@ -4,20 +4,20 @@
 
 function sampleChoser($translate,$scope,restfactory,types,sampleService) {
 
-	this.samples=[];
-	this.selectedTypesVar=[];
-	this.selectorTypes=[];
-	var thisController=this;
+	this.samples = [];
+	this.selectedTypesVar = [];
+	this.selectorTypes = [];
+	var thisController = this;
 		
 	
 	$scope.$watch('sampleChoserCtrl.selectedtypes', function (seltypes){
-		var typeList=[];
-		if (seltypes===undefined || seltypes.length===0){  // Nothing selected => Everything selected
+		var typeList = [];
+		if (seltypes === undefined || seltypes.length === 0){  // Nothing selected => Everything selected
 			angular.forEach(types,function(type) {
 				typeList.push(type.id);			
 			});
 		} else {
-		if (seltypes[0].id===0){  // all types field selected => Everything selected
+		if (seltypes[0].id === 0){  // all types field selected => Everything selected
 			angular.forEach(types,function(type) {
 				typeList.push(type.id);
 			});
@@ -30,16 +30,16 @@ function sampleChoser($translate,$scope,restfactory,types,sampleService) {
 		
 		//check if there was change
 		var oldUserinput="";
-		if (thisController.userinput!==undefined) {
+		if (thisController.userinput !== undefined) {
 			oldUserinput=thisController.userinput;
 		}
 		var oldTypeIDs = thisController.selectedTypesVar;
 		  setTimeout(function() {
 			  	var newUserinput="";
-				if (thisController.userinput!==undefined){
+				if (thisController.userinput !== undefined){
 					newUserinput=thisController.userinput;
 				}
-			    if (oldUserinput==newUserinput){
+			    if (oldUserinput == newUserinput){
 			    	if( thisController.selectedTypesVar.equals(oldTypeIDs)){
 			    		if (!thisController.firsttime){
 				    	thisController.loadSamples();
@@ -54,17 +54,17 @@ function sampleChoser($translate,$scope,restfactory,types,sampleService) {
 	
 	$scope.$watch('sampleChoserCtrl.userinput', function (tmpStr){
 		//check if there was change
-		var oldUserinput="";
-		if (thisController.userinput!==undefined) {
-			oldUserinput=thisController.userinput;
+		var oldUserinput = "";
+		if (thisController.userinput !== undefined) {
+			oldUserinput = thisController.userinput;
 		}
 		var oldTypeIDs = thisController.selectedTypesVar;
 		  setTimeout(function() {
-			  	var newUserinput="";
-				if (thisController.userinput!==undefined){
-					newUserinput=thisController.userinput;
+			  	var newUserinput = "";
+				if (thisController.userinput !== undefined){
+					newUserinput = thisController.userinput;
 				}
-			    if (oldUserinput==newUserinput){
+			    if (oldUserinput == newUserinput){
 			    	if( thisController.selectedTypesVar.equals(oldTypeIDs)){
 				    	thisController.loadSamples();
 			    	}
@@ -76,8 +76,10 @@ function sampleChoser($translate,$scope,restfactory,types,sampleService) {
 	
 	// get a bunch of fitting samples
 	this.loadSamples = function(){
-		var name = thisController.userinput||"";
-		var promise=sampleService.getSamplesByName(name,this.selectedTypesVar,'r'); // possible values: "r"-> read or write; "w"-> write; "a" -> all
+		var name = thisController.userinput || "";
+		var promise = sampleService.getSamplesByName(
+						name,this.selectedTypesVar,'r'); 
+		// possible values: "r"-> read or write; "w"-> write; "a" -> all
 		promise.then(function(data){
 			thisController.samples=data.data;
 			if (thisController.firsttime) {
@@ -90,7 +92,7 @@ function sampleChoser($translate,$scope,restfactory,types,sampleService) {
 	
 	
 	// return the translated name string of a type for a sample
-	this.getType=function(sample){
+	this.getType = function(sample){
 		var typeName;
 		angular.forEach(types,function(type) {
 			if (sample.typeid==type.id){
@@ -102,11 +104,11 @@ function sampleChoser($translate,$scope,restfactory,types,sampleService) {
 	
 	
 	// Check if the sampletype is selected
-	this.typeSelected=function(sample){
-		var found=false;
+	this.typeSelected = function(sample){
+		var found = false;
 		angular.forEach(thisController.selectedTypesVar,function(type) {
 			if (sample.typeid==type){
-				found=true;
+				found = true;
 			}
 		});
 		return found;
@@ -114,10 +116,9 @@ function sampleChoser($translate,$scope,restfactory,types,sampleService) {
 	
 
 	// build a new array of selectable processtypes, with an "all-types" option
-	this.init=function(lang){
-		var selectorTypesTemp=[];
-		var allTypesString=$translate.instant("all types");
-		selectorTypesTemp.push({namef:function(){return allTypesString;},'id':0});
+	this.init = function(lang){
+		var selectorTypesTemp = [];
+		selectorTypesTemp.push({namef:function(){return $translate.instant("all types");},'id':0});
 		angular.forEach(types,function(type) {
 			selectorTypesTemp.push(type);
 		});

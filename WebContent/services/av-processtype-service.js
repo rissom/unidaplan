@@ -121,9 +121,13 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 	    		ptype.descLang = function(lang){
 	    			return (key2string.key2stringWithLangStrict(ptype.description,strings,lang));
 	    		};
-	    		ptype.actions= [{action:"edit",     name:$translate.instant("edit")},
-	    		                {action:"duplicate",name:$translate.instant("duplicate")},
-	    		                {action:"delete",   name:$translate.instant("delete"), disabled:!ptype.deletable}];
+	    		ptype.actions = [{ action  : "edit",     
+	    						   namef   : function(){ return $translate.instant("edit")}},
+	    		                 { action  : "duplicate",
+	    					       namef   : function(){return $translate.instant("duplicate")}},
+	    		                 { action  : "delete",   
+	    					       namef   : function(){return $translate.instant("delete")},
+	    					       disabled: !ptype.deletable}];
 	    		angular.forEach(ptype.recipes, function(recipe) {
 	    			recipe.namef = function(){
 	    				return (key2string.key2string(recipe.name,strings));

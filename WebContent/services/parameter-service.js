@@ -44,8 +44,8 @@ var parameterService = function (restfactory,$q,$translate,key2string) {
 				parameter.namef = function(){
 					return key2string.key2string(parameter.stringkeyname,thisController.strings);
 				};
-				parameter.actions = [{action : "edit", name : $translate.instant("edit")},
-				  	    		     {action : "delete", name : $translate.instant("delete"), disabled : !parameter.deletable}
+				parameter.actions = [{action : "edit", namef : function(){ return $translate.instant("edit")}},
+				  	    		     {action : "delete", namef : function(){ return $translate.instant("delete")}, disabled : !parameter.deletable}
 				  				    ];
 				parameter.nameUnitf = function(){
 					var unit = "";

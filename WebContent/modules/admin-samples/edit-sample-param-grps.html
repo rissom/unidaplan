@@ -32,7 +32,7 @@
 			   ng-model = "editSampleParamGrpsCtrl.newNameL2">
 	</td>
 </tr>
-<tr ng-dblclick="editSampleParamGrpsCtrl.edit('DL1')">
+<tr ng-dblclick = "editSampleParamGrpsCtrl.edit('DL1')">
 	<td>{{'Description'|translate}} ({{editSampleParamGrpsCtrl.lang1}}):</td>
 	<td>
 		<span ng-hide = "editSampleParamGrpsCtrl.editDL1">{{editSampleParamGrpsCtrl.DescL1}}</span>
@@ -42,7 +42,7 @@
 			   ng-model = "editSampleParamGrpsCtrl.newDescL1">
 	</td>
 </tr>
-<tr ng-dblclick="editSampleParamGrpsCtrl.edit('DL2')">
+<tr ng-dblclick = "editSampleParamGrpsCtrl.edit('DL2')">
 	<td>{{'Description'|translate}} ({{editSampleParamGrpsCtrl.lang2}}):</td>
 	<td>
 		<span ng-hide = "editSampleParamGrpsCtrl.editDL2">{{editSampleParamGrpsCtrl.DescL2}}</span>
@@ -102,7 +102,7 @@
 				    </a>
 				    <ul class="dropdown-menu">
 				    	<li ng-repeat="action in grp.actions" ng-class="{disabled:action.disabled}">
-				        	<a ng-click="editSampleParamGrpsCtrl.performAction(grp,action)">{{action.name}}</a>
+				        	<a ng-click="editSampleParamGrpsCtrl.performAction(grp,action)">{{action.namef()}}</a>
 				        </li>
 				    </ul>
 	  			</div>
@@ -184,7 +184,7 @@
 				    </a>
 				    <ul class = "dropdown-menu">
 				    	<li ng-repeat = "action in parameter.actions" ng-class = "{disabled:action.disabled}">
-				        	<a ng-click = "editSampleParamGrpsCtrl.performPAction(parameter,action)">{{action.name}}</a>
+				        	<a ng-click = "editSampleParamGrpsCtrl.performPAction(parameter,action)">{{action.namef()}}</a>
 				        </li>
 				    </ul>
 	  			</div>

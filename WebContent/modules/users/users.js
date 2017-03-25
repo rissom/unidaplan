@@ -10,15 +10,30 @@ function userController(users,userService,$state,$stateParams,$translate) {
 	var addActions = function(){
 		angular.forEach(tc.users,function(user){
 			user.actions=[];
-			user.actions.push({action:"edit",name:$translate.instant("edit")});
+			user.actions.push({
+				action : "edit",
+				name   : function(){ return $translate.instant("edit"); }
+			});
 			if (user.blocked) {
-				user.actions.push({action:"unblock",name:$translate.instant("unblock")});
+				user.actions.push({
+					action : "unblock",
+					name   : function(){ return $translate.instant("unblock"); }
+				});
 			}else{
-				user.actions.push({action:"block",name:$translate.instant("block")});
+				user.actions.push({
+					action : "block",
+					name   : function(){ return $translate.instant("block"); }
+				});
 			}
-			user.actions.push({action:"resendToken",name:$translate.instant("resend token")});
+			user.actions.push({
+				action : "resendToken",
+				name   : function(){ return $translate.instant("resend token") }
+			});
 			if (user.deletable){
-				user.actions.push({action:"delete",name:$translate.instant("delete")});
+				user.actions.push({
+					action : "delete",
+					name   : function(){return $translate.instant("delete"); }
+				});
 			}
 		});
 	}
@@ -30,7 +45,7 @@ function userController(users,userService,$state,$stateParams,$translate) {
 	
 	
 	this.blockUser = function (user){
-		user.blocked=true;
+		user.blocked = true;
 		var promise = userService.blockUser(user);
 		addActions();
 	}
@@ -40,23 +55,23 @@ function userController(users,userService,$state,$stateParams,$translate) {
 	var thisController = this;
 	
 	
-	var reload=function() {
+	var reload = function() {
     	var current = $state.current;
     	var params = angular.copy($stateParams);
-    	params.newSearch=false;
+    	params.newSearch = false;
     	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
 	};
 	
 	
 	
 	this.addUser = function() {
-		this.edit=true;
+		this.edit = true;
 	};
 	
 	
 	
 	this.cancel = function() {
-		this.edit=false;
+		this.edit = false;
 	};
 	
 	
@@ -78,7 +93,7 @@ function userController(users,userService,$state,$stateParams,$translate) {
 	
 
 
-	this.performAction=function(action,user){
+	this.performAction = function(action,user){
 		switch (action.action){
 			case "block" 	  : this.blockUser(user); break;
 			case "edit" 	  : $state.go('editUser',{userID:user.id}); break;
@@ -104,17 +119,17 @@ function userController(users,userService,$state,$stateParams,$translate) {
 	
 
 	this.submitUser = function() {
-		var newUser=  { "fullname" : this.fullname,
-						"username" : this.username,
-						   "email" : this.email};
-		this.fullname="";
-		this.username="";
-		this.email="";
+		var newUser =  { "fullname" : this.fullname,
+						 "username" : this.username,
+						    "email" : this.email};
+		this.fullname = "";
+		this.username = "";
+		this.email = "";
 		var promise = userService.submitUser(newUser);
-		thisController.edit=false;
+		thisController.edit = false;
 		promise.then(
 			function(users){
-				thisController.users=users;
+				thisController.users = users;
 				addActions();
 			}, 
 			function(users){
@@ -126,7 +141,7 @@ function userController(users,userService,$state,$stateParams,$translate) {
 	
 	
 	this.unblockUser = function (user){
-		user.blocked=false;
+		user.blocked = false;
 		var promise = userService.unblockUser(user);
 		addActions();
 	}
@@ -146,7 +161,7 @@ angular.module('unidaplan').directive('username', function() {
 	    		}
 	    		var valid=true;
 	    		angular.forEach(scope.userCtrl.users, function(existinguser){
-	    			if (existinguser.username==viewValue)
+	    			if (existinguser.username == viewValue)
     				  	{
 	        		      	valid=false;
     				  	}

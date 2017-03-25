@@ -138,7 +138,7 @@
 				    </a>
 				    <ul class = "dropdown-menu">
 				    	<li ng-repeat = "action in parameter.actions" ng-class="{disabled:action.disabled}">
-				        	<a ng-click = "editSTParamsCtrl.performAction(parameter,action)">{{action.name}}</a>
+				        	<a ng-click = "editSTParamsCtrl.performAction(parameter,action)">{{action.namef()}}</a>
 				        </li>
 				    </ul>
 	  			</div>
