@@ -15,7 +15,7 @@ var checkboxParameter = function() {
 						
 			this.change = function() {
 				$scope.pupdate({parameter:$scope.parameter});
-			}
+			};
 						
 		},
 		controllerAs: 'checkboxParamCtrl'
