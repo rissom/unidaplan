@@ -1,0 +1,181 @@
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+/* source: http://stackoverflow.com/questions/11235206/twitter-bootstrap-form-file-element-upload-button */
+
+.caret-right {
+    border-bottom: 4px solid transparent;
+    border-top: 4px solid transparent;
+    border-left: 4px solid;
+    display: inline-block;
+    height: 0;
+    opacity: 1.0;
+    vertical-align: middle;
+    width: 0;
+}
+
+.ng-invalid.ng-dirty {
+	border-color: #FA787E;
+}
+
+.ng-valid.ng-dirty {
+	border-color: #78FA89;
+}
+
+
+.exptable    {
+	border: 1px;
+	margin-bottom: 5px;
+}
+
+.exptdtitle {
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	border-width: 1px;
+	border-style: solid;
+	border-color: #888888;
+	background-color: #F7F7F7;
+	text-align: center;
+	margin-left: auto;
+    margin-right: auto;
+}
+
+.exptd {
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	border-width: 1px;
+	border-style: solid;
+	border-color: #888888;
+}
+
+ol li {
+    list-style: outside none none;
+    padding-left: 10px;
+	padding-right: 10px;
+}
+
+ol {
+	padding:0px;
+	font-size: 0;
+}
+.exp_ol {
+	margin-bottom: 5px;
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+.exp_li {
+	vertical-align: top;
+	font-size: 14px;
+	padding-left: 0px;
+	padding-right: 0px;
+		margin-left: 0px;
+	margin-right: 0px;
+  	display: inline-block;
+  	align: center;
+  	border: 1px solid grey;
+}
+
+.exp_li2 {
+	font-size: 14px;
+	padding-left: 3px;
+	padding-right: 11px;
+	padding-top: 3px;
+  	padding-bottom: 3px;
+  	text-align: center;
+}
+
+
+.exp_li2.button_li {
+	height:40px;
+	vertical-align: middle;
+	line-height: 35px;
+}
+
+.exp_li2.title {
+	background-color: #F7F7F7;
+  	border-bottom: 1px solid grey;
+}
+
+.importtable {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.status{
+	padding: 7px;
+}
+
+
+.ok {
+	background-color: #88FF88;
+}
+
+.att {
+	background-color: #FFFF77;
+}
+
+.failed {
+	background-color: #FF8888;
+}
+
+img {  
+	border-style: none;
+}
+
+.noleftborder{
+	border-left: 0;
+}
+
+.sideways{
+	-moz-transform: rotate(90deg);
+	-ms-transform: rotate(90deg);
+	-o-transform: rotate(90deg);
+	-webkit-transform: rotate(90deg);
+	transform: rotate(90deg);
+}
+
+.menuusername
+{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 10em;
+}
+
+.parametertablehead{
+    font-weight: bold;
+    background-color: #F7F7F7;	    
+}
+
+.oddtablerow{
+	background-color: #07F7F7;	    
+}
+
+.parametertd{
+	padding-left: 10px;
+    padding-right: 10px;
+}
+
+.
+

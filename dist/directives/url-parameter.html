@@ -1,0 +1,1 @@
+<div><span ng-hide=parameter.editing><a ng-href={{parameter.value}} rel=noopener>{{parameter.value}}</a></span> <input ng-keyup=urlParamCtrl.keyUp($event.keyCode) ng-keydown=urlParamCtrl.keyDown($event.keyCode) ng-show=parameter.editing type=text ng-blur="parameter.editing = false" ng-model=urlParamCtrl.newValue validurl=""></div>

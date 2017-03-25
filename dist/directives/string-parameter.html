@@ -1,0 +1,1 @@
+<div><span ng-if=!parameter.editing>{{parameter.data.value}}</span> <input ng-keyup=stringParamCtrl.keyUp($event.keyCode) ng-keydown=stringParamCtrl.keyDown($event.keyCode) ng-if=parameter.editing ng-blur="parameter.editing = false" ng-model=stringParamCtrl.newValue type=text focusme=""> <span ng-show=parameter.unit>{{parameter.unitf()}}</span></div>
