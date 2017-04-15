@@ -64,6 +64,7 @@ INSERT INTO string_key_table VALUES (default, 'length');
 INSERT INTO string_key_table VALUES (default, 'example sample search');
 INSERT INTO string_key_table VALUES (default, 'example process search');
 INSERT INTO string_key_table VALUES (default, 'example sample process search');
+INSERT INTO string_key_table VALUES (default, 'baseline recipe');
 
 -- CREATE TABLE string_key_table (
 -- ID              INTEGER NOT NULL PRIMARY KEY,
@@ -199,6 +200,8 @@ INSERT INTO stringtable VALUES (default, 64, 'de', 'Beispiel Probensuche');
 INSERT INTO stringtable VALUES (default, 64, 'en', 'example sample search');
 INSERT INTO stringtable VALUES (default, 65, 'de', 'Beispiel Prozesssuche');
 INSERT INTO stringtable VALUES (default, 65, 'en', 'example process search');
+INSERT INTO stringtable VALUES (default, 66, 'de', 'Stadard Rezept');
+INSERT INTO stringtable VALUES (default, 66, 'en', 'baseline recipe');
 
  /* stringID        INTEGER NOT NULL PRIMARY KEY,
   string_key      INTEGER NOT NULL REFERENCES string_key_table,
@@ -571,7 +574,7 @@ INSERT INTO rightssampletypegroup (groupID,sampletype,permission,lastUser) VALUE
 --   lastUser        INTEGER REFERENCES users(ID)
 
 
-INSERT INTO samplerecipes(name,sampletype,position,lastuser) VALUES (26,1,1,1);  -- Standardsubstrat
+INSERT INTO samplerecipes(name,sampletype,position,lastuser) VALUES (66,1,1,1);  -- Standardsubstrat
 -- CREATE TABLE samplerecipes (   -- Rezepte für Objekte
 --   id              SERIAL PRIMARY KEY, 
 --   name            INTEGER NOT NULL REFERENCES string_key_table(id) ON DELETE CASCADE,
@@ -696,13 +699,13 @@ INSERT INTO searches (name, operation, type, owner) VALUES (66,true,3,1);
 --   lastUser        INTEGER REFERENCES users(ID)
 -- );
 
-INSERT INTO searchObject (search,otparameter,comparison,value) VALUES (1,3,2,'0.001');
-INSERT INTO searchObject (search,otparameter,comparison,value) VALUES (1,5,2,'0.0');
+INSERT INTO searchObject (search,otparameter,comparison,value) VALUES (1,3,4,'0.001');
+INSERT INTO searchObject (search,otparameter,comparison,value) VALUES (1,5,4,'0.0');
 -- CREATE TABLE searchObject (  -- Search requests for samples
 --   id              SERIAL PRIMARY KEY,
 --   search          INTEGER NOT NULL REFERENCES searches(ID) ON DELETE CASCADE,
 --   otparameter     INTEGER NOT NULL REFERENCES ot_parameters(ID) ON DELETE CASCADE,
---   comparison      INTEGER, -- 1:< , 2:> , 3:=, 4:not
+--   comparison      INTEGER, -- 0:< , 1:<=, 2:= , 3:>=, 4:>, 5:not
 --   value           VARCHAR (100),
 --   lastChange      TIMESTAMP,
 --   lastUser        INTEGER REFERENCES users(ID)
