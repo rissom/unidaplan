@@ -2,13 +2,13 @@
 		
 		
 		<!--  My searches -->
-		<div ng-show="openSearchCtrl.mySearches.length>0">
+		<div ng-show = "openSearchCtrl.mySearches.length>0">
 			<h3>
 				{{ 'My Searches' | translate }}
 			</h3>
 		
-			<table class="table">
-				<thead class=parametertablehead>
+			<table class = "table">
+				<thead class = parametertablehead>
 					<tr>
 						<td><b>Name</b></td>
 						<td> </td>
@@ -20,13 +20,18 @@
 							<a ui-sref="search({id:msearch.id})">{{msearch.namef()}}</a>
 						</td>
 						<td>
-							<div class="dropdown" uib-dropdown on-toggle="toggled(open)" ng-show="$root.admin">
-								<a class="dropdown-toggle" uib-dropdown-toggle>
+							<div class="dropdown"
+							 	 uib-dropdown 
+							 	 on-toggle = "toggled(open)" 
+							 	 ng-show = "$root.admin">
+								<a class = "dropdown-toggle" uib-dropdown-toggle>
 						  			{{'action'|translate}} &#x25BC;
 							    </a>
-							    <ul class="dropdown-menu">
-							    	<li ng-repeat="action in msearch.actions">
-							        	<a ng-click="openSearchCtrl.performAction(msearch,action)">{{action.name}}</a>
+							    <ul class = "dropdown-menu">
+							    	<li ng-repeat = "action in msearch.actions">
+							        	<a ng-click = "openSearchCtrl.performAction(msearch,action)">
+							        		{{ action.namef() }}
+							        	</a>
 							        </li>
 					    		</ul>
 			  				 </div>
@@ -37,10 +42,10 @@
 		</div>
 		
 		
-		<button type="button" 
-				class="btn btn-default"
-				ng-click="openSearchCtrl.addSearch()"
-				ng-show="$root.admin==true">
+		<button type = "button" 
+				class = "btn btn-default"
+				ng-click = "openSearchCtrl.addSearch()"
+				ng-show = "$root.admin == true">
 			{{'Add Search'|translate}}
 		</button>
 		
@@ -51,10 +56,10 @@
 
 
 		<!--  Other searches -->
-		<div ng-show="openSearchCtrl.otherSearches.length>0">
+		<div ng-show = "openSearchCtrl.otherSearches.length > 0">
 		<h3>
 			{{ 'Searches' | translate }}</h3>
-		<table class="table" ng-show="openSearchCtrl.otherSearches.length>0">
+		<table class = "table" ng-show = "openSearchCtrl.otherSearches.length > 0">
 			<thead class = parametertablehead>
 				<tr>
 					<td><b>Name</b></td>
@@ -64,7 +69,9 @@
 			<tbody>
 				<tr ng-repeat = "osearch in openSearchCtrl.otherSearches">
 					<td>
-						<a ui-sref = "search({id:osearch.id})">{{osearch.namef()}}</a>
+						<a ui-sref = "search({id:osearch.id})">
+							{{ osearch.namef() }}
+						</a>
 					</td>
 					<td>
 						<div 
@@ -77,7 +84,7 @@
 						    </a>
 						    <ul class = "dropdown-menu">
 						    	<li ng-repeat = "action in osearch.actions" ng-show = "$root.admin">
-						        	<a ng-click = "openSearchCtrl.performAction(osearch,action)">{{action.name}}</a>
+						        	<a ng-click = "openSearchCtrl.performAction(osearch,action)">{{action.namef()}}</a>
 						        </li>
 				    		</ul>
 		  				</div>
@@ -92,5 +99,5 @@
 		
 	
 	<!--  no searches -->
-	<div ng-show="openSearchCtrl.mySearches.length==0 && openSearchCtrl.otherSearches.length==0" >
+	<div ng-show = "openSearchCtrl.mySearches.length == 0 && openSearchCtrl.otherSearches.length == 0" >
 	{{'no searches available'|translate}}</div>

@@ -124,9 +124,9 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 	    		ptype.actions = [{ action  : "edit",     
 	    						   namef   : function(){ return $translate.instant("edit")}},
 	    		                 { action  : "duplicate",
-	    					       namef   : function(){return $translate.instant("duplicate")}},
+	    					       namef   : function(){return $translate.instant("duplicate");}},
 	    		                 { action  : "delete",   
-	    					       namef   : function(){return $translate.instant("delete")},
+	    					       namef   : function(){return $translate.instant("delete");},
 	    					       disabled: !ptype.deletable}];
 	    		angular.forEach(ptype.recipes, function(recipe) {
 	    			recipe.namef = function(){

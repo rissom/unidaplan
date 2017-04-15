@@ -42,7 +42,7 @@
 					<a class = "dropdown-toggle" uib-dropdown-toggle>
 			  			{{'action'|translate}} &#x25BC;
 				    </a>
-				    <ul class="dropdown-menu">
+				    <ul class = "dropdown-menu">	
 				    	<li ng-repeat = "action in sampleType.actions" 
 				    		ng-class = "{disabled:action.disabled}">
 				        	<a ng-click = "aSamplesCtrl.performAction(sampleType,action)">{{action.namef()}}</a>

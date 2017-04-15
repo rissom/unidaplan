@@ -3,34 +3,32 @@
 
 function openSearchController(restfactory,$translate,$rootScope,$scope,$state,$stateParams,searches,searchService) {
 	
-	var thisController=this;
+	var thisController = this;
 
-	this.searches=searches;
+	this.searches = searches;
 	
 	this.strings = [];
-	
+		
 	
 	// contains all searches of the current user
 	this.mySearches = [];
 	// contains all the searches that are not owned by me
-	this.otherSearches=[];
+	this.otherSearches = [];
 	
 	angular.forEach(this.searches, function(aSearch) {
-		if (aSearch.ownerid==$rootScope.userid) {
+		if (aSearch.ownerid == $rootScope.userid) {
 			thisController.mySearches.push(aSearch);
 		}else{
 			thisController.otherSearches.push(aSearch);
 		}
 	});
-
-
 	
 
 	
-	this.addSearch=function(){
-		var name={};
+	this.addSearch = function(){
+		var name = {};
         name[$translate.use()]=$translate.instant("New Search");
-		var promise=searchService.addSearch(name);
+		var promise = searchService.addSearch(name);
 		promise.then(function(rest){
 			$state.go("editSearch",{id:rest.data.id,newSearch:true});
 		},
@@ -42,11 +40,11 @@ function openSearchController(restfactory,$translate,$rootScope,$scope,$state,$s
 	
 	
 	  
-	this.performAction=function(search,action){
-		if (action.action==="edit") {
+	this.performAction = function(search,action){
+		if ( action.action === "edit" ) {
 			$state.go("editSearch",{id:search.id});
 		}
-		if (action.action=="delete") {
+		if ( action.action == "delete" ) {
 			var promise = searchService.deleteSearch(search);
 			promise.then(function(){
 				reload();
@@ -60,7 +58,7 @@ function openSearchController(restfactory,$translate,$rootScope,$scope,$state,$s
 	
 	
 	this.deleteSearch = function(search) {
-		var promise=searchService.deleteSearch(search);
+		var promise = searchService.deleteSearch(search);
 		promise.then(function(){
 				reload();
 			},
@@ -71,7 +69,7 @@ function openSearchController(restfactory,$translate,$rootScope,$scope,$state,$s
 	
 	
   
-	var reload=function() {
+	var reload = function() {
 		var current = $state.current;
 		var params = angular.copy($stateParams);
 		return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });

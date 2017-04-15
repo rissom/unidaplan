@@ -59,14 +59,17 @@ var searchService = function (restfactory,$q,$translate,key2string,languages) {
 		  	thisController.searches = rest.data.searches;
 		  	var strings = rest.data.strings;
 		  	angular.forEach(thisController.searches, function(search) {
-		  		search.nameLang=function(lang){
+		  		search.nameLang = function(lang){
 					return key2string.key2stringWithLangStrict(search.name,strings,lang);
 				};
-				search.namef=function(){
+				search.namef = function(){
 					return key2string.key2string(search.name,strings);
 				};
-				search.actions=[{action:"edit",name:$translate.instant("edit")},
-		    		            {action:"delete",name:$translate.instant("delete"),disabled:search.deletable}];
+				search.actions = [{ action  : "edit",
+								    namef   : function(){ console.log("ho"); return $translate.instant("edit"); }},
+		    		              { action  : "delete",
+								    namef   : function(){ return $translate.instant("delete"); },
+								   disabled : search.deletable }  ];
 			});
 			defered.resolve(thisController.searches);
 		});
