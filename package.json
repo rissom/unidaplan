@@ -32,6 +32,7 @@
     "vinyl-source-stream": "^1.1.0"
   },
   "devDependencies": {
+    "angular-translate": "^2.15.1",
     "gulp-preprocess": "^1.2.0",
     "gulp-util": "^3.0.7",
     "http-proxy-middleware": "^0.9.0"

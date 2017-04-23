@@ -63,7 +63,7 @@ INSERT INTO string_key_table VALUES (default, 'powder sample');
 INSERT INTO string_key_table VALUES (default, 'length');
 INSERT INTO string_key_table VALUES (default, 'example sample search');
 INSERT INTO string_key_table VALUES (default, 'example process search');
-INSERT INTO string_key_table VALUES (default, 'example sample process search');
+INSERT INTO string_key_table VALUES (default, 'example object specific parameter');
 INSERT INTO string_key_table VALUES (default, 'baseline recipe');
 
 -- CREATE TABLE string_key_table (
@@ -200,8 +200,10 @@ INSERT INTO stringtable VALUES (default, 64, 'de', 'Beispiel Probensuche');
 INSERT INTO stringtable VALUES (default, 64, 'en', 'example sample search');
 INSERT INTO stringtable VALUES (default, 65, 'de', 'Beispiel Prozesssuche');
 INSERT INTO stringtable VALUES (default, 65, 'en', 'example process search');
-INSERT INTO stringtable VALUES (default, 66, 'de', 'Stadard Rezept');
-INSERT INTO stringtable VALUES (default, 66, 'en', 'baseline recipe');
+INSERT INTO stringtable VALUES (default, 66, 'de', 'Beispiel Objektspezifischer Parameter');
+INSERT INTO stringtable VALUES (default, 66, 'en', 'example object specific parameter');
+INSERT INTO stringtable VALUES (default, 67, 'de', 'Standard Rezept');
+INSERT INTO stringtable VALUES (default, 67, 'en', 'baseline recipe');
 
  /* stringID        INTEGER NOT NULL PRIMARY KEY,
   string_key      INTEGER NOT NULL REFERENCES string_key_table,
@@ -574,7 +576,7 @@ INSERT INTO rightssampletypegroup (groupID,sampletype,permission,lastUser) VALUE
 --   lastUser        INTEGER REFERENCES users(ID)
 
 
-INSERT INTO samplerecipes(name,sampletype,position,lastuser) VALUES (66,1,1,1);  -- Standardsubstrat
+INSERT INTO samplerecipes(name,sampletype,position,lastuser) VALUES (67,1,1,1);  -- Standardsubstrat
 -- CREATE TABLE samplerecipes (   -- Rezepte für Objekte
 --   id              SERIAL PRIMARY KEY, 
 --   name            INTEGER NOT NULL REFERENCES string_key_table(id) ON DELETE CASCADE,
