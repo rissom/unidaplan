@@ -1,6 +1,6 @@
 # Unidaplan
 
-*What it is*
+## What is it?
 
 Unidaplan is a sample management software for scientists. This software is made for scientists who need to manage their samples, plan experiments and do processes on them. 
 
@@ -9,12 +9,10 @@ can be seen here (in german, sorry):
 
 https://www.youtube.com/watch?v=gAOdfen3yqU
 
-The software is NOT FINISHED yet. Allthough all basic functionality is there, there still are tons of bugs. The software
-is free to use for public research facilities and universities. But there will be a fee for private companies, once it is
-finished.
+The software is still a bit rough around the edges. Allthough all basic functionality is there, there are probably still bugs. The software is free to use for public research facilities and universities. But there will be a fee for private companies, once it is finished.
 
 
-*setting it up*
+##How to set it up
 
 You need an E-Mail account, an Apache Tomcat Web Application Server and an installed PostgreSQL database. Please enter all
 information in an Context.xml file which should be placed in the WebContent/META-INF directory. The file should have the
@@ -67,10 +65,17 @@ following content:
 > &nbsp;&nbsp; type = "java.lang.String"/&gt;  <br>           
 > &lt;/Context&gt;
 
-
 Also you need to initialize the database. This can be done by running the SQL scripts in the SQL directory. Go to shell and use:
 > psql -f definitions.sql <br/>
 > psql -f functions.sql <br/>
 > psql -f inserts.sql <br/>
 
-The first and only user is called "admin" and has the password "admin". When logged in go to menu "Admin." and select users. Then click "action"->"edit" in the row of the user "Administrator". Double-click the e-mail field and enter your e-mail. Press the button "back to users" at the top of the page. Click "action"->"resend token". If everything is set up right, you should receive an e-mail which contains a link that allows you to change name and password of the admin account. 
+If your instance does not work (address should be: http://yourservername.domain:8080/unidaplan/ ), you may need to specify the factory class for your database pool (i.e. Amazon Linux). Add the line:
+
+> factory = "org.apache.commons.dbcp.BasicDataSourceFactory"
+
+##Changing the password
+
+The first and only user is called ***admin*** and has the password ***admin***. 
+
+When logged in, go to menu "Admin." and select users. Then click "action"->"edit" in the row of the user "Administrator". Double-click the e-mail field and enter your e-mail. Press the button ***back to users*** at the top of the page. Click ***action***->***resend token***. If everything is set up right, you should receive an e-mail which contains a link that allows you to change name and password of the admin account. 
