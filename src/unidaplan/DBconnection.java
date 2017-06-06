@@ -31,7 +31,7 @@ public class DBconnection  {
 	    }
 	    catch ( NamingException ex ) {
 	    	System.err.println("Naming Exception");
-	    	System.err.println("DBconnection1: Cannot get connection: " + ex);
+	    	System.err.println("DBconnection: Cannot get connection: " + ex);
 	    	ex.printStackTrace();
 	    }
 	  }
