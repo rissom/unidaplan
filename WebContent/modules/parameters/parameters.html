@@ -87,7 +87,7 @@
 				    <ul class = "dropdown-menu">
 				    	<li ng-repeat = "action in parameter.actions" 
 				    		ng-class = "{disabled:action.disabled}">
-				        	<a ng-click = "parameterCtrl.performAction(parameter,action)">{{action.name}}</a>
+				        	<a ng-click = "parameterCtrl.performAction(parameter,action)">{{action.namef()}}</a>
 				        </li>
 				    </ul>
 	  			</div>

@@ -3,21 +3,21 @@
 
 function parameterController($scope,$state,$stateParams,$translate,parameterService,restfactory,parameters,languages){
   
-  var thisController=this;
+  var thisController = this;
   
-  this.languages=languages;
+  this.languages = languages;
   
-  this.lang1=$translate.instant(languages[0].name);
+  this.lang1 = $translate.instant(languages[0].name);
   
-  this.lang2=$translate.instant(languages[1].name);
+  this.lang2 = $translate.instant(languages[1].name);
   
-  this.lang1Key=languages[0].key;
+  this.lang1Key = languages[0].key;
   
-  this.lang2Key=languages[1].key;
+  this.lang2Key = languages[1].key;
   
-  this.parameters=parameters;
+  this.parameters = parameters;
   
-  this.dataTypes=["integer","float","measurement","string","long string","chooser","date","checkbox","timestamp","URL","somethingelse"];
+  this.dataTypes = ["integer","float","measurement","string","long string","chooser","date","checkbox","timestamp","URL","somethingelse"];
   
   
   
