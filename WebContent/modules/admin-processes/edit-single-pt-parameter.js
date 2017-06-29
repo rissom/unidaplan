@@ -56,9 +56,7 @@ function editSinglePTParameterController($state,$uibModal,$stateParams,$translat
     }
     
     this.unit = parameter.stringkeyunit > 0;
-    
-    this.titlefield = parameter.id_field;
-    
+        
    
   
     this.edit = function(field){
