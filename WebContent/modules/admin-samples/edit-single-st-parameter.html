@@ -128,9 +128,10 @@
 </tr>
 
  
-<tr ng-dblclick = "editSingleSTParameterCtrl.openFormulaModal()">
-	<td class = "parametertd">
-			{{'Formula'|translate}}
+<tr ng-show = "editSingleSTParameterCtrl.showFormula()"
+	ng-dblclick = "editSingleSTParameterCtrl.openFormulaModal()">
+	<td class = "parametertd" >
+			<div >{{'Formula'|translate}}</div>
 	</td>
 	<td>
 		<span ng-hide = "editSingleSTParameterCtrl.activeField === 'formula'">

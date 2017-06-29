@@ -122,6 +122,9 @@ function editSingleSTParameterController($state,$uibModal,
 	};
 
   	
+	this.showFormula = function(){
+		return !this.titlefield;
+	}
     
   
   	this.setHidden = function(){
