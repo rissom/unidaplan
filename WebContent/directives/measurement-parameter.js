@@ -28,8 +28,14 @@ var measurementParameter = function() {
 			
 			this.keyDown = function(keyCode) {
 				if (keyCode===9) {		// Tab key pressed
-					$scope.parameter.editing = false; 
-					$scope.parameter.data.value = this.newValue;
+					$scope.parameter.editing = false;
+					if ($scope.parameter.data == undefined){
+						$scope.parameter.data = {value : this.newValue,
+												 error : this.newError};
+					} else{
+						$scope.parameter.data.value = this.newValue;
+						$scope.parameter.data.error = this.newError;
+					}
 					$scope.parameter.data.error = this.newError;
 					$scope.pupdate({parameter:$scope.parameter});
 				}
