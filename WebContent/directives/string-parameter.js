@@ -36,12 +36,14 @@ var stringParameter = function() {
 				}
 			}
 			
-			
+			this.hello = function(){
+				console.log("hello");
+			}
 			
 			this.keyDown = function(keyCode) {
 				if (keyCode===9) {		// Tab key pressed
-					$scope.parameter.editing = false; 
-					$scope.parameter.data.value = thisController.newValue;
+					$scope.parameter.editing = false;
+					$scope.parameter.data = {value:thisController.newValue};
 					$scope.pupdate({parameter:$scope.parameter});	
 				}
 			}
