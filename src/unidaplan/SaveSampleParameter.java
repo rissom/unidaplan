@@ -92,8 +92,10 @@ import expr.Variable;
 			try{
 				pStmt = dBconn.conn.prepareStatement( 			
 						   "SELECT "
-						 + "	paramdef.datatype, otp.id_field FROM Ot_parameters otp \n"
-						 + "JOIN paramdef ON otp.definition=paramdef.id \n"
+						 + "  paramdef.datatype, "
+						 + "  otp.id_field "
+						 + "FROM Ot_parameters otp "
+						 + "JOIN paramdef ON otp.definition = paramdef.id "
 						 + "WHERE otp.id = ?");
 			   	pStmt.setInt(1, pid);
 			   	JSONObject answer = dBconn.jsonObjectFromPreparedStmt(pStmt);
@@ -101,6 +103,7 @@ import expr.Variable;
 				datatype = answer.getInt("datatype");
 				titleParameter = answer.getBoolean("id_field");
 				
+				// delete any old values 
 				pStmt = dBconn.conn.prepareStatement( 			
 						   "DELETE FROM "
 						 + "  sampledata "
@@ -109,6 +112,7 @@ import expr.Variable;
 			   	pStmt.setInt(2, sampleID);
 			   	pStmt.executeUpdate();
 			   	pStmt.close();
+
 			} catch (SQLException e) {
 				System.err.println("SaveSampleParameter: Problems with SQL query");
 				status = "Problems with SQL query";
@@ -125,7 +129,8 @@ import expr.Variable;
 			// differentiate according to type
 			// Datatype        INTEGER NOT NULL,  
 			// 1: integer, 2: float, 3: measurement, 4: string, 5: long string 
-			// 6: chooser, 7: date+time, 8: checkbox 9:timestring 10: URL
+			// 6: chooser, 7: date+time, 8: checkbox 9:timestring, 10: URL 
+			// 11: email, 12: sample
 			try {	
 				JSONObject data = new JSONObject();
 				Boolean needsRecalc = false;
@@ -202,6 +207,11 @@ import expr.Variable;
 			        			data.put("value", inData.getString("value"));
 			        		}
 		        			break;
+		        			
+			        case 12: if (inData.has("id") && !inData.isNull("id")){ // sample
+			        			data.put("id", inData.getInt("id"));
+	        		}
+        			break;
 					} // end of switch Statement
 					
 					pStmt = dBconn.conn.prepareStatement( 			// Integer values
@@ -310,10 +320,11 @@ import expr.Variable;
 					// check for conflicts in titlenames
 					if (titleParameter){
 						pStmt = dBconn.conn.prepareStatement(
-									  "SELECT Count(id) FROM samplenames " 
+									  "SELECT Count(id) "
+									+ "FROM samplenames " 
 									+ "WHERE "
-									+ "	name =  (SELECT name FROM samplenames WHERE id = ? ) AND "
-									+ "	typeid = (SELECT typeid FROM samplenames WHERE id = ? ) ");
+									+ "	 name =  (SELECT name FROM samplenames WHERE id = ? ) AND "
+									+ "	 typeid = (SELECT typeid FROM samplenames WHERE id = ? ) ");
 						pStmt.setInt(1,sampleID);
 						pStmt.setInt(2,sampleID);
 						if ( dBconn.getSingleIntValue(pStmt) > 1 ){

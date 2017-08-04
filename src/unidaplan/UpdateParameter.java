@@ -18,7 +18,7 @@ import org.json.JSONObject;
 	  public void doPut(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {		
 		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
+		int userID = authentificator.GetUserID(request,response);
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
 	    String status = "ok";
@@ -61,15 +61,23 @@ import org.json.JSONObject;
 					int dt = 0;
 					for (int i = 0; i < Unidatoolkit.Datatypes.length; i++){
 						if (Unidatoolkit.Datatypes[i].equalsIgnoreCase(datatype)){
-							dt=i;
+							dt = i;
 						}
 					}
 					pStmt = dBconn.conn.prepareStatement(
-							"UPDATE paramdef SET datatype=? WHERE id=?");
+							"UPDATE paramdef SET datatype = ? WHERE id = ?");
 					pStmt.setInt(1,dt);
 					pStmt.setInt(2,parameterID);				
 					pStmt.executeUpdate();
-					pStmt.close();	
+					pStmt.close();
+					
+					if (!datatype.equalsIgnoreCase("sample")){
+						pStmt = dBconn.conn.prepareStatement(
+								"UPDATE paramdef SET sampletype = NULL WHERE id = ?");
+						pStmt.setInt(1,parameterID);				
+						pStmt.executeUpdate();
+						pStmt.close();
+					}
 				
 				}
 			    
@@ -110,6 +118,19 @@ import org.json.JSONObject;
 				}
 				
 				
+				if (jsonIn.has("sampletype")){
+					 int newSampletype = jsonIn.getInt("sampletype");
+
+					
+					// change sampletype of parameter
+					 pStmt = dBconn.conn.prepareStatement(
+								"UPDATE paramdef SET sampletype = ? WHERE id = ?");
+					 pStmt.setInt(1, newSampletype);
+					 pStmt.setInt(2, parameterID);
+					 pStmt.executeUpdate();
+					 pStmt.close();
+				}
+				
 				if (jsonIn.has("description")){
 					newDesc = jsonIn.getJSONObject("description");
 					String[] descriptions = JSONObject.getNames(newDesc);
@@ -122,7 +143,7 @@ import org.json.JSONObject;
 					
 					// if it does not exist: create a new one
 					if (descriptionKey < 1){ 
-						descriptionKey = dBconn.createNewStringKey(newUnit.getString(descriptions[0]));
+						descriptionKey = dBconn.createNewStringKey(newDesc.getString(descriptions[0]));
 						pStmt = dBconn.conn.prepareStatement(
 								"UPDATE paramdef SET description = ? WHERE id = ?");
 						pStmt.setInt(1,descriptionKey);
@@ -173,7 +194,7 @@ import org.json.JSONObject;
 					if (unitKey < 1){ 
 						unitKey = dBconn.createNewStringKey(newUnit.getString(units[0]));
 						pStmt = dBconn.conn.prepareStatement(
-								"UPDATE paramdef SET stringkeyunit = ? WHERE id = ?");
+								"UPDATE paramdef SET (stringkeyunit,sampletype) = (?,NULL) WHERE id = ?");
 						pStmt.setInt(1,unitKey);
 						pStmt.setInt(2,parameterID);
 						pStmt.executeUpdate();
@@ -208,7 +229,7 @@ import org.json.JSONObject;
 					
 				if (jsonIn.has("regex")){
 					pStmt = dBconn.conn.prepareStatement(
-							"UPDATE paramdef SET regex=? WHERE id=?");
+							"UPDATE paramdef SET (regex,sampletype) = (?,NULL) WHERE id = ?");
 					pStmt.setString(1, jsonIn.getString("regex"));
 					pStmt.setInt(2,parameterID);				
 					pStmt.executeUpdate();
@@ -218,7 +239,7 @@ import org.json.JSONObject;
 				
 				if (jsonIn.has("min")){
 					pStmt = dBconn.conn.prepareStatement(
-							"UPDATE paramdef SET min=? WHERE id=?");
+							"UPDATE paramdef SET (min,sampletype) = (?,NULL) WHERE id = ?");
 					if (jsonIn.optString("min").equals("")){
 						pStmt.setNull(1, java.sql.Types.DOUBLE);
 					} else {
@@ -231,7 +252,7 @@ import org.json.JSONObject;
 		
 				if (jsonIn.has("max")){
 					pStmt=dBconn.conn.prepareStatement(
-							"UPDATE paramdef SET max=? WHERE id=?");
+							"UPDATE paramdef SET (max,sampletype) = (?,NULL) WHERE id = ?");
 					if (jsonIn.optString("max").equals("")){
 						pStmt.setNull(1, java.sql.Types.DOUBLE);
 					} else {

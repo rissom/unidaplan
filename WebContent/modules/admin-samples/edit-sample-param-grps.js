@@ -1,7 +1,8 @@
 (function(){
   'use strict';
 
-function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,$scope,avParameters,restfactory,sampleService,sampleType,languages,avSampleTypeService){
+function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,$scope,
+			avParameters,restfactory,sampleService,sampleType,languages,avSampleTypeService){
   
   var thisController = this;
     
@@ -32,7 +33,9 @@ function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
   this.DescL2 = sampleType.descLang(languages[1].key);
   
   this.newDescL2 = sampleType.descLang(languages[1].key);
-    
+  
+  thisController.useAsParam = sampleType.useAsParam;
+  
   this.lang1 = $translate.instant(languages[0].name);
   
   this.lang2 = $translate.instant(languages[1].name);
@@ -100,10 +103,10 @@ function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
 	  var fieldType = "name";
 	  var lang = "";
 	  switch (field){
-	      case "NL1": fieldType="name"; value=thisController.newNameL1; lang=languages[0].key; break;
-	      case "NL2": fieldType="name"; value=thisController.newNameL2; lang=languages[1].key;break;
-	      case "DL1": fieldType="description"; value=thisController.newDescL1; lang=languages[0].key; break;
-	      case "DL2": fieldType="description"; value=thisController.newDescL2; lang=languages[1].key; break;
+	      case "NL1": fieldType = "name"; value = thisController.newNameL1; lang = languages[0].key; break;
+	      case "NL2": fieldType = "name"; value = thisController.newNameL2; lang = languages[1].key;break;
+	      case "DL1": fieldType = "description"; value = thisController.newDescL1; lang = languages[0].key; break;
+	      case "DL2": fieldType = "description"; value = thisController.newDescL2; lang = languages[1].key; break;
 	      default: console.log("no field given!");
 	  }
 	  var promise = avSampleTypeService.updateSampleTypeData(sampleType.id,fieldType,value,lang);

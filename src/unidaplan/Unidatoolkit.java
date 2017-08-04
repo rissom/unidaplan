@@ -71,7 +71,7 @@ public class Unidatoolkit {
     
     
     public static String[] Datatypes={"undefined","integer","float","measurement","string",
-    	"longstring","chooser","date","checkbox","timestamp","url","email"};
+    	"longstring","chooser","date","checkbox","timestamp","url","email","sample"};
     
     
     

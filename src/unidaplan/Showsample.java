@@ -189,26 +189,27 @@ public class Showsample extends HttpServlet {
 			 		  + "  op.id_field, "
 			 		  + "  paramdef.format, "
 			 		  + "  paramdef.stringkeyunit AS unit, "
+			 		  + "  sampletype, "
 			 		  + "  op.definition "
 					  + "FROM ot_parameters op "
 					  + "JOIN ot_parametergrps ON (op.Parametergroup = ot_parametergrps.ID) "
-					  + "JOIN paramdef ON (paramdef.id=op.definition) "
+					  + "JOIN paramdef ON (paramdef.id = op.definition) "
 					  + "LEFT JOIN sampledata sd ON "
 					  + "	(sd.objectid = ? AND sd.ot_parameter_id = op.id AND hidden = FALSE) "
 					  + "WHERE (op.objecttypesID = ? AND op.id_field = false AND op.hidden=false)");
 			pStmt.setInt(1,sampleID);
 			pStmt.setInt(2,typeid);
 			JSONArray parameters = dBconn.jsonArrayFromPreparedStmt(pStmt);
-			if (parameters.length()>0 && parametergrps != null && parametergrps.length() > 0) {
+			if (parameters.length() > 0 && parametergrps != null && parametergrps.length() > 0) {
 				for (int j = 0; j < parametergrps.length(); j++){
 					JSONArray prmgrpprms = new JSONArray();
 					JSONObject prmgrp = parametergrps.getJSONObject(j);
 		      		stringkeys.add(Integer.toString(prmgrp.getInt("paramgrpkey")));				
 			      	for (int i = 0; i < parameters.length(); i++) {
-			      		JSONObject tParam=(JSONObject) parameters.get(i);
+			      		JSONObject tParam = (JSONObject) parameters.get(i);
 			      		stringkeys.add(Integer.toString(tParam.getInt("namekey")));
-			      		if (tParam.has("parametergroup")&&
-			      			tParam.getInt("parametergroup")==prmgrp.getInt("parametergroup")){		      			
+			      		if (tParam.has("parametergroup") &&
+			      			tParam.getInt("parametergroup") == prmgrp.getInt("parametergroup")){		      			
 				      		if (tParam.has("unit")){ 
 				      			stringkeys.add(Integer.toString(tParam.getInt("unit")));
 				      		}
@@ -230,6 +231,34 @@ public class Showsample extends HttpServlet {
 				      		if (datatype>3 && tParam.has("unit")) {
 			      				tParam.remove("unit");
 		      				}
+				      		if (datatype == 12) {	// sampletype 
+				      			pStmt = dBconn.conn.prepareStatement(
+				      					  "SELECT "
+				      					+ "  id,"
+				      					+ "  name "
+				      					+ "FROM samplenames "
+				      					+ "WHERE typeid = ? ORDER by name");
+				      			pStmt.setInt(1, tParam.getInt("sampletype"));
+				      			JSONArray pvalues = dBconn.jsonArrayFromPreparedStmt(pStmt);
+				      			tParam.put("possiblesamples", pvalues);
+				      			pStmt.close();
+				      							      			
+//				      			pStmt = dBconn.conn.prepareStatement(
+//				      					  "SELECT "
+//				      					+ "  id,"
+//				      					+ "  name "
+//				      					+ "FROM samplenames "
+//				      					+ "WHERE typeid = ? AND id = ?");
+//				      			pStmt.setInt(1, tParam.getInt("sampletype"));
+//				      			pStmt.setInt(2, tParam.getJSONObject("data").getInt("id"));
+//				      			JSONArray value = dBconn.jsonArrayFromPreparedStmt(pStmt);
+//				      			tParam.put("value", value);
+//				      			pStmt.close();
+				      			
+		      				}
+				      		if (datatype != 12){
+				      			tParam.remove("sampletype");
+				      		}
 		      				tParam.remove("definition");
 						    prmgrpprms.put(tParam);
 			      		}

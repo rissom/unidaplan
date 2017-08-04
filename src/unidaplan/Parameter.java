@@ -44,6 +44,7 @@ public class Parameter extends HttpServlet {
 				+ "    min,"
 				+ "    max,"
 				+ "    description, "
+				+ "	   sampletype, "
 				+ "    max(blabla.count) IS NULL as deletable "
 				+ "FROM paramdef "
 				+ "LEFT JOIN "

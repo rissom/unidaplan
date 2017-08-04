@@ -4,7 +4,7 @@
 var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 // How to build the ActivityService using the .service method
 
-	var thisController=this;
+	var thisController = this;
 	this.recentSamples = [];
 	this.types = [];
 	this.strings =[];

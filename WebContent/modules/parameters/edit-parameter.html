@@ -102,7 +102,7 @@
     </td>
 </tr>
 
-<tr ng-dblclick = "editParamCtrl.edit('format')" ng-show="editParamCtrl.showFormat()">
+<tr ng-dblclick = "editParamCtrl.edit('format')" ng-show = "editParamCtrl.showFormat()">
 <td>{{'Format'|translate}}</td>
 	<td><span ng-hide = "editParamCtrl.editFormat">{{editParamCtrl.format}}</span>
 		<input ng-show = "editParamCtrl.editFormat" 
@@ -153,6 +153,18 @@
 			   >
 	</td>
 </tr>
+
+<tr ng-show = "editParamCtrl.dataType == 'sample'" >
+	<td>{{'Sampletype'|translate}}</td>
+	<td>
+		<select class = "input-sm"
+				ng-options = "stype as stype.namef() for stype in editParamCtrl.sampleTypes"
+				ng-model = "editParamCtrl.sampleType"
+				ng-change = "editParamCtrl.update('sampletype',editParamCtrl.sampleType.id)">
+	    </select>
+	</td>
+</tr>
+
 <!-- 
 <tr ng-dblclick="editParamCtrl.edit('min')" ng-show="editParamCtrl.showMinMaxTimestamp()">
 <td>{{'Minimum'|translate}}</td>
@@ -183,12 +195,12 @@
 
 
 
-<div ng-show="editParamCtrl.dataType == 'chooser'">
+<div ng-show = "editParamCtrl.dataType == 'chooser'">
 	<h4>{{'Possible values'|translate}}</h4>
 	
-	<table id="table-container">
-	    <tbody data-ng-model="possibleValues" data-as-sortable="dragControlListeners">
-		    <tr ng-repeat="item in possibleValues" as-sortable-item style="padding: 7px; white-space:nowrap" >
+	<table id = "table-container">
+	    <tbody data-ng-model = "possibleValues" data-as-sortable = "dragControlListeners">
+		    <tr ng-repeat = "item in possibleValues" as-sortable-item style = "padding: 7px; white-space : nowrap" >
 		        <td as-sortable-item-handle>
 		         	<span ng-hide = "item.edit" ng-dblclick = "item.edit=true">
 		        	<span class = "glyphicon glyphicon-menu-hamburger">&nbsp;</span> 

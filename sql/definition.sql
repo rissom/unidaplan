@@ -74,11 +74,13 @@ CREATE TABLE paramdef ( -- definition of parameters
   datatype		  	INTEGER NOT NULL,  
   -- 1: integer, 2: float, 3: measurement, 4: string, 5: long string 
   -- 6: chooser, 7: date+time, 8: checkbox 9:timestamp 10: URL
+  -- 11: an email --12: a sample
   description	    INTEGER REFERENCES string_key_table(ID),
   format          VARCHAR (20),
   regex           VARCHAR (200),
   min             NUMERIC,
   max             NUMERIC,
+  sampletype      INTEGER REFERENCES objecttypes,
   lastChange      TIMESTAMP,
   lastUser        INTEGER REFERENCES users(ID) ON DELETE SET NULL
 );
@@ -550,7 +552,12 @@ FROM (
   SELECT 
       samples.id, 
       CASE WHEN pd.datatype = 4 THEN sdata.data ->> 'value'
-           ELSE to_char((sdata.data ->> 'value')::float, pd.format) 
+           ELSE CASE WHEN pd.format IS Null
+              THEN
+              to_char((sdata.data ->> 'value')::float,'999999999')
+              ELSE
+                  to_char((sdata.data ->> 'value')::float, pd.format)
+                END
       END AS nameSubString,
       ot.id as typeid,
       otp.pos

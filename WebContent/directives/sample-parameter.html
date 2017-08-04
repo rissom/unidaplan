@@ -1,0 +1,16 @@
+<div>
+<span ng-hide = "parameter.editing">{{sampleParamCtrl.newValue.name}}
+</span>
+<a ui-sref="sample({sampleID:parameter.data.id})">
+<span ng-hide = "parameter.editing || parameter.data.id==null" class="glyphicon glyphicon-share">
+</span>
+</a>
+<select 						   
+	ng-show = "parameter.editing"
+	ng-blur = "sampleParamCtrl.blur()"
+    ng-model = "sampleParamCtrl.newValue"
+    ng-options = "item.name for item in parameter.possiblesamples"
+    ng-change = "sampleParamCtrl.update()"
+    class = "input-sm">
+</select>
+</div>

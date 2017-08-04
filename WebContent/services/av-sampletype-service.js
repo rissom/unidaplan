@@ -62,12 +62,13 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	
 	
 	this.getSampleTypeParamGrps = function(sampleTypeID){
-		var defered=$q.defer();
+		var defered = $q.defer();
 	    var promise = restfactory.GET("sample-type-param-grps?sampletypeid="+sampleTypeID);
 	    promise.then(function(rest) {
 	    	thisController.sampleType = rest.data;
+	    	if (thisController.sampleType == undefined) {thisController.sampleType={}}
 	    	thisController.strings = rest.data.strings;
-	    	thisController.sampleType.nameLang=function(lang){
+	    	thisController.sampleType.nameLang = function(lang){
     			return (key2string.key2stringWithLangStrict(thisController.sampleType.string_key,thisController.strings,lang));
 	    	};
 	    	thisController.sampleType.descLang=function(lang){
@@ -126,7 +127,7 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	    	thisController.sampleTypes = rest.data.sampletypes;
 		    thisController.strings = rest.data.strings;
 	    	angular.forEach(thisController.sampleTypes,function(sampleType) {
-	    		sampleType.namef=function(){
+	    		sampleType.namef = function(){
 					return (key2string.key2string(sampleType.string_key,thisController.strings));
 				};
 	    		sampleType.nameLang = function(lang){

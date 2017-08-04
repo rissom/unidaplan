@@ -45,7 +45,10 @@
 				<email-parameter parameter = parameter pupdate = "pupdate({parameter:parameter})">
 				</email-parameter>
 			</div>
-			
+			<div ng-if="parameter.datatype == 'sample'">
+				<sample-parameter  parameter = parameter pupdate = "pupdate({parameter:parameter})">
+				</sample-parameter>
+			</div>	
 		</td>
 	</tr>
 	<tr>
