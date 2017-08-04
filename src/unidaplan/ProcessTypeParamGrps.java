@@ -74,7 +74,7 @@ public class ProcessTypeParamGrps extends HttpServlet {
 	           	pStmt = dBconn.conn.prepareStatement( // not implemented in frontend yet
 	     		  	       "SELECT id, position, name FROM processtypegroups");
 				processTypeGrps=dBconn.jsonArrayFromPreparedStmt(pStmt);
-				if (processTypeGrps.length()>0) {
+				if (processTypeGrps.length() > 0) {
 	           		for (int j=0; j<processTypeGrps.length();j++) {
 	           			stringkeys.add(Integer.toString(processTypeGrps.getJSONObject(j).getInt("name")));
 	           		}
@@ -87,10 +87,10 @@ public class ProcessTypeParamGrps extends HttpServlet {
 						 + "WHERE pgs.processtype=? "
 						 + "GROUP BY pgs.id ");
 	   			pStmt.setInt(1, processTypeID);
-	   			parameterGrps=dBconn.jsonArrayFromPreparedStmt(pStmt); // get ResultSet from the database using the query
+	   			parameterGrps = dBconn.jsonArrayFromPreparedStmt(pStmt); // get ResultSet from the database using the query
 	
 	           	if (parameterGrps.length()>0) {
-	           		for (int j=0; j<parameterGrps.length();j++) {
+	           		for (int j = 0; j < parameterGrps.length(); j++) {
 	           			stringkeys.add(Integer.toString(parameterGrps.getJSONObject(j).getInt("stringkey")));
 	           		}
 	           	}
