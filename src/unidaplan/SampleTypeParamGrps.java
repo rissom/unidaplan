@@ -126,7 +126,9 @@ public class SampleTypeParamGrps extends HttpServlet {
 	           	if (titleParameters.length() > 0) {
 	           		for (int j=0; j<titleParameters.length();j++) {
 	           			stringkeys.add(Integer.toString(titleParameters.getJSONObject(j).getInt("name")));
-	           			stringkeys.add(Integer.toString(titleParameters.getJSONObject(j).getInt("description")));
+	           			if (titleParameters.getJSONObject(j).has("description")){	           				
+	           				stringkeys.add(Integer.toString(titleParameters.getJSONObject(j).getInt("description")));
+	           			}
 	           		}
 	           	}
 	     
