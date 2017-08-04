@@ -49,37 +49,34 @@ public class DeleteSampleType extends HttpServlet {
 				        	description = ot.getInt("description");
 				        } else description = 0;
 						pStmt.close();
-						dBconn.conn.setAutoCommit(false);
 				  
-					 	if (sampleTypeID > 0){
-					 		// delete the parameters
-					        pStmt = dBconn.conn.prepareStatement(	
-					        	"DELETE FROM ot_parameters WHERE objecttypesid = ?");
-							pStmt.setInt(1,sampleTypeID);
-							pStmt.executeUpdate();
-							pStmt.close();
-							
-							// delete the sampletype
-					        pStmt = dBconn.conn.prepareStatement(	
-					        	"DELETE FROM objecttypes WHERE id = ?");
-							pStmt.setInt(1,sampleTypeID);
-							pStmt.executeUpdate();
-							pStmt.close();
-						}
+					 	
+				 		// delete the parameters
+				        pStmt = dBconn.conn.prepareStatement(	
+				        	"DELETE FROM ot_parameters WHERE objecttypesid = ?");
+						pStmt.setInt(1,sampleTypeID);
+						pStmt.executeUpdate();
+						pStmt.close();
+						
+						
+						// delete the sampletype
+				        pStmt = dBconn.conn.prepareStatement(	
+				        	"DELETE FROM objecttypes WHERE id = ?");
+						pStmt.setInt(1,sampleTypeID);
+						pStmt.executeUpdate();
+						pStmt.close();
 		 			
-					 	if ( sampleTypeID > 0 ){			
-							// delete the stringkeys
-					        pStmt = dBconn.conn.prepareStatement(
-					        		  "DELETE FROM "
-					        		+ "   string_key_table "
-					        		+ "WHERE id IN (?,?)");
-							pStmt.setInt(1,name);
-							pStmt.setInt(2,description);
-							pStmt.executeUpdate();
-							pStmt.close();
-						}
-				   
-							dBconn.conn.rollback();
+					 		
+						// delete the stringkeys
+				        pStmt = dBconn.conn.prepareStatement(
+				        		  "DELETE FROM "
+				        		+ "   string_key_table "
+				        		+ "WHERE id IN (?,?)");
+						pStmt.setInt(1,name);
+						pStmt.setInt(2,description);
+						pStmt.executeUpdate();
+						pStmt.close();
+						
 					} 
 		 		
 			    } else {
