@@ -198,7 +198,7 @@ function sampleController(sample,$state,$stateParams,$uibModal,$filter,types,sam
 	
 	this.upload = function(element) {
 		thisController.file=element.files[0].name;
-		var file=element.files[0].name;
+		var file = element.files[0].name;
 		var xhr = new XMLHttpRequest();
 		xhr.addEventListener('load', function(event) {
 			reload();
@@ -212,10 +212,6 @@ function sampleController(sample,$state,$stateParams,$uibModal,$filter,types,sam
 		xhr.send(formData);
     };
 
-	
-	
-	this.updateSampleParameter = sampleService.saveSampleParameter;
-	
 	
 	
 	var reload = function() {

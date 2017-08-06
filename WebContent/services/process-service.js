@@ -228,8 +228,7 @@ var processService = function (restfactory,$q,$translate,key2string) {
 	
 
   	this.savePOParameter = function(parameter) {
-  		console.log ("parameter:",parameter)
-  		var json = {parameterid:parameter.parameterid, opid:parameter.opid, data:{value:parameter.data.value}};
+  		var json = {parameterid:parameter.parameterid, opid:parameter.opid, data:parameter.data};
   		if ("date" in parameter.data) {
 			json.data.date = parameter.data.date;
 			json.data.tz = parameter.data.tz;
@@ -243,7 +242,7 @@ var processService = function (restfactory,$q,$translate,key2string) {
 	
   	
 	this.saveParameter = function(processid,parameter) {
-		var json = {processid:processid, parameterid:parameter.id, data:{value:parameter.data.value}};
+		var json = {processid:processid, parameterid:parameter.id, data:parameter.data};
 		if ("date" in parameter.data) {
 			json.data.date = parameter.data.date;
 			json.data.tz = parameter.data.tz;
@@ -257,7 +256,7 @@ var processService = function (restfactory,$q,$translate,key2string) {
 	
 	
 	this.saveProcessRecipeParameter = function(processid,parameter) {
-		var json = {processid:processid, parameterid:parameter.id, data:{value:parameter.data.value}};
+		var json = {processid:processid, parameterid:parameter.id, data:parameter.data};
 		if ("date" in parameter.data) {
 			json.data.date = parameter.data.date;
 			json.data.tz = parameter.data.tz;

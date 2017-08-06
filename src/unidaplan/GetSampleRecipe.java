@@ -138,13 +138,14 @@ public class GetSampleRecipe extends HttpServlet {
 				    	+ "  parametergroup, "
 				    	+ "  compulsory, "
 				    	+ "  ot_parameters.pos, "
-						+ "  ot_parameters.stringkeyname,  "
+						+ "  COALESCE (ot_parameters.stringkeyname, paramdef.stringkeyname) AS stringkeyname, "
 						+ "  a.parameter, "
 						+ "  a.data, "
 						+ "  ot_parametergrps.id AS pgrpid, " 
 						+ "  ot_parametergrps.stringkey as parametergrp_key, "
 						+ "  st.description, "
 						+ "  paramdef.datatype, "
+						+ "  paramdef.sampletype,"
 						+ "  paramdef.stringkeyunit as unit, "
 						+ "  ot_parameters.definition "
 						+ "FROM ot_parameters "
@@ -152,7 +153,7 @@ public class GetSampleRecipe extends HttpServlet {
 						+ "JOIN paramdef ON (paramdef.id = ot_parameters.definition) "
 						+ "LEFT JOIN samplerecipedata a ON "
 						+ "  (a.recipe = ? AND a.parameter = ot_parameters.id AND hidden = FALSE) "
-						+ "JOIN String_key_table st ON st.id = ot_parameters.stringkeyname "
+						+ "LEFT JOIN String_key_table st ON st.id = ot_parameters.stringkeyname "
 						+ "WHERE (ot_parameters.objecttypesid = ? "
 						+ "		 AND ot_parameters.id_field = FALSE AND ot_parameters.hidden = FALSE) "
 						+ "ORDER BY pos");
@@ -219,6 +220,21 @@ public class GetSampleRecipe extends HttpServlet {
 					      				break;
 					      		case 10: tParam.put("datatype","URL");
 					      				break;
+					      		case 11: tParam.put("datatype","email");
+	      								break;
+					      		case 12:	// sampletype 
+						      				tParam.put("datatype", "sample"); 
+							      			pStmt = dBconn.conn.prepareStatement(
+							      					  "SELECT "
+							      					+ "  id,"
+							      					+ "  name "
+							      					+ "FROM samplenames "
+							      					+ "WHERE typeid = ? ORDER by name");
+							      			pStmt.setInt(1, tParam.getInt("sampletype"));
+							      			JSONArray possvalues = dBconn.jsonArrayFromPreparedStmt(pStmt);
+							      			tParam.put("possiblesamples", possvalues);
+							      			pStmt.close();
+								      		break;	
 					      		default: tParam.put("datatype","undefined"); 
 					      				break;	    
 				      		}

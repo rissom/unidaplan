@@ -189,7 +189,7 @@ public class Showsample extends HttpServlet {
 			 		  + "  op.id_field, "
 			 		  + "  paramdef.format, "
 			 		  + "  paramdef.stringkeyunit AS unit, "
-			 		  + "  sampletype, "
+			 		  + "  paramdef.sampletype, "
 			 		  + "  op.definition "
 					  + "FROM ot_parameters op "
 					  + "JOIN ot_parametergrps ON (op.Parametergroup = ot_parametergrps.ID) "
@@ -222,9 +222,9 @@ public class Showsample extends HttpServlet {
 				      		if (datatype==6) {	// chooser 
 				      			pStmt = dBconn.conn.prepareStatement(
 				      					"SELECT string FROM possible_values "
-				      					+"WHERE parameterid=? ORDER BY position");
+				      					+"WHERE parameterid = ? ORDER BY position");
 				      			pStmt.setInt(1, tParam.getInt("definition"));
-				      			JSONArray pvalues=dBconn.ArrayFromPreparedStmt(pStmt);
+				      			JSONArray pvalues = dBconn.ArrayFromPreparedStmt(pStmt);
 				      			tParam.put("possiblevalues", pvalues);
 				      			pStmt.close();
 		      				}
@@ -242,21 +242,8 @@ public class Showsample extends HttpServlet {
 				      			JSONArray pvalues = dBconn.jsonArrayFromPreparedStmt(pStmt);
 				      			tParam.put("possiblesamples", pvalues);
 				      			pStmt.close();
-				      							      			
-//				      			pStmt = dBconn.conn.prepareStatement(
-//				      					  "SELECT "
-//				      					+ "  id,"
-//				      					+ "  name "
-//				      					+ "FROM samplenames "
-//				      					+ "WHERE typeid = ? AND id = ?");
-//				      			pStmt.setInt(1, tParam.getInt("sampletype"));
-//				      			pStmt.setInt(2, tParam.getJSONObject("data").getInt("id"));
-//				      			JSONArray value = dBconn.jsonArrayFromPreparedStmt(pStmt);
-//				      			tParam.put("value", value);
-//				      			pStmt.close();
-				      			
-		      				}
-				      		if (datatype != 12){
+				      	 			
+		      				} else {
 				      			tParam.remove("sampletype");
 				      		}
 		      				tParam.remove("definition");

@@ -49,12 +49,12 @@ import org.json.JSONObject;
 			response.setStatus(404);
 		}
 
-	 	DBconnection dBconn=new DBconnection();
+	 	DBconnection dBconn = new DBconnection();
 	 	
 	 	try {	
 		    dBconn.startDB();	   
 		    
-	        pStmt= dBconn.conn.prepareStatement( 	
+	        pStmt = dBconn.conn.prepareStatement( 	
 					"SELECT getProcessRecipeRights(vuserid:=?,vprocessrecipe:=?)");
 			pStmt.setInt(1,userID);
 			pStmt.setInt(2,processRecipeID);
@@ -95,12 +95,12 @@ import org.json.JSONObject;
 	    	
  
 		    // look up the datatype in Database	    
-		    int type=-1;
+		    int type = -1;
 			try {	
-				pStmt= dBconn.conn.prepareStatement( 			
-						 "SELECT paramdef.datatype FROM p_parameters p "
-						+"JOIN paramdef ON p.definition=paramdef.id "
-						+"WHERE p.id=?");
+				pStmt = dBconn.conn.prepareStatement( 			
+						  "SELECT paramdef.datatype FROM p_parameters p "
+						+ "JOIN paramdef ON p.definition=paramdef.id "
+						+ "WHERE p.id=?");
 			   	pStmt.setInt(1, parameterID);
 			   	JSONObject answer = dBconn.jsonObjectFromPreparedStmt(pStmt);
 				type= answer.getInt("datatype");
@@ -190,6 +190,10 @@ import org.json.JSONObject;
 			        			data.put("value", inData.getString("value"));
 			        		} 
 		        		break;
+			        case 12: if (inData.has("id") && !inData.isNull("id")){ // sample
+								data.put("id", inData.getInt("id"));
+	        				}
+			        	break;
 					} // end of switch Statement
 					
 					

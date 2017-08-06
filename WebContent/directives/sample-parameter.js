@@ -8,7 +8,7 @@
 
 
 
-var sampleParameter = function() {
+var sampleParameter = function($translate) {
 	return {
 		restrict: 'E',
 		replace: true,
@@ -27,7 +27,7 @@ var sampleParameter = function() {
 				this.newValue = $scope.parameter.possiblesamples.filter(function (x){return x.id == $scope.parameter.data.id})[0];
 			}
 			
-			$scope.parameter.possiblesamples.push({name:"none"})
+			$scope.parameter.possiblesamples.push({name:"-- " + $translate.instant("none") + " --"})
 						
 			this.blur = function(){
 				$scope.parameter.editing = false;
@@ -54,6 +54,6 @@ var sampleParameter = function() {
 };
     
         
-angular.module('unidaplan').directive('sampleParameter',sampleParameter);
+angular.module('unidaplan').directive('sampleParameter',['$translate',sampleParameter]);
 
 })();

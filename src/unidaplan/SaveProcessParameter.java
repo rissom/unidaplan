@@ -193,114 +193,120 @@ import expr.Variable;
 			        case 11: if (inData.has("value") && !inData.isNull("value")){ // e-mail
 			        			data.put("value", inData.getString("value"));
 			        		} 
-		        		break;
+		        			break;
+			        case 12: if (inData.has("id") && !inData.isNull("id")){ // sample
+	        					data.put("id", inData.getInt("id"));
+			        		}
+			        		break;
 					} // end of switch Statement
-					pStmt = dBconn.conn.prepareStatement(	
-							  "INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser) "
-							+ "VALUES (?, ?, ?, ?)  RETURNING ID"); 
-        			pStmt.setInt(1, processID);
-        			pStmt.setInt(2, parameterID);
-		   		  	pStmt.setObject(3, data, java.sql.Types.OTHER);
-        			pStmt.setInt(4, userID);
-        			id = dBconn.getSingleIntValue(pStmt);
-		   	   		pStmt.close();
-		   	   		
-			   	   	if (needsRecalc){
-						
-						// query hierarchy
-						JSONArray dependentParameters = null;
-	
-						pStmt = dBconn.conn.prepareStatement(
-								  "WITH RECURSIVE dependencyrank(parameterid, rank, path, cycle) AS ( "
-								+ "	SELECT ? , 1, ARRAY[?], false "
-								+ "		UNION "
-								+ "		SELECT "
-								+ "			pp.id AS parameterid, "
-								+ "			rank + 1 AS rank, "
-								+ "			path || pp.id, "
-								+ "			pp.id = ANY (path) "
-								+ "		FROM dependencyrank dr, p_parameters pp "
-								+ "		WHERE pp.formula LIKE '%p' || dr.parameterid || '%' AND NOT cycle "
-								+ "	) "
-								+ ""
-								+ "SELECT parameterid, max(rank) AS rank "
-								+ "FROM dependencyrank "
-								+ "WHERE rank > 1 "
-								+ "GROUP BY parameterid ORDER BY rank ");
-						pStmt.setInt(1, parameterID);
-						pStmt.setInt(2, parameterID);
-						dependentParameters = dBconn.jsonArrayFromPreparedStmt(pStmt);
-						pStmt.close();
-						
-						if (dependentParameters.length() > 0 ){
-							// recalc values
+					if (data.length()>0) {
+						pStmt = dBconn.conn.prepareStatement(	
+								  "INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser) "
+								+ "VALUES (?, ?, ?, ?)  RETURNING ID"); 
+	        			pStmt.setInt(1, processID);
+	        			pStmt.setInt(2, parameterID);
+			   		  	pStmt.setObject(3, data, java.sql.Types.OTHER);
+	        			pStmt.setInt(4, userID);
+	        			id = dBconn.getSingleIntValue(pStmt);
+			   	   		pStmt.close();
+			   	   		
+				   	   	if (needsRecalc){
 							
-							for (int i = 0; i < dependentParameters.length(); i++){
-								int dParameterID = dependentParameters.getJSONObject(i).getInt("parameterid");
-								pStmt = dBconn.conn.prepareStatement(
-										  "SELECT formula "
-										+ "FROM p_parameters "
-										+ "WHERE id = ?");
-								pStmt.setInt(1,dParameterID);
-								String formula = dBconn.getSingleStringValue(pStmt);
-								ArrayList <Variable> myVariables = new ArrayList <Variable>(); 
-								Expr expr;
-								try {
-								    expr = Parser.parse(formula); 
-								} catch (SyntaxException e) {
-								    System.err.println(e.explain());
-								    return;
-								}
+							// query hierarchy
+							JSONArray dependentParameters = null;
+		
+							pStmt = dBconn.conn.prepareStatement(
+									  "WITH RECURSIVE dependencyrank(parameterid, rank, path, cycle) AS ( "
+									+ "	SELECT ? , 1, ARRAY[?], false "
+									+ "		UNION "
+									+ "		SELECT "
+									+ "			pp.id AS parameterid, "
+									+ "			rank + 1 AS rank, "
+									+ "			path || pp.id, "
+									+ "			pp.id = ANY (path) "
+									+ "		FROM dependencyrank dr, p_parameters pp "
+									+ "		WHERE pp.formula LIKE '%p' || dr.parameterid || '%' AND NOT cycle "
+									+ "	) "
+									+ ""
+									+ "SELECT parameterid, max(rank) AS rank "
+									+ "FROM dependencyrank "
+									+ "WHERE rank > 1 "
+									+ "GROUP BY parameterid ORDER BY rank ");
+							pStmt.setInt(1, parameterID);
+							pStmt.setInt(2, parameterID);
+							dependentParameters = dBconn.jsonArrayFromPreparedStmt(pStmt);
+							pStmt.close();
+							
+							if (dependentParameters.length() > 0 ){
+								// recalc values
 								
-								// find all parameters for this formula
-								for ( Matcher m = Pattern.compile("p\\d+").matcher(formula); m.find(); ){
-									myVariables.add (Variable.make(m.toMatchResult().group()));
-								}
-								
-								
-								//	calculate value for this parameter
-								for (Variable v : myVariables){
+								for (int i = 0; i < dependentParameters.length(); i++){
+									int dParameterID = dependentParameters.getJSONObject(i).getInt("parameterid");
 									pStmt = dBconn.conn.prepareStatement(
-											  "SELECT data->>'value' AS value "
-											+ "FROM processdata "
-											+ "WHERE processid = ? AND parameterid = ?");
-									int fParameterID = Integer.parseInt(v.toString().split("p")[1]);
+											  "SELECT formula "
+											+ "FROM p_parameters "
+											+ "WHERE id = ?");
+									pStmt.setInt(1,dParameterID);
+									String formula = dBconn.getSingleStringValue(pStmt);
+									ArrayList <Variable> myVariables = new ArrayList <Variable>(); 
+									Expr expr;
+									try {
+									    expr = Parser.parse(formula); 
+									} catch (SyntaxException e) {
+									    System.err.println(e.explain());
+									    return;
+									}
+									
+									// find all parameters for this formula
+									for ( Matcher m = Pattern.compile("p\\d+").matcher(formula); m.find(); ){
+										myVariables.add (Variable.make(m.toMatchResult().group()));
+									}
+									
+									
+									//	calculate value for this parameter
+									for (Variable v : myVariables){
+										pStmt = dBconn.conn.prepareStatement(
+												  "SELECT data->>'value' AS value "
+												+ "FROM processdata "
+												+ "WHERE processid = ? AND parameterid = ?");
+										int fParameterID = Integer.parseInt(v.toString().split("p")[1]);
+										pStmt.setInt(1, processID);
+										pStmt.setInt(2, fParameterID);
+										Double newValue = Double.parseDouble( dBconn.getSingleStringValue(pStmt));
+										v.setValue(newValue);
+									};
+									
+									// delete previous value
+									pStmt = dBconn.conn.prepareStatement( 			
+											   "DELETE FROM "
+											 + "  processdata "
+											 + "WHERE processid = ? AND parameterid = ?");
+								   	pStmt.setInt(1, processID);
+								   	pStmt.setInt(2, dParameterID);
+								   	pStmt.executeUpdate();
+								   	pStmt.close();
+									
+								   	// save calculated value
+								   	data = new JSONObject();
+									data.put("value", expr.value());
+								   	
+								   	pStmt = dBconn.conn.prepareStatement( 			// Integer values
+											  "INSERT INTO processdata ("
+											+ "  processid,"
+											+ "  parameterid,"
+											+ "  data,"
+											+ "  lastUser) "
+											+ "VALUES (?,?,?,?)");
 									pStmt.setInt(1, processID);
-									pStmt.setInt(2, fParameterID);
-									Double newValue = Double.parseDouble( dBconn.getSingleStringValue(pStmt));
-									v.setValue(newValue);
-								};
-								
-								// delete previous value
-								pStmt = dBconn.conn.prepareStatement( 			
-										   "DELETE FROM "
-										 + "  processdata "
-										 + "WHERE processid = ? AND parameterid = ?");
-							   	pStmt.setInt(1, processID);
-							   	pStmt.setInt(2, dParameterID);
-							   	pStmt.executeUpdate();
-							   	pStmt.close();
-								
-							   	// save calculated value
-							   	data = new JSONObject();
-								data.put("value", expr.value());
-							   	
-							   	pStmt = dBconn.conn.prepareStatement( 			// Integer values
-										  "INSERT INTO processdata ("
-										+ "  processid,"
-										+ "  parameterid,"
-										+ "  data,"
-										+ "  lastUser) "
-										+ "VALUES (?,?,?,?)");
-								pStmt.setInt(1, processID);
-								pStmt.setInt(2, dParameterID);
-					   		  	pStmt.setObject(3, data, java.sql.Types.OTHER);
-					   		  	pStmt.setInt(4, userID);
-								pStmt.executeUpdate();
-								pStmt.close();
+									pStmt.setInt(2, dParameterID);
+						   		  	pStmt.setObject(3, data, java.sql.Types.OTHER);
+						   		  	pStmt.setInt(4, userID);
+									pStmt.executeUpdate();
+									pStmt.close();
+								}
 							}
-						}
-					} // end of 'if (needsRecalc){'
+				   	   	} // end of 'if (needsRecalc){'
+					} // end of 'if data.length>0'
 				}
 			    // tell client that everything is fine
 			    PrintWriter out = response.getWriter();

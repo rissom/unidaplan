@@ -138,20 +138,21 @@ public class GetProcessRecipe extends HttpServlet {
 			    	+ "  parametergroup, "
 			    	+ "  compulsory, "
 			    	+ "  p_parameters.pos, "
-					+"   p_parameters.stringkeyname,  "
+					+"   COALESCE (p_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname,  "
 					+ "  a.parameterid, "
 					+ "  a.data, "
 					+ "  p_parametergrps.id AS pgrpid, " 
 					+ "  p_parametergrps.stringkey as parametergrp_key, "
 					+ "  st.description, paramdef.datatype, "
 					+ "  paramdef.stringkeyunit as unit, "
+					+ "  paramdef.sampletype, "
 					+ "  p_parameters.definition "
 					+ "FROM p_parameters "
 					+ "JOIN p_parametergrps ON (p_parameters.Parametergroup = p_parametergrps.ID) " 
 					+ "JOIN paramdef ON (paramdef.id = p_parameters.definition) "
 					+ "LEFT JOIN processrecipedata a ON "
 					+ "(a.recipeid = ? AND a.parameterid = p_parameters.id AND hidden = FALSE) "
-					+ "JOIN String_key_table st ON st.id = p_parameters.stringkeyname "
+					+ "LEFT JOIN String_key_table st ON st.id = p_parameters.stringkeyname "
 					+ "WHERE (p_parameters.processtypeID = ? "
 					+ "		  AND p_parameters.id_field = FALSE AND p_parameters.hidden = FALSE) "
 					+ "ORDER BY pos");
@@ -219,6 +220,21 @@ public class GetProcessRecipe extends HttpServlet {
 					      				break;
 					      		case 10: tParam.put("datatype","URL");
 					      				break;
+					      		case 11: tParam.put("datatype","email");
+			      						break;
+					      		case 12:	// sampletype 
+				      				tParam.put("datatype", "sample"); 
+					      			pStmt = dBconn.conn.prepareStatement(
+					      					  "SELECT "
+					      					+ "  id,"
+					      					+ "  name "
+					      					+ "FROM samplenames "
+					      					+ "WHERE typeid = ? ORDER by name");
+					      			pStmt.setInt(1, tParam.getInt("sampletype"));
+					      			JSONArray possvalues = dBconn.jsonArrayFromPreparedStmt(pStmt);
+					      			tParam.put("possiblesamples", possvalues);
+					      			pStmt.close();
+						      		break;	
 					      		default: tParam.put("datatype","undefined"); 
 					      				break;	    
 				      		}
@@ -240,7 +256,6 @@ public class GetProcessRecipe extends HttpServlet {
 				e.printStackTrace();
 			}
 		      
-		
 			// get the strings
 			try{
 		        recipe.put( "strings", dBconn.getStrings(stringkeys) );

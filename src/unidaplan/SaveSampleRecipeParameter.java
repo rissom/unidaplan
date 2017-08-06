@@ -190,6 +190,10 @@ import org.json.JSONObject;
 			        case 11: if (inData.has("value") && !inData.isNull("value")){ // e-mail
 			        			data.put("value", inData.getString("value"));
 			        		} 
+			        		break;
+			        case 12: if (inData.has("id") && !inData.isNull("id")){ // sample
+						data.put("id", inData.getInt("id"));
+		    				}
 		        		break;
 					} // end of switch Statement
 					

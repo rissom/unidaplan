@@ -181,8 +181,12 @@ import org.json.JSONObject;
 		        			data.put("value", inData.getString("value"));
 		        		}
 	        		break;
+		        case 12: if (inData.has("id") && !inData.isNull("id")){ // sample
+					data.put("id", inData.getInt("id"));
+        		}
+        		break;
 				} // end of switch Statement
-			pStmt= dBconn.conn.prepareStatement( 			// Integer values
+			pStmt = dBconn.conn.prepareStatement( 			// Integer values
   					"INSERT INTO spdata (sip,parameterid,data,lastUser) VALUES (?,?,?,?)");
   			pStmt.setInt(1, sip);
   			pStmt.setInt(2, popid);

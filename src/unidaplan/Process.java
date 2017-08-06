@@ -54,10 +54,10 @@ public class Process extends HttpServlet {
   	  	JSONArray fields = null;
   	  	
   	  	try  {
-  	  		processID=Integer.parseInt(request.getParameter("id")); 
+  	  		processID = Integer.parseInt(request.getParameter("id")); 
   	  	}
   	  	catch (Exception e1) {
-  	  		processID=1;
+  	  		processID = 1;
   	  		System.err.print("Process: no object ID given!");
 //  		e1.printStackTrace();
   	  	}
@@ -236,7 +236,8 @@ public class Process extends HttpServlet {
 					+ "  p_parameters.definition, "
 					+ "  p_parameters.formula, "
 					+ "  paramdef.min, "
-					+ "  paramdef.max "
+					+ "  paramdef.max, "
+					+ "  paramdef.sampletype "
 					+ "FROM p_parameters "
 					+ "JOIN p_parametergrps ON (p_parameters.Parametergroup = p_parametergrps.ID) " 
 					+ "JOIN paramdef ON (paramdef.id = p_parameters.definition) "
@@ -308,8 +309,26 @@ public class Process extends HttpServlet {
 						      				break;
 						      		case 10: tParam.put("datatype", "URL");
 						      				break;
+						      		case 11: tParam.put("datatype","email");
+		      								break;
+						      		case 12:	// sampletype 
+						      				tParam.put("datatype", "sample"); 
+							      			pStmt = dBconn.conn.prepareStatement(
+							      					  "SELECT "
+							      					+ "  id,"
+							      					+ "  name "
+							      					+ "FROM samplenames "
+							      					+ "WHERE typeid = ? ORDER by name");
+							      			pStmt.setInt(1, tParam.getInt("sampletype"));
+							      			JSONArray possvalues = dBconn.jsonArrayFromPreparedStmt(pStmt);
+							      			tParam.put("possiblesamples", possvalues);
+							      			pStmt.close();
+								      		break;	
 						      		default: tParam.put("datatype", "undefined"); 
-						      				break;	    
+						      				 break;	    
+					      		}
+					      		if (datatype != 12){
+					      			tParam.remove("sampletype");
 					      		}
 							    prmgrpprms.put(tParam);
 					      		}
@@ -354,7 +373,9 @@ public class Process extends HttpServlet {
 					if (fields.length() > 0){
 						for (int i = 0 ; i < fields.length(); i++){
 							JSONObject field = fields.getJSONObject(i);
-			  	  			stringkeys.add(Integer.toString(field.getInt("description")));
+							if (field.has("description")){
+			  	  				stringkeys.add(Integer.toString(field.getInt("description")));
+							}
 			  	  			stringkeys.add(Integer.toString(field.getInt("stringkeyname")));
 			  	  			if (field.has("unit")){
 			  	  				stringkeys.add(Integer.toString(field.getInt("unit")));
@@ -393,6 +414,7 @@ public class Process extends HttpServlet {
 				    			+ "spd.data, "
 				    			+ "paramdef.datatype, "
 				    			+ "paramdef.format,"
+				    			+ "paramdef.sampletype,"
 				    			+ "pop.definition, "
 				    			+ "pop.id AS parameterid "
 				    			+"FROM po_parameters pop "
@@ -409,9 +431,9 @@ public class Process extends HttpServlet {
 								p.put("datatype", Unidatoolkit.Datatypes[dt]);
 							}
 							if (p.getString("datatype").equals("chooser")) {	// chooser 
-				      			pStmt= dBconn.conn.prepareStatement(
-				      					"SELECT string FROM possible_values "
-				      					+"WHERE parameterid = ? ORDER BY position");
+				      			pStmt = dBconn.conn.prepareStatement(
+				      					  "SELECT string FROM possible_values "
+				      					+ "WHERE parameterid = ? ORDER BY position");
 				      			pStmt.setInt(1, p.getInt("definition"));
 				      			JSONArray pvalues=dBconn.ArrayFromPreparedStmt(pStmt);
 				      			p.put("possiblevalues", pvalues);
@@ -422,6 +444,20 @@ public class Process extends HttpServlet {
 				      			p.put("value", v);
 				      			pStmt.close();
 		      				}
+							if (p.getString("datatype").equals("sample")) {		// sampletype 
+				      			pStmt = dBconn.conn.prepareStatement(
+				      					  "SELECT "
+				      					+ "  id,"
+				      					+ "  name "
+				      					+ "FROM samplenames "
+				      					+ "WHERE typeid = ? ORDER by name");
+				      			pStmt.setInt(1, p.getInt("sampletype"));
+				      			JSONArray pvalues = dBconn.jsonArrayFromPreparedStmt(pStmt);
+				      			p.put("possiblesamples", pvalues);
+				      			pStmt.close();
+		      				} else {
+				      			p.remove("sampletype");
+				      		}
 						}
 						sample.put("parameters", poParameters);
 				    }

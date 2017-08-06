@@ -114,7 +114,7 @@ function process($state,$stateParams,$translate,avSampleTypeService,types,$uibMo
   
   
   
-  	this.assign=function(){
+  	this.assign = function(){
   		var samples2assign={samples:this.process.samples, id:processData.id};
   		var promise = restfactory.POST("add-sample-to-process",samples2assign);
   	};
@@ -159,7 +159,6 @@ function process($state,$stateParams,$translate,avSampleTypeService,types,$uibMo
   	
   	
   	this.pupdate = function(parameter) {
-  		console.log("parameter",parameter)
   		var promise = processService.savePOParameter(parameter);
 		promise.then(function(){reload();});
   	}
