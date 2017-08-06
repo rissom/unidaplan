@@ -214,105 +214,107 @@ import expr.Variable;
         			break;
 					} // end of switch Statement
 					
-					pStmt = dBconn.conn.prepareStatement( 			// Integer values
-							"INSERT INTO sampledata (objectid,ot_parameter_id,data,lastUser) "
-							+ "VALUES (?,?,?,?)");
-					pStmt.setInt(1, sampleID);
-					pStmt.setInt(2, pid);
-		   		  	pStmt.setObject(3, data, java.sql.Types.OTHER);
-		   		  	pStmt.setInt(4, userID);
-					pStmt.executeUpdate();
-					pStmt.close();
-					if (needsRecalc){
-						
-						// query hierarchy
-						JSONArray dependentParameters = null;
-
-
-						pStmt = dBconn.conn.prepareStatement(
-							  "WITH RECURSIVE dependencyrank(parameterid, rank, path, cycle) AS ( "
-							+ "	SELECT ? , 1, ARRAY[?], false "
-							+ "		UNION "
-							+ "		SELECT "
-							+ "			otp.id AS parameterid, "
-							+ "			rank + 1 AS rank, "
-							+ "			path || otp.id, "
-							+ "			otp.id = ANY (path) "
-							+ "		FROM dependencyrank dr, ot_parameters otp "
-							+ "		WHERE otp.formula LIKE '%p' || dr.parameterid || '%' AND NOT cycle "
-							+ "	) "
-							+ ""
-							+ "SELECT parameterid, max(rank) AS rank "
-							+ "FROM dependencyrank "
-							+ "WHERE rank > 1 "
-							+ "GROUP BY parameterid ORDER BY rank ");
-						pStmt.setInt(1, pid);
+					if (data.length()>0) {
+						pStmt = dBconn.conn.prepareStatement( 			// Integer values
+								"INSERT INTO sampledata (objectid,ot_parameter_id,data,lastUser) "
+								+ "VALUES (?,?,?,?)");
+						pStmt.setInt(1, sampleID);
 						pStmt.setInt(2, pid);
-						dependentParameters = dBconn.jsonArrayFromPreparedStmt(pStmt);
+			   		  	pStmt.setObject(3, data, java.sql.Types.OTHER);
+			   		  	pStmt.setInt(4, userID);
+						pStmt.executeUpdate();
 						pStmt.close();
-						
-						if (dependentParameters.length() > 0 ){
-							// recalc values
+						if (needsRecalc){
 							
-							for (int i = 0; i < dependentParameters.length(); i++){
-								int dParameterID = dependentParameters.getJSONObject(i).getInt("parameterid");
-								pStmt = dBconn.conn.prepareStatement(
-										  "SELECT formula "
-										+ "FROM ot_parameters "
-										+ "WHERE id = ?");
-								pStmt.setInt(1,dParameterID);
-								String formula = dBconn.getSingleStringValue(pStmt);
-								ArrayList <Variable> myVariables = new ArrayList <Variable>(); 
-								Expr expr;
-								try {
-								    expr = Parser.parse(formula); 
-								} catch (SyntaxException e) {
-								    System.err.println(e.explain());
-								    return;
-								}
+								// query hierarchy
+							JSONArray dependentParameters = null;
+	
+	
+							pStmt = dBconn.conn.prepareStatement(
+								  "WITH RECURSIVE dependencyrank(parameterid, rank, path, cycle) AS ( "
+								+ "	SELECT ? , 1, ARRAY[?], false "
+								+ "		UNION "
+								+ "		SELECT "
+								+ "			otp.id AS parameterid, "
+								+ "			rank + 1 AS rank, "
+								+ "			path || otp.id, "
+								+ "			otp.id = ANY (path) "
+								+ "		FROM dependencyrank dr, ot_parameters otp "
+								+ "		WHERE otp.formula LIKE '%p' || dr.parameterid || '%' AND NOT cycle "
+								+ "	) "
+								+ ""
+								+ "SELECT parameterid, max(rank) AS rank "
+								+ "FROM dependencyrank "
+								+ "WHERE rank > 1 "
+								+ "GROUP BY parameterid ORDER BY rank ");
+							pStmt.setInt(1, pid);
+							pStmt.setInt(2, pid);
+							dependentParameters = dBconn.jsonArrayFromPreparedStmt(pStmt);
+							pStmt.close();
+							
+							if (dependentParameters.length() > 0 ){
+								// recalc values
 								
-								// find all parameters for this formula
-								for ( Matcher m = Pattern.compile("p\\d+").matcher(formula); m.find(); ){
-									myVariables.add (Variable.make(m.toMatchResult().group()));
-								}
-								
-								
-								//	calculate value for this parameter
-								for (Variable v : myVariables){
+								for (int i = 0; i < dependentParameters.length(); i++){
+									int dParameterID = dependentParameters.getJSONObject(i).getInt("parameterid");
 									pStmt = dBconn.conn.prepareStatement(
-											  "SELECT data->>'value' AS value "
-											+ "FROM sampledata "
-											+ "WHERE ot_parameter_id = ? AND objectid = ?");
-									int parameterID = Integer.parseInt(v.toString().split("p")[1]);
-									pStmt.setInt(1, parameterID);
-									pStmt.setInt(2, sampleID);
-									Double newValue = Double.parseDouble( dBconn.getSingleStringValue(pStmt));
-									v.setValue(newValue);
-								};
-								
-								// delete previous value
-								pStmt = dBconn.conn.prepareStatement( 			
-										   "DELETE FROM "
-										 + "  sampledata "
-										 + "WHERE ot_parameter_id = ? AND objectid = ?");
-							   	pStmt.setInt(1, dParameterID);
-							   	pStmt.setInt(2, sampleID);
-							   	pStmt.executeUpdate();
-							   	pStmt.close();
-								
-							   	// save calculated value
-							   	data = new JSONObject();
-    							data.put("value", expr.value());
-							   	
-							   	pStmt = dBconn.conn.prepareStatement( 			// Integer values
-										  "INSERT INTO sampledata (objectid,ot_parameter_id,data,lastUser) "
-										+ "VALUES (?,?,?,?)");
-								pStmt.setInt(1, sampleID);
-								pStmt.setInt(2, dParameterID);
-					   		  	pStmt.setObject(3, data, java.sql.Types.OTHER);
-					   		  	pStmt.setInt(4, userID);
-								pStmt.executeUpdate();
-								pStmt.close();
+											  "SELECT formula "
+											+ "FROM ot_parameters "
+											+ "WHERE id = ?");
+									pStmt.setInt(1,dParameterID);
+									String formula = dBconn.getSingleStringValue(pStmt);
+									ArrayList <Variable> myVariables = new ArrayList <Variable>(); 
+									Expr expr;
+									try {
+									    expr = Parser.parse(formula); 
+									} catch (SyntaxException e) {
+									    System.err.println(e.explain());
+									    return;
+									}
+									
+									// find all parameters for this formula
+									for ( Matcher m = Pattern.compile("p\\d+").matcher(formula); m.find(); ){
+										myVariables.add (Variable.make(m.toMatchResult().group()));
+									}
+									
+									
+									//	calculate value for this parameter
+									for (Variable v : myVariables){
+										pStmt = dBconn.conn.prepareStatement(
+												  "SELECT data->>'value' AS value "
+												+ "FROM sampledata "
+												+ "WHERE ot_parameter_id = ? AND objectid = ?");
+										int parameterID = Integer.parseInt(v.toString().split("p")[1]);
+										pStmt.setInt(1, parameterID);
+										pStmt.setInt(2, sampleID);
+										Double newValue = Double.parseDouble( dBconn.getSingleStringValue(pStmt));
+										v.setValue(newValue);
+									};
+									
+									// delete previous value
+									pStmt = dBconn.conn.prepareStatement( 			
+											   "DELETE FROM "
+											 + "  sampledata "
+											 + "WHERE ot_parameter_id = ? AND objectid = ?");
+								   	pStmt.setInt(1, dParameterID);
+								   	pStmt.setInt(2, sampleID);
+								   	pStmt.executeUpdate();
+								   	pStmt.close();
+									
+								   	// save calculated value
+								   	data = new JSONObject();
+	    							data.put("value", expr.value());
+								   	
+								   	pStmt = dBconn.conn.prepareStatement( 			// Integer values
+											  "INSERT INTO sampledata (objectid,ot_parameter_id,data,lastUser) "
+											+ "VALUES (?,?,?,?)");
+									pStmt.setInt(1, sampleID);
+									pStmt.setInt(2, dParameterID);
+						   		  	pStmt.setObject(3, data, java.sql.Types.OTHER);
+						   		  	pStmt.setInt(4, userID);
+									pStmt.executeUpdate();
+									pStmt.close();
+								}
 							}
 						}
 					}
