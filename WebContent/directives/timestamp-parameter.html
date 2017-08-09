@@ -1,6 +1,10 @@
 <div>
 	<span ng-hide="parameter.editing">{{timestampParamCtrl.getTimestampString()}}
 	</span>    
+	<a class="visible-xs" ng-click = "parameter.editing = true">
+		<span ng-hide = "parameter.editing" class = "glyphicon glyphicon-wrench" aria-hidden = "true">
+		</span>
+	</a>
 	<input 
 		ng-if = "parameter.editing"
 		type = "date" 

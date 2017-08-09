@@ -1,7 +1,11 @@
 <div>
 	<span ng-hide="parameter.editing"><a ng-href="mailto:{{parameter.value}}">{{parameter.value}}</a>
 	</span>
-	<form name="emailparameter">
+	<a class="visible-xs" ng-click = "parameter.editing = true">
+		<span ng-hide = "parameter.editing" class = "glyphicon glyphicon-wrench" aria-hidden = "true">
+		</span>
+	</a>
+	<form name="emailparameter">	
 	<input
 		ng-blur = "parameter.editing = false"   
 		ng-keyup="emailParamCtrl.keyUp($event.keyCode)"

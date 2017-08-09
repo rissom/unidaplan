@@ -2,6 +2,10 @@
 <span ng-if = "!parameter.editing">
 	{{parameter.data.value}}
 </span>
+<a class="visible-xs" ng-click = "parameter.editing = true">
+	<span ng-hide = "parameter.editing" class = "glyphicon glyphicon-wrench" aria-hidden = "true">
+	</span>
+</a>
 <input 						   
 	ng-keyup = "stringParamCtrl.keyUp($event.keyCode)"
 	ng-keydown = "stringParamCtrl.keyDown($event.keyCode)"

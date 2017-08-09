@@ -1,6 +1,10 @@
 <div>
 	<span ng-hide="parameter.editing"><a ng-href="{{parameter.value}}" rel=noopener>{{parameter.value}}</a>
 	</span>
+	<a class="visible-xs" ng-click = "parameter.editing = true">
+		<span ng-hide = "parameter.editing" class = "glyphicon glyphicon-wrench" aria-hidden = "true">
+		</span>
+	</a>
 	<input 						   
 		ng-keyup = "urlParamCtrl.keyUp($event.keyCode)"
 		ng-keydown = "urlParamCtrl.keyDown($event.keyCode)"

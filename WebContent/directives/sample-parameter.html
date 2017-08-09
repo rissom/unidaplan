@@ -2,8 +2,12 @@
 <span ng-hide = "parameter.editing">{{sampleParamCtrl.newValue.name}}
 </span>
 <a ui-sref="sample({sampleID:parameter.data.id})">
-<span ng-hide = "parameter.editing || parameter.data.id==null" class="glyphicon glyphicon-share">
+<span ng-hide = "parameter.editing || parameter.data.id == null" class="glyphicon glyphicon-share">
 </span>
+</a>
+<a class="visible-xs" ng-click = "parameter.editing = true">
+	<span ng-hide = "parameter.editing" class = "glyphicon glyphicon-wrench" aria-hidden = "true">
+	</span>
 </a>
 <select 						   
 	ng-show = "parameter.editing"

@@ -1,6 +1,10 @@
 <div>
 <span ng-hide="parameter.editing">{{parameter.data.value}}
 </span>
+<a class="visible-xs" ng-click = "parameter.editing = true">
+	<span ng-hide = "parameter.editing" class = "glyphicon glyphicon-wrench" aria-hidden = "true">
+	</span>
+</a>
 <select 						   
 	ng-show="parameter.editing"
 	ng-blur = "chooserParamCtrl.blur()"
