@@ -55,7 +55,7 @@ import org.json.JSONObject;
 		    PreparedStatement pStmt = null;
 		    
 		    // check privileges
-	        pStmt= dBconn.conn.prepareStatement( 	
+	        pStmt = dBconn.conn.prepareStatement( 	
 					"SELECT getSampleRights(vuserid:=?,vsample:=?)");
 			pStmt.setInt(1,userID);
 			pStmt.setInt(2,sampleID);

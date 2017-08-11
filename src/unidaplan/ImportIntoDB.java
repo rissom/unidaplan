@@ -125,6 +125,7 @@ public class ImportIntoDB extends HttpServlet {
 		}
 		
 		
+		@SuppressWarnings("resource")
 		void saveValueProcess(String value,int id, int processid){
 		    try {
 			    // look up the datatype in Database	   			 

@@ -15,6 +15,7 @@ import org.json.JSONObject;
 	public class AddSample extends HttpServlet {
 		private static final long serialVersionUID = 1L;
 
+	@SuppressWarnings("resource")
 	@Override
 	  public void doPost(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {

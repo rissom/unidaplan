@@ -37,7 +37,6 @@
          ng-model = "processCtrl.newStatus"
          ng-blur = "processCtrl.editStatus=false"
 		 ng-options = "state as state.stringf() for state in processCtrl.stati">
-    </option> 
 </select>
 <br />
 <br />
@@ -57,7 +56,7 @@
 		<tr ng-repeat="sample in processCtrl.process.samples | orderBy:['trtype','name']">
 			<td>
 				<a ui-sref="sample({sampleID:sample.sampleid})">
-					{{processCtrl.getType(sample)}} {{sample.name}}</a><br/></span>
+					{{processCtrl.getType(sample)}} {{sample.name}}</a><br/>
 			</td>
 			<td ng-repeat = "p in sample.parameters" ng-dblclick = "p.editing=true"> 
 			 	<tparameter parameter = "p" pupdate = "processCtrl.pupdate(parameter)"></tparameter>
