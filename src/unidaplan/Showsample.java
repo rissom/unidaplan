@@ -33,7 +33,9 @@ public class Showsample extends HttpServlet {
 	if (userID > 0){
 	 	ArrayList<String> stringkeys = new ArrayList<String>(); 
 	 	Boolean deletable = true;
+	 	Boolean sampleExists = false;
 	 	Boolean editable = false;
+	 	Boolean readable = false;
 	    response.setContentType("application/json");
 	    request.setCharacterEncoding("utf-8");
 	    response.setCharacterEncoding("utf-8");
@@ -60,10 +62,11 @@ public class Showsample extends HttpServlet {
 					"SELECT getSampleRights(vuserid := ?, vsample := ?)");
 			pStmt.setInt(1,userID);
 			pStmt.setInt(2,sampleID);
-			privilege=dBconn.getSingleStringValue(pStmt);
+			privilege = dBconn.getSingleStringValue(pStmt);
 			pStmt.close();
 	        
 	        editable = privilege != null && privilege.equals("w");
+	        readable = privilege != null && privilege.equals("r");
 	        
 		} catch (SQLException e) {
 			System.err.println("Showsample: Problems with SQL query for sample name");
@@ -75,27 +78,36 @@ public class Showsample extends HttpServlet {
 		} 
 	    
 	    
-	    // dingstest
+	    // check if sample exists, and what type it is
 	    
-		if (editable || (privilege != null && privilege.equals("r"))){
+		if (editable || readable){
 			try {
 		        pStmt = dBconn.conn.prepareStatement( 	
 						"SELECT objecttypesid FROM samples WHERE id = ?");
 				pStmt.setInt(1,sampleID);
 				typeid = dBconn.getSingleIntValue(pStmt);
 				pStmt.close();
-				pStmt = dBconn.conn.prepareStatement( 	
-						"SELECT name FROM samplenames WHERE id = ?");
-				pStmt.setInt(1,sampleID);
-				jsSample = dBconn.jsonObjectFromPreparedStmt(pStmt);
-				jsSample.put("id", sampleID);
-				jsSample.put("typeid", typeid);
-				pStmt = dBconn.conn.prepareStatement( 	
-						"SELECT string_key FROM objecttypes WHERE id = ?");
-				pStmt.setInt(1,typeid);
-				int stringkey = dBconn.jsonObjectFromPreparedStmt(pStmt).getInt("string_key");
-				stringkeys.add(Integer.toString(stringkey));
-				jsSample.put("typestringkey", stringkey);
+				
+				if (typeid < 1) {
+					jsSample.put("error", "sample not found");
+				    System.err.println("sample not found");
+				    response.sendError(HttpServletResponse.SC_NOT_FOUND);  // 404 Error
+				} else {
+					
+					sampleExists = true;
+					pStmt = dBconn.conn.prepareStatement( 	
+							"SELECT name FROM samplenames WHERE id = ?");
+					pStmt.setInt(1,sampleID);
+					jsSample = dBconn.jsonObjectFromPreparedStmt(pStmt);
+					jsSample.put("id", sampleID);
+					jsSample.put("typeid", typeid);
+					pStmt = dBconn.conn.prepareStatement( 	
+							"SELECT string_key FROM objecttypes WHERE id = ?");
+					pStmt.setInt(1,typeid);
+					int stringkey = dBconn.jsonObjectFromPreparedStmt(pStmt).getInt("string_key");
+					stringkeys.add(Integer.toString(stringkey));
+					jsSample.put("typestringkey", stringkey);
+				}
 				
 			} catch (SQLException e) {
 				System.err.println("Showsample: Problems with SQL query for sample name");
@@ -107,17 +119,8 @@ public class Showsample extends HttpServlet {
 			}
 	
 	    
-	    // Error if the sample is not found
-	    if (jsSample.length() == 0) {
-	    	try {
-				jsSample.put("error", "sample not found");
-			    System.err.println("sample not found");
-			    response.sendError(HttpServletResponse.SC_NOT_FOUND);  // 404 Error
-			} catch (JSONException e) {
-			    System.err.println("Showsample: Strange JSON-Error");
-			}
-	    }
-	    else {
+	if (sampleExists) {
+	
 	    	
 		//get the title parameters
 		try {
