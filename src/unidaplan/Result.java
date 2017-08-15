@@ -128,7 +128,7 @@ import org.json.JSONObject;
 							+ "FROM searchprocess "
 							+ "JOIN p_parameters ON (p_parameters.id=pparameter) "
 							+ "JOIN paramdef ON (paramdef.id=p_parameters.definition) "
-							+ "WHERE search=?";
+							+ "WHERE search = ?";
 					break;
 				case 3:   // sample specific processparameter
 					query =   "SELECT "
@@ -141,7 +141,7 @@ import org.json.JSONObject;
 							+ "FROM searchpo "
 							+ "JOIN po_parameters ON (po_parameters.id=poparameter) "
 							+ "JOIN paramdef ON (paramdef.id=po_parameters.definition) "
-							+ "WHERE search=?";
+							+ "WHERE search = ?";
 					break;
 			}
 			pStmt = dBconn.conn.prepareStatement(query);
