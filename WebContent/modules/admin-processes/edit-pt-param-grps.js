@@ -8,7 +8,7 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,$uibMod
 	this.parametergrps = processType.parametergrps.sort(
 		function(a,b){
 			return a.pos-b.pos;
-		j});
+		});
   
 	this.samplerparams = processType.samplerparams.sort(
 		  function(a,b){
