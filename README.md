@@ -74,6 +74,8 @@ If your instance does not work (address should be: http://yourservername.domain:
 
 > factory = "org.apache.commons.dbcp.BasicDataSourceFactory"
 
+You will also need to create a directory "/mnt/data-store" which is writable by the tomcat processowner for storing files.
+
 ##Changing the password
 
 The first and only user is called ***admin*** and has the password ***admin***. 
