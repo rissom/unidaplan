@@ -13,7 +13,7 @@
 	ng-show = "parameter.editing"
 	ng-blur = "sampleParamCtrl.blur()"
     ng-model = "sampleParamCtrl.newValue"
-    ng-options = "item.name for item in parameter.possiblesamples"
+    ng-options = "item.name for item in sampleParamCtrl.possibleSamples"
     ng-change = "sampleParamCtrl.update()"
     class = "input-sm">
 </select>

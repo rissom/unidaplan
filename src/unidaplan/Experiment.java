@@ -214,6 +214,7 @@ public class Experiment extends HttpServlet {
 										+ "  COALESCE (expp_param.stringkeyname, paramdef.stringkeyname) AS stringkeyname, "
 										+ "  ed.data, "
 										+ "  paramdef.datatype, "
+										+ "  paramdef.sampletype, "
 										+ "  paramdef.stringkeyunit AS unit "
 										+ "FROM expp_param "
 										+ "JOIN paramdef ON (paramdef.id=expp_param.definition) "
@@ -244,6 +245,21 @@ public class Experiment extends HttpServlet {
 								if ( datatype > 3 && tParam.has("unit") ) {	 
 				      				tParam.remove("unit");
 			      				}
+								if (datatype == 12) {	// sampletype 
+					      			pStmt = dBconn.conn.prepareStatement(
+					      					  "SELECT "
+					      					+ "  id,"
+					      					+ "  name "
+					      					+ "FROM samplenames "
+					      					+ "WHERE typeid = ? ORDER by name");
+					      			pStmt.setInt(1, tParam.getInt("sampletype"));
+					      			JSONArray pvalues = dBconn.jsonArrayFromPreparedStmt(pStmt);
+					      			tParam.put("possiblesamples", pvalues);
+					      			pStmt.close();
+					      	 			
+			      				} else {
+					      			tParam.remove("sampletype");
+					      		}
 								parameters.getJSONObject(i).remove("datatype");
 								parameters.getJSONObject(i).put("datatype", Unidatoolkit.Datatypes[datatype]);
 							}

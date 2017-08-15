@@ -19,7 +19,7 @@
 <br />
 <br />
 
-<h4  ng-show = "experimentCtrl.editmode">{{'Name'|translate}}</h4>
+<h4  ng-if = "experimentCtrl.editmode">{{'Name'|translate}}</h4>
 <!--  edit Experimentname -->
 <table class = "table" ng-show = "experimentCtrl.editmode">
 <tr>
@@ -47,7 +47,7 @@
 <h4 ng-show = "experimentCtrl.experiment.parameters && !experimentCtrl.editmode">{{'Parameters'|translate}}</h4>
 
 <paramfield 
-		ng-hide = "experimentCtrl.editmode"
+		ng-if = "!experimentCtrl.editmode"
 		parameters = "experimentCtrl.experiment.parameters"
 		editable = "experimentCtrl.experiment.editable"
 		pupdate = "experimentCtrl.submitParameter(parameter)">
@@ -317,7 +317,7 @@
 </button>
 
 <button ng-hide = "experimentCtrl.editmode" 
-		class = "btn btn-default" 
+		class = "btn btn-default"
 		ui-sref = "experiment({experimentID:experimentCtrl.experiment.id,editmode:'true'})">
 	{{'Edit Experiment'|translate}}
 </button>

@@ -2,8 +2,6 @@ package unidaplan;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -187,7 +185,11 @@ public class UpdateExperimentParameter extends HttpServlet {
 			        case 11: if (inData.has("value") && !inData.isNull("value")){ // e-mail
 			        			data.put("value", inData.getString("value"));
 			        		}
-		        		break;
+		        			break;
+			        case 12: if (inData.has("id") && !inData.isNull("id")){ // sample
+	        					data.put("id", inData.getInt("id"));
+			        		}
+	        				break;
 					} // end of switch Statement
 					pStmt = dBconn.conn.prepareStatement(	
 							"INSERT INTO experimentdata (experimentID, parameterID, data, lastUser) "

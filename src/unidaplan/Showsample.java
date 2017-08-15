@@ -532,6 +532,9 @@ public class Showsample extends HttpServlet {
 			
 			// Can we delete this sample?
 			try{
+				
+				deletable = editable;
+				
 		        pStmt = dBconn.conn.prepareStatement(	
 					    	"SELECT "
 					      + "  processid, "
@@ -568,7 +571,47 @@ public class Showsample extends HttpServlet {
 				}
 				pStmt.close();
 				
-				if (deletable) { deletable = editable; }
+				// Check if the sample is used as a sampleparameter in sampledata
+		        pStmt = dBconn.conn.prepareStatement(	
+		        			  "SELECT true " 
+		        			+ "FROM sampledata "  
+		        			+ "JOIN ot_parameters otp ON otp.id = sampledata.ot_parameter_id "  
+		        			+ "JOIN paramdef pd ON pd.id = otp.definition "  
+		        			+ "WHERE pd.datatype = 12 "
+		        			+ "  AND"
+		        			+ "(SELECT (sampledata.data->>'id')::NUMERIC) = ?");
+				pStmt.setInt(1,sampleID);
+				if (dBconn.getSingleBooleanValue(pStmt)) { 
+					deletable = false; 
+				}
+				pStmt.close();
+				
+				// Check if the sample is used as a sample related processparameter in spdata
+		        pStmt = dBconn.conn.prepareStatement(	
+		        			  "SELECT true \n" + 
+		        			  "FROM spdata \n" + 
+		        			  "JOIN po_parameters pop ON pop.id = spdata.parameterid \n" + 
+		        			  "JOIN paramdef pd ON pd.id = pop.definition \n" + 
+		        			  "WHERE pd.datatype = 12 AND (SELECT (spdata.data->>'id')::NUMERIC) = ?");
+				pStmt.setInt(1,sampleID);
+				if (dBconn.getSingleBooleanValue(pStmt)) { 
+					deletable = false; 
+				}
+				pStmt.close();
+				
+				// Check if the sample is used as a parameter for an experiment in experimentdata
+		        pStmt = dBconn.conn.prepareStatement(	
+		        			  "SELECT true \n" + 
+		        			  "FROM experimentdata \n" + 
+		        			  "JOIN expp_param expp ON expp.id = experimentdata.parameterid \n" + 
+		        			  "JOIN paramdef pd ON pd.id = expp.definition \n" + 
+		        			  "WHERE pd.datatype = 12 AND (SELECT (experimentdata.data->>'id')::NUMERIC) = ?");
+				pStmt.setInt(1,sampleID);
+				if (dBconn.getSingleBooleanValue(pStmt)) { 
+					deletable = false; 
+				}
+				pStmt.close();
+				
 				
 				jsSample.put("deletable", deletable);
 				jsSample.put("editable", editable);

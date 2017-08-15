@@ -20,6 +20,12 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 	
 	
 	
+	this.addProcessStep = function(processid, sampleid){
+		return restfactory.POST("add-process-step?pprocess="+processid+"&expsample="+sampleid); 
+	};
+	
+	
+	
 	this.addSampleToExperiment = function (expid,sampleid,pos){
 		return  restfactory.POST("add-sample-to-experiment?experimentid="+expid+"&position="+pos+"&sampleid="+sampleid);
 	};
@@ -34,8 +40,29 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 	
 	// delete an attached file
 	this.deleteFile = function(fileID){
-		return restfactory.DELETE("delete-file?fileid="+fileID)
+		return restfactory.DELETE("delete-file?fileid=" + fileID)
 	}
+	
+	
+	
+	this.deleteSampleFromExperiment = function(id){
+		// Removes a sample from an experiment. 
+		return restfactory.DELETE("delete-sample-from-experiment?id=" + id);
+	};
+	
+	
+	
+	this.deleteParameter = function(id){
+		//removes a proces from an experiment
+		return restfactory.DELETE("delete-experiment-parameter?id=" + id);
+	};
+	
+	
+	
+	this.deleteProcess = function(id){
+		//removes a proces from an experiment
+		return restfactory.DELETE("delete-process-from-experiment?id=" + id);
+	};
 	
 	
 	
@@ -74,26 +101,26 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
     				return key2string.key2stringWithLangStrict(experiment.name,strings,lang);
     			};
     			angular.forEach(experiment.parameters, function(parameter) {
-    				parameter.namef=function(){
+    				parameter.namef = function(){
     					return key2string.key2string(parameter.stringkeyname,strings);
     				};
-    				parameter.nameLang=function(lang){				
+    				parameter.nameLang = function(lang){				
     					return key2string.key2stringWithLangStrict(parameter.stringkeyname,strings,lang);
     				};
-     				parameter.unitf=function(){
+     				parameter.unitf = function(){
     					return key2string.unitf(parameter.unit,strings);
     				};
-    				parameter.unitLang=function(lang){				
+    				parameter.unitLang = function(lang){				
     					return key2string.key2stringWithLangStrict(parameter.unit,strings,lang);
     				};
-    				if (parameter.datatype==="date") {
-    					parameter.newDate=new Date(parameter.value);
-    					parameter.date=new Date(parameter.value);
+    				if (parameter.datatype === "date") {
+    					parameter.newDate = new Date(parameter.value);
+    					parameter.date = new Date(parameter.value);
     				}
     			});
     			angular.forEach(experiment.samples, function(sample){
-    				if (sample.note!==undefined) {
-    					sample.trnote=key2string.key2string(sample.note,strings);
+    				if (sample.note !== undefined) {
+    					sample.trnote = key2string.key2string(sample.note,strings);
     				}
     				angular.forEach(sample.pprocesses, function(pprocess){
     					if (pprocess.note){
@@ -143,12 +170,6 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 
 	
 	
-	this.addProcessStep = function(processid, sampleid){
-		return restfactory.POST("add-process-step?pprocess="+processid+"&expsample="+sampleid); 
-	};
-	
-	
-	
 	// save experiment for "recent experiments"
 	this.pushExperiment = function(experiment){
 		var found = false;
@@ -183,7 +204,7 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 	
 	
 	
-	this.updatePositionsForProcessesInExperiment=function(processes){
+	this.updatePositionsForProcessesInExperiment = function(processes){
 		return restfactory.POST("update-positions-for-processes-in-experiment",processes);
 	};
 	
@@ -196,21 +217,21 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 	
 	
 	
-	this.updateExperimentParameter=function(parameter,experimentid){
+	this.updateExperimentParameter = function(parameter,experimentid){
 		
-		var json={experimentid:experimentid, parameterid:parameter.id, value:parameter.value};
+		var json = {experimentid:experimentid, parameterid:parameter.id, value:parameter.value};
 		if ("date" in parameter) {
-			json.date=parameter.date;
-			json.tz=parameter.tz;
+			json.date = parameter.date;
+			json.tz = parameter.tz;
 		}
 		if ("time" in parameter) {
-			json.time=parameter.time;
+			json.time = parameter.time;
 		}
 		if ("error" in parameter) {
-			json.error=parameter.error;
+			json.error = parameter.error;
 		} 
 		
-		return restfactory.POST('update-experiment-parameter',parameter);
+		return restfactory.POST('update-experiment-parameter', parameter);
 	};
 	
 	
@@ -232,36 +253,15 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 	
 	
 	this.updateNumber = function(id,newNumber){
-		var promise = restfactory.PUT('update-experiment-number?id='+id+'&number='+newNumber);
+		var promise = restfactory.PUT('update-experiment-number?id='+id+'&number=' + newNumber);
 		return promise;
 	};
-	
-	
-	
-	this.deleteSampleFromExperiment = function(id){
-		// Removes a sample from an experiment. 
-		return restfactory.DELETE("delete-sample-from-experiment?id="+id);
-	};
-	
-	
-	
-	this.deleteParameter=function(id){
-		//removes a proces from an experiment
-		return restfactory.DELETE("delete-experiment-parameter?id="+id);
-	};
-	
-	
-	
-	this.deleteProcess=function(id){
-		//removes a proces from an experiment
-		return restfactory.DELETE("delete-process-from-experiment?id="+id);
-	};
-	
+
 	
 	
 	this.replaceSampleInExperiment = function(id, newSampleId){
 		// replaces a sample in an experiment
-		return restfactory.POST("replace-sample-in-experiment?id="+id+"&sampleid="+newSampleId);
+		return restfactory.POST("replace-sample-in-experiment?id="+id+"&sampleid=" + newSampleId);
 	};
 	
 	

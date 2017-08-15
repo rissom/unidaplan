@@ -347,9 +347,8 @@ function experimentController($uibModal,$scope,editmode,experimentService,langua
 	  
 	  
 	  
-	this.showParam=function(parameter){
-	  	if (parameter.datatype==="date"){
-	  //		return date.toLocaleDateString()+", "+date.toLocaleTimeString();  
+	this.showParam = function(parameter){
+	  	if (parameter.datatype === "date"){
 			return parameter.date.toLocaleDateString();
 	  	} else {
 	  		return parameter.value;
@@ -376,37 +375,37 @@ function experimentController($uibModal,$scope,editmode,experimentService,langua
 	angular.forEach (experimentData.samples, function(sample){
 		// Arranging of planned and finished experiments. Finished Experiments are sorted by time. 
 		// Planned Experiments are matched to finished Experiments.
-		var mprocesses=[];
-		var pplength=0;
-		var finishedProcesses=[];
-		var plannedProcesses=[];
-		if (sample.fprocesses!==undefined) {
-			for (var i=0;i++;i<sample.fprocesses.length){
-				fprocess[i].date=Date(fprocesses[i].date);
+		var mprocesses = [];
+		var pplength = 0;
+		var finishedProcesses = [];
+		var plannedProcesses = [];
+		if (sample.fprocesses !== undefined) {
+			for (var i = 0; i++; i < sample.fprocesses.length){
+				fprocess[i].date = Date(fprocesses[i].date);
 			}
-			finishedProcesses=sample.fprocesses.sort(function(a,b){return b.date<a.date}) // Sort finished processes by date
+			finishedProcesses = sample.fprocesses.sort(function(a,b){ return b.date < a.date }) // Sort finished processes by date
 		}
-		if (sample.pprocesses!==undefined){
-			plannedProcesses=sample.pprocesses;
+		if (sample.pprocesses !== undefined){
+			plannedProcesses = sample.pprocesses;
 		}
-		var fpi=0;
-		var ppi=0;
-		while (fpi<finishedProcesses.length || ppi<plannedProcesses.length) {
-			var fp={};
-			var pp={};
-			if (fpi<finishedProcesses.length) {
-				fp=finishedProcesses[fpi];
-				if (ppi<plannedProcesses.length)
+		var fpi = 0;
+		var ppi = 0;
+		while (fpi < finishedProcesses.length || ppi < plannedProcesses.length) {
+			var fp = {};
+			var pp = {};
+			if ( fpi < finishedProcesses.length ) {
+				fp = finishedProcesses[fpi];
+				if (ppi < plannedProcesses.length)
 					if (finishedProcesses[fpi].processtype == plannedProcesses[ppi].processtype){
-						pp=plannedProcesses[ppi++]; 
+						pp = plannedProcesses[ppi++]; 
 					}
-				fpi=fpi+1;
+				fpi = fpi + 1;
 			}else{
-				pp=plannedProcesses[ppi++]; 
+				pp = plannedProcesses[ppi++]; 
 			}	
 			mprocesses.push({"fprocess":fp,"pprocess":pp});
 		}
-		sample.mprocesses=mprocesses;
+		sample.mprocesses = mprocesses;
 	});
 		
 	
@@ -430,11 +429,11 @@ function experimentController($uibModal,$scope,editmode,experimentService,langua
 	
 	
 	this.keyUp = function(keyCode,newValue,parameter) {
-		if (keyCode===13) {				// Return key pressed
+		if (keyCode === 13) {				// Return key pressed
 			var promise = thisController.submitParameter(parameter);
 			promise.then(function(){reload()},function(){reload()});
 		}
-		if (keyCode===27) {		// Escape key pressed
+		if (keyCode === 27) {		// Escape key pressed
 			parameter.editing=false;		
 		}
 	};
@@ -442,25 +441,27 @@ function experimentController($uibModal,$scope,editmode,experimentService,langua
 	
 	
 	this.keyUpNumber = function(keyCode) {
-		if (keyCode===13) {				// Return key pressed
+		if (keyCode === 13) {				// Return key pressed
 			var promise = experimentService.updateNumber(experimentData.id,thisController.newNumber);
 			promise.then(function(){reload()},function(){reload()});
 		}
-		if (keyCode===27) {		// Escape key pressed
+		if (keyCode === 27) {		// Escape key pressed
 			thisController.newNumber = experimentData.number;
 		}
 	};
 
 
+	
+	this.setToEditmode = function(){
+		console.log("editmode")
+		$stateParams.editmode = true;
+		this.editmode = true;
+	}
 
-	this.submitParameter=function(parameter){
-		parameter.editing=false; 
-		var oldValue=parameter.value;
-//		if (parameter.datatype=="date") {
-//			parameter.date=parameter.newDate;
-//			parameter.tz=new Date().getTimezoneOffset();
-//		}
-		parameter.experimentid=this.experiment.id;
+	this.submitParameter = function(parameter){
+		parameter.editing = false; 
+		var oldValue = parameter.value;
+		parameter.experimentid = this.experiment.id;
 		var res = experimentService.updateExperimentParameter(parameter);
 		res.then(
 			function(data) {
@@ -476,7 +477,7 @@ function experimentController($uibModal,$scope,editmode,experimentService,langua
 
 	
 	
-	var reload=function() {
+	var reload = function() {
 	    var current = $state.current;
 	    var params = angular.copy($stateParams);
 	    return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
