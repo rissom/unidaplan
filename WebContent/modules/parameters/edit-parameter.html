@@ -202,19 +202,27 @@
 	    <tbody data-ng-model = "possibleValues" data-as-sortable = "dragControlListeners">
 		    <tr ng-repeat = "item in possibleValues" as-sortable-item style = "padding: 7px; white-space : nowrap" >
 		        <td as-sortable-item-handle>
-		         	<span ng-hide = "item.edit" ng-dblclick = "item.edit=true">
-		        	<span class = "glyphicon glyphicon-menu-hamburger">&nbsp;</span> 
+			      	<span ng-hide = "item.edit" ng-dblclick = "item.edit = true">
+			        	<span class = "glyphicon glyphicon-menu-hamburger">&nbsp;
+			        	</span> 
 		          	{{item.string}} &nbsp;
 		          	</span>
 		            <input ng-show = "item.edit"
-		            	type = "text"
-		            	ng-model = "item.string"
-		            	ng-keyup = "editParamCtrl.keyUpPValue(item,$event.keyCode)"
-		            	autofocus>
+			            	type = "text"
+			            	ng-model = "item.string"
+			            	ng-keyup = "editParamCtrl.keyUpPValue(item,$event.keyCode)"
+			            	autofocus>
 		        </td>
+		        <td class = "visible-xs" ng-click = "item.edit = true">
+			        <a>
+						<span ng-hide = "item.edit" class = "glyphicon glyphicon-wrench" aria-hidden = "true">
+						</span> &nbsp;
+					</a>
+				</td>
 		        <td ng-click = "editParamCtrl.deletePossibleValue(item)">
-		            <span  class = "glyphicon glyphicon-remove"></span>
-		    	</td>
+		            <span  class = "glyphicon glyphicon-remove">
+		            </span>
+		    		</td>
 		    </tr>
 	    </tbody>
 	</table>

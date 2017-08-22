@@ -1,10 +1,12 @@
-<div>
+<div style="display: inline-flex;">
 <span ng-hide = "parameter.editing">{{sampleParamCtrl.newValue.name}}
 </span>
+&nbsp;
 <a ui-sref="sample({sampleID:parameter.data.id})">
 <span ng-hide = "parameter.editing || parameter.data.id == null" class="glyphicon glyphicon-share">
 </span>
 </a>
+&nbsp;
 <a class="visible-xs" ng-click = "parameter.editing = true">
 	<span ng-hide = "parameter.editing" class = "glyphicon glyphicon-wrench" aria-hidden = "true">
 	</span>
