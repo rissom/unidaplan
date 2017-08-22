@@ -24,13 +24,18 @@
 		
 
 {{'Status of process run'|translate}}:&nbsp;
+<span style = "display:inline-flex; align-items:center">
 <span 
 	ng-hide = "processCtrl.editStatus"
 	class = "status"
-	ng-dblclick = "processCtrl.editStatus=true"
+	ng-dblclick = "processCtrl.editStatus = true"
 	ng-class = "{'1':'ok','2':'att','3':'failed'}[processCtrl.process.status]" >
 	&nbsp;{{processCtrl.status.stringf()}} 
 </span>
+<a class = "visible-xs" ng-click = "processCtrl.editStatus = true">
+	&nbsp;
+	<span ng-hide = "processCtrl.editStatus" class = "glyphicon glyphicon-wrench" aria-hidden = "true"></span>
+</a>
  <select class = "input-sm"
          ng-show = "processCtrl.editStatus"
          ng-change = "processCtrl.setStatus()"
@@ -38,6 +43,7 @@
          ng-blur = "processCtrl.editStatus=false"
 		 ng-options = "state as state.stringf() for state in processCtrl.stati">
 </select>
+</span>
 <br />
 <br />
 
