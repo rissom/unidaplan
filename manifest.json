@@ -1,0 +1,9 @@
+{
+  "short_name": "Unidaplan",
+  "theme_color": "#e7e7e7",
+  "background_color": "#fffff",
+  "display": "minimal-ui",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/"
+}
