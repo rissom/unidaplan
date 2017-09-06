@@ -2,7 +2,7 @@
   "short_name": "Unidaplan",
   "name" : "Unidaplan",
   "theme_color": "#e7e7e7",
-  "background_color": "#2196f3",
+  "background_color": "#e7e7e7",
   "display": "minimal-ui",
   "orientation": "portrait",
   "Scope": "/",
