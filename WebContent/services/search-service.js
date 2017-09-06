@@ -66,8 +66,8 @@ var searchService = function (restfactory,$q,$translate,key2string,languages) {
 					return key2string.key2string(search.name,strings);
 				};
 				search.actions = [{ action  : "edit",
-								    namef   : function(){ console.log("ho"); return $translate.instant("edit"); }},
-		    		              { action  : "delete",
+								    namef   : function(){ return $translate.instant("edit"); }},
+								  { action  : "delete",
 								    namef   : function(){ return $translate.instant("delete"); },
 								   disabled : search.deletable }  ];
 			});

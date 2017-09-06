@@ -3,7 +3,7 @@
 
 var userService = function(restfactory,$q){
 
-	var thisController=this;
+	var thisController = this;
 	
 	
 	

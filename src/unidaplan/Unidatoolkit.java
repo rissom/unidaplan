@@ -23,8 +23,10 @@ public class Unidatoolkit {
 			System.err.println("Error sending standard answer");
 			e.printStackTrace();
 		} 
-    	JSONObject answer=new JSONObject();
-        try {
+		
+		JSONObject answer = new JSONObject();
+        
+		try {
 			answer.put("status", status);
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -43,7 +45,7 @@ public class Unidatoolkit {
 			System.err.println("Error sending standard answer");
 			e.printStackTrace();
 		} 
-    	JSONObject answer=new JSONObject();
+    	JSONObject answer = new JSONObject();
         try {
         	answer.put("id", id);
 			answer.put("status", status);
