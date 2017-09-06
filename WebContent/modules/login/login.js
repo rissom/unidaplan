@@ -11,20 +11,25 @@ var loginController = function($state,restfactory,$scope,$rootScope,$translate){
 	
 	this.userLogin = function(){
 		// is called when the user logs in.
-		var promise = restfactory.GET('login?user='+this.userinput+'&pw='+CryptoJS.SHA256(this.pwinput).toString(CryptoJS.enc.Base64));
+		var promise = restfactory.GET('login?user=' + this.userinput + '&pw='+CryptoJS.SHA256(this.pwinput).toString(CryptoJS.enc.Base64));
 		promise.then(function(data){
 				thisController.error = "";
 				if (data.data.fullname){
 					$rootScope.userfullname = data.data.fullname;
-				}else{
+				} else {
 					delete $rootScope.userfullname;
 				}
 				if (data.data.username){
 					$rootScope.username = data.data.username;
-				}else{
+				} else {
 					delete $rootScope.username;
 				}
-				$rootScope.userid = data.data.id;
+				if (data.data.id>0){
+					$rootScope.userid = data.data.id;
+				} else {
+					delete $rootScope.userid;
+				}
+						
 				if(data.data.admin){
 					$rootScope.admin = data.data.admin;
 				} else {
@@ -46,7 +51,7 @@ var loginController = function($state,restfactory,$scope,$rootScope,$translate){
 				
 				// did you want to go somewhere special? If not: sample chooser.
 				if ($rootScope.failedState) {
-					$state.transitionTo($rootScope.failedState,$rootScope.failedParams,{ reload: true, inherit: true, notify: true });
+					$state.go($rootScope.failedState.name(),$rootScope.failedState.params());
 				} else {
 					$state.go('sampleChoser');
 				}

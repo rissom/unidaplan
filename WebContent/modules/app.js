@@ -577,17 +577,17 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 	        templateUrl: 'modules/sample/sample.html',
 	        controller: "sampleController as sampleCtrl",
 	        resolve: {
-	        	sample: function($stateParams,sampleService){
-	        				return sampleService.loadSample($stateParams.sampleID);
-	        			},
-			    types:  function(avSampleTypeService){
-        	   	    		return avSampleTypeService.getSampleTypes();
-        	   	    	},
-        	   	ptypes: function(avProcessTypeService){
-            	   	    	return avProcessTypeService.getProcessTypes();
-            	   	    }
-	        }
-        })       
+		        	sample: function($stateParams,sampleService){
+		        				return sampleService.loadSample($stateParams.sampleID);
+		        			},
+				types:  function(avSampleTypeService){
+	        	   	    		    return avSampleTypeService.getSampleTypes();
+						},
+	        	   	ptypes: function(avProcessTypeService){
+	        	   		        return avProcessTypeService.getProcessTypes();
+	            	   	    }
+	        },
+        })
         
         
           .state('sampleRecipe', {
@@ -780,23 +780,6 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
     	}
     };
     
-    
-    $rootScope.$on('$stateChangeStart', function(event, toState, toStateParams) {
-      // track the state the user wants to go to; authorization service needs this
-    	if (toState.name!="login" && toState.name!="noRights"){
-		    $rootScope.toState = toState;
-		    $rootScope.toStateParams = toStateParams;
-	    }
-    });
-    
-    
-    $rootScope.$on('$stateChangeSuccess', function(event, toState, toStateParams) {
-        // track the state the user wants to go to; authorization service needs this
-      	if (toState.name!="login" && toState.name!="noRights"){
-			delete $rootScope.failedState;
-			delete $rootScope.failedParams;
-  	    }
-      });
     
 });
 

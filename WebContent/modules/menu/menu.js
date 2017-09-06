@@ -1,8 +1,8 @@
 (function(){
 'use strict';
 
-function menuf(experimentService,searchService,restfactory,$translate,
-						$rootScope,$state,userService) {
+function menuf(experimentService,searchService,restfactory,$translate,$transitions,
+			   $rootScope,$state,userService) {
 
 	var thisController = this;
 		
@@ -44,7 +44,7 @@ function menuf(experimentService,searchService,restfactory,$translate,
 	
 	
 	this.setLanguage = function(lang){  // change language and send a broadcast
-		if (this.old_language!=$translate.use()) {
+		if (this.old_language != $translate.use()) {
 			$translate.use(lang);
 			if ($rootScope.userid){
 				userService.setLanguage($rootScope.userid,lang);
@@ -53,11 +53,71 @@ function menuf(experimentService,searchService,restfactory,$translate,
 	};
 	
 	
+
+	$transitions.onBefore({},function(trans) {
+		thisController.navCollapsed = true;
+		
+      // if user is not logged in: track the state the user wants to go to
+		var toState = trans.targetState();
+		var toStateName = toState.name();
+		if (toStateName != "login" && toStateName != "noRights"){
+			if ($rootScope.userid == undefined || $rootScope.userid < 1){
+				$rootScope.failedState = toState; // save desired state
+				return trans.router.stateService.target('login');
+			} 
+		}
+    });
 	
-	$rootScope.$on('$stateChangeStart', 
-			function(event, toState, toParams, fromState, fromParams){ 
-				thisController.navCollapsed = true;
-	});
+	
+	
+	$transitions.onError({},
+		function(trans) {
+		
+		// Output error message and detail, if they exist.
+		var error = trans.error();
+		if (error.detail){
+			
+			if (error.detail === "401") {
+				// save the desired state
+				var toState = trans.targetState();
+				var toStateName = toState.name();
+				if (toStateName != "login" && toStateName != "noRights"){
+					$rootScope.failedState = toState;
+				}
+				$state.go('noRights');
+			}
+			
+			if (error.detail === "404") {
+				alert ("Not Found!");
+				$state.go('sampleChoser');
+			}
+			
+			if (error.detail === "511") {
+				// save the desired state
+				var toState = trans.targetState();
+				var toStateName = toState.name();
+				if (toStateName != "login" && toStateName != "noRights"){
+					$rootScope.failedState = toState;
+				}
+				delete $rootScope.username;
+				delete $rootScope.userid;
+				delete $rootScope.userfullname;
+				$rootScope.admin = false
+				$state.go('noRights');
+			}
+		}	
+    });
+	 
+	
+	
+	
+	$transitions.onSuccess({}, function(trans) {
+	        // track the state the user wants to go to; authorization service needs this
+		var toState = trans.$to();
+      	if (toState.name!="login" && toState.name!="noRights"){
+			delete $rootScope.failedState;
+  	    }
+    });
 	
 	
 	
@@ -70,7 +130,7 @@ function menuf(experimentService,searchService,restfactory,$translate,
 				$state.go('login');
 			},
 			function(){
-				console.log("Error!");	
+				console.log("Error logging out!");	
 			});
 	};
 	
@@ -78,6 +138,6 @@ function menuf(experimentService,searchService,restfactory,$translate,
 }
 
 angular.module('unidaplan').controller('menu',['experimentService',
-    'searchService','restfactory','$translate','$rootScope','$state','userService',menuf]);
+    'searchService','restfactory','$translate','$transitions','$rootScope','$state','userService',menuf]);
   
 })();

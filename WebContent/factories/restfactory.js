@@ -2,28 +2,24 @@
 
 
 
-angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', '$state', function($q, $rootScope,$http,$state) {
+angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', '$state', '$transitions', function($q, $rootScope, $http, $state, $transitions) {
 
 	$http.defaults.headers.post["Content-Type"] = "application/json";
 	$http.defaults.headers.put["Content-Type"] = "application/json";
 	
-	var rest = {};	
-	var setFailedState = function(fstate,fparams){
-		if (fstate.name!='login' && fstate.name!='noRights'){
-			$rootScope.failedState=fstate;
-			$rootScope.failedParams=fparams
-		}
-	};
+	var rest = {};	// function to save the desired state in case of a failed transition
 	
-	rest.origin = window.location.origin;
+	
+	rest.origin   = window.location.origin;
 	rest.protocol = window.location.protocol;
-	rest.path 		= "";	
+	rest.path     = "";	
 	
-//	console.log("restfactory: using: "+rest.path);
-    
+	
+	
+	
 	rest.GET = function(restfunction, config) {
 		restfunction = removeLeadingSlashes(restfunction); 
-		var uri = rest.path+restfunction;
+		var uri = rest.path + restfunction;
 		
 		var defer = $q.defer();
 		try {
@@ -34,39 +30,25 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 						if ( (typeof data.data == 'string') && (data.data.length>0) ) {
 							var text = data.data;
 							if (text.length>100) {
-								text = text.substring(0,100)+"...";
+								text = text.substring(0,100) + "...";
 							}
-							console.log("restfactory.GET: "+uri+" no JSON warning: ",text);
+							console.log("restfactory.GET: " + uri + " no JSON warning: ",text);
 						}
-//						var serverObj = JSON.parse(data.data);
-						console.log("restfactory.GET: from: "+uri+" got: ",data);
+						console.log("restfactory.GET: from: " + uri + " got: ",data);
 						defer.resolve(data);
 					} catch (err) {
 						console.log("restfactory.GET: "+uri+" parse error: "+data,err);
 						defer.reject('parse error occured');
-						setFailedState($rootScope.toState,$rootScope.toStateParams);
 					}
 				},
 				function(data) {
-					console.log("restfactory.GET: error: ",data);
-					defer.reject('some http error occured');
-					setFailedState($rootScope.toState,$rootScope.toStateParams);
-					if (data.status == 401) {
-						$state.go('noRights');
-					}
-					if (data.status == 511) {
-						delete $rootScope.username;
-						delete $rootScope.userid;
-						delete $rootScope.userfullname;
-						$rootScope.admin = false
-						$state.go('noRights');
-					}
+					console.error("restfactory.GET error data: ",data);
+					defer.reject("" + data.status);
 			    }
 			);
 		} catch(err) {
-			console.log("restfactory.GET: "+uri+" exception loading data: ",err);
+			console.log("restfactory.GET: " + uri + " exception loading data: ", err);
 			defer.reject('Oops, try catch!');
-			setFailedState($rootScope.toState,$rootScope.toStateParams);
 		}
 		return defer.promise;
 	};
@@ -97,29 +79,16 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 					} catch (err) {
 						console.log("restfactory.PUT: parse error: ",err);
 						defer.reject('parse error occured');
-						setFailedState($rootScope.toState,$rootScope.toStateParams);
 					}
 				},
 				function(data) {
 					console.log("restfactory.PUT: error: ", data );
-					defer.reject('some http error occured');
-					setFailedState($rootScope.toState,$rootScope.toStateParams);
-					if (data.status == 401) {
-						$state.go('noRights');
-					}
-					if (data.status == 511) {
-						delete $rootScope.username;
-						delete $rootScope.userid;
-						delete $rootScope.userfullname;
-						$rootScope.admin = false
-						$state.go('noRights');
-					}
+					defer.reject("" + data.status);
 			    }
 			);
 		} catch(err) {
 			console.log("restfactory.PUT: exception loading data: ",err);
 			defer.reject('Oops, try catch!');
-			setFailedState($rootScope.toState,$rootScope.toStateParams);
 		}
 		return defer.promise;
 	};
@@ -128,7 +97,7 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 	
 	rest.POST = function(restfunction, jsonParamObj,config) {
 		restfunction = removeLeadingSlashes(restfunction); 
-		var uri = rest.path+restfunction;
+		var uri = rest.path + restfunction;
 		var defer = $q.defer();
 		try {
 			var text ="";
@@ -138,39 +107,26 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 					text = text.substring(0,100)+"...";
 				}
 			}
-			console.log("restfactory.POST: trying to access: "+uri+"  "+text);
+			console.log("restfactory.POST: trying to access: " + uri + "  " + text);
 			var ret = $http.post(uri,jsonParamObj,config);
 			ret.then(
 				function(data, status, headers, config) {
 					try {
-						console.log("restfactory.POST: from: "+uri+" got: ",data);
+						console.log("restfactory.POST: from: " + uri + " got: ",data);
 						defer.resolve(data);
 					} catch (err) {
 						console.log("restfactory.POST: parse error: ",err);
 						defer.reject('parse error occured');
-						setFailedState($rootScope.toState,$rootScope.toStateParams);
 					}
 				},
 				function(data) {
-					console.log("restfactory.POST: error: ",data);
-					defer.reject('some http error occured Status: '+data.status);
-					setFailedState($rootScope.toState,$rootScope.toStateParams);
-					if (data.status == 401) {
-						$state.go('noRights');
-					}
-					if (data.status == 511) {
-						delete $rootScope.username;
-						delete $rootScope.userid;
-						delete $rootScope.userfullname;
-						$rootScope.admin = false
-						$state.go('noRights');
-					}
+					console.error("restfactory.POST error data: ",data);
+					defer.reject("" + data.status);
 			    }
 			);
 		} catch(err) {
 			console.log("restfactory.POST: exception loading data: ",err);
 			defer.reject('Oops, try catch!');
-			setFailedState($rootScope.toState,$rootScope.toStateParams);
 		}
 		return defer.promise;
 	};
@@ -190,35 +146,23 @@ angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', 
 					defer.resolve(data);
 				},
 				function(data) {
-					console.log("restfactory.DELETE: error: ", data);
-					defer.reject('some http error occured');
-					setFailedState($rootScope.toState,$rootScope.toStateParams);
-					if (data.status == 401) {
-						$state.go('noRights');
-					}
-					if (data.status == 511) {
-						delete $rootScope.username;
-						delete $rootScope.userid;
-						delete $rootScope.userfullname;
-						$rootScope.admin = false
-						$state.go('noRights');
-					}
+					console.error("restfactory.DELETE error data: ",data);
+					defer.reject("" + data.status);
 			    }
 			);
 		} catch(err) {
 			console.log("restfactory.DELETE: exception loading data: ",err);
 			defer.reject('Oops, try catch!');
-			setFailedState($rootScope.toState,$rootScope.toStateParams);
 		}
 		return defer.promise;
 	};
 
-	rest.filterUTF8canvgSave = function(inString) {
-		if (inString.indexOf("\u00A0")!=-1) {
-			console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!! rest.filterUTF8canvgSave: inString.indexOf(u0020): "+inString.indexOf("\u0020"));
-		}
-		return inString;
-	};
+//	rest.filterUTF8canvgSave = function(inString) {
+//		if (inString.indexOf("\u00A0")!=-1) {
+//			console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!! rest.filterUTF8canvgSave: inString.indexOf(u0020): "+inString.indexOf("\u0020"));
+//		}
+//		return inString;
+//	};
 	
 	return rest;
 }]);

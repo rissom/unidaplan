@@ -11,13 +11,13 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 
 	
 	
-	this.addAncestors= function(sampleID,ancestors){
+	this.addAncestors = function(sampleID,ancestors){
 		return restfactory.POST('add-ancestors',{"sampleid":sampleID,"ancestors":ancestors});
 	};
 	
 	
 	
-	this.addChildren= function(sampleID,children){
+	this.addChildren = function(sampleID,children){
 		return restfactory.POST('add-children',{"sampleid":sampleID,"children":children});
 	};
 	
@@ -74,7 +74,7 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 	
 	
 	
-	this.deleteSampleType=function(id){
+	this.deleteSampleType = function(id){
 		return restfactory.DELETE("delete-sample-type?id="+id);
 	};
 
@@ -163,20 +163,20 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 	
 	
 	this.loadSample = function(id) {			// Load data and filter Titleparameters
-    	var defered=$q.defer();
-		var promise = restfactory.GET("showsample?id="+id);
+    	var defered = $q.defer();
+		var promise = restfactory.GET("showsample?id=" + id);
 	    promise.then(function(rest) {			// save the sample for recent samples
-	        var sample = { "id"		  	   : rest.data.id,
-		    			   "typeid"		   : rest.data.typeid,
-		    			   "typestringkey" : rest.data.typestringkey,
-		    			   "name"		   : rest.data.name};
+	        var sample = { "id"		  	   	: rest.data.id,
+			    			   "typeid"		  	: rest.data.typeid,
+			    			   "typestringkey" 	: rest.data.typestringkey,
+			    			   "name"		   	: rest.data.name };
 		    thisController.pushSample(sample);
 	        thisController.sample = rest.data;
 	        var strings = rest.data.strings;
 	        
 	    	// add translation functions
 			angular.forEach(thisController.sample.parametergroups, function(paramgrp) {
-				paramgrp.grpnamef=function(){
+				paramgrp.grpnamef = function(){
 					return key2string.key2string(paramgrp.paramgrpkey,strings);
 				};
 				angular.forEach(paramgrp.parameter, function(parameter) {
@@ -199,25 +199,26 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 				});
 			});
 			angular.forEach(thisController.sample.plans, function(plan) {
-				plan.namef=function(){
+				plan.namef = function(){
 					return key2string.key2string(plan.name,thisController.sample.strings);
 				};
-				plan.notef=function(){
+				plan.notef = function(){
 					return key2string.key2string(plan.note,thisController.sample.strings);
 				};
 				angular.forEach(plan.plannedprocesses, function(process) {
-					if (process.note!==undefined) {
-						process.trnote=key2string.key2string(process.note,thisController.sample.strings);
+					if (process.note !== undefined) {
+						process.trnote = key2string.key2string(process.note,thisController.sample.strings);
 					}
-					if (process.recipename!==undefined) {
-						process.trrecipe=key2string.key2string(process.recipename,thisController.sample.strings);
+					if (process.recipename !== undefined) {
+						process.trrecipe = key2string.key2string(process.recipename,thisController.sample.strings);
 					}
 				});
 			});
 			defered.resolve(thisController.sample);
-	    }, function(rest) {
-	    	console.log("Sample not found");
-	    	defered.reject({"error":"Not Found!"});
+	    }, 
+	    // failure function:
+	    	function(rest) {
+		    	defered.reject(rest);
 	    });
 	    return defered.promise;
 	};
