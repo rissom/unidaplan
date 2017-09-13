@@ -308,7 +308,7 @@ CREATE TABLE processdata ( -- process parameter data
 
 CREATE TABLE spdata ( -- sample related process data
   id              BIGSERIAL PRIMARY KEY,
-  sip             INTEGER NOT NULL REFERENCES samplesinprocess(ID),
+  sip             INTEGER NOT NULL REFERENCES samplesinprocess(ID) ON DELETE CASCADE,
   parameterid     INTEGER NOT NULL REFERENCES po_parameters(ID) ON DELETE NO ACTION,
   data            JSONB,
   lastchange      TIMESTAMP,
