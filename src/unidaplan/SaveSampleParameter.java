@@ -73,7 +73,6 @@ import expr.Variable;
 			pStmt.setInt(1,userID);
 			pStmt.setInt(2,sampleID);
 			privilege = dBconn.getSingleStringValue(pStmt);
-			pStmt.close();
 		} catch (SQLException e) {
 			System.err.println("SaveSampleParameter: Problems with SQL query");
 			status="Problems with SQL query";
@@ -99,7 +98,6 @@ import expr.Variable;
 						 + "WHERE otp.id = ?");
 			   	pStmt.setInt(1, pid);
 			   	JSONObject answer = dBconn.jsonObjectFromPreparedStmt(pStmt);
-			   	pStmt.close();
 				datatype = answer.getInt("datatype");
 				titleParameter = answer.getBoolean("id_field");
 				
@@ -250,7 +248,6 @@ import expr.Variable;
 							pStmt.setInt(1, pid);
 							pStmt.setInt(2, pid);
 							dependentParameters = dBconn.jsonArrayFromPreparedStmt(pStmt);
-							pStmt.close();
 							
 							if (dependentParameters.length() > 0 ){
 								// recalc values
