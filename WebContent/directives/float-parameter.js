@@ -27,11 +27,13 @@ var floatParameter = function() {
 			
 			this.dataFormatter = new DataFormatter({locale : 'en-US'});
 			
+			
+			
 			this.keyUp = function(keyCode) {
 				if (keyCode === 13) {				// Return key pressed
 					$scope.parameter.editing = false;
 					if (this.form.$valid){
-						$scope.parameter.data = {value : this.newValue};
+						$scope.parameter.data = {"value" : this.newValue};
 						$scope.pupdate({parameter:$scope.parameter});
 					}
 				}
@@ -41,12 +43,20 @@ var floatParameter = function() {
 				}
 			}
 			
+			
+			
 			this.keyDown = function(keyCode) {
 				if (keyCode === 9) {		// Tab key pressed
 					$scope.parameter.editing = false; 
-					$scope.parameter.data = {value:this.newValue};
+					$scope.parameter.data = {"value":this.newValue};
 					$scope.pupdate({parameter:$scope.parameter});
 				}
+			}
+			
+			
+			
+			this.blur = function() {
+				$scope.parameter.editing = false; 
 			}
 						
 		},

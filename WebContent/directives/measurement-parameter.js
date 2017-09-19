@@ -26,12 +26,20 @@ var measurementParameter = function() {
 				this.newError = $scope.parameter.data.error;
 			}
 			
+			
+			
+			this.blur = function(){
+			//	if focus on one of the two input fields do nothing
+			//  else $scope.parameter.editing = false
+			}
+			
+			
 			this.keyDown = function(keyCode) {
 				if (keyCode===9) {		// Tab key pressed
 					$scope.parameter.editing = false;
 					if ($scope.parameter.data == undefined){
-						$scope.parameter.data = {value : this.newValue,
-												 error : this.newError};
+						$scope.parameter.data = {"value" : this.newValue,
+												"error" : this.newError};
 					} else{
 						$scope.parameter.data.value = this.newValue;
 						$scope.parameter.data.error = this.newError;
@@ -41,13 +49,15 @@ var measurementParameter = function() {
 				}
 			}
 			
+			
+			
 			this.keyUp = function(keyCode) {
-				if (keyCode===13) {				// Return key pressed
+				if (keyCode === 13) {				// Return key pressed
 					$scope.parameter.editing = false;
 					$scope.parameter.data = {"value" : this.newValue, "error" : this.newError};
 					$scope.pupdate({parameter:$scope.parameter});
 				}
-				if (keyCode===27) {		// Escape key pressed
+				if (keyCode === 27) {		// Escape key pressed
 					$scope.parameter.editing = false;
 					this.newValue = $scope.parameter.data.value;
 					this.newError = $scope.parameter.data.error;

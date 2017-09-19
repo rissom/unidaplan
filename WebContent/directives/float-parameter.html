@@ -12,7 +12,7 @@
 	ng-keyup = "floatParamCtrl.keyUp($event.keyCode)"
 	ng-keydown = "floatParamCtrl.keyDown($event.keyCode)"
 	ng-show = "parameter.editing" 
-	ng-blur = "parameter.editing = false"
+	ng-blur = "floatParamCtrl.blur()"
 	type = "number"
     ng-model = "floatParamCtrl.newValue"
     ng-attr-min = "{{parameter.min}}" 

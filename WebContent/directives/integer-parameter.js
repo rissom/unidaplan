@@ -45,15 +45,6 @@ var integerParameter = function() {
 					$scope.pupdate({parameter:$scope.parameter});
 				}
 			}
-			
-			this.blur = function(keyCode) {
-				console.log("blur")
-				$scope.parameter.editing = false; 
-				if ($scope.parameter.data.value != this.newValue){
-					$scope.parameter.data.value = this.newValue;
-					$scope.pupdate({parameter:$scope.parameter});
-				}
-			}
 						
 		},
 		controllerAs: 'integerParamCtrl'

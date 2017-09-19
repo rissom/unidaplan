@@ -9,11 +9,13 @@
 	<span ng-hide = "parameter.editing" class = "glyphicon glyphicon-wrench" aria-hidden = "true">
 	</span>
 </a>
-<input 						   
+<input				   
 	ng-show = "parameter.editing" 
 	type = "number"
     ng-model = "measurementParamCtrl.newValue"
-    ng-keyup = "measurementParamCtrl.keyUp($event.keyCode)">
+    ng-keyup = "measurementParamCtrl.keyUp($event.keyCode)"
+    	ng-blur = "parameter.editing = measurementParamCtrl.blur"
+>
  
 <span ng-show = "parameter.editing">±</span>
 <input 						   
@@ -22,7 +24,9 @@
 	min = "0"
     ng-model = "measurementParamCtrl.newError"
     ng-keyup = "measurementParamCtrl.keyUp($event.keyCode)"
-    ng-keydown = "measurementParamCtrl.keyDown($event.keyCode)">
+    ng-keydown = "measurementParamCtrl.keyDown($event.keyCode)"
+    	ng-blur = "parameter.editing = measurementParamCtrl.blur"
+>
     
 <span ng-show = "parameter.editing">
 	{{parameter.unitf()}}
