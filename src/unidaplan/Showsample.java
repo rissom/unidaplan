@@ -63,7 +63,6 @@ public class Showsample extends HttpServlet {
 			pStmt.setInt(1,userID);
 			pStmt.setInt(2,sampleID);
 			privilege = dBconn.getSingleStringValue(pStmt);
-			pStmt.close();
 	        
 	        editable = privilege != null && privilege.equals("w");
 	        readable = privilege != null && privilege.equals("r");
@@ -86,7 +85,6 @@ public class Showsample extends HttpServlet {
 						"SELECT objecttypesid FROM samples WHERE id = ?");
 				pStmt.setInt(1,sampleID);
 				typeid = dBconn.getSingleIntValue(pStmt);
-				pStmt.close();
 				
 				if (typeid < 1) {
 					jsSample.put("error", "sample not found");
@@ -170,9 +168,7 @@ public class Showsample extends HttpServlet {
 					+ "WHERE objecttypesid = ? "
 					+ "GROUP BY parametergroup");
 			pStmt.setInt(1,typeid);
-			JSONArray parametergrps=dBconn.jsonArrayFromPreparedStmt(pStmt);
-			pStmt.close();
-			
+			JSONArray parametergrps = dBconn.jsonArrayFromPreparedStmt(pStmt);			
 			
 			
 			//get the parameters
@@ -229,7 +225,6 @@ public class Showsample extends HttpServlet {
 				      			pStmt.setInt(1, tParam.getInt("definition"));
 				      			JSONArray pvalues = dBconn.ArrayFromPreparedStmt(pStmt);
 				      			tParam.put("possiblevalues", pvalues);
-				      			pStmt.close();
 		      				}
 				      		if (datatype>3 && tParam.has("unit")) {
 			      				tParam.remove("unit");
@@ -244,7 +239,6 @@ public class Showsample extends HttpServlet {
 				      			pStmt.setInt(1, tParam.getInt("sampletype"));
 				      			JSONArray pvalues = dBconn.jsonArrayFromPreparedStmt(pStmt);
 				      			tParam.put("possiblesamples", pvalues);
-				      			pStmt.close();
 				      	 			
 		      				} else {
 				      			tParam.remove("sampletype");
@@ -340,7 +334,7 @@ public class Showsample extends HttpServlet {
 				  	  + "WHERE sample = ?");
 			pStmt.setInt(1,sampleID);
 			JSONArray eps = dBconn.jsonArrayFromPreparedStmt(pStmt);
-			pStmt.close();
+			
 			for (int i = 0; i < eps.length(); i++) {
 	      		  stringkeys.add(Integer.toString(eps.getJSONObject(i).getInt("name")));
 	      		// get planned processes
@@ -360,7 +354,7 @@ public class Showsample extends HttpServlet {
 						  + "WHERE expp_samples.sample = ? AND expp_samples.expp_id = ? "
 						  + "ORDER BY processposition");
 	      		pStmt.setInt(1,sampleID);
-	      		int experimentID=eps.getJSONObject(i).getInt("exp_id");
+	      		int experimentID = eps.getJSONObject(i).getInt("exp_id");
 	      		pStmt.setInt(2,experimentID);
 	      		JSONArray pprocesses = dBconn.jsonArrayFromPreparedStmt(pStmt);
 	      		for (int j = 0; j < pprocesses.length(); j++){
@@ -458,7 +452,7 @@ public class Showsample extends HttpServlet {
 								+ "FROM objecttypes "
 								+ "WHERE id = ?");
 						pStmt.setInt(1,((JSONObject)table.get(i)).getInt("typeid"));
-						int stringkey= dBconn.jsonObjectFromPreparedStmt(pStmt).getInt("string_key");
+						int stringkey = dBconn.jsonObjectFromPreparedStmt(pStmt).getInt("string_key");
 						stringkeys.add(Integer.toString(stringkey));
 						((JSONObject)table.get(i)).put("typestringkey", stringkey);
 					}
@@ -487,7 +481,7 @@ public class Showsample extends HttpServlet {
 						+ "LIMIT 1");
 				pStmt.setInt(1,sampleID);
 				pStmt.setInt(2,sampleID);
-				table= dBconn.jsonArrayFromPreparedStmt(pStmt);
+				table = dBconn.jsonArrayFromPreparedStmt(pStmt);
 				if (table.length()>0) {
 					jsSample.put("previous",table.get(0)); }
 		    } catch (SQLException e) {
@@ -558,6 +552,7 @@ public class Showsample extends HttpServlet {
 				resultset = pStmt.executeQuery();
 				if (resultset.next()) { deletable = false; }
 				pStmt.close();
+				resultset.close();
 				
 				// Check if files are attached
 		        pStmt = dBconn.conn.prepareStatement(	
@@ -569,7 +564,6 @@ public class Showsample extends HttpServlet {
 				if (dBconn.getSingleBooleanValue(pStmt)) { 
 					deletable = false; 
 				}
-				pStmt.close();
 				
 				// Check if the sample is used as a sampleparameter in sampledata
 		        pStmt = dBconn.conn.prepareStatement(	
@@ -584,7 +578,6 @@ public class Showsample extends HttpServlet {
 				if (dBconn.getSingleBooleanValue(pStmt)) { 
 					deletable = false; 
 				}
-				pStmt.close();
 				
 				// Check if the sample is used as a sample related processparameter in spdata
 		        pStmt = dBconn.conn.prepareStatement(	
@@ -597,7 +590,6 @@ public class Showsample extends HttpServlet {
 				if (dBconn.getSingleBooleanValue(pStmt)) { 
 					deletable = false; 
 				}
-				pStmt.close();
 				
 				// Check if the sample is used as a parameter for an experiment in experimentdata
 		        pStmt = dBconn.conn.prepareStatement(	
@@ -610,7 +602,6 @@ public class Showsample extends HttpServlet {
 				if (dBconn.getSingleBooleanValue(pStmt)) { 
 					deletable = false; 
 				}
-				pStmt.close();
 				
 				
 				jsSample.put("deletable", deletable);
