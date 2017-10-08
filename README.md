@@ -14,9 +14,10 @@ The software is still a bit rough around the edges. Allthough all basic function
 
 ##How to set it up
 
-You need an E-Mail account, an Apache Tomcat Web Application Server and an installed PostgreSQL database. Please enter all
-information in an Context.xml file which should be placed in the WebContent/META-INF directory. The file should have the
-following content:
+You need an E-Mail account, an Apache Tomcat Web Application Server and an installed PostgreSQL database. Unidaplan uses the 
+apache.tomcat.jdbc.pool. Make sure it is installed. 
+Please enter all information in an Context.xml file which should be placed in the WebContent/META-INF directory.
+The file should have the following content:
 
 > &lt;?xml version = "1.0" encoding = "UTF-8"?&gt;
 > 
@@ -35,8 +36,24 @@ following content:
 >  &nbsp;&nbsp; maxWait = "10000" <br>
 >  &nbsp;&nbsp; username = "theDatabaseUsername" <br>
 >  &nbsp;&nbsp; password = "theDatabasePassword" <br>
->  &nbsp;&nbsp; driverClassName ="org.postgresql.Driver" <br>
->  &nbsp;&nbsp; url = "jdbc:postgresql://127.0.0.1:5432/your-database" /&gt; 
+>  &nbsp;&nbsp; driverClassName = "org.postgresql.Driver" <br>
+>  &nbsp;&nbsp; url = "jdbc:postgresql://127.0.0.1:5432/your-database" <br>
+>  &nbsp;&nbsp; factory = 'org.apache.tomcat.jdbc.pool.DataSourceFactory' <br>
+>  &nbsp;&nbsp; minIdle = "10" <br>
+>  &nbsp;&nbsp; initialSize = "10" <br>
+>  &nbsp;&nbsp; testWhileIdle = "true" <br>
+>  &nbsp;&nbsp; testOnBorrow = "true" <br>
+>  &nbsp;&nbsp; testOnReturn = "false"<br>
+>  &nbsp;&nbsp; validationQuery = "SELECT 1" <br>
+>  &nbsp;&nbsp; validationInterval = "30000" <br>
+>  &nbsp;&nbsp; timeBetweenEvictionRunsMillis = "30000" <br>
+>  &nbsp;&nbsp; maxActive = "100" <br>
+>  &nbsp;&nbsp; removeAbandonedTimeout = "60" <br>
+>  &nbsp;&nbsp; removeAbandoned = "true" <br>
+>  &nbsp;&nbsp; logAbandoned = "true" <br>
+>  &nbsp;&nbsp; minEvictableIdleTimeMillis = "30000" <br>
+>  &nbsp;&nbsp; jmxEnabled = "true" <br>
+> /&gt; 
 >             
 >
 > &lt;Environment <br>
@@ -69,10 +86,6 @@ Also you need to initialize the database. This can be done by running the SQL sc
 > psql -f definitions.sql <br/>
 > psql -f functions.sql <br/>
 > psql -f inserts.sql <br/>
-
-If your instance does not work (address should be: http://yourservername.domain:8080/unidaplan/ ), you may need to specify the factory class for your database pool (i.e. Amazon Linux). Add the line:
-
-> factory = "org.apache.commons.dbcp.BasicDataSourceFactory"
 
 You will also need to create a directory "/mnt/data-store" which is writable by the tomcat processowner for storing files.
 
