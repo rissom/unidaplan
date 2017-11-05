@@ -715,7 +715,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 	
 		
 	
-	
+	// Also look into menu.js. Event handlers for transitions have to be set at later time and cannot be set here.
 	
 	/** ============================================== PRINT DEBUG ========================================================== 
 	 * debug > 3 - print all 
@@ -726,9 +726,9 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 	 */
 	
 	$rootScope.DEBUG_NONE  		= 0; 
-	$rootScope.DEBUG_ERROR  	= 1; 
+	$rootScope.DEBUG_ERROR  		= 1; 
 	$rootScope.DEBUG_WARNING  	= 2; 
-	$rootScope.DEBUG_DEBUG  	= 3; 
+	$rootScope.DEBUG_DEBUG  		= 3; 
 	$rootScope.DEBUG_INFO  		= 4; 
 	$rootScope.DEBUG_ALL  		= 5; 
 	

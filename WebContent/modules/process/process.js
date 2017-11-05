@@ -23,6 +23,15 @@ function process($state,$stateParams,$translate,avSampleTypeService,types,$uibMo
 	
     this.newStatus = this.stati[processData.status-1];
 
+    
+
+    
+  	this.assign = function(){
+  		var samples2assign={samples:this.process.samples, id:processData.id};
+  		var promise = restfactory.POST("add-sample-to-process",samples2assign);
+  	};
+ 
+  	
 	
 	this.deleteFile = function (fileID){
 		var promise = processService.deleteFile(fileID);
@@ -80,7 +89,7 @@ function process($state,$stateParams,$translate,avSampleTypeService,types,$uibMo
   
   
 	// return the translated name string of a type for a sample
-	this.getType=function(sample){
+	this.getType = function(sample){
 		return avSampleTypeService.getType(sample,types);
 	};
   
@@ -101,7 +110,7 @@ function process($state,$stateParams,$translate,avSampleTypeService,types,$uibMo
 				 }
 				);
 		}
-		if (keyCode===27) {		// Escape key pressed
+		if (keyCode === 27) {		// Escape key pressed
 			parameter.editing=false;		
 		}
 	};
@@ -113,23 +122,16 @@ function process($state,$stateParams,$translate,avSampleTypeService,types,$uibMo
 	};
   
   
-  
-  	this.assign = function(){
-  		var samples2assign={samples:this.process.samples, id:processData.id};
-  		var promise = restfactory.POST("add-sample-to-process",samples2assign);
-  	};
- 
-  	
   	
   	this.keyUpNumber = function(keyCode){
-		if (keyCode===13) {				// Return key pressed
+		if (keyCode === 13) {				// Return key pressed
 			thisController.editNumber = false; 
 			var oldValue = thisController.process.pnumber;
 			thisController.process.pnumber = thisController.newNumber;
 			var res = processService.setNumber(thisController.process.id,thisController.newNumber);
 			res.then(function(rest) {reload();}, function(){thisController.process.pnumber=oldValue; reload();});
 		}			 
-		if (keyCode===27) {		// Escape key pressed
+		if ( keyCode === 27 ) {		// Escape key pressed
 			thisController.editNumber = false; 		
 		}
 	};
@@ -151,7 +153,7 @@ function process($state,$stateParams,$translate,avSampleTypeService,types,$uibMo
   
 	
   
-  	this.setStatus=function(){
+  	this.setStatus = function(){
   		var promise = processService.setStatus(processData,thisController.newStatus.index);
 		promise.then(function(){reload();});
   	};
@@ -173,7 +175,7 @@ function process($state,$stateParams,$translate,avSampleTypeService,types,$uibMo
 			reload();
 		});
 		
-		xhr.open("POST", 'upload-file2?process='+processData.id); // xhr.open("POST", 'upload-file',true); ???
+		xhr.open("POST", 'upload-file2?process=' + processData.id); // xhr.open("POST", 'upload-file',true); ???
 		
 		// formdata
 		var formData = new FormData();
@@ -183,7 +185,7 @@ function process($state,$stateParams,$translate,avSampleTypeService,types,$uibMo
 
     
   
-	var reload=function() {
+	var reload = function() {
 		var current = $state.current;
 		var params = angular.copy($stateParams);
 		return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });

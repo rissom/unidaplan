@@ -242,14 +242,14 @@ var processService = function (restfactory,$q,$translate,key2string) {
 	
   	
 	this.saveParameter = function(processid,parameter) {
-		var json = {processid:processid, parameterid:parameter.id, data:parameter.data};
+		var json = { processid:processid, parameterid:parameter.id, data:parameter.data };
 		if ("date" in parameter.data) {
 			json.data.date = parameter.data.date;
 			json.data.tz = parameter.data.tz;
 		}
 		if ("error" in parameter.data) {
 			json.data.error = parameter.data.error;
-		} 
+		}
 		return restfactory.POST('save-process-parameter',json);
 	};
 	
