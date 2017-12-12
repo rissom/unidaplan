@@ -1,51 +1,56 @@
 (function(){
-  'use strict';
+    'use strict';
 
 function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,$scope,
 			avParameters,restfactory,sampleService,sampleType,languages,avSampleTypeService){
-  
-  var thisController = this;
-    
-  this.parametergrps = sampleType.parametergrps.sort(function(a,b){return a.pos-b.pos});
-  
-  this.strings = sampleType.strings;
-  
-  this.titleparameters = sampleType.titleparameters;
-  
-  this.languages = languages;
-  
-  this.lang1key = languages[0].key;
  
-  this.lang2key = languages[1].key;
+    var thisController = this;
+    
+	this.parametergrps = sampleType.parametergrps.sort(function(a,b){return a.pos-b.pos});
   
-  this.NameL1 = sampleType.nameLang(languages[0].key);
+	this.strings = sampleType.strings;
   
-  this.newNameL1 = sampleType.nameLang(languages[0].key);
+	this.titleparameters = sampleType.titleparameters;
   
-  this.NameL2 = sampleType.nameLang(languages[1].key);
+	this.languages = languages;
 
-  this.newNameL2 = sampleType.nameLang(languages[1].key);
+	this.lang1key = languages[0].key;
+ 
+	this.lang2key = languages[1].key;
+	
+    this.lang1 = $translate.instant(languages[0].name);
+    
+    this.lang2 = $translate.instant(languages[1].name);
+    
+    $scope.pNameL1 = { editing : $stateParams.newSampletype, 
+                       data    : {value: sampleType.nameLang(languages[0].key)},
+                       field   : "name", 
+                       lang    : languages[0].key,
+                     };
   
-  this.DescL1 = sampleType.descLang(languages[0].key);
-
-  this.newDescL1 = sampleType.descLang(languages[0].key);
+    $scope.pNameL2 = { editing : false, 
+                       data    : {value: sampleType.nameLang(languages[1].key)},
+                       field   : "name",
+                       lang    : languages[1].key,
+                     };
+     
+    $scope.pDescL1 = { editing : false, 
+                       data    : {value: sampleType.descLang(languages[0].key)},
+                       field   : "description",
+                       lang    : languages[0].key,
+                     };
+     
+    $scope.pDescL2 = { editing : false, 
+                       data    : {value: sampleType.descLang(languages[1].key)},
+                       field   : "description",
+                       lang    : languages[1].key,
+                     };
   
-  this.DescL2 = sampleType.descLang(languages[1].key);
-  
-  this.newDescL2 = sampleType.descLang(languages[1].key);
-  
-  thisController.useAsParam = sampleType.useAsParam;
-  
-  this.lang1 = $translate.instant(languages[0].name);
-  
-  this.lang2 = $translate.instant(languages[1].name);
-  
-  this.editNL1 = $stateParams.newSampletype;
+    thisController.useAsParam = sampleType.useAsParam;
   
   
   
-  
-  this.addParameter = function () {
+    this.addParameter = function () {
 		var modalInstance = $uibModal.open({
 		    animation: false,
 		    templateUrl: 'modules/modal-parameter-choser/modal-parameter-choser.html',
@@ -59,15 +64,16 @@ function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
 		modalInstance.result.then(
 			function (result) {  // get the new Parameterlist + Info if it has changed from Modal.  
 		        if (result.chosen.length>0){
-		        	var promise=avSampleTypeService.AddTitleParameters(sampleType.id,result.chosen);
-		    		promise.then(function(){
-		    			reload();
-		    		});		    	  
-		    	}
+        		        	var promise = avSampleTypeService.AddTitleParameters(sampleType.id,result.chosen);
+        		    		promise.then(function(){
+        		    			reload();
+        		    		});		    	  
+		    	    }
 		    }, function () {
-		    	console.log('Strange Error: Modal dismissed at: ' + new Date());
-		    });
-	};
+		    	    console.log('Strange Error: Modal dismissed at: ' + new Date());
+		    }
+		);
+    };
 	
 	
 	  
@@ -92,37 +98,49 @@ function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
 			}
 		);
 	};
+	
 
 	
-	this.changeField = function(field){
-	  thisController.editNL1 = false;
-	  thisController.editNL2 = false;
-	  thisController.editDL1 = false;
-	  thisController.editDL2 = false;
-	  var value = "";
-	  var fieldType = "name";
-	  var lang = "";
-	  switch (field){
-	      case "NL1": fieldType = "name"; value = thisController.newNameL1; lang = languages[0].key; break;
-	      case "NL2": fieldType = "name"; value = thisController.newNameL2; lang = languages[1].key;break;
-	      case "DL1": fieldType = "description"; value = thisController.newDescL1; lang = languages[0].key; break;
-	      case "DL2": fieldType = "description"; value = thisController.newDescL2; lang = languages[1].key; break;
-	      default: console.log("no field given!");
-	  }
-	  var promise = avSampleTypeService.updateSampleTypeData(sampleType.id,fieldType,value,lang);
-	  promise.then(
-	      function(data) {
-	    	  reload();
-	  	  },
-	  	  function(data) {
-	  	      console.log('error');
-	  		  console.log(data);
-	  	  }
-	  );
+	this.changeField = function(parameter){
+	    parameter.parameter.editing = false;
+	    var promise = avSampleTypeService.updateSampleTypeData(sampleType.id,parameter.parameter);
+	    promise.then(
+	        function(data) {
+	            reload();
+	  	    },
+	  	    function(data) {
+	  	        console.log('error');
+	  	        console.log(data);
+	  	    }
+	    );
 	};
 	
   
-  
+	
+	this.changeParameter = function(parameter){
+		  var value = "";
+		  var lang = "";
+		  switch (parameter.field){
+		      case "NL1": fieldType = "name";  lang = languages[0].key; break;
+		      case "NL2": fieldType = "name";  lang = languages[1].key;break;
+		      case "DL1": fieldType = "description"; lang = languages[0].key; break;
+		      case "DL2": fieldType = "description"; lang = languages[1].key; break;
+		      default: console.log("no field given!");
+		  }
+		  var promise = avSampleTypeService.updateSampleTypeData(sampleType.id,fieldType,value,lang);
+		  promise.then(
+		      function(data) {
+		    	  reload();
+		  	  },
+		  	  function(data) {
+		  	      console.log('error');
+		  		  console.log(data);
+		  	  }
+		  );
+	  };
+		
+	
+
 	this.down = function(index){
 		var id1 = thisController.parametergrps[index].id;
 		var id2 = thisController.parametergrps[index+1].id;
@@ -221,20 +239,20 @@ function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
 	
   
 	this.parameterUp = function(index){
-		var pos1 = thisController.titleparameters[index].pos;
-		var pos2 = thisController.titleparameters[index-1].pos;
-		thisController.titleparameters[index-1].pos = pos1;
-		thisController.titleparameters[index].pos = pos2;
-		var newOrder = []
-		thisController.titleparameters.map(function(param){newOrder.push({id:param.id,position:param.pos})})
-		var promise = avSampleTypeService.changeOrderSTParameters(newOrder);
-		promise.then(function(){reload()},function(){console.log("error")})
+	    var pos1 = thisController.titleparameters[index].pos;
+	    var pos2 = thisController.titleparameters[index-1].pos;
+	    thisController.titleparameters[index-1].pos = pos1;
+	    thisController.titleparameters[index].pos = pos2;
+	    var newOrder = []
+	    thisController.titleparameters.map(function(param){newOrder.push({id:param.id,position:param.pos})})
+	    var promise = avSampleTypeService.changeOrderSTParameters(newOrder);
+  	    promise.then(function(){reload()},function(){console.log("error")})
 	};
   
   
 
 	var reload = function() {
-	 	var current = $state.current;
+	    var current = $state.current;
 	 	var params = angular.copy($stateParams);
 	 	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
 	};
@@ -247,11 +265,12 @@ function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
 		var pos1 = thisController.parametergrps[index].pos;
 		var pos2 = thisController.parametergrps[index-1].pos;
 		var promise = avSampleTypeService.exPosSTParamGrp(id1,pos1,id2,pos2);
-		promise.then(function(){reload()},function(){console.log("error")})
+		promise.then(function(){reload()},function(){console.log("error")});
 	};
  
- 
 };
+
+
 
 angular.module('unidaplan').controller('editSampleParamGrpsController', ['$state','$uibModal','$stateParams','$translate','$scope',
        'avParameters','restfactory','sampleService','sampleType','languages','avSampleTypeService',editSampleParamGrpsController]);

@@ -35,9 +35,8 @@ import org.json.JSONObject;
 	    
 	    
 	    // get id of corresponding stringkey
-	    int objectTypeID=0;
-	    int id=0;
-	    int stringkey=0;
+	    int objectTypeID = 0;
+	    int stringkey = 0;
 	    String newValue = null;
 	    String lang = null;
 	    PreparedStatement pStmt = null;
@@ -51,7 +50,7 @@ import org.json.JSONObject;
 
 				objectTypeID = jsonIn.getInt("sampletypeid");
 				String field = jsonIn.getString("field");
-				lang=jsonIn.getString("lang");
+				lang = jsonIn.getString("lang");
 				newValue = jsonIn.getString("newvalue");
 				
 				pStmt = dBconn.conn.prepareStatement( 			
@@ -59,11 +58,11 @@ import org.json.JSONObject;
 						 + "FROM objecttypes "
 						 + "WHERE objecttypes.id = ?");
 				pStmt.setInt(1,  objectTypeID);
-				JSONObject sampleType=dBconn.jsonObjectFromPreparedStmt(pStmt);
+				JSONObject sampleType = dBconn.jsonObjectFromPreparedStmt(pStmt);
 	//			System.out.println("st: "+sampleType);
 				
 				if (field.equalsIgnoreCase("name")) { 
-					stringkey=sampleType.getInt("string_key");
+					stringkey = sampleType.getInt("string_key");
 					dBconn.addString(stringkey, lang, newValue);
 				}
 				
