@@ -43,6 +43,7 @@ var dateParameter = function() {
 				$scope.parameter.editing = false;
 				$scope.parameter.data = {date : tc.newDate, tz: new Date().getTimezoneOffset() };
 				$scope.parameter.date = tc.newDate;
+				delete(tc.newDate);
 				$scope.parameter.tz = new Date().getTimezoneOffset();
 				$scope.pupdate({parameter:$scope.parameter});
 			}
