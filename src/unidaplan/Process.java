@@ -69,11 +69,11 @@ public class Process extends HttpServlet {
   	  		dBconn.startDB();
   	  		
   	  		// check privileges
-	        pStmt= dBconn.conn.prepareStatement( 	
+	        pStmt = dBconn.conn.prepareStatement( 	
 					"SELECT getProcessRights(vuserid:=?,vprocess:=?)");
 			pStmt.setInt(1,userID);
 			pStmt.setInt(2,processID);
-			privilege=dBconn.getSingleStringValue(pStmt);
+			privilege = dBconn.getSingleStringValue(pStmt);
 			pStmt.close();
 	        
 	        editable = privilege!=null && privilege.equals("w");
@@ -99,6 +99,7 @@ public class Process extends HttpServlet {
 					+ "  processes.id, "
 					+ "  processes.processtypesid AS processtype, "
 					+ "  ptd.data ->> 'date' AS date, "
+					+ "  pp1.id AS dateid, "
 					+ "  (n1.data ->> 'value')::integer AS pnumber, "
 					+ "  processtypes.name AS pt_string_key, "
 					+ "  n2.data ->> 'value' AS status, "

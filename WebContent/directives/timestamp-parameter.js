@@ -45,8 +45,8 @@ var timestampParameter = function() {
 				
 			
 			
-			this.update= function(){
-				tc.timestamp=tc.newTimestamp;
+			this.update = function(){
+				tc.timestamp = tc.newTimestamp;
 				$scope.parameter.date = tc.timestamp;
 				$scope.parameter.tz = new Date().getTimezoneOffset();
 				$scope.parameter.data = { date : tc.timestamp.toISOString(), 
@@ -55,17 +55,17 @@ var timestampParameter = function() {
 				$scope.pupdate({parameter:$scope.parameter});
 			}
 			
-			this.keyUp = function(keyCode) {
-				if (keyCode===13) {				// Return key pressed
+			this.keyUp = function(event) {
+				if (event.keyCode === 13) {				// Return key pressed
 					tc.update();
 				}
-				if (keyCode===27) {		// Escape key pressed
-					$scope.parameter.editing=false;			
+				if (event.keyCode === 27) {		// Escape key pressed
+					$scope.parameter.editing = false;			
 				}
 			}
 			
-			this.keyDown = function(keyCode) {
-				if (keyCode===9) {		// Tab key pressed
+			this.keyDown = function(event) {
+				if (event.keyCode === 9) {		// Tab key pressed
 					tc.update();
 				}
 			}

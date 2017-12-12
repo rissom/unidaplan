@@ -3,7 +3,7 @@
 
 function process($state,$stateParams,$translate,avSampleTypeService,types,$uibModal,processData,restfactory,processService){
   
-	var thisController=this;
+	var thisController = this;
 	
 	this.newNumber = processData.pnumber;
   
@@ -14,6 +14,8 @@ function process($state,$stateParams,$translate,avSampleTypeService,types,$uibMo
 	this.files = processData.files;
 	
 	this.process = processData;
+	
+	this.date = {data:{date:processData.date}, id: processData.dateid};
  
 	this.stati = [{index: 1, stringf : function() {return $translate.instant("OK")}},
 				  {index: 2, stringf : function() {return $translate.instant("attention")}},
@@ -24,15 +26,14 @@ function process($state,$stateParams,$translate,avSampleTypeService,types,$uibMo
     this.newStatus = this.stati[processData.status-1];
 
     
-
     
   	this.assign = function(){
   		var samples2assign={samples:this.process.samples, id:processData.id};
   		var promise = restfactory.POST("add-sample-to-process",samples2assign);
   	};
- 
+
   	
-	
+  	
 	this.deleteFile = function (fileID){
 		var promise = processService.deleteFile(fileID);
 		promise.then (function(){reload()});
@@ -52,6 +53,8 @@ function process($state,$stateParams,$translate,avSampleTypeService,types,$uibMo
 		}
 	}
   
+	
+	
 	this.openDialog = function () {
 	  
 		var modalInstance = $uibModal.open({
@@ -96,10 +99,11 @@ function process($state,$stateParams,$translate,avSampleTypeService,types,$uibMo
   
   
   	this.paramKeyUp = function(keyCode,newValue,parameter) {
+  	    // TODO: replace processnumber with integerparameter declarative
 		if (keyCode===13) {				// Return key pressed
-			parameter.editing=false; 
-			var oldValue=parameter.value;
-			parameter.value=newValue;
+			parameter.editing = false; 
+			var oldValue = parameter.value;
+			parameter.value = newValue;
 			var res = processService.saveParameter(this.process.id,parameter);
 			res.then(function(data, status, headers, config) {
 				 },
@@ -108,12 +112,30 @@ function process($state,$stateParams,$translate,avSampleTypeService,types,$uibMo
 					console.log('error');
 					console.log(data);
 				 }
-				);
+			);
 		}
+		
 		if (keyCode === 27) {		// Escape key pressed
-			parameter.editing=false;		
+			parameter.editing = false;		
 		}
 	};
+	
+	
+	
+	this.dateUpdate = function(){
+	    console.log("date",thisController.date);
+	    var promise = processService.saveParameter(thisController.process.id,thisController.date);
+	    promise.then(
+                function(data) {
+                    reload();
+                },
+                function(data) {
+                    console.log('error');
+                    console.log(data);      
+                }
+        );
+	}
+	       
   
   
   

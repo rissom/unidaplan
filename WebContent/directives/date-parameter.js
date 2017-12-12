@@ -45,6 +45,7 @@ var dateParameter = function() {
 				$scope.parameter.date = tc.newDate;
 				$scope.parameter.tz = new Date().getTimezoneOffset();
 				$scope.pupdate({parameter:$scope.parameter});
+				console.log($scope.parameter)
 			}
 			
 			this.keyUp = function(keyCode) {

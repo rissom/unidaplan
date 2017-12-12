@@ -59,16 +59,16 @@ import expr.Variable;
 			response.setStatus(404);
 		}
 
-	 	DBconnection dBconn=new DBconnection();
+	 	DBconnection dBconn = new DBconnection();
 	 	
 	 	try {	
 		    dBconn.startDB();	   
 		    
-	        pStmt= dBconn.conn.prepareStatement( 	
-					"SELECT getProcessRights(vuserid:=?,vprocess:=?)");
+	        pStmt = dBconn.conn.prepareStatement( 	
+					"SELECT getProcessRights(vuserid:=?, vprocess:=?)");
 			pStmt.setInt(1,userID);
 			pStmt.setInt(2,processID);
-			privilege=dBconn.getSingleStringValue(pStmt);
+			privilege = dBconn.getSingleStringValue(pStmt);
 			pStmt.close();
 		} catch (SQLException e) {
 			System.err.println("SaveSampleParameter: Problems with SQL query");
@@ -91,7 +91,7 @@ import expr.Variable;
 
 			try {	
 				
-				pStmt= dBconn.conn.prepareStatement( 			
+				pStmt = dBconn.conn.prepareStatement( 			
 						   "DELETE FROM processdata "
 						 + "WHERE processid = ? AND parameterid = ?");
 			   	pStmt.setInt(1, processID);

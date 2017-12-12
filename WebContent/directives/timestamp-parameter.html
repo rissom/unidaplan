@@ -13,15 +13,15 @@
 		ng-blur = "parameter.editing = false"
 		is-open = "status.opened"
 	 	datepicker-options = "dateOptions"
-	 	ng-keyup = "timestampParamCtrl.keyUp($event.keyCode)"
+	 	ng-keyup = "timestampParamCtrl.keyUp($event)"
 	 	close-text = "Close"
 	>
 	
 	<input ng-show="parameter.editing"
 			type = "time"
 			ng-model = "timestampParamCtrl.newTimestamp"
-			ng-keyup = "timestampParamCtrl.keyUp($event.keyCode)"
-			ng-keydown ="timestampParamCtrl.keyDown($event.keyCode)"
+			ng-keyup = "timestampParamCtrl.keyUp($event)"
+			ng-keydown ="timestampParamCtrl.keyDown($event)"
 	>
 	 
 	<button ng-show = "parameter.editing"
