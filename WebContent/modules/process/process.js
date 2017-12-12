@@ -123,7 +123,6 @@ function process($state,$stateParams,$translate,avSampleTypeService,types,$uibMo
 	
 	
 	this.dateUpdate = function(){
-	    console.log("date",thisController.date);
 	    var promise = processService.saveParameter(thisController.process.id,thisController.date);
 	    promise.then(
                 function(data) {
