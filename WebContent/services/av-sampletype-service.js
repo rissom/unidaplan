@@ -337,35 +337,36 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 		return restfactory.PUT('move-parameter-to-grp',{parameterid:parameter,destination:destination});
 	}
 	
-	
-	this.updateSampleTypeData = function(sampletypeID,field,value,lang){
-		var tempObj = {"sampletypeid":sampletypeID,"field":field,"newvalue":value,"lang":lang};
-		return restfactory.POST('update-sample-type-data',tempObj);
-	};
-	
-	
-	
-	this.updateParameter = function (parameter){
-		return restfactory.PUT("update-st-parameter",parameter);
-	};
-	
-	
+
 	
 	this.updateGroupRights = function (updatedRights){
 		return restfactory.PUT('update-group-rights',updatedRights);
 	}
 	
+    
 	
+    this.updateParameter = function (parameter){
+        return restfactory.PUT("update-st-parameter",parameter);
+    };
+    
+    
 	
+    this.updateParamGrp = function (name, language, paramgrpid){
+        return restfactory.PUT("update-st-paramgrp",{"newname":name, "paramgrpid":paramgrpid, "language":language});
+    };
+
+
+
+    this.updateSampleTypeData = function(sampletypeID, parameter){
+        var tempObj = {"sampletypeid":sampletypeID,"field":parameter.field,"newvalue":parameter.data.value,"lang":parameter.lang};
+        return restfactory.POST('update-sample-type-data',tempObj);
+    };
+    
+    
+
 	this.updateUserRights = function (updatedRights){
 		return restfactory.PUT('update-user-rights',updatedRights);
 	}
-	
-	
-	
-	this.updateParamGrp = function (name, language, paramgrpid){
-		return restfactory.PUT("update-st-paramgrp",{"newname":name, "paramgrpid":paramgrpid, "language":language});
-	};
 	
 	
 };

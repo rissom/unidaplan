@@ -38,8 +38,8 @@ var floatParameter = function() {
 					}
 				}
 				if (keyCode === 27) {		// Escape key pressed
-					$scope.parameter.editing=false;
-					this.newValue=$scope.parameter.data.value;
+					$scope.parameter.editing = false;
+					this.newValue = $scope.parameter.data.value;
 				}
 			}
 			

@@ -12,44 +12,41 @@
 <br/>
 <h4>{{'General information'|translate}}</h4>
 <table class = "table">
-<tr ng-dblclick = "editSampleParamGrpsCtrl.edit('NL1')">
+<!-- <tr ng-dblclick = "editSampleParamGrpsCtrl.edit('NL1')"> -->
+<tr ng-dblclick = "this.pNameL1.editing = true">
 	<td>Name ({{editSampleParamGrpsCtrl.lang1}}):</td>
 	<td>
-		<span ng-hide = "editSampleParamGrpsCtrl.editNL1">{{editSampleParamGrpsCtrl.NameL1}}</span>
-		<input ng-show = "editSampleParamGrpsCtrl.editNL1" 
-			   ng-keyup = "editSampleParamGrpsCtrl.keyUp($event.keyCode,'NL1')"
-			   type = "text"
-			   ng-model = "editSampleParamGrpsCtrl.newNameL1">
+		<string-parameter  
+			parameter = this.pNameL1 
+		   	pupdate = "editSampleParamGrpsCtrl.changeField({parameter:this.pNameL1})">
+		</string-parameter>
 	</td>
 </tr>
-<tr ng-dblclick = "editSampleParamGrpsCtrl.edit('NL2')">
+<tr ng-dblclick = "this.pNameL2.editing = true">
 	<td>Name ({{editSampleParamGrpsCtrl.lang2}}):</td>
 	<td>
-		<span ng-hide = "editSampleParamGrpsCtrl.editNL2">{{editSampleParamGrpsCtrl.NameL2}}</span>
-		<input ng-show = "editSampleParamGrpsCtrl.editNL2" 
-			   ng-keyup = "editSampleParamGrpsCtrl.keyUp($event.keyCode,'NL2')"
-			   type = "text"
-			   ng-model = "editSampleParamGrpsCtrl.newNameL2">
+		<string-parameter  
+            parameter = this.pNameL2 
+            pupdate = "editSampleParamGrpsCtrl.changeField({parameter:this.pNameL2})">
+        </string-parameter>
 	</td>
 </tr>
-<tr ng-dblclick = "editSampleParamGrpsCtrl.edit('DL1')">
+<tr ng-dblclick = "this.pDescL1.editing = true">
 	<td>{{'Description'|translate}} ({{editSampleParamGrpsCtrl.lang1}}):</td>
 	<td>
-		<span ng-hide = "editSampleParamGrpsCtrl.editDL1">{{editSampleParamGrpsCtrl.DescL1}}</span>
-		<input ng-show = "editSampleParamGrpsCtrl.editDL1" 
-			   ng-keyup = "editSampleParamGrpsCtrl.keyUp($event.keyCode,'DL1')"
-			   type = "text"
-			   ng-model = "editSampleParamGrpsCtrl.newDescL1">
+		<string-parameter  
+            parameter = this.pDescL1 
+            pupdate = "editSampleParamGrpsCtrl.changeField({parameter:this.pDescL1})">
+        </string-parameter>
 	</td>
 </tr>
-<tr ng-dblclick = "editSampleParamGrpsCtrl.edit('DL2')">
+<tr ng-dblclick = "this.pDescL2.editing = true">
 	<td>{{'Description'|translate}} ({{editSampleParamGrpsCtrl.lang2}}):</td>
 	<td>
-		<span ng-hide = "editSampleParamGrpsCtrl.editDL2">{{editSampleParamGrpsCtrl.DescL2}}</span>
-		<input ng-show = "editSampleParamGrpsCtrl.editDL2" 
-			   ng-keyup = "editSampleParamGrpsCtrl.keyUp($event.keyCode,'DL2')"
-			   type = "text"
-			   ng-model = "editSampleParamGrpsCtrl.newDescL2">
+		<string-parameter  
+            parameter = this.pDescL2 
+            pupdate = "editSampleParamGrpsCtrl.changeField({parameter:this.pDescL2})">
+        </string-parameter>
 	</td>
 </tr>
 </table>

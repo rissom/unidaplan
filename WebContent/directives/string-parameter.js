@@ -25,26 +25,35 @@ var stringParameter = function() {
 
 			this.newValue = $scope.parameter.data ? $scope.parameter.data.value : "";
 			
-			this.keyUp = function(keyCode) {
-				if (keyCode===13) {				// Return key pressed
-					$scope.parameter.editing=false; 
+			
+			
+			this.blur = function(){
+			    $scope.parameter.editing = false;
+			    thisController.newValue = $scope.parameter.data.value;
+			}
+			
+			
+			
+			this.keyUp = function(event) {
+				if (event.keyCode === 13) {				// Return key pressed
+					$scope.parameter.editing = false; 
 					$scope.parameter.data = {value:thisController.newValue};
 					$scope.pupdate({parameter:$scope.parameter});
 				}
-				if (keyCode===27) {		// Escape key pressed
-					$scope.parameter.editing=false;			
+				if (event.keyCode === 27) {		// Escape key pressed
+					$scope.parameter.editing = false;
 				}
 			}
 			
-			this.hello = function(){
-				console.log("hello");
-			}
 			
-			this.keyDown = function(keyCode) {
-				if (keyCode===9) {		// Tab key pressed
+			
+			this.keyDown = function(event) {
+				if (event.keyCode === 9) {		// Tab key pressed
 					$scope.parameter.editing = false;
 					$scope.parameter.data = {value:thisController.newValue};
-					$scope.pupdate({parameter:$scope.parameter});	
+					$scope.pupdate({parameter:$scope.parameter});
+//					console.log("event", event)
+//					event.srcElement.next().focus();
 				}
 			}
 			
