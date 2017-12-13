@@ -1,8 +1,11 @@
 <div style="display: inline-flex;">
 	<span ng-hide="parameter.editing">{{timestampParamCtrl.getTimestampString()}}
 	</span>    
-	<a class="visible-xs" ng-click = "parameter.editing = true">
-		<span ng-hide = "parameter.editing" class = "glyphicon glyphicon-wrench" aria-hidden = "true">
+	<a class = "visible-xs" ng-click = "parameter.editing = true">
+		<span 
+		    ng-hide = "parameter.editing" 
+		    class = "glyphicon glyphicon-wrench" 
+		    aria-hidden = "true">
 		</span>
 	</a>
 	<input 
@@ -16,7 +19,7 @@
 	 	close-text = "Close"
 	>
 	
-	<input ng-show="parameter.editing"
+	<input ng-show = "parameter.editing"
 			type = "time"
 			ng-model = "timestampParamCtrl.newTimestamp"
 			ng-keyup = "timestampParamCtrl.keyUp($event)"
@@ -24,8 +27,8 @@
 	>
 	 
 	<button ng-show = "parameter.editing"
-		class="btn btn-default"
-		ng-click="timestampParamCtrl.update()">
+		class = "btn btn-default"
+		ng-click = "timestampParamCtrl.update()">
 		ok
 	</button>
 </div>
