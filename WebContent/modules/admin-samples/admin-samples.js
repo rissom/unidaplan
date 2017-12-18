@@ -1,7 +1,7 @@
 (function(){
   'use strict';
 
-function aSamplesController($state,$stateParams,$translate,restfactory,sampleService,types,languages){
+function aSamplesController($state,$stateParams,$translate,restfactory,avSampleTypeService,sampleService,types,languages){
   
 	var thisController = this;
   
@@ -10,11 +10,38 @@ function aSamplesController($state,$stateParams,$translate,restfactory,sampleSer
 	this.lang1 = $translate.instant(languages[0].name);
   
 	this.lang2 = $translate.instant(languages[1].name);
+	
+	this.lang1key = languages[0].key;
+	  
+    this.lang2key = languages[1].key;
   
-	this.types = types;
-    
-  
-  
+	this.stypes = [];
+	
+	// put sampletypes in the correct format for string-parameter directive
+	for (let type of types){
+	    this.stypes.push({nl1:{data: {value:type.nameLang(languages[0].key)}, 
+	                           field:"name",
+	                           lang: languages[0].key,
+	                           id: type.id},
+	                      nl2:{data: {value:type.nameLang(languages[1].key)}, 
+	                           field:"name",
+	                           lang: languages[1].key,
+	                           id: type.id},
+	                      dl1:{data: {value:type.descLang(languages[0].key)}, 
+	                           field:"description",
+	                           language: languages[0].key,
+	                           id: type.id},
+	                      dl2:{data: {value:type.descLang(languages[1].key),
+	                           lang: languages[1].key},
+	                           field:"description",
+	                           id: type.id},
+	                      actions: type.actions,
+	                      id: type.id,
+	                      deletable : type.deletable})
+	}
+	
+	
+
   	this.newSampleType = function(){
   		// add a new ParameterGroup to the database.
 	 	var name = {};
@@ -44,23 +71,21 @@ function aSamplesController($state,$stateParams,$translate,restfactory,sampleSer
 			$state.go( "editSTParamGrps", {sampleTypeID:sampleType.id} );
 	  	}
 	  	if (action.action === "delete" && sampleType.deletable){
-	  		var promise=sampleService.deleteSampleType(sampleType.id);
-	  		promise.then(function(){reload();},function(){console.log("error");})
+	  		var promise = sampleService.deleteSampleType(sampleType.id);
+	  		promise.then(reload,function(){console.log("error");})
 	  	}
     };
   
   
-  
-    this.keyUp = function(keyCode) {
-    	if (keyCode === 13) {				// Return key pressed
-    		this.addSampleType();
-    	}
-		if (keyCode === 27) {		// Escape key pressed
-			thisController.editmode = false;
-		}
-    };
-  
-  
+    
+    this.update = function(parameter){
+        parameter.editing = false;
+        var promise = avSampleTypeService.updateSampleTypeData(
+                           parameter.id, parameter) 
+        promise.then(reload)
+    }
+    
+    
   
   var reload = function() {
   	var current = $state.current;
@@ -73,6 +98,6 @@ function aSamplesController($state,$stateParams,$translate,restfactory,sampleSer
 };
 
 angular.module('unidaplan').controller('aSamplesController', ['$state','$stateParams',
-       '$translate','restfactory','sampleService','types','languages',aSamplesController]);
+       '$translate','restfactory','avSampleTypeService','sampleService','types','languages',aSamplesController]);
 
 })();

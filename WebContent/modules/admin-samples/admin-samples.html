@@ -24,18 +24,35 @@
 	
 	
 	<tbody>
-		<tr ng-repeat = "sampleType in aSamplesCtrl.types | orderBy : 'nameLang1'">
-			<td class = "parametertd">
-	 			{{sampleType.nameLang('de')}}
+		<tr ng-repeat = "sampleType in aSamplesCtrl.stypes | orderBy : 'value.data'">
+			<td 
+			    class = "parametertd" 
+			    ng-dblclick = "sampleType.nl1.editing = true">
+			    <string-parameter
+                    parameter = "sampleType.nl1"
+                    pupdate = "aSamplesCtrl.update(sampleType.nl1)">
+                </string-parameter>
 			</td>
-			<td class = "parametertd">		
-				{{sampleType.nameLang('en')}}
+			<td class = "parametertd"
+			    ng-dblclick = "sampleType.nl2.editing = true">		
+				<string-parameter
+                    parameter = sampleType.nl2
+                    pupdate = "aSamplesCtrl.update(sampleType.nl2)">
+                </string-parameter>
 			</td>
-			<td class = "parametertd">
-				{{sampleType.descLang('de')}}
+			<td class = "parametertd"
+			    ng-dblclick = "sampleType.dl1.editing = true">
+				<string-parameter
+                    parameter = sampleType.dl1
+                    pupdate = "aSamplesCtrl.update(sampleType.dl1)">
+                </string-parameter>
 			</td>
-			<td class = "parametertd">
-				{{sampleType.descLang('en')}}
+			<td class = "parametertd"
+			    ng-dblclick = "sampleType.dl2.editing = true">
+				<string-parameter
+                    parameter = sampleType.dl2
+                    pupdate = "aSamplesCtrl.update(sampleType.dl2)">
+                </string-parameter>
 			</td>
 			<td class = "parametertd" ng-hide = "aSamplesCtrl.editmode">			
 				<div class = "dropdown" uib-dropdown on-toggle = "toggled(open)">
@@ -50,30 +67,6 @@
 				    </ul>
 	  			</div>
 			</td>
-		</tr>
-		<tr ng-show = "aSamplesCtrl.editmode">
-			<td class = "parametertd">
-				<input 						   
-				type = "text"
-			    ng-model = "aSamplesCtrl.newNameL1"> 
-			</td>
-			<td class = "parametertd">
-				<input 						   
-				type = "text"
-			    ng-model = "aSamplesCtrl.newNameL2"> 
-			</td>
-			<td class = "parametertd">
-				<input 						   
-				type = "text"
-			    ng-model = "aSamplesCtrl.newDescL1"> 
-			</td>
-			<td class = "parametertd">
-				<input 						   
-				type = "text"
-				ng-keyup = "aSamplesCtrl.keyUp($event.keyCode)"
-			    ng-model = "aSamplesCtrl.newDescL2"> 
-			</td>
-					
 		</tr>
 	</tbody>
 </table>

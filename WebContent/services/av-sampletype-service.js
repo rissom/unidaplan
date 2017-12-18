@@ -36,7 +36,7 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	
 	
 	this.addSTParameterGrp = function(sampleTypeID,position,name){
-		var temp={"sampletypeid":sampleTypeID,"position":position,"name":name};
+		var temp = {"sampletypeid":sampleTypeID,"position":position,"name":name};
 		return restfactory.POST("add-st-parameter-grp",temp);	
 	};
 	
@@ -63,58 +63,61 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	
 	this.getSampleTypeParamGrps = function(sampleTypeID){
 		var defered = $q.defer();
-	    var promise = restfactory.GET("sample-type-param-grps?sampletypeid="+sampleTypeID);
+	    var promise = restfactory.GET("sample-type-param-grps?sampletypeid=" + sampleTypeID);
 	    promise.then(function(rest) {
-	    	thisController.sampleType = rest.data;
-	    	if (thisController.sampleType == undefined) {thisController.sampleType={}}
-	    	thisController.strings = rest.data.strings;
-	    	thisController.sampleType.nameLang = function(lang){
-    			return (key2string.key2stringWithLangStrict(thisController.sampleType.string_key,thisController.strings,lang));
-	    	};
-	    	thisController.sampleType.descLang=function(lang){
-    			return (key2string.key2stringWithLangStrict(thisController.sampleType.description,thisController.strings,lang));
-	    	};
-	    	angular.forEach(thisController.sampleType.parametergrps,function(stgrp) {
-	    		stgrp.namef = function(){
-	    			return (key2string.key2string(stgrp.stringkey,thisController.strings));
-	    		};
-	    		stgrp.nameLang = function(lang){
-	    			return (key2string.key2stringWithLangStrict(stgrp.stringkey,thisController.strings,lang));
-	    		};
-
-	    		stgrp.actions=[{action:"edit",namef: function() { return $translate.instant("edit") }},
-	    		               {action:"delete",namef: function() { return $translate.instant("delete")},disabled:!stgrp.deletable}
-	    					  ];
+	    	    thisController.sampleType = rest.data;
+	    	    if (thisController.sampleType == undefined) {thisController.sampleType = {} }
+	    	    thisController.strings = rest.data.strings;
+	    	    thisController.sampleType.nameLang = function(lang){
+	    	        return (key2string.key2stringWithLangStrict(thisController.sampleType.string_key,thisController.strings,lang));
+	    	    };
+	    	    thisController.sampleType.descLang=function(lang){
+	    	        return (key2string.key2stringWithLangStrict(thisController.sampleType.description,thisController.strings,lang));
+	    	    };
+	    	    angular.forEach(thisController.sampleType.parametergrps,function(stgrp) {
+	    	        stgrp.namef = function(){
+	    	            return (key2string.key2string(stgrp.stringkey,thisController.strings));
+	    	        };
+	    	        stgrp.nameLang = function(lang){
+	    	            return (key2string.key2stringWithLangStrict(stgrp.stringkey,thisController.strings,lang));
+	    	        };
+	    	        stgrp.actions = [{action:"edit",namef: function() { return $translate.instant("edit") }},
+	    		                     {action:"delete",namef: function() { return $translate.instant("delete")},disabled:!stgrp.deletable}
+	    					        ];
 	        });
-	    	angular.forEach(thisController.sampleType.titleparameters,function(tparam) {
-	    		tparam.namef = function(){
-	    			return (key2string.key2string(tparam.name,thisController.strings));
-	    		};
-	    		tparam.nameLang = function(lang){
-	    			return (key2string.key2stringWithLangStrict(tparam.name,thisController.strings,lang));
-	    		};
-	    		tparam.actions = [{ action   : "edit",
-	    						    namef	 : function () { return $translate.instant("edit"); }
-	    						  },
-	    		                  { action	 : "delete",
-	    						    namef	 : function() { return $translate.instant("delete"); },
-	    						    disabled : thisController.sampleType.titleparameters.length == 1 || !tparam.deletable
-	    						  }];
-	    		for (var k = 0; k < rest.data.parametergrps.length; k++){
-	    			tparam.actions.push(
-	    				{ action	: "move",
-	    					   j	:  k,
-						   namef	: function () {							  	
-								return $translate.instant("move to")+" " + thisController.sampleType.parametergrps[this.j].namef();
-							},
-						  destination : thisController.sampleType.parametergrps[k].id
-					    })
-	    		}
+	    	    angular.forEach(thisController.sampleType.titleparameters,function(tparam) {
+	    	        tparam.namef = function(){
+	    	            return (key2string.key2string(tparam.name,thisController.strings));
+	    	        };
+    	    		    tparam.nameLang = function(lang){
+    	    		        return (key2string.key2stringWithLangStrict(tparam.name,thisController.strings,lang));
+    	    		    };
+    	    		    tparam.actions = [{ action   : "edit",
+	    						        namef	: function () { return $translate.instant("edit"); }
+    	    		                      },
+    	    		                      { action	  : "delete",
+    	    		                          namef	  : function() { return $translate.instant("delete"); },
+    	    		                          disabled : thisController.sampleType.titleparameters.length == 1 || !tparam.deletable
+    	    		                      }];
+    	    		    for (var k = 0; k < rest.data.parametergrps.length; k++){
+    	    		        var actions = { action  : "move",
+    	    		                        j       :  k,
+    	    		                        namef   : function () {
+    	    		                            var answer = "";
+    	    		                            if (thisController.sampleType.parametergrps[this.j] != undefined){
+    	    		                                answer = $translate.instant("move to") + " " + thisController.sampleType.parametergrps[this.j].namef();
+    	    		                            }
+    	    		                            return answer;
+    	    		                        },
+    	    		                        destination : thisController.sampleType.parametergrps[k].id
+    	    		                      }
+    	    		        tparam.actions.push(actions)
+    	    		    }
 	        });
-	    	defered.resolve(thisController.sampleType); 	
-		    }, function(rest) {
-			console.log("Error loading sampletypes");
-		 });
+	    	    defered.resolve(thisController.sampleType); 	
+		}, function(rest) {
+		        console.log("Error loading sampletypes");
+		});
 	    return defered.promise;
 	};
 	
@@ -298,27 +301,27 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 	    	var strings = rest.data.strings;
 	    	var paramgrps = rest.data.parametergrps;
 	    	angular.forEach(params,function(parameter) {
-	    		parameter.namef=function(){
+	    		parameter.namef = function(){
 	    			return (key2string.key2string(parameter.name,strings));
 	    		};
-	    		parameter.nameLang=function(lang){
+	    		parameter.nameLang = function(lang){
 	    			return (key2string.key2stringWithLangStrict(parameter.name,strings,lang));
 	    		};
-	    		parameter.unitf=function(){
+	    		parameter.unitf = function(){
 	    			return (key2string.key2string(parameter.stringkeyunit,strings));
 	    		};
-	    		parameter.unitLang=function(lang){
+	    		parameter.unitLang = function(lang){
 	    			return (key2string.key2stringWithLangStrict(parameter.stringkeyunit,strings,lang));
 	    		};
-	         });
+	        });
 	        angular.forEach(paramgrps,function(paramgrp) {
-	        	paramgrp.namef=function(){
+	        	paramgrp.namef = function(){
 	    			return (key2string.key2string(paramgrp.stringkey,strings));
 	    		};
-	        	paramgrp.nameLang=function(lang){
+	        	paramgrp.nameLang = function(lang){
 	    			return (key2string.key2stringWithLangStrict(paramgrp.stringkey,strings,lang));
 	    		};
-	         });
+	    });
 	        
 	    	defered.resolve({parameters:params, parametergroups:paramgrps});
 		    }, function(rest) {
@@ -358,6 +361,7 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 
 
     this.updateSampleTypeData = function(sampletypeID, parameter){
+        // field is a string. It is either "name" or "description".
         var tempObj = {"sampletypeid":sampletypeID,"field":parameter.field,"newvalue":parameter.data.value,"lang":parameter.lang};
         return restfactory.POST('update-sample-type-data',tempObj);
     };

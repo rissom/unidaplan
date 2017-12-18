@@ -29,9 +29,9 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
 
     this.newNameL2 = parameterGrp.nameLang(languages[1].key);
     
-    this.lang1=$translate.instant(languages[0].name);
+    this.lang1 = $translate.instant(languages[0].name);
   
-    this.lang2=$translate.instant(languages[1].name);
+    this.lang2 = $translate.instant(languages[1].name);
   
     this.lang1key = languages[0].key;
   
@@ -39,7 +39,7 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
   
     this.editFieldNL1 =	$stateParams.newParamGrp === 'true';
   
-    this.editFieldNL2=false;
+    this.editFieldNL2 = false;
       
   
   
@@ -84,11 +84,7 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
 	    		hidden : parameter.hidden
 	    };
 	    var promise = avSampleTypeService.updateParameter(tempParameter);
- 	    promise.then(function(){
- 	    	reload();
- 	    },function(){
- 	    	console.log("error");
- 	    });
+	    promise.then(reload,error);
   	};
   
   
@@ -98,11 +94,7 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
   			parameterid : parameter.id,
 			compulsory : parameter.compulsory};
   		var promise= avSampleTypeService.updateParameter(tempParameter);
-  		promise.then(function(){
-  			reload();
-  		},function(){
-  			console.log("error");
-  		});
+        promise.then(reload,error);
   	};
   	
   	
@@ -112,11 +104,7 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
   			parameterid : parameter.id,
 			id_field : parameter.id_field};
   		var promise= avSampleTypeService.updateParameter(tempParameter);
-  		promise.then(function(){
-  			reload();
-  		},function(){
-  			console.log("error");
-  		});
+        promise.then(reload,error);
   	};
   	
   	
@@ -132,11 +120,7 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
 	  		activeParameter.editNL2 = false;
 	  	}
 	  	var promise = avSampleTypeService.updateParameter(tempParameter);
-	  	promise.then(function(){
-	  		reload();
-	  	},function(){
-	  		console.log("error");
-	  	});
+        promise.then(reload,error);
 	};
   
   
@@ -148,31 +132,19 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
   		}
   		if (action.action === "hide"  && !action.disabled){
   			var promise = avSampleTypeService.updateParameter({parameterid:parameter.id,hidden:true});
-  			promise.then(function(){
-  				reload();
-  			},function(){
-  				console.log("error");
-  			});
+  			promise.then(reload,error);
   		}
   		if (action.action === "show"  && !action.disabled){
   			var promise = avSampleTypeService.updateParameter({parameterid:parameter.id,hidden:false});
-  			promise.then(function(){
-  				reload();
-  			},function(){
-  				console.log("error");
-  			});
+  			promise.then(reload,error);
   		}
   		if (action.action === "delete" && !action.disabled) {
   			var promise = avSampleTypeService.deleteSTParameter(parameter.id);
-  			promise.then(function(){
-  				reload();
-  			},function(){
-  				console.log("error");
-  			});
+  	        promise.then(reload,error);
   		}
   		if (action.action === "move" && !action.disabled) {
   			var promise = avSampleTypeService.moveParameterToGrp(parameter.id,action.destination);
-  			promise.then(function(){reload();});
+  			promise.then(reload,error);
   		}
   		if (action.action === "title") {
   			thisController.setIDField(parameter);
@@ -195,11 +167,9 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
 		modalInstance.result.then(
 			function (result) {  // get the new Parameterlist + Info if it has changed from Modal.  
 		        if (result.chosen.length>0){
-		        	var promise=avSampleTypeService.AddSampletypePGParameters(thisController.sampletype,
+		        	var promise = avSampleTypeService.AddSampletypePGParameters(thisController.sampletype,
 		        	parameterGrp.id,result.chosen);
-		    		promise.then(function(){
-		    			reload();
-		    		});		    	  
+		    		promise.then(reload,error);		    	  
 		    	}
 		    }, function () {
 		    	console.log('Strange Error: Modal dismissed at: ' + new Date());
@@ -210,15 +180,11 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
   
     this.keyUp = function(keyCode,name,language) {
   	    if (keyCode===13) {				// Return key pressed
-	  	    var promise=avSampleTypeService.updateParamGrp(name, language, parameterGrp.id);	
-		    promise.then(function(){
-		    	reload();
-		    },function(){
-		    	console.log("error");
-		    });
+	  	    var promise = avSampleTypeService.updateParamGrp(name, language, parameterGrp.id);	
+	        promise.then(reload,error);
 	    }
 	    if (keyCode===27) {		// Escape key pressed
-		    thisController.editmode=false;
+		    thisController.editmode = false;
 	    }
     };
 
@@ -229,59 +195,53 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
 			thisController.submitParameter();
 		}
 		if (keyCode===27) {		// Escape key pressed
-			parameter.editNL1=false;
-			parameter.editNL2=false;
+			parameter.editNL1 = false;
+			parameter.editNL2 = false;
 		}
     };
   
   
   
     this.down = function(index){  // exchange two parameter positions
-	    var newPositions=[];
+	    var newPositions = [];
 	    newPositions.push({"id":thisController.parameters[index].id,"position":thisController.parameters[index+1].pos});
 	    newPositions.push({"id":thisController.parameters[index+1].id,"position":thisController.parameters[index].pos});
 	    var promise = avSampleTypeService.changeOrderSTParameters(newPositions);
-	    promise.then(function(){
-	    	reload();
-	    },function(){
-	    	console.log("error");
-	    })
+	    promise.then(reload,error);
     };
 
   
     
 	this.setIDField = function(parameter){
-  		var tempParameter={ 
+  		var tempParameter = { 
   			parameterid : parameter.id,
 			id_field : true};
-  		var promise= avSampleTypeService.updateParameter(tempParameter);
-  		promise.then(function(){
-  			reload();
-  		},function(){
-  			console.log("error");
-  		});
+  		var promise = avSampleTypeService.updateParameter(tempParameter);
+  		promise.then(reload,error);
   	};
     
     
   
     this.up = function(index){  // exchange two parameter positions
-	    var newPositions=[];
+	    var newPositions = [];
 	    newPositions.push({"id":thisController.parameters[index-1].id,"position":thisController.parameters[index].pos});
 	    newPositions.push({"id":thisController.parameters[index].id,"position":thisController.parameters[index-1].pos});
 	    var promise = avSampleTypeService.changeOrderSTParameters(newPositions);
-	    promise.then(function(){
-	    	reload();
-	    },function(){
-	    	console.log("error");
-	    })
+	    promise.then(reload,error);
     };
   
   
   
     var reload = function() {
-    	var current = $state.current;
+        var current = $state.current;
   	  	var params = angular.copy($stateParams);
   	  	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
+    };
+    
+    
+    
+    var error = function() {
+        console.log("error");
     };
 
 

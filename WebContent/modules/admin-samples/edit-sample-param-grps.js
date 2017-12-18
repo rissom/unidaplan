@@ -63,11 +63,9 @@ function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
 		});
 		modalInstance.result.then(
 			function (result) {  // get the new Parameterlist + Info if it has changed from Modal.  
-		        if (result.chosen.length>0){
+		        if (result.chosen.length > 0){
         		        	var promise = avSampleTypeService.AddTitleParameters(sampleType.id,result.chosen);
-        		    		promise.then(function(){
-        		    			reload();
-        		    		});		    	  
+        		        	promise.then(reload,error); 
 		    	    }
 		    }, function () {
 		    	    console.log('Strange Error: Modal dismissed at: ' + new Date());
@@ -104,10 +102,7 @@ function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
 	this.changeField = function(parameter){
 	    parameter.parameter.editing = false;
 	    var promise = avSampleTypeService.updateSampleTypeData(sampleType.id,parameter.parameter);
-	    promise.then(
-	        function(data) {
-	            reload();
-	  	    },
+	    promise.then(reload,
 	  	    function(data) {
 	  	        console.log('error');
 	  	        console.log(data);
@@ -128,10 +123,7 @@ function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
 		      default: console.log("no field given!");
 		  }
 		  var promise = avSampleTypeService.updateSampleTypeData(sampleType.id,fieldType,value,lang);
-		  promise.then(
-		      function(data) {
-		    	  reload();
-		  	  },
+		  promise.then(reload,
 		  	  function(data) {
 		  	      console.log('error');
 		  		  console.log(data);
@@ -147,7 +139,7 @@ function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
 		var pos1 = thisController.parametergrps[index+1].pos;
 		var pos2 = thisController.parametergrps[index].pos;
 		var promise = avSampleTypeService.exPosSTParamGrp(id1,pos1,id2,pos2);
-		promise.then(function(){reload()},function(){console.log("error")})
+		promise.then(reload,function(){console.log("error")})
 	};
 
   
@@ -204,7 +196,7 @@ function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
 		var newOrder = []
 		thisController.titleparameters.map(function(param){newOrder.push({id:param.id,position:param.pos})})
 		var promise = avSampleTypeService.changeOrderSTParameters(newOrder);
-		promise.then(function(){reload()},function(){console.log("error")})
+		promise.then(reload,error);
 	};
 
   
@@ -215,7 +207,7 @@ function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
 		}
 		if (action.action === "delete"  && !action.disabled) {
 			var promise = avSampleTypeService.deleteSTParameterGrp(parametergrp.id);
-			promise.then(function(){reload()},function(){console.log("error")});
+            promise.then(reload,error);
 		}
 	};
   
@@ -232,7 +224,7 @@ function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
 		if (action.action === "move"  && !action.disabled) {
 			var promise = avSampleTypeService.moveParameterToGrp(parameter.id,action.destination);
 			console.log("moving!");
-			promise.then(function(){reload()},function(){console.log("error")});
+			promise.then(reload,error);
 		}
 	};
   
@@ -246,7 +238,7 @@ function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
 	    var newOrder = []
 	    thisController.titleparameters.map(function(param){newOrder.push({id:param.id,position:param.pos})})
 	    var promise = avSampleTypeService.changeOrderSTParameters(newOrder);
-  	    promise.then(function(){reload()},function(){console.log("error")})
+	    promise.then(reload,error);
 	};
   
   
@@ -259,13 +251,19 @@ function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
 	
 	
 	
+	var error = function() {
+	    console.log("error");
+	};
+	
+	
+	
 	this.up = function(index){
 		var id1 = thisController.parametergrps[index-1].id;
 		var id2 = thisController.parametergrps[index].id;
 		var pos1 = thisController.parametergrps[index].pos;
 		var pos2 = thisController.parametergrps[index-1].pos;
 		var promise = avSampleTypeService.exPosSTParamGrp(id1,pos1,id2,pos2);
-		promise.then(function(){reload()},function(){console.log("error")});
+		promise.then(reload,error);
 	};
  
 };
