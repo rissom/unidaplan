@@ -40,7 +40,7 @@ import org.json.JSONObject;
 		response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
 	    
-	 	DBconnection dBconn=new DBconnection();
+	 	DBconnection dBconn = new DBconnection();
 	    
 	    
 	    // generate strings for the name
@@ -53,8 +53,8 @@ import org.json.JSONObject;
 		
 	    
 	    //check if admin
-	    int admins=1;
-		if (userID>0 && Unidatoolkit.isMemberOfGroup(userID,admins, dBconn)){
+	    int admins = 1;
+		if (userID>0 && Unidatoolkit.isMemberOfGroup(userID, admins, dBconn)){
 		
 			try{
 			
@@ -110,9 +110,10 @@ import org.json.JSONObject;
 				response.setStatus(404);
 			}	
 	    } else {
-	    	response.setStatus(401);
+	    	    response.setStatus(401);
 	    }
-	
+	    dBconn.closeDB();
+
 		
 	    // tell client that everything is fine
 	    Unidatoolkit.returnID(parameterGroupID, status, response);
