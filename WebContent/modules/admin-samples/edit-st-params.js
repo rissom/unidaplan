@@ -9,7 +9,7 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
   
     var activeParameter = {};
     
-    this.parameters=parameterGrp.parameters.sort(function(a,b){
+    this.parameters = parameterGrp.parameters.sort(function(a,b){
     	return a.pos-b.pos;
     });
 
@@ -20,62 +20,35 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
     this.sampletypenamef = parameterGrp.sampletypenamef;
   
     this.languages = languages;
-  
-    this.nameL1 = parameterGrp.nameLang(languages[0].key);
-  
-    this.newNameL1 = parameterGrp.nameLang(languages[0].key);
-  
-    this.nameL2 = parameterGrp.nameLang(languages[1].key);
-
-    this.newNameL2 = parameterGrp.nameLang(languages[1].key);
-    
+          
     this.lang1 = $translate.instant(languages[0].name);
   
     this.lang2 = $translate.instant(languages[1].name);
+    
+    this.NL1 = { data    : { value: parameterGrp.nameLang(languages[0].key) },
+                 editing : ($stateParams.newParamGrp === 'true')                                                
+               }
   
-    this.lang1key = languages[0].key;
-  
-    this.lang2key = languages[1].key;
-  
-    this.editFieldNL1 =	$stateParams.newParamGrp === 'true';
-  
-    this.editFieldNL2 = false;
-      
+    this.NL2 = { data    : { value: parameterGrp.nameLang(languages[1].key) },
+            editing : false                                                
+          }
   
   
-    this.getGrpName=function(grp,lang){
+    
+    this.down = function(index){  // exchange two parameter positions
+        var newPositions = [];
+        newPositions.push({"id":thisController.parameters[index].id,"position":thisController.parameters[index+1].pos});
+        newPositions.push({"id":thisController.parameters[index+1].id,"position":thisController.parameters[index].pos});
+        var promise = avSampleTypeService.changeOrderSTParameters(newPositions);
+        promise.then(reload,error);
+    };
+    
+    
+    
+    this.getGrpName = function(grp,lang){
 	    key2string.key2stringWithLangStrict(grp.name,thisController.strings,lang);
     };
-  
-
-  
-  
-    this.edit = function(field){
-	    thisController.editFieldNL1 = (field == "NL1");
-	    thisController.editFieldNL2 = (field == "NL2");
-	    thisController.newNameL1 = thisController.nameL1;
-	    thisController.newNameL2 = thisController.nameL2;
-    };
-	
-  
-  
-  
-    this.editNL1 = function(parameter){
-	    thisController.editmode = true;
-	    parameter.editNL1 = true;
-	    parameter.newParameterNameL1 = parameter.nameLang(thisController.lang1key);
-	    activeParameter = parameter;
-    };
-   
-  
-  
-    this.editNL2 = function(parameter){
-	    thisController.editmode = true;
-	    parameter.editNL2 = true;
-	    parameter.newParameterNameL2 = parameter.nameLang(thisController.lang2key);
-	    activeParameter = parameter;
-    };
-  
+    
   
   
   	this.setHidden = function(parameter){
@@ -176,17 +149,21 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
 		    });
 	};
 	
-  
-  
-    this.keyUp = function(keyCode,name,language) {
-  	    if (keyCode===13) {				// Return key pressed
-	  	    var promise = avSampleTypeService.updateParamGrp(name, language, parameterGrp.id);	
-	        promise.then(reload,error);
-	    }
-	    if (keyCode===27) {		// Escape key pressed
-		    thisController.editmode = false;
-	    }
-    };
+	
+	
+	this.updateNL1 = function(){
+	    var name = thisController.NL1.data.value;
+	    var promise = avSampleTypeService.updateParamGrp(name, languages[0].key, parameterGrp.id); 
+        promise.then(reload,error);
+	}
+	
+	
+	
+    this.updateNL2 = function(){
+        var name = thisController.NL2.data.value;
+        var promise = avSampleTypeService.updateParamGrp(name, languages[1].key, parameterGrp.id); 
+        promise.then(reload,error);
+    }
 
   
   
@@ -198,16 +175,6 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
 			parameter.editNL1 = false;
 			parameter.editNL2 = false;
 		}
-    };
-  
-  
-  
-    this.down = function(index){  // exchange two parameter positions
-	    var newPositions = [];
-	    newPositions.push({"id":thisController.parameters[index].id,"position":thisController.parameters[index+1].pos});
-	    newPositions.push({"id":thisController.parameters[index+1].id,"position":thisController.parameters[index].pos});
-	    var promise = avSampleTypeService.changeOrderSTParameters(newPositions);
-	    promise.then(reload,error);
     };
 
   

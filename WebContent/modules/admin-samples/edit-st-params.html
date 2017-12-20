@@ -18,27 +18,23 @@
 <h4>{{'General information'|translate}}</h4>
 
 <table class = "table">
-<tr ng-dblclick = "editSTParamsCtrl.edit('NL1')">
+<tr ng-dblclick = "editSTParamsCtrl.NL1.editing = true">
 	<td>Name ({{editSTParamsCtrl.lang1}}):</td>
 	<td>
-		<span ng-hide = "editSTParamsCtrl.editFieldNL1">{{editSTParamsCtrl.nameL1}}</span>
-		<input ng-show = "editSTParamsCtrl.editFieldNL1" 
-			   ng-keyup = "editSTParamsCtrl.keyUp($event.keyCode,editSTParamsCtrl.newNameL1,editSTParamsCtrl.lang1key)"
-			   ng-blur = "editSTParamsCtrl.editNL1=false"
-			   type = "text"
-			   ng-model = "editSTParamsCtrl.newNameL1">
+	   <string-parameter
+	       parameter = "editSTParamsCtrl.NL1"
+	       pupdate   = "editSTParamsCtrl.updateNL1()">
+	   </string-parameter>
 	</td>
 	
 </tr>
-<tr ng-dblclick = "editSTParamsCtrl.edit('NL2')">
+<tr ng-dblclick = "editSTParamsCtrl.NL2.editing = true">
 	<td>Name ({{editSTParamsCtrl.lang2}}):</td>
 	<td>
-		<span ng-hide = "editSTParamsCtrl.editFieldNL2">{{editSTParamsCtrl.nameL2}}</span>
-		<input ng-show = "editSTParamsCtrl.editFieldNL2" 
-			   ng-keyup = "editSTParamsCtrl.keyUp($event.keyCode,editSTParamsCtrl.newNameL2,editSTParamsCtrl.lang2key)"
-			   ng-blur = "editSTParamsCtrl.editNL2=false"		
-			   type = "text"
-			   ng-model = "editSTParamsCtrl.newNameL2">
+        <string-parameter
+           parameter = "editSTParamsCtrl.NL2"
+           pupdate   = "editSTParamsCtrl.updateNL2()">
+       </string-parameter>
 	</td>
 </tr>
 </table>
@@ -96,29 +92,29 @@
 			</td> 
 			<td class = "parametertd">
 				<span ng-hide = "parameter.editNL1">
-					{{parameter.nameLang(editSTParamsCtrl.lang1key)}}
+					{{parameter.nameLang(editSTParamsCtrl.languages[0].key)}}
 				</span>
 				<input 						   
-				type = "text"
-				ng-show = "parameter.editNL1"
+				typen   = "text"
+				ng-show  = "parameter.editNL1"
 			    ng-model = "parameter.newParameterNameL1"
 			    ng-keyup = "editSTParamsCtrl.keyUpParameter($event.keyCode,parameter)"> 
 			</td>
 			<td class = "parametertd">
 				<span ng-hide = "parameter.editNL2">
-					{{parameter.nameLang(editSTParamsCtrl.lang2key)}}
+					{{parameter.nameLang(editSTParamsCtrl.languages[1].key)}}
 				</span>
 				<input 						   
 				type = "text"
-				ng-show = "parameter.editNL2"
+				ng-show  = "parameter.editNL2"
 			    ng-model = "parameter.newParameterNameL2" 
 			    ng-keyup = "editSTParamsCtrl.keyUpParameter($event.keyCode,parameter)"> 
 			</td>
 			<td class = "parametertd" ng-dblclick = "editSTParamsCtrl.editNL1(parameter)">
-					{{parameter.unitLang(editSTParamsCtrl.lang1key)}}
+					{{parameter.unitLang(editSTParamsCtrl.languages[0].key)}}
 			</td>
 			<td class = "parametertd" ng-dblclick = "editSTParamsCtrl.editNL2(parameter)">
-					{{parameter.unitLang(editSTParamsCtrl.lang2key)}}
+					{{parameter.unitLang(editSTParamsCtrl.languages[1].key)}}
 			</td>
 			<td class = "parametertd" >	
 				<input type = "checkbox" ng-model = "parameter.compulsory" ng-change = "editSTParamsCtrl.setCompulsory(parameter)">
