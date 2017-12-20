@@ -71,7 +71,7 @@ public class DBconnection  {
   
   public Boolean isAdmin(int userID) throws Exception{
   	  Boolean blocked = true;
-  	  Boolean admin = true;
+  	  Boolean admin = false;
 	  PreparedStatement pStmt;
 	  if (userID > 0){
 		  // blocked?
@@ -79,19 +79,20 @@ public class DBconnection  {
 			       	"SELECT blocked FROM users WHERE id=?");
 		  pStmt.setInt(1,userID);
 		  blocked = getSingleBooleanValue(pStmt);
-		  
-		  if (!blocked){
-			  pStmt = conn.prepareStatement( 	
-						"SELECT EXISTS (SELECT 1 FROM groupmemberships WHERE groupid = 1 AND userid = ?)");
-			  pStmt.setInt(1, userID);
-			  ResultSet queryResult = null;
-			  queryResult = pStmt.executeQuery();
-			  queryResult.next();
-			  admin = queryResult.getBoolean(1);
-			  queryResult.close();
-			  pStmt.close();
-		  }
 	  }
+	  
+	  if (!blocked){
+		  pStmt = conn.prepareStatement( 	
+					"SELECT EXISTS (SELECT 1 FROM groupmemberships WHERE groupid = 1 AND userid = ?)");
+		  pStmt.setInt(1, userID);
+		  ResultSet queryResult = null;
+		  queryResult = pStmt.executeQuery();
+		  queryResult.next();
+		  admin = queryResult.getBoolean(1);
+		  queryResult.close();
+		  pStmt.close();
+	  }
+	  
 	  return admin;
   }
 
