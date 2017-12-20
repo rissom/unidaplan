@@ -44,7 +44,7 @@ public class SampleTypeParamGrps extends HttpServlet {
 	    JSONArray parameterGrps= null;		
 	    JSONArray titleParameters=null;
 	    JSONArray sampleTypeGrps= null;
-	 	DBconnection dBconn=new DBconnection(); // New connection to the database
+	 	DBconnection dBconn = new DBconnection(); // New connection to the database
 	 	ArrayList<String> stringkeys = new ArrayList<String>(); 
 		 	
 	    try{

@@ -27,7 +27,7 @@ public class ExchangePosSTParameterGrp extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
+		int userID = authentificator.GetUserID(request,response);
 		request.setCharacterEncoding("utf-8");
 	    response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
@@ -64,7 +64,7 @@ public class ExchangePosSTParameterGrp extends HttpServlet {
 
 				// set new position id for PG 1.
 		        pStmt = dBconn.conn.prepareStatement(	
-		        	"UPDATE ot_parametergrps pg SET (pos,lastuser)=(?,?) WHERE ID=?");
+		                "UPDATE ot_parametergrps pg SET (pos,lastuser)=(?,?) WHERE ID=?");
 				pStmt.setInt(1,pos1);
 				pStmt.setInt(2,userID);
 				pStmt.setInt(3,paramGrpID1);
@@ -73,13 +73,13 @@ public class ExchangePosSTParameterGrp extends HttpServlet {
 				
 				// set new position id for PG 2.
 		        pStmt = dBconn.conn.prepareStatement(	
-			        "UPDATE ot_parametergrps pg SET (pos,lastuser)=(?,?) WHERE ID=?");
+		                "UPDATE ot_parametergrps pg SET (pos,lastuser)=(?,?) WHERE ID=?");
 				pStmt.setInt(1,pos2);
 				pStmt.setInt(2,userID);
 				pStmt.setInt(3,paramGrpID2);
 				pStmt.executeUpdate();
 				pStmt.close();		
-			}else{
+			} else {
 				// no admin rights
 				response.setStatus(401);
 			}		
