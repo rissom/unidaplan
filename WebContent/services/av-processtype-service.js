@@ -326,8 +326,9 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 	
 
 	
-	this.updateProcessTypeData = function(processtypeID,field,value,lang){
-		var tempObj={"processtypeid":processtypeID,"field":field,"newvalue":value,"lang":lang};
+	this.updateProcessTypeData = function(processtypeID, parameter){
+        // field is a string. It is either "name" or "description".
+		var tempObj = {"processtypeid":processtypeID,"field":parameter.field,"newvalue":parameter.data.value,"lang":parameter.lang};
 		return restfactory.POST('update-process-type-data',tempObj);
 	};
 	

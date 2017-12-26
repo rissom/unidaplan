@@ -19,21 +19,29 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,$uibMod
   
 	this.languages = languages;
   
-	this.NameL1 = processType.nameLang(languages[0].key);
-  
-	this.newNameL1 = processType.nameLang(languages[0].key);
-  
-	this.NameL2 = processType.nameLang(languages[1].key);
+	this.pNameL1 = { editing : $stateParams.newProcesstype, 
+              data    : {value: processType.nameLang(languages[0].key)},
+              field   : "name", 
+              lang    : languages[0].key,
+            };
 
-	this.newNameL2 = processType.nameLang(languages[1].key);
-  
-	this.DescL1 = processType.descLang(languages[0].key);
+	this.pNameL2 = { editing : false, 
+              data    : {value: processType.nameLang(languages[1].key)},
+              field   : "name",
+              lang    : languages[1].key,
+            };
 
-	this.newDescL1 = processType.descLang(languages[0].key);
-  
-	this.DescL2 = processType.descLang(languages[1].key);
-  
-	this.newDescL2 = processType.descLang(languages[1].key);
+    this.pDescL1 = { editing : false, 
+              data    : {value: processType.descLang(languages[0].key)},
+              field   : "description",
+              lang    : languages[0].key,
+            };
+
+    this.pDescL2 = { editing : false, 
+              data    : {value: processType.descLang(languages[1].key)},
+              field   : "description",
+              lang    : languages[1].key,
+            };
     
 	this.lang = function(l){return $translate.instant(languages[l].name)};
        
@@ -66,30 +74,10 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,$uibMod
   
   
   
-  this.changeField = function(field){
-	  thisController.editNL1 = false;
-		thisController.editNL2 = false;
-		thisController.editDL1 = false;
-		thisController.editDL2 = false;
-		var value="";
-		var fieldType="name";
-		var lang="";
-		switch (field){
-			case "NL1": fieldType="name"; value=thisController.newNameL1; lang=languages[0].key; break;
-			case "NL2": fieldType="name"; value=thisController.newNameL2; lang=languages[1].key;break;
-			case "DL1": fieldType="description"; value=thisController.newDescL1; lang=languages[0].key; break;
-			case "DL2": fieldType="description"; value=thisController.newDescL2; lang=languages[1].key; break;
-			default: console.log("no field given!");
-		}
-		var promise = avProcessTypeService.updateProcessTypeData(processType.id,fieldType,value,lang);
-		promise.then(function(data) {
-				reload();
-			 },
-			 function(data) {
-				console.log('error');
-				console.log(data);
-			 }
-			);
+  this.changeField = function(parameter){
+      parameter.parameter.editing = false;
+      var promise = avProcessTypeService.updateProcessTypeData(processType.id,parameter.parameter);
+      promise.then(reload,error);
   };
   
   
@@ -204,6 +192,30 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,$uibMod
 		  promise.then(function(){reload()},function(){console.log("error")});
 	  }
   };
+
+  
+
+  this.up = function(index){
+      var id1=thisController.parametergrps[index-1].id;
+      var id2=thisController.parametergrps[index].id;
+      var pos1=thisController.parametergrps[index].pos;
+      var pos2=thisController.parametergrps[index-1].pos;
+      var promise = avProcessTypeService.exPosPTParamGrp(id1,pos1,id2,pos2);
+      promise.then(function(){reload()},function(){console.log("error")})
+  };
+  
+  
+  
+  this.upSR = function(index){
+      var id1=thisController.samplerparams[index-1].id;
+      var id2=thisController.samplerparams[index].id;
+      var pos1=thisController.samplerparams[index].position;
+      var pos2=thisController.samplerparams[index-1].position;
+      var promise = avProcessTypeService.exPosPTSRParams(id1,pos1,id2,pos2);
+      promise.then(function(){reload()},function(){console.log("error")})
+  };
+  
+  
   
 
   var reload = function() {
@@ -212,27 +224,12 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,$uibMod
 	    return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
   };
 
-  
 
-  this.up = function(index){
-	  var id1=thisController.parametergrps[index-1].id;
-	  var id2=thisController.parametergrps[index].id;
-	  var pos1=thisController.parametergrps[index].pos;
-	  var pos2=thisController.parametergrps[index-1].pos;
-	  var promise = avProcessTypeService.exPosPTParamGrp(id1,pos1,id2,pos2);
-	  promise.then(function(){reload()},function(){console.log("error")})
-  };
   
+  var error = function() {
+      console.log('error');
+  }
   
-  
-  this.upSR = function(index){
-	  var id1=thisController.samplerparams[index-1].id;
-	  var id2=thisController.samplerparams[index].id;
-	  var pos1=thisController.samplerparams[index].position;
-	  var pos2=thisController.samplerparams[index-1].position;
-	  var promise = avProcessTypeService.exPosPTSRParams(id1,pos1,id2,pos2);
-	  promise.then(function(){reload()},function(){console.log("error")})
-  };
   
 };
 

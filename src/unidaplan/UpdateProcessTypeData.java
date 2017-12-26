@@ -1,6 +1,5 @@
 package unidaplan;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -35,12 +34,11 @@ import org.json.JSONObject;
 	    response.setCharacterEncoding("utf-8");
 	    
 	    // get the id
-	    int processTypeID=0;
-	    int id=0;
-	    int stringkey=-1;
+	    int processTypeID = 0;
+	    int stringkey = -1;
 	    String newValue = null;
 	    String lang = null;
-		DBconnection dBconn=new DBconnection();
+		DBconnection dBconn = new DBconnection();
 	    PreparedStatement pStmt = null;
 
 	    try {
@@ -53,43 +51,38 @@ import org.json.JSONObject;
 				processTypeID = jsonIn.getInt("processtypeid");
 				String field = jsonIn.getString("field");
 				lang = jsonIn.getString("lang");
-				newValue=jsonIn.getString("newvalue");
+				newValue = jsonIn.getString("newvalue");
 				
 				pStmt = dBconn.conn.prepareStatement( 			
-						 "SELECT name,description FROM processtypes WHERE processtypes.id=?");
-				pStmt.setInt(1,  processTypeID);
-				JSONObject pt=dBconn.jsonObjectFromPreparedStmt(pStmt);
+						   "SELECT "
+						 + "  name,"
+						 + "  description "
+						 + "FROM processtypes "
+						 + "WHERE processtypes.id = ?");
+				pStmt.setInt(1, processTypeID);
+				JSONObject pt = dBconn.jsonObjectFromPreparedStmt(pStmt);
 				
 				if (field.equals("name")) { 
-					stringkey=pt.getInt("name");
-				} else{
-					stringkey=pt.getInt("description");
-				}
-				pStmt = dBconn.conn.prepareStatement( 			
-							 "SELECT st.id FROM stringtable st "
-						   + "WHERE st.string_key=? AND st.language=?");
-			   	pStmt.setInt(1,stringkey);
-			   	pStmt.setString(2, lang);
-			   	id=dBconn.getSingleIntValue(pStmt);
-			   	pStmt.close();
-	
-		
-		    	pStmt= dBconn.conn.prepareStatement( 			
-						 "INSERT INTO stringtable VALUES (default, ?, ?,?,NOW(),?)");
-			    if (id<1) { // No id, new Entry
-				   	pStmt.setInt(1, stringkey);
-				   	pStmt.setString(2, lang);
-				   	pStmt.setString(3, newValue);
-				   	pStmt.setInt(4, userID);
-			    } else{			    // If we have an id: update the field
-					pStmt= dBconn.conn.prepareStatement( 			
-						 "UPDATE stringtable SET (value,lastuser)=(?,?) WHERE id=?");
-				   	pStmt.setString(1, newValue);
-				   	pStmt.setInt(2, userID);
-				   	pStmt.setInt(3, id);
-			    }
-				pStmt.executeUpdate();
-				pStmt.close();
+					stringkey = pt.getInt("name");
+	                dBconn.addString(stringkey, lang, newValue);
+				} 
+				if (field.equalsIgnoreCase("description")){
+                    if (pt.has("description")){
+                        // if a stringkey exists: try to get id of stringtable field.
+                        stringkey = pt.getInt("description");
+                        dBconn.addString(stringkey, lang, newValue);
+                    }else{
+                        // We have no stringkey
+                        stringkey = dBconn.createNewStringKey(newValue);
+                        dBconn.addString(stringkey, lang, newValue);
+                        pStmt = dBconn.conn.prepareStatement(            
+                                 "UPDATE processtypes SET description = ? WHERE id = ?");
+                        pStmt.setInt(1, stringkey);
+                        pStmt.setInt(2, processTypeID);
+                        pStmt.executeUpdate();
+                        pStmt.close();
+                    }      
+                }
 				dBconn.closeDB();
 			
 		    } else {
@@ -100,7 +93,7 @@ import org.json.JSONObject;
 			System.err.println("UpdateProcessTypeData: More Problems with SQL query");
 			status = "SQL Error";
 		} catch (JSONException e) {
-			System.err.println("UpdateProcessTypeData: Error parsing ID-Field");
+			System.err.println("UpdateProcessTypeData: JSON Error");
 			status = "Error parsing ID-Field";
 			response.setStatus(404);
 		}   catch (Exception e) {
@@ -108,9 +101,8 @@ import org.json.JSONObject;
 			status = "Misc. Error";
 		}
 			
-		    
+		    	    
 	    // tell client that everything is fine
-	    PrintWriter out = response.getWriter();
-		out.println("{\"status\":\""+status+"\"}");
+	    Unidatoolkit.sendStandardAnswer(status, response);
 	}
 }	

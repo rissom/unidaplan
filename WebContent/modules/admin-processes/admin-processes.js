@@ -46,7 +46,7 @@ function aProcessesController($state,$stateParams,$translate,restfactory,process
 	  	  	promise.then(reload,error);
 		}
 		if (action.action === "delete" && process.deletable){
-	  	  	var promise2 = processService.deleteProcessType(process.id);
+	  	  	var promise = processService.deleteProcessType(process.id);
             promise.then(reload,error);
 		}
 	};
