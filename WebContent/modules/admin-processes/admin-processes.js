@@ -10,7 +10,7 @@ function aProcessesController($state,$stateParams,$translate,restfactory,process
 	this.lang = function(l){return $translate.instant(languages[l].name)};
   
 	this.ptypes = ptypes;
-    
+	
   
   
 	this.newProcessType = function(){
@@ -43,26 +43,20 @@ function aProcessesController($state,$stateParams,$translate,restfactory,process
 		}
 		if (action.action === "duplicate"){
 	  	  	var promise = processService.duplicateProcessType(process.id);
-	  	  	promise.then(function(){reload();},function(){console.log("error");});
+	  	  	promise.then(reload,error);
 		}
 		if (action.action === "delete" && process.deletable){
 	  	  	var promise2 = processService.deleteProcessType(process.id);
-	  	  	promise2.then(function(){reload();},function(){console.log("error");});
+            promise.then(reload,error);
 		}
 	};
   
-  
-  
-	this.keyUp = function(keyCode) {
-		if (keyCode === 13) {				// Return key pressed
-			this.addProcessType();
-		}
-		if (keyCode === 27) {		// Escape key pressed
-			this.editmode=false;
-		}
-	};
 	
 	
+	var error = function() {
+	    console.log("error");
+    };
+ 
 	
 	var reload = function() {
 		var current = $state.current;
