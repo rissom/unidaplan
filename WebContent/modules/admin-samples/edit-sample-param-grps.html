@@ -13,39 +13,39 @@
 <h4>{{'General information'|translate}}</h4>
 <table class = "table">
 <!-- <tr ng-dblclick = "editSampleParamGrpsCtrl.edit('NL1')"> -->
-<tr ng-dblclick = "this.pNameL1.editing = true">
+<tr ng-dblclick = "editSampleParamGrpsCtrl.pNameL1.editing = true">
 	<td>Name ({{editSampleParamGrpsCtrl.lang1}}):</td>
 	<td>
 		<string-parameter  
-			parameter = this.pNameL1 
-		   	pupdate = "editSampleParamGrpsCtrl.changeField({parameter:this.pNameL1})">
+			parameter = "editSampleParamGrpsCtrl.pNameL1" 
+		   	pupdate = "editSampleParamGrpsCtrl.changeField({parameter:editSampleParamGrpsCtrl.pNameL1})">
 		</string-parameter>
 	</td>
 </tr>
-<tr ng-dblclick = "this.pNameL2.editing = true">
+<tr ng-dblclick = "editSampleParamGrpsCtrl.pNameL2.editing = true">
 	<td>Name ({{editSampleParamGrpsCtrl.lang2}}):</td>
 	<td>
 		<string-parameter  
-            parameter = this.pNameL2 
-            pupdate = "editSampleParamGrpsCtrl.changeField({parameter:this.pNameL2})">
+            parameter = "editSampleParamGrpsCtrl.pNameL2"
+            pupdate = "editSampleParamGrpsCtrl.changeField({parameter:editSampleParamGrpsCtrl.pNameL2})">
         </string-parameter>
 	</td>
 </tr>
-<tr ng-dblclick = "this.pDescL1.editing = true">
+<tr ng-dblclick = "editSampleParamGrpsCtrl.pDescL1.editing = true">
 	<td>{{'Description'|translate}} ({{editSampleParamGrpsCtrl.lang1}}):</td>
 	<td>
 		<string-parameter  
-            parameter = this.pDescL1 
-            pupdate = "editSampleParamGrpsCtrl.changeField({parameter:this.pDescL1})">
+            parameter = "editSampleParamGrpsCtrl.pDescL1" 
+            pupdate   = "editSampleParamGrpsCtrl.changeField({parameter:editSampleParamGrpsCtrl.pDescL1})">
         </string-parameter>
 	</td>
 </tr>
-<tr ng-dblclick = "this.pDescL2.editing = true">
+<tr ng-dblclick = "editSampleParamGrpsCtrl.pDescL2.editing = true">
 	<td>{{'Description'|translate}} ({{editSampleParamGrpsCtrl.lang2}}):</td>
 	<td>
 		<string-parameter  
-            parameter = this.pDescL2 
-            pupdate = "editSampleParamGrpsCtrl.changeField({parameter:this.pDescL2})">
+            parameter = "editSampleParamGrpsCtrl.pDescL2" 
+            pupdate   = "editSampleParamGrpsCtrl.changeField({parameter:editSampleParamGrpsCtrl.pDescL2})">
         </string-parameter>
 	</td>
 </tr>

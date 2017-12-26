@@ -91,24 +91,22 @@
 				</button>
 			</td> 
 			<td class = "parametertd">
-				<span ng-hide = "parameter.editNL1">
+				<span ng-hide = "parameter.L1.editing">
 					{{parameter.nameLang(editSTParamsCtrl.languages[0].key)}}
 				</span>
-				<input 						   
-				typen   = "text"
-				ng-show  = "parameter.editNL1"
-			    ng-model = "parameter.newParameterNameL1"
-			    ng-keyup = "editSTParamsCtrl.keyUpParameter($event.keyCode,parameter)"> 
+	<!-- 			<string-parameter 						   
+					ng-show  = "parameter.editNL1"
+				    parameter = "parameter.L1"
+				    pupdate = "editSTParamsCtrl.keyUpParameter($event.keyCode,parameter)">  --> 
 			</td>
 			<td class = "parametertd">
-				<span ng-hide = "parameter.editNL2">
+				<span ng-hide = "parameter.L2.editing">
 					{{parameter.nameLang(editSTParamsCtrl.languages[1].key)}}
 				</span>
-				<input 						   
-				type = "text"
+	<!-- TODO:			<string-parameter 					   
 				ng-show  = "parameter.editNL2"
-			    ng-model = "parameter.newParameterNameL2" 
-			    ng-keyup = "editSTParamsCtrl.keyUpParameter($event.keyCode,parameter)"> 
+			    parameter = "parameter.L2" 
+			    ng-keyup = "editSTParamsCtrl.keyUpParameter($event.keyCode,parameter)">  --> 
 			</td>
 			<td class = "parametertd" ng-dblclick = "editSTParamsCtrl.editNL1(parameter)">
 					{{parameter.unitLang(editSTParamsCtrl.languages[0].key)}}

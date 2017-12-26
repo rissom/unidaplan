@@ -1,7 +1,7 @@
 (function(){
     'use strict';
 
-function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,$scope,
+function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
 			avParameters,restfactory,sampleService,sampleType,languages,avSampleTypeService){
  
     var thisController = this;
@@ -22,29 +22,29 @@ function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
     
     this.lang2 = $translate.instant(languages[1].name);
     
-    $scope.pNameL1 = { editing : $stateParams.newSampletype, 
-                       data    : {value: sampleType.nameLang(languages[0].key)},
-                       field   : "name", 
-                       lang    : languages[0].key,
-                     };
+    this.pNameL1 = { editing : $stateParams.newSampletype, 
+                     data    : {value: sampleType.nameLang(languages[0].key)},
+                     field   : "name", 
+                     lang    : languages[0].key,
+                   };
   
-    $scope.pNameL2 = { editing : false, 
-                       data    : {value: sampleType.nameLang(languages[1].key)},
-                       field   : "name",
-                       lang    : languages[1].key,
-                     };
+    this.pNameL2 = { editing : false, 
+                     data    : {value: sampleType.nameLang(languages[1].key)},
+                     field   : "name",
+                     lang    : languages[1].key,
+                   };
      
-    $scope.pDescL1 = { editing : false, 
-                       data    : {value: sampleType.descLang(languages[0].key)},
-                       field   : "description",
-                       lang    : languages[0].key,
-                     };
+    this.pDescL1 = { editing : false, 
+                     data    : {value: sampleType.descLang(languages[0].key)},
+                     field   : "description",
+                     lang    : languages[0].key,
+                   };
      
-    $scope.pDescL2 = { editing : false, 
-                       data    : {value: sampleType.descLang(languages[1].key)},
-                       field   : "description",
-                       lang    : languages[1].key,
-                     };
+    this.pDescL2 = { editing : false, 
+                     data    : {value: sampleType.descLang(languages[1].key)},
+                     field   : "description",
+                     lang    : languages[1].key,
+                   };
   
     thisController.useAsParam = sampleType.useAsParam;
   
@@ -74,30 +74,6 @@ function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
     };
 	
 	
-	  
-	  
-	this.newParameterGroup = function(){
-		 // add a new ParameterGroup to the database.
-		var name = {}
-		name[languages[0].key] = $translate.instant("new Parametergroup");
-		name[languages[1].key] = "new Parametergroup";
-		var position = 0;
-		if (thisController.parametergrps){
-			position = thisController.parametergrps.length + 1;
-		}
-		var promise = avSampleTypeService.addSTParameterGrp(sampleType.id,position,name);
-		promise.then(
-			function(data) {
-	 			$state.go("editSTParams",{paramGrpID:data.data.id, newParamGrp:"true"}); // go to the new parametergroup
-			},
-			function(data) {
-				console.log('error');
-				console.log(data);
-			}
-		);
-	};
-	
-
 	
 	this.changeField = function(parameter){
 	    parameter.parameter.editing = false;
@@ -150,15 +126,6 @@ function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
   
   
   
-  	this.edit = function(field){
-  		thisController.editNL1 = (field == "NL1");
-  		thisController.editNL2 = (field == "NL2");
-  		thisController.editDL1 = (field == "DL1");
-  		thisController.editDL2 = (field == "DL2");
-  	};
-	
-  
-  
 	this.keyUp = function(keyCode,field) {
   		if (keyCode === 13) {				// Return key pressed
   			this.changeField(field);
@@ -185,6 +152,29 @@ function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
 			this.editmode=false;
 		}
 	};
+	
+	
+	
+	this.newParameterGroup = function(){
+         // add a new ParameterGroup to the database.
+        var name = {}
+        name[languages[0].key] = $translate.instant("new Parametergroup");
+        name[languages[1].key] = "new Parametergroup";
+        var position = 0;
+        if (thisController.parametergrps){
+            position = thisController.parametergrps.length + 1;
+        }
+        var promise = avSampleTypeService.addSTParameterGrp(sampleType.id,position,name);
+        promise.then(
+            function(data) {
+                $state.go("editSTParams",{paramGrpID:data.data.id, newParamGrp:"true"}); // go to the new parametergroup
+            },
+            function(data) {
+                console.log('error');
+                console.log(data);
+            }
+        );
+	};
   
 	
 	
@@ -198,7 +188,21 @@ function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
 		var promise = avSampleTypeService.changeOrderSTParameters(newOrder);
 		promise.then(reload,error);
 	};
-
+	
+	
+	
+	this.parameterUp = function(index){
+        var pos1 = thisController.titleparameters[index].pos;
+        var pos2 = thisController.titleparameters[index-1].pos;
+        thisController.titleparameters[index-1].pos = pos1;
+        thisController.titleparameters[index].pos = pos2;
+        var newOrder = []
+        thisController.titleparameters.map(function(param){newOrder.push({id:param.id,position:param.pos})})
+        var promise = avSampleTypeService.changeOrderSTParameters(newOrder);
+        promise.then(reload,error);
+    };
+  
+  
   
 
 	this.performAction = function(parametergrp,action){
@@ -230,18 +234,16 @@ function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
   
 	
   
-	this.parameterUp = function(index){
-	    var pos1 = thisController.titleparameters[index].pos;
-	    var pos2 = thisController.titleparameters[index-1].pos;
-	    thisController.titleparameters[index-1].pos = pos1;
-	    thisController.titleparameters[index].pos = pos2;
-	    var newOrder = []
-	    thisController.titleparameters.map(function(param){newOrder.push({id:param.id,position:param.pos})})
-	    var promise = avSampleTypeService.changeOrderSTParameters(newOrder);
-	    promise.then(reload,error);
-	};
-  
-  
+	this.up = function(index){
+        var id1 = thisController.parametergrps[index-1].id;
+        var id2 = thisController.parametergrps[index].id;
+        var pos1 = thisController.parametergrps[index].pos;
+        var pos2 = thisController.parametergrps[index-1].pos;
+        var promise = avSampleTypeService.exPosSTParamGrp(id1,pos1,id2,pos2);
+        promise.then(reload,error);
+    };
+    
+    
 
 	var reload = function() {
 	    var current = $state.current;
@@ -256,21 +258,12 @@ function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
 	};
 	
 	
-	
-	this.up = function(index){
-		var id1 = thisController.parametergrps[index-1].id;
-		var id2 = thisController.parametergrps[index].id;
-		var pos1 = thisController.parametergrps[index].pos;
-		var pos2 = thisController.parametergrps[index-1].pos;
-		var promise = avSampleTypeService.exPosSTParamGrp(id1,pos1,id2,pos2);
-		promise.then(reload,error);
-	};
  
 };
 
 
 
-angular.module('unidaplan').controller('editSampleParamGrpsController', ['$state','$uibModal','$stateParams','$translate','$scope',
+angular.module('unidaplan').controller('editSampleParamGrpsController', ['$state','$uibModal','$stateParams','$translate',
        'avParameters','restfactory','sampleService','sampleType','languages','avSampleTypeService',editSampleParamGrpsController]);
 
 })();
