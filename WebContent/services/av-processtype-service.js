@@ -10,24 +10,24 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
     
 	this.AddProcesstypePGParameters = function(processtype,paramgrp,parameters){
 		var tempObj = {
-			processtypeid 	 : processtype,
-			parametergroupid : paramgrp,
-			parameterids     : parameters,
-		};
+                    			processtypeid 	 : processtype,
+                    			parametergroupid : paramgrp,
+                    			parameterids     : parameters,
+                       };
 		return restfactory.POST('add-pt-pg-parameters',tempObj);
 	};
 	
 	
 	
 	this.addPTParameterGrp = function(processTypeID,position,name){
-		var temp = {"processtypeid":processTypeID,"position":position,"name":name};
+		var temp = { "processtypeid" : processTypeID, "position" : position, "name" : name };
 		return restfactory.POST("add-pt-parameter-grp", temp);
 	};
 	
 	
 	
 	this.addProcesstypeSRParameters = function(processTypeID,chosenParams,name){
-		var temp={
+		var temp = {
 				processtypeid : processTypeID,
 				name : name, 
 				parameterids:chosenParams};
@@ -273,10 +273,10 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 	    			return (key2string.key2string(parameter.parametergroupname,strings));
 	    		};
 	    	}
-	    	parameter.processtypenamef=function(){
+	    	parameter.processtypenamef = function(){
 				return (key2string.key2string(parameter.processtypename,strings));
 			};
-		    parameter.namef=function(){
+		    parameter.namef = function(){
 					return (key2string.key2string(parameter.name,strings));
 				};
 			parameter.nameLang=function(lang){
