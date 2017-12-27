@@ -18,12 +18,12 @@ import org.json.JSONObject;
 	  public void doPut(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {		
 		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
+		int userID = authentificator.GetUserID(request,response);
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
 	    String status = "ok";
 	    String language = "";
-	    String value ="";
+	    String value = "";
 
 	    JSONObject  jsonIn = null;	
 	    int parameterID = -1;
@@ -244,7 +244,7 @@ import org.json.JSONObject;
 			}
 		}
 
-			dBconn.closeDB();
+		dBconn.closeDB();
 
 	    // tell client that everything is fine
 	    Unidatoolkit.sendStandardAnswer(status,response);

@@ -416,7 +416,7 @@ import org.json.JSONObject;
 		   }
 	    }else{
 			response.setStatus(401);
-			status="not allowed";
+			status = "not allowed";
 		}
 	    
 		out.println(answer.toString());

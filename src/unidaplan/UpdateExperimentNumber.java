@@ -19,15 +19,15 @@ public class UpdateExperimentNumber extends HttpServlet {
 			
 			Authentificator authentificator = new Authentificator();
 		    PreparedStatement pStmt = null;
-		   	String privilege="n";
+		   	String privilege = "n";
 			int userID=authentificator.GetUserID(request,response);
 
-			String status="ok";
+			String status = "ok";
 		    request.setCharacterEncoding("utf-8");
 		    
 		    // look up the datatype in Database	    
-		    int experimentID=-1;
-		    int number=-1;
+		    int experimentID = -1;
+		    int number = -1;
 		  	try {
 		   		 experimentID=Integer.parseInt(request.getParameter("id")); 
 		    } catch (Exception e1) {
@@ -35,7 +35,7 @@ public class UpdateExperimentNumber extends HttpServlet {
 				response.setStatus(404);
 		   	}
 		    try {
-		    	number=Integer.parseInt(request.getParameter("number")); 
+		    	number = Integer.parseInt(request.getParameter("number")); 
 			} catch (Exception e1) {
 		   		System.err.println("no number given!");
 		   		status="no status given!";
@@ -45,7 +45,7 @@ public class UpdateExperimentNumber extends HttpServlet {
 
 			try {	
 				// Connect to database
-			 	DBconnection dBconn=new DBconnection();
+			 	DBconnection dBconn = new DBconnection();
 			    dBconn.startDB();	   
 			    
 			    // Check privileges

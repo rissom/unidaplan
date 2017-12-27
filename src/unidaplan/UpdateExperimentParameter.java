@@ -194,11 +194,11 @@ public class UpdateExperimentParameter extends HttpServlet {
 					pStmt = dBconn.conn.prepareStatement(	
 							"INSERT INTO experimentdata (experimentID, parameterID, data, lastUser) "
 							+ "VALUES (?, ?, ?, ?)"); 
-        			pStmt.setInt(1, experimentID);
-        			pStmt.setInt(2, parameterID);
+            			pStmt.setInt(1, experimentID);
+            			pStmt.setInt(2, parameterID);
 		   		  	pStmt.setObject(3, data, java.sql.Types.OTHER);
-        			pStmt.setInt(4, userID);
-        			pStmt.executeUpdate();
+            			pStmt.setInt(4, userID);
+            			pStmt.executeUpdate();
 		   	   		pStmt.close();
 		   	   		dBconn.closeDB();
 				}

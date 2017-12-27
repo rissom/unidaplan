@@ -107,7 +107,7 @@ import org.json.JSONObject;
 		   
 	    } catch (SQLException e) {
 			System.err.println("UpdateGroupRights: Problems with SQL query");
-			status="error";
+			status = "SQL error";
 			e.printStackTrace();
 		} catch (Exception e) {
 			System.err.println("UpdateGroupRights: Strange Problems");
@@ -119,15 +119,15 @@ import org.json.JSONObject;
 		dBconn.closeDB();
 	    // tell client that everything is fine
 	    PrintWriter out = response.getWriter();
-	    JSONObject myResponse= new JSONObject();
+	    JSONObject myResponse = new JSONObject();
 	    myResponse.put("status", status);
 		out.println(myResponse.toString());
 	} catch (JSONException e){
 		System.err.println("UpdateGroupRights: More Problems creating JSON");
-		status="error";
+		status = "JSON error";
 	} catch (Exception e) {
 		System.err.println("UpdateGroupRights: More Strange Problems");
-		status="error";
+		status = "error";
 	}
 		
 	}

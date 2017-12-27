@@ -94,7 +94,7 @@ import org.json.JSONObject;
 			response.setStatus(404);
 		}
 		
-		dBconn.closeDB();
+	dBconn.closeDB();
 
 		
     // tell client that everything is fine

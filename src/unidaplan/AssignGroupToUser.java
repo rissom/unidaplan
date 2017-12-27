@@ -78,6 +78,7 @@ import org.json.JSONObject;
 		 	} else {
 		 		response.setStatus(401);
 		 	}
+            dBconn.closeDB();
 			
 			
 		} catch (SQLException e) {
@@ -87,9 +88,6 @@ import org.json.JSONObject;
 			System.err.println("AssignGroupToUser: some error occured");
 			status = "misc error";
 		}
-		
-		dBconn.closeDB();
-
 		
     // tell client that everything is fine
     Unidatoolkit.sendStandardAnswer(status,response);

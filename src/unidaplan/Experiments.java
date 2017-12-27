@@ -33,7 +33,7 @@ public class Experiments extends HttpServlet {
 	    JSONObject expPlans = new JSONObject();
 	    try {  
 		    dBconn.startDB();
-			pStmt= dBconn.conn.prepareStatement( 	
+			pStmt = dBconn.conn.prepareStatement( 	
 					  "SELECT "
 					+ "  experiments.id, " 
 					+ "  experiments.creator, "

@@ -75,14 +75,15 @@ import org.json.JSONObject;
 					pStmt.executeBatch();
 					pStmt.close();
 				}
+                dBconn.closeDB();
 			}
 			
 		} catch (SQLException e) {
 			System.err.println("AssignGroupMembers: Problems with SQL query");
-			status="SQL error";
+			status = "SQL error";
 		} catch (Exception e) {
 			System.err.println("AssignGroupMembers: some error occured");
-			status="misc error";
+			status = "misc error";
 		}
 		
 		dBconn.closeDB();

@@ -57,7 +57,7 @@ public class DeleteSearch extends HttpServlet {
 		 		
 					// delete the search
 			        pStmt = dBconn.conn.prepareStatement(	
-			        	"DELETE FROM searches WHERE id = ?");
+			                "DELETE FROM searches WHERE id = ?");
 					pStmt.setInt(1,searchID);
 					pStmt.executeUpdate();
 					pStmt.close();

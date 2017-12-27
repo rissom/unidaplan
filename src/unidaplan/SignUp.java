@@ -103,16 +103,16 @@ public class SignUp extends HttpServlet {
 	} catch (NoSuchAlgorithmException e) {
 		System.err.println("SignUp: NoSuchAlgorithmException");
 	} catch (InvalidKeySpecException e) {
-		status="SignUp: InvalidKeySpecException";
+		status = "SignUp: InvalidKeySpecException";
 	} catch (SQLException e) {
 		System.err.println("SignUp: Problems with SQL query");
-		status="SQL Error; AddUser";
+		status = "SQL Error; AddUser";
 	} catch (JSONException e){
 		System.err.println("SignUp: Problems reading JSON");
-		status="JSON Error: SignUp";
+		status = "JSON Error: SignUp";
 	} catch (Exception e) {
 		System.err.println("SignUp: Strange Problems");
-		status="Error SignUp";
+		status = "Error SignUp";
 	}
 	
     // tell client that everything is fine

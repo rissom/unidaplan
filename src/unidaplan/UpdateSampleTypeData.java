@@ -65,28 +65,28 @@ import org.json.JSONObject;
 					stringkey = sampleType.getInt("string_key");
 					dBconn.addString(stringkey, lang, newValue);
 				}
-				
-				if (field.equalsIgnoreCase("description")){
-					if (sampleType.has("description")){
-						// if a stringkey exists: try to get id of stringtable field.
-						stringkey=sampleType.getInt("description");
-						dBconn.addString(stringkey, lang, newValue);
-					}else{
-						// We have no stringkey
-						stringkey=dBconn.createNewStringKey(newValue);
-						dBconn.addString(stringkey, lang, newValue);
-						pStmt= dBconn.conn.prepareStatement( 			
-								 "UPDATE objecttypes SET description=? WHERE id=?");
-						pStmt.setInt(1, stringkey);
-						pStmt.setInt(2, objectTypeID);
-						pStmt.executeUpdate();
-						pStmt.close();
-					} 	   
-				}
-		    } else {
-		    	response.setStatus(401);
-		    }
-			dBconn.closeDB();
+        				
+        			if (field.equalsIgnoreCase("description")){
+        				if (sampleType.has("description")){
+        					// if a stringkey exists: try to get id of stringtable field.
+        					stringkey=sampleType.getInt("description");
+        					dBconn.addString(stringkey, lang, newValue);
+        				}else{
+        					// We have no stringkey
+        					stringkey=dBconn.createNewStringKey(newValue);
+        					dBconn.addString(stringkey, lang, newValue);
+        					pStmt= dBconn.conn.prepareStatement( 			
+        							 "UPDATE objecttypes SET description=? WHERE id=?");
+        					pStmt.setInt(1, stringkey);
+        					pStmt.setInt(2, objectTypeID);
+        					pStmt.executeUpdate();
+        					pStmt.close();
+        				} 	   
+        			}
+        	    } else {
+        	        response.setStatus(401);
+        	    }
+		dBconn.closeDB();
 			
 			
 		} catch (SQLException e) {

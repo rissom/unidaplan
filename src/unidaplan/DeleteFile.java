@@ -70,6 +70,7 @@ public class DeleteFile extends HttpServlet {
 	 		}else{
 	 			response.setStatus(401);
 	 		}
+	 		dBconn.closeDB();
 	 	}catch (SQLException e) {
 			System.err.println("Showsample: Problems with SQL query for sample name");
 		} catch (Exception e2) {

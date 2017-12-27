@@ -81,7 +81,7 @@ import org.json.JSONObject;
 				
 			
 				// create database entry for the new name
-				pStmt= dBconn.conn.prepareStatement( 			
+				pStmt = dBconn.conn.prepareStatement( 			
 						 "INSERT INTO stringtable VALUES(default,?,?,?,NOW(),?)");
 				pStmt.setInt(1,stringKey);
 				pStmt.setString(2, language);
@@ -92,17 +92,16 @@ import org.json.JSONObject;
 			} else {
 				response.setStatus(401);
 			}
+			dBconn.closeDB();
 			
 		} catch (SQLException e) {
 			System.err.println("UpdateSearchName: Problems with SQL query");
-			status="SQL error";
+			status = "SQL error";
 		} catch (Exception e) {
 			System.err.println("UpdateSearchName: some error occured");
-			status="misc error";
+			status = "misc error";
 		}
 		
-		dBconn.closeDB();
-
 		
     // tell client that everything is fine
     Unidatoolkit.sendStandardAnswer(status,response);

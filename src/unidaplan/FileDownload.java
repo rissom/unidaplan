@@ -35,7 +35,7 @@ public class FileDownload extends HttpServlet {
 			
 			// Check priveleges 
 			if (dBconn.isAdmin(userID)){
-		    	privilege = "w";
+			    privilege = "w";
 		    } else {
 				pStmt = dBconn.conn.prepareStatement( 	
 						"SELECT sample,process FROM files WHERE files.id = ?");
@@ -76,6 +76,7 @@ public class FileDownload extends HttpServlet {
 				response.setStatus(401);
 				Unidatoolkit.sendStandardAnswer("insufficient rights", response);
 			}
+			dBconn.closeDB();
 	 	}catch (SQLException e) {
 			System.err.println("Showsample: Problems with SQL query for sample name");
 		} catch (JSONException e) {

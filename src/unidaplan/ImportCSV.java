@@ -73,6 +73,7 @@ public class ImportCSV extends HttpServlet {
 			   	}
 	 		} catch (SQLException e) {
 	    		System.err.println("GetUser: Problems with SQL query");
+	    		dBconn.closeDB();
 	    	} catch (JSONException e) {
 				System.err.println("GetUser: JSON Problem");
 	    	} catch (Exception e2) {

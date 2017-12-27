@@ -150,10 +150,10 @@ import org.json.JSONObject;
 		out.println(myResponse.toString());
 	} catch (JSONException e){
 		System.err.println("UpdateUserRights: More Problems creating JSON");
-		status="error";
+		status = "error";
 	} catch (Exception e) {
 		System.err.println("UpdateUserRights: More Strange Problems");
-		status="error";
+		status = "error";
 	}
 		
 	}

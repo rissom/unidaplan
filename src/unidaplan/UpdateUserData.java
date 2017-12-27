@@ -23,11 +23,11 @@ public class UpdateUserData extends HttpServlet {
 			      throws ServletException, IOException {
 			
 			Authentificator authentificator = new Authentificator();
-			int userID=authentificator.GetUserID(request,response);
+			int userID = authentificator.GetUserID(request,response);
 			String status="ok";
 		    request.setCharacterEncoding("utf-8");
 		    // look up the datatype in Database	    
-		    int dataUserID=-1;
+		    int dataUserID = -1;
 		    String in = request.getReader().readLine();
 		    JSONObject jsonIn = null;
 		    try {
@@ -117,7 +117,7 @@ public class UpdateUserData extends HttpServlet {
 				    }
 				  
 			  	} else {
-			    	response.setStatus(401);
+			  	    response.setStatus(401);
 			    }
 			    dBconn.closeDB();
 				

@@ -48,7 +48,7 @@ import org.json.JSONObject;
 		    dBconn.startDB();	   
 		    
 			//check if admin
-	    	int admins = 1;
+		    int admins = 1;
 			if (userID>0 && Unidatoolkit.isMemberOfGroup(userID, admins, dBconn)){
 				
 				 // generate strings for the name and the unit
@@ -150,9 +150,9 @@ import org.json.JSONObject;
 				pStmt.setInt(6, userID);  		// lastUser 
 				pStmt.executeUpdate();
 				pStmt.close();
-			   	
+                dBconn.closeDB();
 		    } else {
-		    	response.setStatus(401);
+		        response.setStatus(401);
 		    }
 			
 		} catch (SQLException e) {

@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 	    String status = "ok";
 	    int id = 0;
 	  	  try  {
-	   		 id=Integer.parseInt(request.getParameter("id")); 
+	   		 id = Integer.parseInt(request.getParameter("id")); 
 	       }
 	   	  catch (Exception e1) {
 	   		System.err.print("DeletePTParameterGrp: no parametergroup ID given!");
@@ -50,10 +50,10 @@ import javax.servlet.http.HttpServletResponse;
 			dBconn.closeDB();
 		} catch (SQLException e) {
 			System.err.println("DeletePTParameterGrp: Problems with SQL query");
-			status="SQL Error; DeletePTParameterGrp";
+			status = "SQL Error; DeletePTParameterGrp";
 		} catch (Exception e) {
 			System.err.println("DeletePTParameterGrp: Strange Problems");
-			status="Error DeletePTParameterGrp";
+			status = "Error DeletePTParameterGrp";
 		}	
 		
 	    // tell client that everything is fine

@@ -75,10 +75,10 @@ import org.json.JSONObject;
 			dBconn.closeDB();
 		} catch (SQLException e) {
 			System.err.println("MarkAllProcessesInExperiment: Problems with SQL query");
-			status="SQL Error; MarkAllProcessesInExperiment";
+			status = "SQL Error; MarkAllProcessesInExperiment";
 		} catch (Exception e) {
 			System.err.println("MarkAllProcessesInExperiment: Strange Problems");
-			status="Error DeleteSampleFromExperiment";
+			status = "Error DeleteSampleFromExperiment";
 		}	
 		
 	    // tell client that everything is fine

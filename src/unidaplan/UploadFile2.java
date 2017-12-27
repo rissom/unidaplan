@@ -25,7 +25,7 @@ import javax.servlet.http.Part;
 				throws ServletException, IOException {		
 		Authentificator authentificator = new Authentificator();
 		int userID = authentificator.GetUserID(request,response);
-		DBconnection dBconn=null;
+		DBconnection dBconn = null;
 		int id = -1;
 //		String fileType = "dat";
 
@@ -82,7 +82,7 @@ import javax.servlet.http.Part;
 		PreparedStatement pStmt;
 
 	    try {
-	    	dBconn = new DBconnection();
+	    	    dBconn = new DBconnection();
 			dBconn.startDB();
 			if (!Unidatoolkit.isMemberOfGroup(userID, 1, dBconn)){
 				response.setStatus(401);
@@ -116,7 +116,7 @@ import javax.servlet.http.Part;
 			
 			
 			// Save file to disk with an 10-digit number as filename
-	    	File dings = new File(path + File.separator + String.format("%010d", id));
+			File dings = new File(path + File.separator + String.format("%010d", id));
 	        out = new FileOutputStream(dings);
 	        filecontent = filePart.getInputStream();
 

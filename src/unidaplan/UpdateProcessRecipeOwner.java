@@ -80,8 +80,7 @@ import org.json.JSONObject;
 			status = "misc error";
 		}
 		
-		dBconn.closeDB();
-
+	dBconn.closeDB();
 		
     // tell client that everything is fine
     Unidatoolkit.sendStandardAnswer(status,response);

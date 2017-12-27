@@ -34,16 +34,16 @@ import org.json.JSONObject;
 	    
 
 	    
-	    int stringKeyName=0;
+	    int stringKeyName = 0;
 
 	    
 	    // generate strings for the name and the unit
 	    try {	
-		 	DBconnection dBconn=new DBconnection();
+		 	DBconnection dBconn = new DBconnection();
 		    dBconn.startDB();	   
 		    
 		    //check if admin
-	    	int admins=1;
+	    	int admins = 1;
 			if (userID>0 && Unidatoolkit.isMemberOfGroup(userID,admins, dBconn)){
 				
 			
@@ -69,6 +69,7 @@ import org.json.JSONObject;
 		   	pStmt.setInt(1, stringKeyName);
 		   	pStmt.setInt(2, userID);
 			searchID = dBconn.getSingleIntValue(pStmt);
+            dBconn.closeDB();
 
 		} catch (SQLException e) {
 			System.err.println("AddSearch: Problems with SQL query");

@@ -64,6 +64,9 @@ public class AddExperimentParameter extends HttpServlet {
 		} else{
 			response.setStatus(401);
 		}
+		
+	    dBconn.closeDB();
+
 	} catch (SQLException e) {
 		System.err.println("AddExperimentParameter: Problems with SQL query");
 		e.printStackTrace();

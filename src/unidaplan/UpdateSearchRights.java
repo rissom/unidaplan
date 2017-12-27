@@ -21,11 +21,11 @@ import org.json.JSONObject;
 	      throws ServletException, IOException {
 		
 		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
+		int userID = authentificator.GetUserID(request,response);
 	    request.setCharacterEncoding("utf-8");
-	    String status="ok";
+	    String status = "ok";
 	    String in = request.getReader().readLine();
-	    JSONObject  jsonIn = null;
+	    JSONObject jsonIn = null;
 	    JSONArray groups = null;
 	    JSONArray users = null;
 	    
@@ -39,9 +39,9 @@ import org.json.JSONObject;
 	    response.setCharacterEncoding("utf-8");
 	    PreparedStatement pStmt;
 
-	    int searchID=0;
+	    int searchID = 0;
 	    try {
-			searchID=jsonIn.getInt("searchid");	
+			searchID = jsonIn.getInt("searchid");	
 			if (jsonIn.has("groups")){
 				groups=jsonIn.getJSONArray("groups");
 			}
@@ -54,7 +54,7 @@ import org.json.JSONObject;
 			response.setStatus(404);
 		}
 
-	 	DBconnection dBconn=new DBconnection();
+	 	DBconnection dBconn = new DBconnection();
 	    try{   
 		    dBconn.startDB();
 		    
@@ -108,7 +108,7 @@ import org.json.JSONObject;
 		    } else {
 				response.setStatus(401);
 			}
-		   
+		    dBconn.closeDB();
 	    } catch (SQLException e) {
 			System.err.println("UpdateSearchRights: Problems with SQL query");
 			status="error";
@@ -121,7 +121,6 @@ import org.json.JSONObject;
 		}
 	    
 	try{
-		dBconn.closeDB();
 	    // tell client that everything is fine
 	    PrintWriter out = response.getWriter();
 	    JSONObject myResponse= new JSONObject();

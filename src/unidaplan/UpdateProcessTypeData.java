@@ -20,10 +20,10 @@ import org.json.JSONObject;
 		
 		Authentificator authentificator = new Authentificator();
 		String status="ok";
-		int userID=authentificator.GetUserID(request,response);
+		int userID = authentificator.GetUserID(request,response);
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
-	    JSONObject  jsonIn = null;
+	    JSONObject jsonIn = null;
 	    try {
 			  jsonIn = new JSONObject(in);
 		} catch (JSONException e) {

@@ -206,7 +206,7 @@ import org.json.JSONObject;
 		}
 		}else{
 			response.setStatus(401);
-			status="insufficient rights";
+			status = "insufficient rights";
 		}
 		
     // tell client that everything is fine

@@ -69,7 +69,7 @@ public class SinglePOParameter extends HttpServlet {
 				pStmt.setInt(1, parameterID);
 				parameter=dBconn.jsonObjectFromPreparedStmt(pStmt);
 				pStmt.close();
-				int datatype=parameter.getInt("datatype");
+				int datatype = parameter.getInt("datatype");
 				parameter.put("datatype", Unidatoolkit.Datatypes[datatype]);
 				stringkeys.add(Integer.toString(parameter.getInt("name")));
 				stringkeys.add(Integer.toString(parameter.getInt("description")));

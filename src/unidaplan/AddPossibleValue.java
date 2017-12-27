@@ -51,7 +51,7 @@ import org.json.JSONObject;
 			    parameterID=jsonIn.getInt("parameterid");
 			 	
 			 	// insert new Value into the database
-				pstmt= dBconn.conn.prepareStatement( 			
+				pstmt = dBconn.conn.prepareStatement( 			
 						 "INSERT INTO possible_values (parameterid, position, string, lastchange, lastuser) "
 						+"VALUES(?,"
 						+ "(SELECT COALESCE (MAX(position)+1,1) FROM possible_values b WHERE b.parameterid=? ) "
@@ -62,10 +62,8 @@ import org.json.JSONObject;
 				pstmt.setInt(4, userID);
 				pstmt.executeUpdate();
 				pstmt.close();
-			}else{
-				dBconn.closeDB();
 			}
-
+            dBconn.closeDB();
 
 		} catch (SQLException e) {
 			System.err.println("AddPossibleValue: Problems with SQL query");

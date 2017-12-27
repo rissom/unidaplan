@@ -87,7 +87,7 @@ import org.json.JSONObject;
 			status="error";
 		} catch (Exception e) {
 			System.err.println("UpdateSearchType: Strange Problems deleting old parameter");
-			status="error";
+			status = "error";
 		}
 	   
 		
@@ -98,7 +98,7 @@ import org.json.JSONObject;
 			Unidatoolkit.sendStandardAnswer(status, response);
 		} catch (Exception e) {
 			System.err.println("UpdateSearchType: More Strange Problems");
-			status="error";
+			status = "error";
 		}
 		
 	}

@@ -15,23 +15,21 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-	public class Searches extends HttpServlet {
-		private static final long serialVersionUID = 1L;
+public class Searches extends HttpServlet {
+	private static final long serialVersionUID = 1L;
 
 	@Override
-	  public void doGet(HttpServletRequest request, HttpServletResponse response)
-	      throws ServletException, IOException {
+	public void doGet(HttpServletRequest request, HttpServletResponse response)
+	   throws ServletException, IOException {
 		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
-		userID=userID+1;
-		userID=userID-1;
+		int userID = authentificator.GetUserID(request,response);
 		ArrayList<String> stringkeys = new ArrayList<String>(); 
 		JSONArray searches = null;
 	    response.setContentType("application/json");
 	    request.setCharacterEncoding("utf-8");
 	    response.setCharacterEncoding("utf-8");
 	    PrintWriter out = response.getWriter();
-	 	DBconnection dBconn=new DBconnection();
+	 	DBconnection dBconn = new DBconnection();
 	    JSONObject answer = new JSONObject();
 	    try {  
 		    dBconn.startDB();
@@ -60,7 +58,7 @@ import org.json.JSONObject;
 			}
 		    
 		    // get the strings 
-		    if (searches!=null){
+		    if (searches != null){
 				for (int i=0; i<searches.length();i++) {
 					JSONObject tempObj=(JSONObject) searches.get(i);
 		      		stringkeys.add(Integer.toString(tempObj.getInt("name")));
@@ -81,16 +79,16 @@ import org.json.JSONObject;
     	} 
 	    
 	    
-	    try {
-	        answer.put("strings", dBconn.getStrings(stringkeys));
-	        answer.put("searches", searches);
-			out.println(answer.toString());
-			dBconn.closeDB();
+	try {
+	    answer.put("strings", dBconn.getStrings(stringkeys));
+	    answer.put("searches", searches);
+	    out.println(answer.toString());
+		dBconn.closeDB();
     	} catch (JSONException e) {
-			System.err.println("Searches: JSON Problem while getting Stringkeys");
-			response.setStatus(404);
+		System.err.println("Searches: JSON Problem while getting Stringkeys");
+		response.setStatus(404);
     	} catch (Exception e2) {
-			System.err.println("Searches: Strange Problem while getting Stringkeys");
-			response.setStatus(404);
+		System.err.println("Searches: Strange Problem while getting Stringkeys");
+		response.setStatus(404);
     	}
-	}}	
+}}	

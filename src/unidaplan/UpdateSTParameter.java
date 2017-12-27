@@ -279,10 +279,10 @@ import org.json.JSONObject;
 				    }
 				} catch (SQLException e){
 					System.err.println("UpdateSTParameter: SQL error reading hidden field");
-					status="SQL error, hidden field";
+					status = "SQL error, hidden field";
 				}catch(JSONException e) {
 					System.err.println("UpdateSTParameter: JSON error reading hidden field");
-					status="JSON error, hidden field";
+					status = "JSON error, hidden field";
 				} catch (Exception e) {
 					e.printStackTrace();
 					status = "some error occured";
@@ -312,7 +312,7 @@ import org.json.JSONObject;
 					status = "SQL error, id_field";
 				}catch(JSONException e) {
 					System.err.println("UpdateSTParameter: JSON error reading id_field");
-					status="JSON error, id_field";
+					status = "JSON error, id_field";
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

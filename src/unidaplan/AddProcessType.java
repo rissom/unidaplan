@@ -72,12 +72,12 @@ import org.json.JSONObject;
 		    			} 
 		    		}
 		    	}
-				if (jsonIn.has("position")){
-					position = jsonIn.getInt("position");
-				}
-				if (jsonIn.has("ptgroup")){
-					ptgroup=jsonIn.getInt("ptgroup");
-				}
+			if (jsonIn.has("position")){
+				position = jsonIn.getInt("position");
+			}
+			if (jsonIn.has("ptgroup")){
+				ptgroup=jsonIn.getInt("ptgroup");
+			}
 
   
 
@@ -132,7 +132,7 @@ import org.json.JSONObject;
 		   	pStmt.executeUpdate();		
 		    pStmt.close();
 		    } else{
-		    	response.setStatus(401);
+		    	    response.setStatus(401);
 		    }
 			dBconn.closeDB();
 		} catch (SQLException e) {

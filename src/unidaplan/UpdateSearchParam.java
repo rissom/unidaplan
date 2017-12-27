@@ -43,7 +43,7 @@ import org.json.JSONObject;
 			e.printStackTrace();
 		}
 	    
-	 	DBconnection dBconn=new DBconnection(); // initialize database
+	 	DBconnection dBconn = new DBconnection(); // initialize database
 	    PreparedStatement pStmt = null;
 	    
 		
@@ -80,6 +80,7 @@ import org.json.JSONObject;
 		    } else {
 				response.setStatus(401);
 			}
+		    dBconn.closeDB();
 		} catch (SQLException e) {
 			System.err.println("UpdateSearchParam: Problems with SQL query");
 			status="SQL error";
@@ -89,8 +90,6 @@ import org.json.JSONObject;
 			e.printStackTrace();
 			status="misc error";
 		}
-		
-		dBconn.closeDB();
 		
     // tell client that everything is fine
     Unidatoolkit.sendStandardAnswer(status,response);

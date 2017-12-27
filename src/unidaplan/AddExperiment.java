@@ -58,6 +58,9 @@ public class AddExperiment extends HttpServlet {
 		pStmt.setInt(2, userID);	 // creator
 		pStmt.setInt(3, userID);	 // lastUser
 		experimentID = dBconn.getSingleIntValue(pStmt);
+
+		dBconn.closeDB();
+
 	} catch (SQLException e) {
 		System.err.println("AddExperiment: Problems with SQL query");
 	} catch (Exception e) {

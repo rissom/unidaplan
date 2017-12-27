@@ -17,8 +17,8 @@ public class SendMail {
  
 	public static void sendEmail(String recipient, String subject, String body) {
  
-		String username ;
-		String password ;
+		String username;
+		String password;
 		int smtpport = 0;
 		String smtpserver = null;
 		
@@ -56,7 +56,7 @@ public class SendMail {
 		} catch (NamingException e1) {
 			e1.printStackTrace();
 		} catch (MessagingException e) {
-			throw new RuntimeException(e);
+		    throw new RuntimeException(e);
 		}
 	}
 }

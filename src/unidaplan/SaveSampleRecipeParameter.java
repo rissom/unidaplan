@@ -233,7 +233,7 @@ import org.json.JSONObject;
 				status="error";
 			}
 	    } else {
-	    	response.setStatus(401);
+	    	    response.setStatus(401);
 	    }
 		dBconn.closeDB();
 	}

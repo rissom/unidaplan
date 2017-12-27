@@ -123,8 +123,8 @@ import org.json.JSONObject;
 					default: 
 						status="error:unknown datatype";
 				}
-				if (status=="ok") {
-					pStmt= dBconn.conn.prepareStatement( 	
+				if (status == "ok") {
+					pStmt = dBconn.conn.prepareStatement( 	
 						    "UPDATE "+table+" SET (value,lastuser)=(?,?) WHERE search=? AND id=?");
 					pStmt.setString(1, value);
 					pStmt.setInt(2, userID);
@@ -145,10 +145,9 @@ import org.json.JSONObject;
 			System.err.println("UpdateSearchParamValue: some error occured");
 			status="misc error";
 		}
-		
-		dBconn.closeDB();
-		
-    // tell client that everything is fine
-    Unidatoolkit.sendStandardAnswer(status,response);
+	    dBconn.closeDB();
+	
+        // tell client that everything is fine
+        Unidatoolkit.sendStandardAnswer(status,response);
 	}
 }	

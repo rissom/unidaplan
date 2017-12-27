@@ -40,18 +40,18 @@ import org.json.JSONObject;
 			DBconnection dBconn = new DBconnection();
 		    dBconn.startDB();
 		    if (dBconn.isAdmin(userID)){
-		    	for (int i = 0; i < jsonIn.length(); i++){
-		    		JSONObject parameter = jsonIn.getJSONObject(i);
-		    		pStmt = dBconn.conn.prepareStatement( 			
-							   "UPDATE ot_parameters SET (pos,lastuser) = (?,?) "
-							 + "WHERE id = ?");
-				   	pStmt.setInt(1, parameter.getInt("position"));
-				   	pStmt.setInt(2, userID);
-				   	pStmt.setInt(3, parameter.getInt("id"));
-	//				pStmt.addBatch();  // Does not work. I don't know why.
-					pStmt.executeUpdate();
-					pStmt.close();
-		    	}
+        		    	for (int i = 0; i < jsonIn.length(); i++){
+        		    		JSONObject parameter = jsonIn.getJSONObject(i);
+        		    		pStmt = dBconn.conn.prepareStatement( 			
+        							   "UPDATE ot_parameters SET (pos,lastuser) = (?,?) "
+        							 + "WHERE id = ?");
+        				   	pStmt.setInt(1, parameter.getInt("position"));
+        				   	pStmt.setInt(2, userID);
+        				   	pStmt.setInt(3, parameter.getInt("id"));
+        	//				pStmt.addBatch();  // Does not work. I don't know why.
+        					pStmt.executeUpdate();
+        					pStmt.close();
+        		    	}
 		    }
 			dBconn.closeDB();
 		} catch (JSONException e) {
