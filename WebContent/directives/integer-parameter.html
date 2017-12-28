@@ -7,18 +7,14 @@
 	<span ng-hide = "parameter.editing" class = "glyphicon glyphicon-wrench" aria-hidden = "true">
 	</span>
 </a>
-<a class="visible-xs" ng-click = "parameter.editing = true">
-	<span ng-hide = "parameter.editing" class = "glyphicon glyphicon-wrench" aria-hidden = "true">
-	</span>
-</a>
 <form name = "integerParamCtrl.form">
 <input 						   
 	ng-keyup = "integerParamCtrl.keyUp($event.keyCode)"
 	ng-keydown = "integerParamCtrl.keyDown($event.keyCode)"
-	ng-show = "parameter.editing" 
+	ng-if = "parameter.editing" 
 	type = "number"
-	ng-attr-min="{{parameter.min || 0}}" 
-    ng-attr-max="{{parameter.max}}" >
+	ng-attr-min = "{{parameter.min || 0}}"
+    ng-attr-max = "{{parameter.max}}"
 	step = "1"
     ng-model = "integerParamCtrl.newValue">
 <span ng-show = "parameter.editing">
