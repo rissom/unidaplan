@@ -11,12 +11,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-	public class UpdateSampleTypeData extends HttpServlet {
-		private static final long serialVersionUID = 1L;
+public class UpdateSampleTypeData extends HttpServlet {
+	private static final long serialVersionUID = 1L;
 
 	@Override
-	  public void doPost(HttpServletRequest request, HttpServletResponse response)
-	      throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response)
+	             throws ServletException, IOException {
 		
 		Authentificator authentificator = new Authentificator();
 		String status = "ok";
@@ -25,7 +25,7 @@ import org.json.JSONObject;
 	    String in = request.getReader().readLine();
 	    JSONObject  jsonIn = null;
 	    try {
-			  jsonIn = new JSONObject(in);
+	        jsonIn = new JSONObject(in);
 		} catch (JSONException e) {
 			System.err.println("UpdateSampleTypeData: Input is not valid JSON");
 		}
@@ -45,21 +45,18 @@ import org.json.JSONObject;
 
 
 	    try {
-		    dBconn.startDB();
-		    if ( dBconn.isAdmin(userID) ){		    
-
+	        dBconn.startDB();
+		    if ( dBconn.isAdmin(userID) ){
 				objectTypeID = jsonIn.getInt("sampletypeid");
 				String field = jsonIn.getString("field");
 				lang = jsonIn.getString("lang");
 				newValue = jsonIn.getString("newvalue");
-				
 				pStmt = dBconn.conn.prepareStatement( 			
 						   "SELECT string_key,description "
 						 + "FROM objecttypes "
 						 + "WHERE objecttypes.id = ?");
 				pStmt.setInt(1,  objectTypeID);
 				JSONObject sampleType = dBconn.jsonObjectFromPreparedStmt(pStmt);
-	//			System.out.println("st: "+sampleType);
 				
 				if (field.equalsIgnoreCase("name")) { 
 					stringkey = sampleType.getInt("string_key");
@@ -69,24 +66,24 @@ import org.json.JSONObject;
         			if (field.equalsIgnoreCase("description")){
         				if (sampleType.has("description")){
         					// if a stringkey exists: try to get id of stringtable field.
-        					stringkey=sampleType.getInt("description");
-        					dBconn.addString(stringkey, lang, newValue);
-        				}else{
+        					stringkey = sampleType.getInt("description");
+        				} else {
         					// We have no stringkey
-        					stringkey=dBconn.createNewStringKey(newValue);
-        					dBconn.addString(stringkey, lang, newValue);
-        					pStmt= dBconn.conn.prepareStatement( 			
-        							 "UPDATE objecttypes SET description=? WHERE id=?");
+        					stringkey = dBconn.createNewStringKey(newValue);
+        					pStmt = dBconn.conn.prepareStatement( 			
+        							 "UPDATE objecttypes SET description = ? WHERE id=?");
         					pStmt.setInt(1, stringkey);
         					pStmt.setInt(2, objectTypeID);
+        					System.out.println(pStmt.toString());
         					pStmt.executeUpdate();
         					pStmt.close();
-        				} 	   
+        				}
+        				dBconn.addString(stringkey, lang, newValue);
         			}
         	    } else {
         	        response.setStatus(401);
         	    }
-		dBconn.closeDB();
+		    dBconn.closeDB();
 			
 			
 		} catch (SQLException e) {

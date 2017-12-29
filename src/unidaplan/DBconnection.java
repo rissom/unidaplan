@@ -371,8 +371,9 @@ public class DBconnection  {
 	  pStmt.setInt(2, key);
 	  pStmt.executeUpdate();
 	  pStmt.close();
-	  pStmt = conn.prepareStatement("INSERT INTO stringtable (string_key,language,value,lastchange)"
-	  		+ " VALUES (?,?,?,NOW()) RETURNING id");
+	  pStmt = conn.prepareStatement(
+	              "INSERT INTO stringtable (string_key,language,value,lastchange)"
+	  		    + " VALUES (?,?,?,NOW()) RETURNING id");
 	  pStmt.setInt(1, key);
 	  pStmt.setString(2, lang);
 	  pStmt.setString(3, input);

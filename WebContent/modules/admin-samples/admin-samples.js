@@ -10,10 +10,6 @@ function aSamplesController($state,$stateParams,$translate,restfactory,avSampleT
 	this.lang1 = $translate.instant(languages[0].name);
   
 	this.lang2 = $translate.instant(languages[1].name);
-	
-	this.lang1key = languages[0].key;
-	  
-    this.lang2key = languages[1].key;
   
 	this.stypes = [];
 	
@@ -29,11 +25,11 @@ function aSamplesController($state,$stateParams,$translate,restfactory,avSampleT
 	                           id: type.id},
 	                      dl1:{data: {value:type.descLang(languages[0].key)}, 
 	                           field:"description",
-	                           language: languages[0].key,
+	                           lang: languages[0].key,
 	                           id: type.id},
-	                      dl2:{data: {value:type.descLang(languages[1].key),
-	                           lang: languages[1].key},
+	                      dl2:{data: {value:type.descLang(languages[1].key)},
 	                           field:"description",
+	                           lang: languages[1].key,
 	                           id: type.id},
 	                      actions: type.actions,
 	                      id: type.id,
@@ -72,7 +68,7 @@ function aSamplesController($state,$stateParams,$translate,restfactory,avSampleT
 	  	}
 	  	if (action.action === "delete" && sampleType.deletable){
 	  		var promise = sampleService.deleteSampleType(sampleType.id);
-	  		promise.then(reload,function(){console.log("error");})
+	  		promise.then(reload,error);
 	  	}
     };
   
@@ -87,12 +83,18 @@ function aSamplesController($state,$stateParams,$translate,restfactory,avSampleT
     
     
   
-  var reload = function() {
-  	var current = $state.current;
-  	var params = angular.copy($stateParams);
-  	params.newSearch = false;
-  	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
-  };
+    var reload = function() {
+  	    var current = $state.current;
+  	    var params = angular.copy($stateParams);
+      	params.newSearch = false;
+  	    return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
+    };
+    
+    
+    
+    var error = function() {
+        console.log("error");
+    };
  
 
 };
