@@ -93,7 +93,7 @@ function aSamplesController($state,$stateParams,$translate,restfactory,avSampleT
     
     
     var error = function() {
-        console.log("error");
+        console.error("error");
     };
  
 

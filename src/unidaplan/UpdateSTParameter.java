@@ -24,14 +24,14 @@ import org.json.JSONObject;
 	    String in = request.getReader().readLine();
 	    String status = "ok";
 	    String language = "";
-	    String value ="";
+	    String value = "";
 
 	    JSONObject  jsonIn = null;	
 	    int parameterID = -1;
 	    
     
 	    try {
-			  jsonIn = new JSONObject(in);
+	        jsonIn = new JSONObject(in);
 		} catch (JSONException e) {
 			System.err.println("UpdateSTParameter: Input is not valid JSON");
 		}
@@ -40,7 +40,7 @@ import org.json.JSONObject;
 	    JSONObject newName = null; // get parameters
 	    
 	    try {
-			 parameterID = jsonIn.getInt("parameterid");
+	        parameterID = jsonIn.getInt("parameterid");
 		} catch (JSONException e) {
 			System.err.println("UpdateSTParameter: Error parsing ID-Field or comment");
 			response.setStatus(404);
@@ -56,7 +56,7 @@ import org.json.JSONObject;
 			    try{
 					 newName = jsonIn.getJSONObject("name");
 					 language = JSONObject.getNames(newName)[0];
-					 value=newName.getString(language);
+					 value = newName.getString(language);
 				} catch (JSONException e) {
 					System.err.println("UpdateSTParameter: Error parsing ID-Field or comment");
 					response.setStatus(404);
@@ -69,17 +69,17 @@ import org.json.JSONObject;
 						pStmt = dBconn.conn.prepareStatement(
 								"SELECT stringkeyname FROM ot_parameters WHERE id=?");
 						pStmt.setInt(1,parameterID);
-						int stringKey=dBconn.getSingleIntValue(pStmt);
+						int stringKey = dBconn.getSingleIntValue(pStmt);
 						pStmt.close();
 						if (stringKey<1)
 						{
-							pStmt=dBconn.conn.prepareStatement(
+							pStmt = dBconn.conn.prepareStatement(
 									"SELECT stringkeyname FROM paramdef WHERE id="
 									+ "(SELECT definition FROM ot_parameters WHERE id=?)");
 							pStmt.setInt(1,parameterID);
-							int key=dBconn.getSingleIntValue(pStmt);
-							stringKey=dBconn.copyStringKey(key,userID,value); // new Stringkey with value as description, old entries are copyied
-							pStmt=dBconn.conn.prepareStatement(
+							int key = dBconn.getSingleIntValue(pStmt);
+							stringKey = dBconn.copyStringKey(key,userID,value); // new Stringkey with value as description, old entries are copyied
+							pStmt = dBconn.conn.prepareStatement(
 									"UPDATE ot_parameters SET stringkeyname = ? WHERE id=?");
 							pStmt.setInt(1,stringKey);
 							pStmt.setInt(2,parameterID);
@@ -240,7 +240,7 @@ import org.json.JSONObject;
 				    if (dBconn.isAdmin(userID)){
 						Boolean compulsory=jsonIn.getBoolean("compulsory");
 						pStmt=dBconn.conn.prepareStatement(
-								"UPDATE ot_parameters SET (compulsory,lastchange,lastuser)=(?,NOW(),?) WHERE id=?");
+								"UPDATE ot_parameters SET (compulsory,lastchange,lastuser) = (?,NOW(),?) WHERE id=?");
 						pStmt.setBoolean(1, compulsory);
 						pStmt.setInt(2,userID);
 						pStmt.setInt(3,parameterID);				

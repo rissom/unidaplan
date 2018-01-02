@@ -55,9 +55,9 @@ function editPtParamsController($state,$uibModal,$stateParams,$translate,avParam
 	  
 	  modalInstance.result.then(function (result) {  // get the new Parameterlist + Info if it has changed from Modal.  
     	  if (result.chosen.length>0){
-    		  var promise=avProcessTypeService.AddProcesstypePGParameters(thisController.processtype,
+    		  var promise = avProcessTypeService.AddProcesstypePGParameters(thisController.processtype,
     				  parameterGrp.id,result.chosen);
-    		  promise.then(function(){reload();});		    	  
+    		  promise.then(reload);		    	  
     	  }
 	    }, function () {
 	      console.log('Strange Error: Modal dismissed at: ' + new Date());
@@ -71,7 +71,7 @@ function editPtParamsController($state,$uibModal,$stateParams,$translate,avParam
 	  newPositions.push({"id":thisController.parameters[index].id,"position":thisController.parameters[index+1].pos});
 	  newPositions.push({"id":thisController.parameters[index+1].id,"position":thisController.parameters[index].pos});
 	  var promise = avProcessTypeService.changeOrderPTParameters(newPositions);
-	  promise.then(function(){reload()},function(){console.log("error")})
+      promise.then(reload,error)
   };
 
   
@@ -85,24 +85,24 @@ function editPtParamsController($state,$uibModal,$stateParams,$translate,avParam
   this.edit = function(field){
 	  thisController.editFieldNL1 = (field=="NL1");
 	  thisController.editFieldNL2 = (field=="NL2");
-	  thisController.newNameL1=thisController.nameL1;
-	  thisController.newNameL2=thisController.nameL2;
+	  thisController.newNameL1 = thisController.nameL1;
+	  thisController.newNameL2 = thisController.nameL2;
   };
 	
   
   
   this.editNL1 = function(parameter){
-	  thisController.editmode=true;
-	  parameter.editNL1=true;
-	  parameter.newParameterNameL1=parameter.nameLang(thisController.lang1key);
-	  activeParameter=parameter;
+	  thisController.editmode = true;
+	  parameter.editNL1 = true;
+	  parameter.newParameterNameL1 = parameter.nameLang(thisController.lang1key);
+	  activeParameter = parameter;
   };
   
   
   
   this.editNL2 = function(parameter){
-	  thisController.editmode=true;
-	  parameter.editNL2=true;
+	  thisController.editmode = true;
+	  parameter.editNL2 = true;
 	  parameter.newParameterNameL2=parameter.nameLang(thisController.lang2key);
 	  activeParameter=parameter;
   };
@@ -120,7 +120,7 @@ function editPtParamsController($state,$uibModal,$stateParams,$translate,avParam
 		var promise = avProcessTypeService.updateParamGrp(name, language, parameterGrp.id);
 		promise.then(function(){ reload(); },function(){console.log("error")});
 	}
-	if (keyCode===27) {		// Escape key pressed
+	if (keyCode === 27) {		// Escape key pressed
 		  thisController.editmode=false;
 	}
   };
@@ -128,11 +128,11 @@ function editPtParamsController($state,$uibModal,$stateParams,$translate,avParam
 
   
   this.keyUpParameter = function(keyCode,parameter) {
-	  if (keyCode===13) {				// Return key pressed
+	  if (keyCode === 13) {				// Return key pressed
 		  console.log("Return pressed");
 		  thisController.submitParameter();
 	  }
-	  if (keyCode===27) {		// Escape key pressed
+	  if (keyCode === 27) {		// Escape key pressed
 		  parameter.editNL1=false;
 		  parameter.editNL2=false;
 	  }
@@ -156,7 +156,7 @@ function editPtParamsController($state,$uibModal,$stateParams,$translate,avParam
 	  var tempParameter={ parameterid : parameter.id,
 			  			  hidden : parameter.hidden};
 	  var promise= avProcessTypeService.updateParameter(tempParameter);
- 	  promise.then(function(){reload()},function(){console.log("error")})
+      promise.then(reload,error)
   };
   
   
@@ -165,7 +165,7 @@ function editPtParamsController($state,$uibModal,$stateParams,$translate,avParam
 	  var tempParameter={ parameterid : parameter.id,
 			  		  compulsory : parameter.compulsory};
 	  var promise= avProcessTypeService.updateParameter(tempParameter);
- 	  promise.then(function(){reload()},function(){console.log("error")})
+      promise.then(reload,error)
   };
   
   
@@ -182,7 +182,7 @@ function editPtParamsController($state,$uibModal,$stateParams,$translate,avParam
 	  }
 //	  console.log (tempParameter)
 	  var promise= avProcessTypeService.updateParameter(tempParameter);
- 	  promise.then(function(){reload()},function(){console.log("error")})
+      promise.then(reload,error)
   };
   
  
@@ -192,7 +192,7 @@ function editPtParamsController($state,$uibModal,$stateParams,$translate,avParam
 	  newPositions.push({"id":thisController.parameters[index-1].id,"position":thisController.parameters[index].pos});
 	  newPositions.push({"id":thisController.parameters[index].id,"position":thisController.parameters[index-1].pos});
 	  var promise = avProcessTypeService.changeOrderPTParameters(newPositions);
-	  promise.then(function(){reload()},function(){console.log("error")})
+	  promise.then(reload,error)
   };
   
   
@@ -203,7 +203,10 @@ function editPtParamsController($state,$uibModal,$stateParams,$translate,avParam
 	  params.newGrp = false;
 	  return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
   };
-
+  
+  var error = function() {
+      console.error("error");
+  };
 };
 
 angular.module('unidaplan').controller('editPtParamsController', ['$state','$uibModal','$stateParams','$translate',

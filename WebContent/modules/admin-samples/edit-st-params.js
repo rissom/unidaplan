@@ -151,21 +151,13 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
 	
 	
 	
-	this.updateNL1 = function(){
+	this.updateNL = function(parameter){
 	    var name = thisController.NL1.data.value;
-	    var promise = avSampleTypeService.updateParamGrp(name, languages[0].key, parameterGrp.id); 
+	    var promise = avSampleTypeService.updateParamGrp(name, langKey, parameterGrp.id); 
         promise.then(reload,error);
 	}
-	
-	
-	
-    this.updateNL2 = function(){
-        var name = thisController.NL2.data.value;
-        var promise = avSampleTypeService.updateParamGrp(name, languages[1].key, parameterGrp.id); 
-        promise.then(reload,error);
-    }
 
-  
+	
   
     this.keyUpParameter = function(keyCode,parameter) {
 		if (keyCode===13) {				// Return key pressed
@@ -208,7 +200,7 @@ function editSTParamsController($state,$uibModal,$stateParams,$translate,
     
     
     var error = function() {
-        console.log("error");
+        console.error("error");
     };
 
 

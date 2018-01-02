@@ -100,7 +100,7 @@ function editSinglePTParameterController($state,$uibModal,$stateParams,$translat
 	  			    		reload();
 	  			    	},
 	  			    	function(dings){
-	  			    		console.log("error");
+	  			    		error();
 	  			    		reload();
 	  			    	}
 	  			    );
@@ -117,16 +117,12 @@ function editSinglePTParameterController($state,$uibModal,$stateParams,$translat
   
   
   	this.setHidden = function(){
-	    var tempParameter={ 
+	    var tempParameter = { 
 	    		parameterid : parameter.id, 
 	    		hidden : thisController.hidden
 	    };
-	    var promise= avProcessTypeService.updateParameter(tempParameter);
- 	    promise.then(function(){
- 	    	reload();
- 	    },function(){
- 	    	console.log("error");
- 	    });
+	    var promise = avProcessTypeService.updateParameter(tempParameter);
+ 	    promise.then(reload,error);
   	};
   
   
@@ -136,11 +132,7 @@ function editSinglePTParameterController($state,$uibModal,$stateParams,$translat
   			parameterid : parameter.id,
 			compulsory  : thisController.compulsory};
   		var promise= avProcessTypeService.updateParameter(tempParameter);
-  		promise.then(function(){
-  			reload();
-  		},function(){
-  			console.log("error");
-  		});
+  		promise.then(reload,error);
   	};
   	
   
@@ -153,18 +145,14 @@ function editSinglePTParameterController($state,$uibModal,$stateParams,$translat
   	    		tParameter.description={};
   	    		tParameter.description[language]=value;
   	    	} else{
-  	    		tParameter.name={};
+  	    		tParameter.name = {};
   	    		tParameter.name[language]=value;
   	    	}
   		  	var promise = avProcessTypeService.updateParameter(tParameter);
-		    promise.then(function(){
-		    	reload();
-		    },function(){
-		    	console.log("error");
-		    });
+		    promise.then(reload, error);
 	    }
 	    if (keyCode===27) {		// Escape key pressed
-		    thisController.editmode=false;
+		    thisController.editmode = false;
 	    }
     };
 
@@ -175,6 +163,13 @@ function editSinglePTParameterController($state,$uibModal,$stateParams,$translat
   	  	var params = angular.copy($stateParams);
   	  	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
     };
+    
+    
+    var error = function() {
+        console.error("error");
+    };
+
+
 
 
 }

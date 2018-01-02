@@ -45,7 +45,7 @@ function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
                      field   : "description",
                      lang    : languages[1].key,
                    };
-  
+      
     thisController.useAsParam = sampleType.useAsParam;
   
   
@@ -56,9 +56,9 @@ function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
 		    templateUrl: 'modules/modal-parameter-choser/modal-parameter-choser.html',
 		    controller: 'modalParameterChoser as mParameterChoserCtrl',
 		    resolve: {
-		    	mode		  	: function(){return 'immediate'; },
-		    	avParameters    : function(){return avParameters; },
-		    	parameters		: function(){return []; }
+		    	mode		     : function(){return 'immediate'; },
+		    	avParameters : function(){return avParameters; },
+		    	parameters   : function(){return []; }
 			}
 		});
 		modalInstance.result.then(
@@ -78,35 +78,9 @@ function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
 	this.changeField = function(parameter){
 	    parameter.parameter.editing = false;
 	    var promise = avSampleTypeService.updateSampleTypeData(sampleType.id,parameter.parameter);
-	    promise.then(reload,
-	  	    function(data) {
-	  	        console.log('error');
-	  	        console.log(data);
-	  	    }
-	    );
+	    promise.then(reload,error);
 	};
 	
-  
-	
-	this.changeParameter = function(parameter){
-		  var value = "";
-		  var lang = "";
-		  switch (parameter.field){
-		      case "NL1": fieldType = "name";  lang = languages[0].key; break;
-		      case "NL2": fieldType = "name";  lang = languages[1].key;break;
-		      case "DL1": fieldType = "description"; lang = languages[0].key; break;
-		      case "DL2": fieldType = "description"; lang = languages[1].key; break;
-		      default: console.log("no field given!");
-		  }
-		  var promise = avSampleTypeService.updateSampleTypeData(sampleType.id,fieldType,value,lang);
-		  promise.then(reload,
-		  	  function(data) {
-		  	      console.log('error');
-		  		  console.log(data);
-		  	  }
-		  );
-	  };
-		
 	
 
 	this.down = function(index){
@@ -115,7 +89,7 @@ function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
 		var pos1 = thisController.parametergrps[index+1].pos;
 		var pos2 = thisController.parametergrps[index].pos;
 		var promise = avSampleTypeService.exPosSTParamGrp(id1,pos1,id2,pos2);
-		promise.then(reload,function(){console.log("error")})
+		promise.then(reload,error)
 	};
 
   
@@ -169,10 +143,7 @@ function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
             function(data) {
                 $state.go("editSTParams",{paramGrpID:data.data.id, newParamGrp:"true"}); // go to the new parametergroup
             },
-            function(data) {
-                console.log('error');
-                console.log(data);
-            }
+            error
         );
 	};
   
@@ -223,7 +194,7 @@ function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
 		}
 		if (action.action === "delete"  && !action.disabled) {
 			var promise = avSampleTypeService.deleteSTParameter(parameter.id);
-			promise.then(function(){reload()},function(){console.log("error")});
+			promise.then(reload,error);
 		}
 		if (action.action === "move"  && !action.disabled) {
 			var promise = avSampleTypeService.moveParameterToGrp(parameter.id,action.destination);
@@ -254,7 +225,7 @@ function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
 	
 	
 	var error = function() {
-	    console.log("error");
+	    console.error("error");
 	};
 	
 	

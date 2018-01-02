@@ -31,21 +31,29 @@ function editSingleSTParameterController($state,$uibModal,
       
     this.languages = languages;
   
-    this.nameL1 = parameter.nameLang(languages[0].key);
+    this.NL1 = { data    : { value: parameter.nameLang(languages[0].key) },
+                 editing : false,
+                 field   : "name", 
+                 lang    : languages[0].key,
+               };
   
-    this.newNameL1 = this.nameL1;
-  
-    this.nameL2 = parameter.nameLang(languages[1].key);
-
-    this.newNameL2 = this.nameL2;
+    this.NL2 = { data    : { value: parameter.nameLang(languages[1].key) },
+                 editing : false,                                       
+                 field   : "name",
+                 lang    : languages[1].key
+               };
     
-    this.descL1 = parameter.descLang(languages[0].key);
+    this.DL1 = { data    : { value: parameter.descLang(languages[0].key) },
+                 editing : false,
+                 field   : "description",
+                 lang    : languages[0].key
+               };
     
-    this.newDescL1 = this.descL1;
-    
-    this.descL2 = parameter.descLang(languages[1].key);
-    
-    this.newDescL2 = this.descL2;
+    this.DL2 = { data    : { value: parameter.descLang(languages[1].key) },
+                 editing : false,
+                 field   : "description",
+                 lang    : languages[1].key,
+               };
     
     this.lang1 = $translate.instant(languages[0].name);
   
@@ -56,8 +64,8 @@ function editSingleSTParameterController($state,$uibModal,
     this.lang2key = languages[1].key;
     
     if (parameter.stringkeyunit){
-	    this.unitL1=parameter.unitLang(languages[0].key);
-	    this.unitL2=parameter.unitLang(languages[1].key);
+	    this.unitL1 = parameter.unitLang(languages[0].key);
+	    this.unitL2 = parameter.unitLang(languages[1].key);
     }
     
     this.unit = parameter.stringkeyunit > 0;
@@ -65,18 +73,6 @@ function editSingleSTParameterController($state,$uibModal,
     this.titlefield = parameter.id_field;
     
     
-
-  
-  
-    this.edit = function(field){
-    	this.activeField = field;
-	    thisController.newNameL1 = thisController.nameL1;
-	    thisController.newNameL2 = thisController.nameL2;
-	    thisController.newDescL1 = thisController.descL1;
-	    thisController.newDescL2 = thisController.descL2;
-	    thisController.newFormula = thisController.formula;
-    };
-  
   
     
 	this.openFormulaModal = function(){
@@ -99,20 +95,12 @@ function editSingleSTParameterController($state,$uibModal,
 
   	    modalInstance.result.then(
   	    	function (formula) {
-  	    		if (formula.ok){
+  	    		if (formula != undefined && formula.ok){
 	  	  	    	var tParameter = {parameterid : parameter.id};
 	  	    		tParameter.formula = formula.formula;
 	  	    		thisController.formula = formula.formula;
 	  	    		var promise = avSampleTypeService.updateParameter(tParameter);
-	  			    promise.then(
-	  			    	function(){
-	  			    		reload();
-	  			    	},
-	  			    	function(dings){
-	  			    		console.log("error");
-	  			    		reload();
-	  			    	}
-	  			    );
+	  			promise.then(reload,error);
   	    		}
   	    	}, 
   	    	function () {
@@ -122,70 +110,64 @@ function editSingleSTParameterController($state,$uibModal,
 	};
 
   	
-	this.showFormula = function(){
-		return !this.titlefield;
+	this.showFormula = function(){  // decide if formula field is shown.
+	    var showF = false; 
+	    if (parameter.datatype === "float" || parameter.datatype === "integer"){
+	        showF = !this.titlefield;
+	    }
+		return showF;
 	}
     
   
   	this.setHidden = function(){
-	    var tempParameter = { 
+	    var tParameter = { 
 	    		parameterid : parameter.id, 
 	    		hidden      : thisController.hidden
 	    };
-	    var promise = avSampleTypeService.updateParameter(tempParameter);
- 	    promise.then(function(){
- 	    	reload();
- 	    },function(){
- 	    	console.log("error");
- 	    });
+	    var promise = avSampleTypeService.updateParameter(tParameter);
+ 	    promise.then(reload,error);
   	};
   
   
   
   	this.setCompulsory = function(){
-  		var tempParameter = { 
+  		var tParameter = { 
   			parameterid : parameter.id,
 			compulsory  : thisController.compulsory};
-  		var promise = avSampleTypeService.updateParameter(tempParameter);
-  		promise.then(function(){
-  			reload();
-  		},function(){
-  			console.log("error");
-  		});
+  		var promise = avSampleTypeService.updateParameter(tParameter);
+  		promise.then(reload,error);
   	};
   	
   	
   	
-    this.keyUp = function(keyCode, value, languageKey) {
-  	    if (keyCode === 13) {				// Return key pressed
-  	    	var tParameter = {parameterid:parameter.id};
-  	    	if (thisController.activeField === 'DL1' || thisController.activeField === 'DL2'){
-  	    		tParameter.description = {};
-  	    		tParameter.description[languageKey] = value;
-  	    	} 
-  	    	if (thisController.activeField === 'NL1' || thisController.activeField === 'NL2'){
-  	    		tParameter.name = {};
-  	    		tParameter.name[languageKey] = value;
-  	    	}
-  		  	var promise = avSampleTypeService.updateParameter(tParameter);
-		    promise.then(function(){
-		    	reload();
-		    },function(){
-		    	console.log("error");
-		    });
-	    }
-	    if (keyCode === 27) {		// Escape key pressed
-		    delete thisController.activeField;
-	    }
-    };
+  	this.changeField = function(p){
+  	    var tParameter = { parameterid : parameter.id }
+  	    if (p.parameter.field === "name"){
+  	        tParameter.name = {};
+  	        tParameter.name[p.parameter.lang] = p.parameter.data.value;
+  	    }
+        if (p.parameter.field === "description"){
+            tParameter.description = {};
+            tParameter.description[p.parameter.lang] = p.parameter.data.value;
+        }
+  	    p.parameter.editing = false;
+        var promise = avSampleTypeService.updateParameter(tParameter);
+        promise.then(reload,error);
+  	}
+  	
     
    
     var reload = function() {
-    	var current = $state.current;
+    	    var current = $state.current;
   	  	var params = angular.copy($stateParams);
   	  	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
     };
 
+    
+    
+    var error = function() {
+        console.error("error");
+    };
 
 }
 

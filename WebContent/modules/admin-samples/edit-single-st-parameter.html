@@ -28,54 +28,43 @@
 <br/>
 
 <table class = "table">
-<tr ng-dblclick = "editSingleSTParameterCtrl.edit('NL1')">
+<tr ng-dblclick = "editSingleSTParameterCtrl.NL1.editing = true">
 	<td>Name ({{editSingleSTParameterCtrl.lang1}}):</td>
 	<td>
-		<span ng-hide = "editSingleSTParameterCtrl.activeField === 'NL1'">
-			{{editSingleSTParameterCtrl.nameL1}}
-		</span>
-		<input ng-show = "editSingleSTParameterCtrl.activeField === 'NL1'"
-			   ng-keyup = "editSingleSTParameterCtrl.keyUp($event.keyCode,editSingleSTParameterCtrl.newNameL1,editSingleSTParameterCtrl.lang1key)"
-			   type = "text"
-			   ng-model = "editSingleSTParameterCtrl.newNameL1">
+	   <string-parameter  
+            parameter = "editSingleSTParameterCtrl.NL1"
+            pupdate = "editSingleSTParameterCtrl.changeField({parameter:editSingleSTParameterCtrl.NL1})">
+        </string-parameter>
 	</td>
 </tr>
 
-<tr ng-dblclick = "editSingleSTParameterCtrl.edit('NL2')">
+<tr ng-dblclick = "editSingleSTParameterCtrl.NL2.editing = true">
 	<td>Name ({{editSingleSTParameterCtrl.lang2}}):</td>
 	<td>
-		<span ng-hide = "editSingleSTParameterCtrl.activeField === 'NL2'">
-			{{editSingleSTParameterCtrl.nameL2}}
-		</span>
-		<input ng-show = "editSingleSTParameterCtrl.activeField === 'NL2'" 
-			   ng-keyup = "editSingleSTParameterCtrl.keyUp($event.keyCode,editSingleSTParameterCtrl.newNameL2, editSingleSTParameterCtrl.lang2key)"
-			   type = "text"
-			   ng-model = "editSingleSTParameterCtrl.newNameL2">
+		<string-parameter  
+            parameter = "editSingleSTParameterCtrl.NL2"
+            pupdate = "editSingleSTParameterCtrl.changeField({parameter:editSingleSTParameterCtrl.NL2})">
+        </string-parameter>
 	</td>
 </tr>
 
-<tr ng-dblclick = "editSingleSTParameterCtrl.edit('DL1')">
+<tr ng-dblclick = "editSingleSTParameterCtrl.DL1.editing = true">
 	<td>{{'Description'|translate}} ({{editSingleSTParameterCtrl.lang1}}):</td>
 	<td>
-		<span ng-hide = "editSingleSTParameterCtrl.activeField === 'DL1'">{{editSingleSTParameterCtrl.descL1}}</span>
-		<input ng-show = "editSingleSTParameterCtrl.activeField === 'DL1'" 
-			   ng-keyup = "editSingleSTParameterCtrl.keyUp($event.keyCode,editSingleSTParameterCtrl.newDescL1,editSingleSTParameterCtrl.lang1key)"
-			   type = "text"
-			   ng-model = "editSingleSTParameterCtrl.newDescL1">
+		<string-parameter  
+            parameter = "editSingleSTParameterCtrl.DL1"
+            pupdate = "editSingleSTParameterCtrl.changeField({parameter:editSingleSTParameterCtrl.DL1})">
+        </string-parameter>
 	</td>
 </tr>
 
-<tr ng-dblclick = "editSingleSTParameterCtrl.edit('DL2')">
+<tr ng-dblclick = "editSingleSTParameterCtrl.DL2.editing = true">
 	<td>{{'Description'|translate}} ({{editSingleSTParameterCtrl.lang2}}):</td>
 	<td>
-		<span ng-hide = "editSingleSTParameterCtrl.activeField === 'DL2'">
-			{{editSingleSTParameterCtrl.descL2}}
-		</span>
-		<input ng-show = "editSingleSTParameterCtrl.activeField === 'DL2'" 
-			   ng-keyup = "editSingleSTParameterCtrl.keyUp($event.keyCode,editSingleSTParameterCtrl.newDescL2,editSingleSTParameterCtrl.lang2key)"
-			   ng-blur = "editSingleSTParameterCtrl.editDL2 = false"		
-			   type = "text"
-			   ng-model = "editSingleSTParameterCtrl.newDescL2">
+		<string-parameter  
+            parameter = "editSingleSTParameterCtrl.DL2"
+            pupdate = "editSingleSTParameterCtrl.changeField({parameter:editSingleSTParameterCtrlCtrl.DL2})">
+        </string-parameter>
 	</td>
 </tr>
 
@@ -130,7 +119,7 @@
  
 <tr ng-show = "editSingleSTParameterCtrl.showFormula()"
 	ng-dblclick = "editSingleSTParameterCtrl.openFormulaModal()">
-	<td class = "parametertd" >
+	<td class = "parametertd">
 			<div >{{'Formula'|translate}}</div>
 	</td>
 	<td>

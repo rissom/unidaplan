@@ -81,20 +81,20 @@ function editSinglePOParameterController($state,$uibModal,$stateParams,$translat
   
   
   
-    this.editNL1= function(){
-	    thisController.editmode=true;
-	    parameter.editNL1=true;
+    this.editNL1 = function(){
+	    thisController.editmode = true;
+	    parameter.editNL1 = true;
 	    parameter.newParameterNameL1=parameter.nameLang(thisController.lang1key);
-	    activeParameter=parameter;
+	    activeParameter = parameter;
     };
    
   
   
-    this.editNL2= function(){
-	    thisController.editmode=true;
-	    parameter.editNL2=true;
+    this.editNL2 = function(){
+	    thisController.editmode = true;
+	    parameter.editNL2 = true;
 	    parameter.newParameterNameL2=parameter.nameLang(thisController.lang2key);
-	    activeParameter=parameter;
+	    activeParameter = parameter;
     };
   
   
@@ -104,12 +104,8 @@ function editSinglePOParameterController($state,$uibModal,$stateParams,$translat
 	    		parameterid : parameter.id, 
 	    		hidden : thisController.hidden
 	    };
-	    var promise= avProcessTypeService.updatePOParameter(tempParameter);
- 	    promise.then(function(){
- 	    	reload();
- 	    },function(){
- 	    	console.log("error");
- 	    });
+	    var promise = avProcessTypeService.updatePOParameter(tempParameter);
+	    promise.then(reload,error)
   	};
   
   
@@ -119,14 +115,9 @@ function editSinglePOParameterController($state,$uibModal,$stateParams,$translat
   			parameterid : parameter.id,
 			compulsory  : thisController.compulsory};
   		var promise= avProcessTypeService.updatePOParameter(tempParameter);
-  		promise.then(function(){
-  			reload();
-  		},function(){
-  			console.log("error");
-  		});
+        promise.then(reload,error)
   	};
-  	
-  
+
   
   
     this.keyUp = function(keyCode,value,languageKey) {
@@ -134,17 +125,13 @@ function editSinglePOParameterController($state,$uibModal,$stateParams,$translat
   	    	var tParameter={parameterid:parameter.id};
   	    	if (thisController.editFieldDL1 || thisController.editFieldDL2){
   	    		tParameter.description={};
-  	    		tParameter.description[languageKey]=value;
+  	    		tParameter.description[languageKey] = value;
   	    	} else{
   	    		tParameter.name={};
-  	    		tParameter.name[languageKey]=value;
+  	    		tParameter.name[languageKey] = value;
   	    	}
   		  	var promise = avProcessTypeService.updatePOParameter(tParameter);
-		    promise.then(function(){
-		    	reload();
-		    },function(){
-		    	console.log("error");
-		    });
+  		    promise.then(reload,error)
 	    }
 	    if ( keyCode === 27 ) {		// Escape key pressed
 		    thisController.editmode=false;
@@ -159,7 +146,10 @@ function editSinglePOParameterController($state,$uibModal,$stateParams,$translat
   	  	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
     };
 
-
+    
+    var error = function() {
+        console.error("error");
+    };
 }
 
 angular.module('unidaplan').controller('editSinglePOParameterController', 
