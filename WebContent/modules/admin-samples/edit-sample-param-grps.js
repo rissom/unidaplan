@@ -198,7 +198,6 @@ function editSampleParamGrpsController($state,$uibModal,$stateParams,$translate,
 		}
 		if (action.action === "move"  && !action.disabled) {
 			var promise = avSampleTypeService.moveParameterToGrp(parameter.id,action.destination);
-			console.log("moving!");
 			promise.then(reload,error);
 		}
 	};
