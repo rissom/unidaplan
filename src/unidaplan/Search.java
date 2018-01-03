@@ -38,9 +38,9 @@ import org.json.JSONObject;
 	    PrintWriter out = response.getWriter();
 	 	DBconnection dBconn = new DBconnection();
 	    JSONObject answer = new JSONObject();
-	    int searchID=-1;	    
+	    int searchID = -1;	    
 	  	try {
-	   		 searchID=Integer.parseInt(request.getParameter("id")); 
+	   		 searchID = Integer.parseInt(request.getParameter("id")); 
 	    } catch (Exception e1) {
 	   		System.err.println("no search ID given!");
 			response.setStatus(404);
@@ -59,15 +59,15 @@ import org.json.JSONObject;
 			System.err.println("Search: Problems with SQL query for search");
 			response.setStatus(404);
 			e.printStackTrace();
-			status="SQL Problem while getting experiment";
+			status = "SQL Problem while getting experiment";
 		} catch (JSONException e) {
 			System.err.println("Search: JSON Problem while getting experiment");
 			e.printStackTrace();
 			response.setStatus(404);
-			status="JSON Problem while getting experiment";
+			status = "JSON Problem while getting experiment";
 		} catch (Exception e2) {
 			System.err.println("Search: Strange Problem while getting the search");
-			status="Problem while getting the search";
+			status = "Problem while getting the search";
 			e2.printStackTrace();
 		} 
 		
@@ -77,12 +77,12 @@ import org.json.JSONObject;
 		
 			    
 		    	// get basic search data (id,name,owner,operation)
-				pStmt= dBconn.conn.prepareStatement( 	
+				pStmt = dBconn.conn.prepareStatement( 	
 				    "SELECT id,name,owner,operation,type FROM searches "
 				   +"WHERE id = ?");
 				pStmt.setInt(1, searchID);
-				search=dBconn.jsonObjectFromPreparedStmt(pStmt);
-				type=search.getInt("type");
+				search = dBconn.jsonObjectFromPreparedStmt(pStmt);
+				type = search.getInt("type");
 				stringkeys.add(Integer.toString(search.getInt("name")));
 				pStmt.close();
 				
@@ -114,7 +114,7 @@ import org.json.JSONObject;
 							
 							for (int i = 0; i < sparameter.length(); i++){
 								stringkeys.add(Integer.toString(sparameter.getJSONObject(i).getInt("stringkeyname")));
-								int datatype=sparameter.getJSONObject(i).getInt("datatype");
+								int datatype = sparameter.getJSONObject(i).getInt("datatype");
 								sparameter.getJSONObject(i).remove("datatype");
 								sparameter.getJSONObject(i).put("datatype", Unidatoolkit.Datatypes[datatype]);
 								if (sparameter.getJSONObject(i).has("stringkeyunit")){
@@ -131,12 +131,12 @@ import org.json.JSONObject;
 								+ "  pparameter AS pid, "
 								+ "  comparison, "
 								+ "  value, "
-						  		+ "  p_parameters.stringkeyname, "
+						  		+ "  COALESCE (p_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname, "
 						  		+ "  p_parameters.processtypeid AS typeid,"
 						  		+ "  paramdef.stringkeyunit,"
 						  		+ "  paramdef.datatype "
 								+ "FROM searchprocess "
-								+ "JOIN p_parameters ON (p_parameters.id=pparameter) "
+								+ "JOIN p_parameters ON (p_parameters.id = pparameter) "
 								+ "JOIN paramdef ON (paramdef.id = p_parameters.definition) "
 								+ "WHERE search = ?";
 						pStmt = dBconn.conn.prepareStatement(query);
@@ -146,10 +146,10 @@ import org.json.JSONObject;
 						
 						
 						// get the processtype
-						if (pparameter.length()>0){
-							for (int i=0; i < pparameter.length(); i++){
+						if (pparameter.length() > 0){
+							for (int i = 0; i < pparameter.length(); i++){
 								stringkeys.add(Integer.toString(pparameter.getJSONObject(i).getInt("stringkeyname")));
-								int datatype=pparameter.getJSONObject(i).getInt("datatype");
+								int datatype = pparameter.getJSONObject(i).getInt("datatype");
 								pparameter.getJSONObject(i).remove("datatype");
 								pparameter.getJSONObject(i).put("datatype", Unidatoolkit.Datatypes[datatype]);
 								if (pparameter.getJSONObject(i).has("stringkeyunit")){
@@ -200,7 +200,7 @@ import org.json.JSONObject;
 								+ "  pparameter AS pid, "
 								+ "  comparison, "
 								+ "  value, "
-						  		+ "  p_parameters.stringkeyname,"
+                                 + "  COALESCE (p_parameters.stringkeyname, paramdef.stringkeyname) AS stringkeyname, " 
 						  		+ "  p_parameters.processtypeid AS typeid,"
 						  		+ "  paramdef.stringkeyunit,"
 						  		+ "  paramdef.datatype "
@@ -298,7 +298,6 @@ import org.json.JSONObject;
 			   answer.put("status", status);
 			   out.println(answer.toString());
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} 
 	   }else {
