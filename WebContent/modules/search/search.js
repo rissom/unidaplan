@@ -37,9 +37,9 @@ function searchController(restfactory,$state,$stateParams,$translate,
 			 			measurement :  allComparators.slice(0,6),
 			 			string		: [allComparators[6],allComparators[2],allComparators[5]],
 			 			longstring	:  allComparators.slice(4),
-			 			chooser		:  allComparators.slice(4),
-			 			date		:  allComparators.slice(0,6),
-			 			checkbox	: [allComparators[2],allComparators[5]],
+			 			chooser     : [allComparators[2],allComparators[5],allComparators[6]],
+			 			date		    :  allComparators.slice(0,6),
+			 			checkbox	    : [allComparators[2],allComparators[5]],
 			 			timestamp	:  allComparators.slice(0,6),
 			 			URL			: [allComparators[6],allComparators[2],allComparators[5]],
 			 			email		: [allComparators[6],allComparators[2],allComparators[5]]
@@ -85,28 +85,7 @@ function searchController(restfactory,$state,$stateParams,$translate,
 			thisController.startSearch();
 		}
 	};
-	
-	
-	
-//	this.keyUp = function(keyCode,name,language) {
-//		if (keyCode===13) {				// Return key pressed
-//			var promise=searchService.updateSearchName(search.id,name, language);	
-//			promise.then(function(){
-//				reload();
-//			},function(){
-//				console.log("error");
-//			});
-//		}
-//		if (keyCode===27) {		// Escape key pressed
-//			  thisController.editmode=false;
-//		}
-//	};
-	
-	
-//	this.getSampleType = function(id) {
-//		return sampleService.loadSample(sampleID)
-//	};
-  
+
     
     
     var reload=function() {

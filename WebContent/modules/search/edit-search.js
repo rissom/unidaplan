@@ -98,9 +98,9 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 			 			measurement :  allComparators.slice(0,6),
 			 			string		: [allComparators[6],allComparators[2],allComparators[5]],
 			 			longstring	:  allComparators.slice(4),
-			 			chooser		:  allComparators.slice(4),
-			 			date		:  allComparators.slice(0,6),
-			 			checkbox	: [allComparators[2],allComparators[5]],
+			 			chooser		: [allComparators[2],allComparators[5],allComparators[6]],
+			 			date		    :  allComparators.slice(0,6),
+			 			checkbox	    : [allComparators[2],allComparators[5]],
 			 			timestamp	:  allComparators.slice(0,6),
 			 			URL			: [allComparators[6],allComparators[2],allComparators[5]],
 			 			email		: [allComparators[6],allComparators[2],allComparators[5]]
