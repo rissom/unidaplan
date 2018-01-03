@@ -25,18 +25,18 @@ import org.json.JSONObject;
 		JSONArray parameters = null;
 		JSONArray sResults = null;
 		JSONArray samplenames = null;
-		int type=1;
-		String status="ok";
+		int type = 1;
+		String status = "ok";
 		PreparedStatement pStmt;
 		ArrayList<String> stringkeys = new ArrayList<String>(); 
 		JSONObject search = null;
 	    request.setCharacterEncoding("utf-8");
 	    response.setCharacterEncoding("utf-8");
 	    PrintWriter out = response.getWriter();
-	 	DBconnection dBconn=new DBconnection();
+	 	DBconnection dBconn = new DBconnection();
 	    JSONArray inParams = new JSONArray();
 	    JSONObject result = new JSONObject();
-	    int id=-1;
+	    int id = -1;
 	    String operationString = "AND";
 	    String output = "json";
 	    int datatype = 0;
@@ -56,7 +56,7 @@ import org.json.JSONObject;
 		response.setContentType("application/json");
 	    response.setCharacterEncoding("utf-8");
 	    
-	  	if (status=="ok"){ 
+	  	if (status == "ok"){ 
 	    try {  
 	    	id =jsonIn.getInt("searchid");
 	    	if (jsonIn.has("output")){
@@ -77,11 +77,11 @@ import org.json.JSONObject;
 		    pStmt = dBconn.conn.prepareStatement( 	
 			    "SELECT EXISTS( "
 			    + "SELECT 1 FROM rightssearchuser WHERE searchid = 1 AND userid = ? "
-			    + "  AND (permission = 'w' OR permission='r')) "
-		    	+ "OR EXISTS ( "
-		    	+ "SELECT 1 FROM rightssearchgroups rg "
-		    	+ "JOIN groupmemberships gm ON (rg.groupid = gm.groupid AND gm.userid = ?) "
-				+ "WHERE searchid=1 AND (permission='w' OR permission='r'))"
+			    + "  AND (permission = 'w' OR permission = 'r')) "
+        		    	+ "OR EXISTS ( "
+        		    	+ "SELECT 1 FROM rightssearchgroups rg "
+        		    	+ "JOIN groupmemberships gm ON (rg.groupid = gm.groupid AND gm.userid = ?) "
+				+ "WHERE searchid = 1 AND (permission = 'w' OR permission = 'r'))"
 				+ "OR EXISTS (SELECT 1 FROM groupmemberships WHERE groupid = 1 AND userid = ?)");
 			pStmt.setInt(1, userID);
 			pStmt.setInt(2, userID);
@@ -95,9 +95,11 @@ import org.json.JSONObject;
 		    
 	    	// get basic search data (id,name,owner,operation)
 			pStmt = dBconn.conn.prepareStatement( 	
-				      "SELECT operation, type "
+				      "SELECT "
+				    + "  operation, "
+				    + "  type "
 				    + "FROM searches "
-				    + "WHERE id=?");
+				    + "WHERE id = ?");
 			pStmt.setInt(1, id);
 			search=dBconn.jsonObjectFromPreparedStmt(pStmt);
 	    	operationString = search.getBoolean("operation")?"AND":"OR";
@@ -112,32 +114,32 @@ import org.json.JSONObject;
 							+ "  otparameter AS pid, "
 							+ "  comparison, "
 							+ "  value, "
-					  		+ "  COALESCE(ot_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname, \n"
+					  		+ "  COALESCE(ot_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname, "
 							+ "  paramdef.datatype "
 							+ "FROM searchobject "
-							+ "JOIN ot_parameters ON (ot_parameters.id=otparameter) "
+							+ "JOIN ot_parameters ON (ot_parameters.id = otparameter) "
 							+ "JOIN paramdef ON (paramdef.id=ot_parameters.definition) "
-							+ "WHERE search=?";
+							+ "WHERE search = ?";
 					break;
 				case 2:   // process search
 					query =   "SELECT "
 							+ "  pparameter AS pid, "
 							+ "  comparison, value, "
-					  		+ "  COALESCE (p_parameters.stringkeyname, paramdef.stringkeyname) AS stringkeyname,"
-					  		+ "  paramdef.datatype \n"
+					  		+ "  COALESCE (p_parameters.stringkeyname, paramdef.stringkeyname) AS stringkeyname, "
+					  		+ "  paramdef.datatype "
 							+ "FROM searchprocess "
-							+ "JOIN p_parameters ON (p_parameters.id=pparameter) "
-							+ "JOIN paramdef ON (paramdef.id=p_parameters.definition) "
+							+ "JOIN p_parameters ON (p_parameters.id = pparameter) "
+							+ "JOIN paramdef ON (paramdef.id = p_parameters.definition) "
 							+ "WHERE search = ?";
 					break;
 				case 3:   // sample specific processparameter
 					query =   "SELECT "
-							+ "poparameter AS pid, "
-							+ "poparameter, "
-							+ "comparison, "
-							+ "value, "
-					 		+ "COALESCE (po_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname,"
-					 		+ "paramdef.datatype \n"
+							+ "  poparameter AS pid, "
+							+ "  poparameter, "
+							+ "  comparison, "
+							+ "  value, "
+					 		+ "  COALESCE (po_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname,"
+					 		+ "  paramdef.datatype \n"
 							+ "FROM searchpo "
 							+ "JOIN po_parameters ON (po_parameters.id=poparameter) "
 							+ "JOIN paramdef ON (paramdef.id=po_parameters.definition) "
@@ -167,7 +169,10 @@ import org.json.JSONObject;
 				datatable = "processdata";
 				break;
 			case 3: // samplerelated in processparameter search
-				query = "SELECT processes.id, samplesinprocess.sampleid FROM processes "
+				query =   "SELECT "
+				        + "  processes.id, "
+				        + "  samplesinprocess.sampleid "
+				        + "FROM processes "
 						+ "JOIN samplesinprocess ON samplesinprocess.processid = processes.id ";
 				tString = "processes";
 				idString = "processid";
@@ -175,9 +180,9 @@ import org.json.JSONObject;
 				datatable = "spdata";
 				break;
 			default : // sample specific processparameter
-				tString = "processes";
-				query = "SELECT processes.id FROM processes ";
-				idString = "processid";
+				tString   = "processes";
+				query     = "SELECT processes.id FROM processes ";
+				idString  = "processid";
 				idString2 = "parameterid";
 				datatable = "spdata";
 			}
@@ -206,10 +211,8 @@ import org.json.JSONObject;
 						+ "comparator:=" + parameter.getInt("comparison") + ", "
 						+ "comval:='" + parameter.getString("value") + "') ";
 			}
-			query += " WHERE "+ where +" GROUP BY " + tString + ".id";
-//			System.out.println(query);
+			query += " WHERE " + where + " GROUP BY " + tString + ".id";
 			pStmt = dBconn.conn.prepareStatement(query);
-//			System.out.println(query);
 			sResults = dBconn.jsonArrayFromPreparedStmt(pStmt);
 			pStmt.close();
 			
@@ -220,7 +223,11 @@ import org.json.JSONObject;
 			
 			// get data for samples
 			if (sResults != null && type == 1){
-				query = "SELECT id,name,typeid FROM samplenames WHERE id = ANY('{";
+				query =   "SELECT "
+				        + "  id,"
+				        + "  name,"
+				        + "  typeid "
+				        + "FROM samplenames WHERE id = ANY('{";
 				StringBuilder buff = new StringBuilder(); // join numbers with commas
 				String sep = "";
 				for (int i=0; i<sResults.length();i++){
@@ -234,11 +241,12 @@ import org.json.JSONObject;
 
 				
 				//create headings
-				pStmt= dBconn.conn.prepareStatement(
-						"  SELECT ot_parameters.id,"
-						+ "COALESCE (ot_parameters.stringkeyname,paramdef.stringkeyname) AS stringkeyname, "
-						+ "paramdef.stringkeyunit, "
-						+ "paramdef.datatype "
+				pStmt = dBconn.conn.prepareStatement(
+						  "SELECT "
+						+ "  ot_parameters.id, "
+						+ "  COALESCE (ot_parameters.stringkeyname, paramdef.stringkeyname) AS stringkeyname, "
+						+ "  paramdef.stringkeyunit, "
+						+ "  paramdef.datatype "
 						+ "FROM searches "
 						+ "JOIN osearchoutput ON osearchoutput.search = searches.id "
 						+ "JOIN ot_parameters ON ot_parameters.id=otparameter "
@@ -296,8 +304,9 @@ import org.json.JSONObject;
 							  headings.getJSONObject(i).getInt("id") + " \n";
 				}
 				
-				query = "SELECT sn.id,sn.name,typeid" + valuebuff.toString()+" FROM samples " + joins +
-						"LEFT JOIN samplenames sn ON sn.id = samples.id "+
+				query =   "SELECT sn.id,sn.name,typeid" + valuebuff.toString() +" "
+				        + "FROM samples " + joins 
+				        + "LEFT JOIN samplenames sn ON sn.id = samples.id "+
 						"WHERE samples.id = ANY('{"+samBuff.toString()+"}'::int[])";
 //				System.out.println(query);
 				pStmt = dBconn.conn.prepareStatement(query);
@@ -307,7 +316,11 @@ import org.json.JSONObject;
 			
 			// get data for processes
 			if (sResults != null && type == 2){
-				query = "SELECT id, p_number, processtype FROM pnumbers WHERE id = ANY('{";
+				query =   "SELECT "
+				        + "  id, p_number, "
+				        + "  processtype "
+				        + "FROM pnumbers "
+				        + "WHERE id = ANY('{";
 				StringBuilder buff = new StringBuilder(); // join numbers with commas
 				String sep = "";
 				for (int i = 0; i < sResults.length(); i++){
@@ -321,10 +334,10 @@ import org.json.JSONObject;
 
 				
 				//create headings
-				pStmt= dBconn.conn.prepareStatement(
+				pStmt = dBconn.conn.prepareStatement(
 						"  SELECT "
 						+ "  p_parameters.id,"
-						+ "  p_parameters.stringkeyname, "
+						+ "  COALESCE (p_parameters.stringkeyname, paramdef.stringkeyname) AS stringkeyname, "
 						+ "  paramdef.stringkeyunit,"
 						+ "  paramdef.datatype "
 						+ "FROM searches "
@@ -380,8 +393,12 @@ import org.json.JSONObject;
 								+i+".parameterid = " + headings.getJSONObject(i).getInt("id")+" \n";
 				}
 				
-				query = "SELECT pn.id,pn.p_number,processtypesid"+ valuebuff.toString()+" FROM processes "+ joins +
-						"LEFT JOIN pnumbers pn ON pn.id = processes.id "+
+				query =   "SELECT "
+				        + "  pn.id, "
+				        + "  pn.p_number, "
+				        + "  processtypesid " + valuebuff.toString() + " "
+				        + "FROM processes " + joins
+						+ "LEFT JOIN pnumbers pn ON pn.id = processes.id " +
 						"WHERE processes.id = ANY('{"+samBuff.toString()+"}'::int[])";
 				pStmt = dBconn.conn.prepareStatement(query);
 				data = dBconn.getSearchTable(pStmt);
