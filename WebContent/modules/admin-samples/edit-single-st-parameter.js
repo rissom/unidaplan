@@ -55,6 +55,19 @@ function editSingleSTParameterController($state,$uibModal,
                  lang    : languages[1].key,
                };
     
+    if (parameter.stringkeyunit){
+        this.unitL1 = { data    : { value: parameter.unitLang(languages[0].key) },
+                editing : false,
+                field   : "unit",
+                lang    : languages[0].key,
+              };
+        this.unitL2 = { data    : { value: parameter.unitLang(languages[1].key) },
+                editing : false,
+                field   : "unit",
+                lang    : languages[1].key,
+              };
+    }
+    
     this.lang1 = $translate.instant(languages[0].name);
   
     this.lang2 = $translate.instant(languages[1].name);
@@ -62,11 +75,6 @@ function editSingleSTParameterController($state,$uibModal,
     this.lang1key = languages[0].key;
   
     this.lang2key = languages[1].key;
-    
-    if (parameter.stringkeyunit){
-	    this.unitL1 = parameter.unitLang(languages[0].key);
-	    this.unitL2 = parameter.unitLang(languages[1].key);
-    }
     
     this.unit = parameter.stringkeyunit > 0;
     

@@ -69,43 +69,31 @@
 </tr>
 
 <tr ng-show = "editSingleSTParameterCtrl.unit && editSingleSTParameterCtrl.paramGrpID">
-	<td class="parametertd">
+	<td class = "parametertd">
  			<font color="grey">{{'Unit'|translate}} ({{editSingleSTParameterCtrl.lang1}}) </font>
 	</td>
 	<td>
-		<font color = "grey">
-		<span ng-hide = "editSingleSTParameterCtrl.activeField === 'unitL1'" >{{editSingleSTParameterCtrl.unitL1}}</span>
-		<input ng-show = "editSingleSTParameterCtrl.activeField === 'unitL1'"  
-			   ng-keyup = "editSingleSTParameterCtrl.keyUp($event.keyCode,editSingleSTParameterCtrl.newUnitL1,editSingleSTParameterCtrl.lang1key)"
-			   ng-blur = "editSingleSTParameterCtrl.editUL1=false"		
-			   type = "text"
-			   ng-model = "editSingleSTParameterCtrl.newUnitL1">
+	    <font color = "grey">
+	        <string-parameter  parameter = "editSingleSTParameterCtrl.unitL1"></string-parameter>
 		</font>
 	</td>
 </tr>
 
 <tr ng-show ="editSingleSTParameterCtrl.unit && editSingleSTParameterCtrl.paramGrpID"> 
-	<td class = "parametertd">
+    <td class = "parametertd">
 	<font color = "grey">
 			{{'Unit'|translate}} ({{editSingleSTParameterCtrl.lang2}})
 	</font>
 	</td>
 	<td>
-	<font color="grey">
-		<span ng-hide = "editSingleSTParameterCtrl.activeField === 'unitL2'">
-			{{editSingleSTParameterCtrl.unitL2}}
-			</span>
-		<input ng-show = "editSingleSTParameterCtrl.activeField === 'unitL2'" 
-			   ng-keyup = "editSingleSTParameterCtrl.keyUp($event.keyCode,editSingleSTParameterCtrl.newDescL2,editSingleSTParameterCtrl.lang2key)"
-			   ng-blur = "editSingleSTParameterCtrl.editDL2=false"		
-			   type = "text"
-			   ng-model = "editSingleSTParameterCtrl.newUnitL2">
+	    <font color = "grey">
+			<string-parameter parameter = "editSingleSTParameterCtrl.unitL2"></string-parameter>
 		</font>
 	</td>
 </tr>
 
 <tr ng-show = "editSingleSTParameterCtrl.paramGrpID">
-	<td class="parametertd">
+	<td class = "parametertd">
 			{{'Compulsory'|translate}}
 	</td>
 	<td>
@@ -120,7 +108,7 @@
 <tr ng-show = "editSingleSTParameterCtrl.showFormula()"
 	ng-dblclick = "editSingleSTParameterCtrl.openFormulaModal()">
 	<td class = "parametertd">
-			<div >{{'Formula'|translate}}</div>
+	    <div >{{'Formula'|translate}}</div>
 	</td>
 	<td>
 		<span ng-hide = "editSingleSTParameterCtrl.activeField === 'formula'">
