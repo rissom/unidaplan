@@ -23,14 +23,12 @@ function editSingleSTParameterController($state,$uibModal,
     
     this.max = parameter.max;
     
-    this.pgnamef = parameter.pgnamef;
+    this.pgnamef = parameter.pgnamef; // Name of parametergroup (used for back button).
     
     this.sampletypenamef = parameter.sampletypenamef;
     
     this.sampletype = parameter.sampletype;
       
-    this.languages = languages;
-  
     this.NL1 = { data    : { value: parameter.nameLang(languages[0].key) },
                  editing : false,
                  field   : "name", 
