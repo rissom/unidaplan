@@ -19,7 +19,7 @@ import org.json.JSONObject;
 	  public void doPut(HttpServletRequest request, HttpServletResponse response)
 	      throws ServletException, IOException {		
 		Authentificator authentificator = new Authentificator();
-		int userID=authentificator.GetUserID(request,response);
+		int userID = authentificator.GetUserID(request,response);
 	    request.setCharacterEncoding("utf-8");
 	    String in = request.getReader().readLine();
 	    String status = "ok";
@@ -49,10 +49,10 @@ import org.json.JSONObject;
 	    
 		if (jsonIn.has("name")){
 			String[] names = null;
-			JSONObject newNames = null;
+			JSONObject newName = null;
 		    try{
-		    	newNames = jsonIn.getJSONObject("name");
-				names = JSONObject.getNames(newNames);
+		    	    newName = jsonIn.getJSONObject("name");
+				names = JSONObject.getNames(newName);
 			} catch (JSONException e) {
 				System.err.println("UpdatePTParameter: Error parsing ID-Field or comment");
 				response.setStatus(404);
@@ -71,8 +71,15 @@ import org.json.JSONObject;
 					pStmt.close();
 					
 					// if no stringkey defined: create a new one and update database
-					if (stringKey == 0){
-						stringKey = dBconn.createNewStringKey(newNames.getString(names[0]));
+					if (stringKey < 1){
+					    pStmt = dBconn.conn.prepareStatement(
+                                "SELECT stringkeyname FROM paramdef WHERE id="
+                              + "(SELECT definition FROM p_parameters WHERE id=?)");
+                         pStmt.setInt(1,parameterID);
+                         int key = dBconn.getSingleIntValue(pStmt);
+                         stringKey = dBconn.copyStringKey(key,userID,value); // new Stringkey with value as description, old entries are copyied
+                      
+						stringKey = dBconn.createNewStringKey(newName.getString(names[0]));
 						pStmt = dBconn.conn.prepareStatement(
 								"UPDATE p_parameters SET stringkeyname = ? WHERE id = ?");
 						pStmt.setInt(1,stringKey);
@@ -88,7 +95,7 @@ import org.json.JSONObject;
 						dBconn.deleteString(stringKey, names[i]);
 						
 						// create database entries for the new names
-						dBconn.addString(stringKey, names[i],  newNames.getString(names[i]));
+						dBconn.addString(stringKey, names[i],  newName.getString(names[i]));
 					}
 					
 					
@@ -140,12 +147,12 @@ import org.json.JSONObject;
 		
 		
 		if (jsonIn.has("description")){
-			JSONObject newDescription=null;
+			JSONObject newDescription = null;
 		    try{
-				 newDescription=jsonIn.getJSONObject("description");
+				 newDescription = jsonIn.getJSONObject("description");
 				 if (newDescription.length()>0){
-					 language=JSONObject.getNames(newDescription)[0];
-					 value=newDescription.getString(language);
+					 language = JSONObject.getNames(newDescription)[0];
+					 value = newDescription.getString(language);
 				 }
 			} catch (JSONException e) {
 				System.err.println("UpdateSTParameter: Error parsing Description-Field");
@@ -157,7 +164,7 @@ import org.json.JSONObject;
 			    if (dBconn.isAdmin(userID)){
 
 				   	// find the stringkey
-					pStmt=dBconn.conn.prepareStatement(
+					pStmt = dBconn.conn.prepareStatement(
 							"SELECT description FROM p_parameters WHERE id = ?");
 					pStmt.setInt(1,parameterID);
 					int stringKey = dBconn.getSingleIntValue(pStmt);
@@ -165,15 +172,15 @@ import org.json.JSONObject;
 					
 					if (stringKey<1) { // no string key in database
 						if (newDescription.length()>0){	 //  and new value is not empty
-							pStmt=dBconn.conn.prepareStatement( // copy strings from parent type
+							pStmt = dBconn.conn.prepareStatement( // copy strings from parent type
 									  "SELECT description "
 									+ "FROM paramdef "
 									+ "WHERE id = "
 									+ "  (SELECT definition FROM p_parameters WHERE id = ?)");
 							pStmt.setInt(1,parameterID);
-							int key=dBconn.getSingleIntValue(pStmt);
-							stringKey=dBconn.copyStringKey(key,userID,value); // new Stringkey with value as description, old entries are copyied
-							pStmt=dBconn.conn.prepareStatement(
+							int key = dBconn.getSingleIntValue(pStmt);
+							stringKey = dBconn.copyStringKey(key,userID,value); // new Stringkey with value as description, old entries are copyied
+							pStmt = dBconn.conn.prepareStatement(
 									"UPDATE p_parameters SET description = ? WHERE id = ?");
 							pStmt.setInt(1,stringKey);
 							pStmt.setInt(2,parameterID);
@@ -181,7 +188,7 @@ import org.json.JSONObject;
 							dBconn.addStringSet(stringKey,newDescription);
 						}
 					} else { // there is a stringkey
-						if (newDescription.length()>0){
+						if (newDescription.length() > 0){
 							dBconn.addStringSet(stringKey,newDescription);
 						} else {
 							dBconn.removeStringKey(stringKey);
@@ -200,10 +207,10 @@ import org.json.JSONObject;
 			} catch (SQLException e) {
 				System.err.println("UpdatePTParameter: Problems with SQL query");
 				e.printStackTrace();
-				status="SQL error";
+				status = "SQL error";
 			} catch (Exception e) {
 				System.err.println("UpdatePTParameter: some error occured");
-				status="misc error";
+				status = "misc error";
 			}
 			dBconn.closeDB();
 		}
@@ -293,10 +300,10 @@ import org.json.JSONObject;
 			    }
 			} catch (SQLException e){
 				System.err.println("UpdatePTParameter: SQL error reading hidden field");
-				status="SQL error, hidden field";
+				status = "SQL error, hidden field";
 			}catch(JSONException e) {
 				System.err.println("UpdatePTParameter: JSON error reading hidden field");
-				status="JSON error, hidden field";
+				status = "JSON error, hidden field";
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -37,7 +37,6 @@ import org.json.JSONObject;
 		}
 		
 
-	    JSONObject newName = null; // get parameters
 	    
 	    try {
 	        parameterID = jsonIn.getInt("parameterid");
@@ -53,6 +52,7 @@ import org.json.JSONObject;
 		    PreparedStatement pStmt = null;
 		    
 			if (jsonIn.has("name")){
+			    JSONObject newName = null; // get parameters
 			    try{
 					 newName = jsonIn.getJSONObject("name");
 					 language = JSONObject.getNames(newName)[0];
@@ -71,10 +71,9 @@ import org.json.JSONObject;
 						pStmt.setInt(1,parameterID);
 						int stringKey = dBconn.getSingleIntValue(pStmt);
 						pStmt.close();
-						if (stringKey<1)
-						{
+						if (stringKey < 1){
 							pStmt = dBconn.conn.prepareStatement(
-									"SELECT stringkeyname FROM paramdef WHERE id="
+									  "SELECT stringkeyname FROM paramdef WHERE id="
 									+ "(SELECT definition FROM ot_parameters WHERE id=?)");
 							pStmt.setInt(1,parameterID);
 							int key = dBconn.getSingleIntValue(pStmt);
