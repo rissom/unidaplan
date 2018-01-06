@@ -63,12 +63,11 @@
 	<td>
 		<string-parameter  
             parameter = "editSingleSTParameterCtrl.DL2"
-            pupdate = "editSingleSTParameterCtrl.changeField({parameter:editSingleSTParameterCtrlCtrl.DL2})">
+            pupdate = "editSingleSTParameterCtrl.changeField({parameter:editSingleSTParameterCtrl.DL2})">
         </string-parameter>
 	</td>
 </tr>
-
-<tr ng-show = "editSingleSTParameterCtrl.unit && editSingleSTParameterCtrl.paramGrpID">
+<tr ng-if = "editSingleSTParameterCtrl.unit && editSingleSTParameterCtrl.paramGrpID">
 	<td class = "parametertd">
  			<font color="grey">{{'Unit'|translate}} ({{editSingleSTParameterCtrl.lang1}}) </font>
 	</td>
@@ -79,7 +78,7 @@
 	</td>
 </tr>
 
-<tr ng-show ="editSingleSTParameterCtrl.unit && editSingleSTParameterCtrl.paramGrpID"> 
+<tr ng-if ="editSingleSTParameterCtrl.unit && editSingleSTParameterCtrl.paramGrpID"> 
     <td class = "parametertd">
 	<font color = "grey">
 			{{'Unit'|translate}} ({{editSingleSTParameterCtrl.lang2}})
