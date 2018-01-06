@@ -27,56 +27,43 @@
 <br/>
 
 <table class = "table">
-<tr ng-dblclick = "editSinglePTParameterCtrl.edit('NL1')">
+<tr ng-dblclick = "editSinglePTParameterCtrl.nL1.editing = true">
 	<td>Name ({{editSinglePTParameterCtrl.lang1}}):</td>
 	<td>
-		<span ng-hide = "editSinglePTParameterCtrl.activeField === 'NL1'">{{editSinglePTParameterCtrl.nameL1}}</span>
-		<input ng-show = "editSinglePTParameterCtrl.activeField === 'NL1'" 
-			   ng-keyup = "editSinglePTParameterCtrl.keyUp($event.keyCode,editSinglePTParameterCtrl.newNameL1,editSinglePTParameterCtrl.lang1key)"
-			   ng-blur = "editSinglePTParameterCtrl.editNL1=false"
-			   type = "text"
-			   ng-model = "editSinglePTParameterCtrl.newNameL1">
+		<string-parameter  
+            parameter = "editSinglePTParameterCtrl.nL1"
+            pupdate = "editSinglePTParameterCtrl.update({parameter:editSinglePTParameterCtrl.nL1})">
+        </string-parameter>
 	</td>
 </tr>
 
-<tr ng-dblclick = "editSinglePTParameterCtrl.edit('NL2')">
+<tr ng-dblclick = "editSinglePTParameterCtrl.nL2.editing = true">
 	<td>Name ({{editSinglePTParameterCtrl.lang2}}):</td>
 	<td>
-		<span ng-hide = "editSinglePTParameterCtrl.activeField === 'NL2'">
-			{{editSinglePTParameterCtrl.nameL2}}</span>
-		<input ng-show = "editSinglePTParameterCtrl.activeField === 'NL2'" 
-			   ng-keyup = "editSinglePTParameterCtrl.keyUp($event.keyCode,editSinglePTParameterCtrl.newNameL2,editSinglePTParameterCtrl.lang2key)"
-			   ng-blur = "editSinglePTParameterCtrl.editNL2=false"		
-			   type = "text"
-			   ng-model = "editSinglePTParameterCtrl.newNameL2">
+		<string-parameter  
+            parameter = "editSinglePTParameterCtrl.nL2"
+            pupdate = "editSinglePTParameterCtrl.update({parameter:editSinglePTParameterCtrl.nL2})">
+        </string-parameter>
 	</td>
 </tr>
 
-<tr ng-dblclick = "editSinglePTParameterCtrl.edit('DL1')">
+<tr ng-dblclick = "editSinglePTParameterCtrl.dL1.editing = true">
 	<td>{{'Description'|translate}} ({{editSinglePTParameterCtrl.lang1}}):</td>
 	<td>
-		<span ng-hide="editSinglePTParameterCtrl.activeField === 'DL1'">{{editSinglePTParameterCtrl.descL1}}</span>
-		<input ng-show="editSinglePTParameterCtrl.activeField === 'DL1'" 
-			   ng-keyup="editSinglePTParameterCtrl.keyUp($event.keyCode,
-			   				editSinglePTParameterCtrl.newDescL1,
-			   				editSinglePTParameterCtrl.lang1key)"
-			   ng-blur="editSinglePTParameterCtrl.editDL1=false"
-			   type="text"
-			   ng-model="editSinglePTParameterCtrl.newDescL1">
+		<string-parameter  
+            parameter = "editSinglePTParameterCtrl.dL1"
+            pupdate = "editSinglePTParameterCtrl.update({parameter:editSinglePTParameterCtrl.dL1})">
+        </string-parameter>
 	</td>
 </tr>
 
-<tr ng-dblclick = "editSinglePTParameterCtrl.edit('DL2')">
+<tr ng-dblclick = "editSinglePTParameterCtrl.dL2.editing = true">
 	<td>{{'Description'|translate}} ({{editSinglePTParameterCtrl.lang2}}):</td>
 	<td>
-		<span ng-hide = "editSinglePTParameterCtrl.activeField === 'DL2'">{{editSinglePTParameterCtrl.descL2}}</span>
-		<input ng-show = "editSinglePTParameterCtrl.activeField === 'DL2'" 
-			   ng-keyup = "editSinglePTParameterCtrl.keyUp($event.keyCode,
-			   				editSinglePTParameterCtrl.newDescL2,
-			   				editSinglePTParameterCtrl.lang2key)"
-			   ng-blur = "editSinglePTParameterCtrl.editDL2 = false"		
-			   type = "text"
-			   ng-model = "editSinglePTParameterCtrl.newDescL2">
+		<string-parameter  
+            parameter = "editSinglePTParameterCtrl.dL2"
+            pupdate = "editSinglePTParameterCtrl.update({parameter:editSinglePTParameterCtrl.dL2})">
+        </string-parameter>
 	</td>
 </tr>
 
@@ -87,11 +74,6 @@
 	<td>
 		<font color = "grey">
 		<span ng-hide = "editSinglePTParameterCtrl.editUnitL1">{{editSinglePTParameterCtrl.unitL1}}</span>
-		<input ng-show = "editSinglePTParameterCtrl.activeField === 'unit'" 
-			   ng-keyup = "editSinglePTParameterCtrl.keyUp($event.keyCode,editSinglePTParameterCtrl.newUnitL1,editSinglePTParameterCtrl.lang1key)"
-			   ng-blur = "editSinglePTParameterCtrl.editUL1=false"		
-			   type = "text"
-			   ng-model = "editSinglePTParameterCtrl.newUnitL1">
 		</font>
 	</td>
 </tr>
@@ -105,13 +87,6 @@
 	<td>
 	<font color = "grey">
 		<span ng-hide = "editSinglePTParameterCtrl.editUnitL2">{{editSinglePTParameterCtrl.unitL2}}</span>
-		<input ng-show = "editSinglePTParameterCtrl.editFieldUL2" 
-			   ng-keyup = "editSinglePTParameterCtrl.keyUp($event.keyCode,
-			   				editSinglePTParameterCtrl.newDescL2,
-			   				editSinglePTParameterCtrl.lang2key)"
-			   ng-blur = "editSinglePTParameterCtrl.editDL2=false"		
-			   type = "text"
-			   ng-model = "editSinglePTParameterCtrl.newUnitL2">
 		</font>
 	</td>
 </tr>
@@ -136,12 +111,6 @@
 		<span ng-hide = "editSinglePTParameterCtrl.activeField === 'formula'">
 			{{editSinglePTParameterCtrl.formula}}
 		</span>
-		<input 
-			ng-show = "editSinglePTParameterCtrl.activeField === 'formula'" 
-		    ng-keyup = "editSinglePTParameterCtrl.keyUp($event.keyCode)"
-		    ng-blur = "editSinglePTParameterCtrl.editFieldFormula = false"		
-		    type = "text"
-		    ng-model = "editSinglePTParameterCtrl.newFormula">
 	</td>
 </tr>
 
@@ -181,10 +150,3 @@
 <br/>
 <br/>
 <br/>
-
-
-
-
-
-
-

@@ -100,18 +100,16 @@ function editSingleSTParameterController($state,$uibModal,
   	    });
 
   	    modalInstance.result.then(
-  	    	function (formula) {
-  	    		if (formula != undefined && formula.ok){
-	  	  	    	var tParameter = {parameterid : parameter.id};
-	  	    		tParameter.formula = formula.formula;
-	  	    		thisController.formula = formula.formula;
-	  	    		var promise = avSampleTypeService.updateParameter(tParameter);
-	  			promise.then(reload,error);
-  	    		}
-  	    	}, 
-  	    	function () {
-  	    		// dismissed
-  	    	}
+      	    	function (formula) {
+      	    		if (formula != undefined && formula.ok){
+        	  	  	    	var tParameter = {parameterid : parameter.id};
+        	  	    		tParameter.formula = formula.formula;
+        	  	    		thisController.formula = formula.formula;
+        	  	    		var promise = avSampleTypeService.updateParameter(tParameter);
+        	  			promise.then(reload,error);
+      	    		}
+      	    	}, 
+      	    	function () {}  // dismissed
   	    );
 	};
 

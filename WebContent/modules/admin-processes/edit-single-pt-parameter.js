@@ -25,22 +25,6 @@ function editSinglePTParameterController($state,$uibModal,$stateParams,$translat
     this.processtypenamef = parameter.processtypenamef;
           
     this.languages = languages;
-  
-    this.nameL1 = parameter.nameLang(languages[0].key);
-  
-    this.newNameL1 = this.nameL1;
-  
-    this.nameL2 = parameter.nameLang(languages[1].key);
-
-    this.newNameL2 = this.nameL2;
-    
-    this.descL1 = parameter.descLang(languages[0].key);
-    
-    this.newDescL1 = this.descL1;
-    
-    this.descL2 = parameter.descLang(languages[1].key);
-    
-    this.newDescL2 = this.descL2;
     
     this.lang1 = $translate.instant(languages[0].name);
   
@@ -50,24 +34,37 @@ function editSinglePTParameterController($state,$uibModal,$stateParams,$translat
   
     this.lang2key = languages[1].key;
     
+    this.nL1 = { data    : { value: parameter.nameLang(languages[0].key) },
+                 editing : false,
+                 field   : "name", 
+                 lang    : languages[0].key,
+               };
+
+    this.nL2 = { data    : { value: parameter.nameLang(languages[1].key) },
+                 editing : false,                                       
+                 field   : "name",
+                 lang    : languages[1].key
+               };
+
+    this.dL1 = { data    : { value: parameter.descLang(languages[0].key) },
+                 editing : false,
+                 field   : "description",
+                 lang    : languages[0].key
+               };
+
+    this.dL2 = { data    : { value: parameter.descLang(languages[1].key) },
+                 editing : false,
+                 field   : "description",
+                 lang    : languages[1].key,
+               };
+    
     if (parameter.stringkeyunit){
-	    this.unitL1=parameter.unitLang(languages[0].key);
-	    this.unitL2=parameter.unitLang(languages[1].key);
+	    this.unitL1 = parameter.unitLang(languages[0].key);
+	    this.unitL2 = parameter.unitLang(languages[1].key);
     }
     
     this.unit = parameter.stringkeyunit > 0;
         
-   
-  
-    this.edit = function(field){
-    	this.activeField = field;
-	    thisController.newNameL1 = thisController.nameL1;
-	    thisController.newNameL2 = thisController.nameL2;
-	    thisController.newDescL1 = thisController.descL1;
-	    thisController.newDescL2 = thisController.descL2;
-	    thisController.newFormula = thisController.formula;
-    };
-    
     
     
     this.openFormulaModal = function(){
@@ -89,27 +86,17 @@ function editSinglePTParameterController($state,$uibModal,$stateParams,$translat
   	    });
 
   	    modalInstance.result.then(
-  	    	function (formula) {
-  	    		if (formula.ok){
-	  	  	    	var tParameter = {parameterid : parameter.id};
-	  	    		tParameter.formula = formula.formula;
-	  	    		thisController.formula = formula.formula;
-	  	    		var promise = avProcessTypeService.updateParameter(tParameter);
-	  			    promise.then(
-	  			    	function(){
-	  			    		reload();
-	  			    	},
-	  			    	function(dings){
-	  			    		error();
-	  			    		reload();
-	  			    	}
-	  			    );
-  	    		}
-  	    	}, 
-  	    	function () {
-  	    		// dismissed
-  	    	}
-  	    );
+      	    	function (formula) {
+      	    	    if (formula != undefined && formula.ok){
+        	  	  	    	var tParameter = {parameterid : parameter.id};
+        	  	    		tParameter.formula = formula.formula;
+        	  	    		thisController.formula = formula.formula;
+        	  	    		var promise = avProcessTypeService.updateParameter(tParameter);
+        	  			promise.then(reload,error);
+      	    		}
+      	    	}, 
+      	    	function () {} 	// dismissed
+      	);
 	};
 
   
@@ -128,7 +115,7 @@ function editSinglePTParameterController($state,$uibModal,$stateParams,$translat
   
   
   	this.setCompulsory = function(){
-  		var tempParameter={ 
+  		var tempParameter = { 
   			parameterid : parameter.id,
 			compulsory  : thisController.compulsory};
   		var promise= avProcessTypeService.updateParameter(tempParameter);
@@ -138,28 +125,24 @@ function editSinglePTParameterController($state,$uibModal,$stateParams,$translat
   
   
   
-    this.keyUp = function(keyCode,value,language) {
-  	    if (keyCode === 13) {				// Return key pressed
-  	    	var tParameter={parameterid:parameter.id};
-  	    	if (thisController.activeField === 'DL1' || thisController.activeField === 'DL2'){
-  	    		tParameter.description={};
-  	    		tParameter.description[language]=value;
+    this.update = function(p) {
+  	    	var tParameter = {parameterid:parameter.id};
+  	    	if (p.parameter.field === 'description'){
+  	    		tParameter.description = {};
+  	    		tParameter.description[p.parameter.lang] = p.parameter.data.value;
   	    	} else{
   	    		tParameter.name = {};
-  	    		tParameter.name[language]=value;
+  	    		tParameter.name[p.parameter.lang] = p.parameter.data.value;
   	    	}
-  		  	var promise = avProcessTypeService.updateParameter(tParameter);
-		    promise.then(reload, error);
-	    }
-	    if (keyCode===27) {		// Escape key pressed
-		    thisController.editmode = false;
-	    }
+	  	var promise = avProcessTypeService.updateParameter(tParameter);
+	  	p.editing = false
+	    promise.then(reload, error);
     };
 
   
   
     var reload = function() {
-    	var current = $state.current;
+        var current = $state.current;
   	  	var params = angular.copy($stateParams);
   	  	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
     };
