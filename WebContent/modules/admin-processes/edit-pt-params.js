@@ -7,7 +7,7 @@ function editPtParamsController($state,$uibModal,$stateParams,$translate,avParam
     
   var activeParameter = {};
     
-  this.parameters=parameterGrp.parameters.sort(function(a,b){
+  this.parameters = parameterGrp.parameters.sort(function(a,b){
 	  return a.pos-b.pos;
   });
   
@@ -16,15 +16,7 @@ function editPtParamsController($state,$uibModal,$stateParams,$translate,avParam
   this.processtype = parameterGrp.processtype;
   
   this.languages = languages;
-  
-  this.nameL1 = parameterGrp.nameLang(languages[0].key);
-  
-  this.newNameL1 = parameterGrp.nameLang(languages[0].key);
-  
-  this.nameL2 = parameterGrp.nameLang(languages[1].key);
-
-  this.newNameL2 = parameterGrp.nameLang(languages[1].key);
-    
+      
   this.lang1 = $translate.instant(languages[0].name);
   
   this.lang2 = $translate.instant(languages[1].name);
@@ -32,10 +24,16 @@ function editPtParamsController($state,$uibModal,$stateParams,$translate,avParam
   this.lang1key = languages[0].key;
   
   this.lang2key = languages[1].key;
-  
-  this.editFieldNL1 = $stateParams.newGrp === "true";
-  
-  this.editFieldNL2 = false;
+    
+  this.nL1 = { data    : { value: parameterGrp.nameLang(languages[0].key) },
+               editing : ($stateParams.newGrp === 'true'),
+               lang    : languages[0].key
+             }
+
+  this.nL2 = { data     : { value: parameterGrp.nameLang(languages[1].key) },
+               editing  : false,
+               lang     : languages[1].key
+             }
   
   this.av = avParameters;
     
@@ -67,7 +65,7 @@ function editPtParamsController($state,$uibModal,$stateParams,$translate,avParam
   
 
   this.down = function(index){  // exchange two parameter positions
-	  var newPositions=[];
+	  var newPositions = [];
 	  newPositions.push({"id":thisController.parameters[index].id,"position":thisController.parameters[index+1].pos});
 	  newPositions.push({"id":thisController.parameters[index+1].id,"position":thisController.parameters[index].pos});
 	  var promise = avProcessTypeService.changeOrderPTParameters(newPositions);
@@ -76,55 +74,16 @@ function editPtParamsController($state,$uibModal,$stateParams,$translate,avParam
 
   
   
-  this.getGrpName = function(grp,lang){
-	  key2string.key2stringWithLangStrict(grp.name,thisController.strings,lang);
-  };
+//  this.getGrpName = function(grp,lang){
+//	  key2string.key2stringWithLangStrict(grp.name,thisController.strings,lang);
+//  };
   
   
   
-  this.edit = function(field){
-	  thisController.editFieldNL1 = (field=="NL1");
-	  thisController.editFieldNL2 = (field=="NL2");
-	  thisController.newNameL1 = thisController.nameL1;
-	  thisController.newNameL2 = thisController.nameL2;
-  };
-	
-  
-  
-  this.editNL1 = function(parameter){
-	  thisController.editmode = true;
-	  parameter.editNL1 = true;
-	  parameter.newParameterNameL1 = parameter.nameLang(thisController.lang1key);
-	  activeParameter = parameter;
-  };
-  
-  
-  
-  this.editNL2 = function(parameter){
-	  thisController.editmode = true;
-	  parameter.editNL2 = true;
-	  parameter.newParameterNameL2=parameter.nameLang(thisController.lang2key);
-	  activeParameter=parameter;
-  };
-  
-  
-  
-  this.getPTName = function(ptypeid){
-	  return avProcessTypeService.getProcessType({processtype:thisController.processtype},ptypes);
-  }
-  
-  
-  
-  this.keyUp = function(keyCode,name,language) {
-	if (keyCode === 13) {				// Return key pressed
-		var promise = avProcessTypeService.updateParamGrp(name, language, parameterGrp.id);
-		promise.then(function(){ reload(); },function(){console.log("error")});
-	}
-	if (keyCode === 27) {		// Escape key pressed
-		  thisController.editmode=false;
-	}
-  };
-  
+//  this.getPTName = function(ptypeid){
+//	  return avProcessTypeService.getProcessType({processtype:thisController.processtype},ptypes);
+//  }
+
 
   
   this.keyUpParameter = function(keyCode,parameter) {
@@ -140,55 +99,55 @@ function editPtParamsController($state,$uibModal,$stateParams,$translate,avParam
   
   
   
-  this.performAction=function(parameter,action){
-	  if (action.action==="delete" && !action.disabled) {
+  this.performAction = function(parameter,action){
+	  if (action.action === "delete" && !action.disabled) {
 		  var promise = avProcessTypeService.deletePTParameter(parameter.id);
-		  promise.then(function(){reload()},function(){console.log("error")});
+		  promise.then(reload,error);
 	  }
-	  if (action.action==="edit") {
+	  if (action.action === "edit") {
 			$state.go('editSinglePTParameter',{parameterID:parameter.id});
 	  }
   };
   
   
   
-  this.setHidden=function(parameter){
-	  var tempParameter={ parameterid : parameter.id,
-			  			  hidden : parameter.hidden};
-	  var promise= avProcessTypeService.updateParameter(tempParameter);
+  this.setHidden = function(parameter){
+	  var tempParameter = { parameterid : parameter.id,
+			  			    hidden      : parameter.hidden};
+	  var promise = avProcessTypeService.updateParameter(tempParameter);
       promise.then(reload,error)
   };
   
   
   
-  this.setCompulsory=function(parameter){
-	  var tempParameter={ parameterid : parameter.id,
-			  		  compulsory : parameter.compulsory};
-	  var promise= avProcessTypeService.updateParameter(tempParameter);
+  this.setCompulsory = function(parameter){
+	  var tempParameter = { parameterid : parameter.id,
+			  		        compulsory  : parameter.compulsory };
+	  var promise = avProcessTypeService.updateParameter(tempParameter);
       promise.then(reload,error)
   };
   
   
   
-  this.submitParameter = function(){
-	  this.editmode=false;
-	  var tempParameter={parameterid:activeParameter.id, name:{}};
-	  if (activeParameter.editNL1){
-		  tempParameter.name[languages[0].key]=activeParameter.newParameterNameL1;
-		  activeParameter.editNL1=false;
-	  } else {
-		  tempParameter.name[languages[1].key]=activeParameter.newParameterNameL2;
-		  activeParameter.editNL2=false;
-	  }
-//	  console.log (tempParameter)
-	  var promise= avProcessTypeService.updateParameter(tempParameter);
+  this.updateparametername = function(p){
+      p.editing = false;
+	  var tempParameter = { parameterid:p.id, name:{} };	  
+	  tempParameter.name[p.lang] = p.data.value;
+	  var promise = avProcessTypeService.updateParameter(tempParameter);
       promise.then(reload,error)
   };
   
+  
+  
+  this.updateParamGrpName = function(p) {
+      var promise = avProcessTypeService.updateParamGrp(p.data.value, p.lang, parameterGrp.id);
+      promise.then(reload,error);
+  };
+    
  
   
-  this.up=function(index){  // exchange two parameter positions
-	  var newPositions=[];
+  this.up = function(index){  // exchange two parameter positions
+	  var newPositions = [];
 	  newPositions.push({"id":thisController.parameters[index-1].id,"position":thisController.parameters[index].pos});
 	  newPositions.push({"id":thisController.parameters[index].id,"position":thisController.parameters[index-1].pos});
 	  var promise = avProcessTypeService.changeOrderPTParameters(newPositions);
@@ -203,6 +162,8 @@ function editPtParamsController($state,$uibModal,$stateParams,$translate,avParam
 	  params.newGrp = false;
 	  return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
   };
+  
+  
   
   var error = function() {
       console.error("error");
