@@ -5,9 +5,7 @@ function editSinglePOParameterController($state,$uibModal,$stateParams,$translat
   
 
     var thisController = this;
-  
-    var activeParameter = {};
-    
+      
     this.compulsory = parameter.compulsory;
     
     this.definition = parameter.definition;
@@ -58,17 +56,11 @@ function editSinglePOParameterController($state,$uibModal,$stateParams,$translat
   
     this.lang2key = languages[1].key;
     
-    if (parameter.stringkeyunit){
+    if (parameter.hasOwnProperty('stringkeyunit')){
+        this.unit = true;
 	    this.unitL1 = parameter.unitLang(languages[0].key);
 	    this.unitL2 = parameter.unitLang(languages[1].key);
     }
-  
-    this.editFieldNL1 = false;
-  
-    this.editFieldNL2 = false;
-    
-    this.unit = parameter.stringkeyunit>0;
-        
   
   
   

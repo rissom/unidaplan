@@ -70,7 +70,7 @@
 	</td>
 </tr>
 
-<tr ng-show = "editSinglePOParameterCtrl.unit && editSinglePOParameterCtrl.paramGrpID">
+<tr ng-show = "editSinglePOParameterCtrl.unit">
 	<td class = "parametertd">
  			<font color="grey">{{'Unit'|translate}} ({{editSinglePOParameterCtrl.lang1}}) </font>
 	</td>
@@ -81,7 +81,7 @@
 	</td>
 </tr>
 
-<tr ng-show = "editSinglePOParameterCtrl.unit && editSinglePOParameterCtrl.paramGrpID"> 
+<tr ng-show = "editSinglePOParameterCtrl.unit"> 
 	<td class = "parametertd">
 	<font color = "grey">
 			{{'Unit'|translate}} ({{editSinglePOParameterCtrl.lang2}})
@@ -90,11 +90,6 @@
 	<td>
 	<font color = "grey">
 		<span ng-hide = "editSinglePOParameterCtrl.editUnitL2">{{editSinglePOParameterCtrl.unitL2}}</span>
-		<input ng-show = "editSinglePOParameterCtrl.editFieldUL2" 
-			   ng-keyup = "editSinglePOParameterCtrl.keyUp($event.keyCode,editSinglePOParameterCtrl.newDescL2,editSinglePOParameterCtrl.lang2key)"
-			   ng-blur = "editSinglePOParameterCtrl.editDL2=false"		
-			   type = "text"
-			   ng-model = "editSinglePOParameterCtrl.newUnitL2">
 		</font>
 	</td>
 </tr>
