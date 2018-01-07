@@ -58,13 +58,12 @@ function editSinglePTParameterController($state,$uibModal,$stateParams,$translat
                  lang    : languages[1].key,
                };
     
-    if (parameter.stringkeyunit){
-	    this.unitL1 = parameter.unitLang(languages[0].key);
+    if (parameter.hasOwnProperty("stringkeyunit")){
+        this.unit = true;
+        this.unitL1 = parameter.unitLang(languages[0].key);
 	    this.unitL2 = parameter.unitLang(languages[1].key);
     }
-    
-    this.unit = parameter.stringkeyunit > 0;
-        
+           
     
     
     this.openFormulaModal = function(){
