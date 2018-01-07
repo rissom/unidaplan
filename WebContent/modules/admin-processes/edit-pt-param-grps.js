@@ -187,7 +187,6 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,$uibMod
 		  $state.go("editSinglePOParameter",{parameterID:sparam.id})
 	  }
 	  if (action.action == "delete" && !action.disabled) {
-		  console.log("sparam"+sparam)
 		  var promise = avProcessTypeService.deletePTSRParameter(sparam.id);
 		  promise.then(function(){reload()},function(){console.log("error")});
 	  }

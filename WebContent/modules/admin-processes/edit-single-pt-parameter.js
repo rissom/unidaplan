@@ -95,7 +95,7 @@ function editSinglePTParameterController($state,$uibModal,$stateParams,$translat
         	  			promise.then(reload,error);
       	    		}
       	    	}, 
-      	    	function () {} 	// dismissed
+      	    	function(){} 	// dismissed
       	);
 	};
 
@@ -115,10 +115,10 @@ function editSinglePTParameterController($state,$uibModal,$stateParams,$translat
   
   
   	this.setCompulsory = function(){
-  		var tempParameter = { 
-  			parameterid : parameter.id,
-			compulsory  : thisController.compulsory};
-  		var promise= avProcessTypeService.updateParameter(tempParameter);
+  		var tempParameter = { parameterid : parameter.id,
+                    			  compulsory  : thisController.compulsory
+                    			};
+  		var promise = avProcessTypeService.updateParameter(tempParameter);
   		promise.then(reload,error);
   	};
   	

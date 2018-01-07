@@ -45,7 +45,7 @@ import org.json.JSONObject;
 			response.setStatus(404);
 		}
 	    
-	 	DBconnection dBconn=new DBconnection(); // initialize database
+	 	DBconnection dBconn = new DBconnection(); // initialize database
 	    PreparedStatement pStmt = null;
 	    
 		if (jsonIn.has("name")){
@@ -57,9 +57,6 @@ import org.json.JSONObject;
 				System.err.println("UpdatePOParameter: Error parsing ID-Field or comment");
 				response.setStatus(404);
 			}
-		   
-	
-		    
 			
 			try {
 			    dBconn.startDB();	   
@@ -68,41 +65,30 @@ import org.json.JSONObject;
 
 					// find the stringkey
 					pStmt = dBconn.conn.prepareStatement(
-							"SELECT stringkeyname FROM po_parameters WHERE id=?");
+							"SELECT stringkeyname FROM po_parameters WHERE id = ?");
 					pStmt.setInt(1,parameterID);
 					int stringKey = dBconn.getSingleIntValue(pStmt);
 					pStmt.close();
 					
-					// delete old entries in the same language
-					if (stringKey == 0){
-						stringKey = dBconn.createNewStringKey(value);
-						pStmt = dBconn.conn.prepareStatement(
-								"UPDATE po_parameters SET stringkeyname=?  WHERE id=?");
+					// if no stringkey exists: create a copy of the parent parameter stringkey
+					if (stringKey < 1){
+                        pStmt = dBconn.conn.prepareStatement(
+                                  "SELECT stringkeyname FROM paramdef WHERE id = "
+                                + "(SELECT definition FROM po_parameters WHERE id = ?)");
+                        pStmt.setInt(1, parameterID);
+                        int key = dBconn.getSingleIntValue(pStmt);
+                        
+                        stringKey = dBconn.copyStringKey(key,userID,value); // new Stringkey with value as description, old entries are copyied
+                        pStmt = dBconn.conn.prepareStatement(
+								"UPDATE po_parameters SET stringkeyname = ?  WHERE id = ?");
 						pStmt.setInt(1, stringKey);
 						pStmt.setInt(2, parameterID);
 						pStmt.executeUpdate();
 						pStmt.close();
-					}else{
-						pStmt = dBconn.conn.prepareStatement(
-								"DELETE FROM stringtable WHERE language=? AND string_key=?");
-						pStmt.setString(1,language);
-						pStmt.setInt(2,stringKey);
-						pStmt.executeUpdate();
-						pStmt.close();
 					} 
-					
-				
-					// create database entry for the new name
-					pStmt= dBconn.conn.prepareStatement( 			
-							 "INSERT INTO stringtable VALUES(default,?,?,?,NOW(),?)");
-					pStmt.setInt(1,stringKey);
-					pStmt.setString(2, language);
-					pStmt.setString(3, value);
-					pStmt.setInt(4,userID);
-					pStmt.executeUpdate();
-					pStmt.close();
+                    dBconn.addString(stringKey, language, value);
 			    } else {
-			    	response.setStatus(401);
+			    	    response.setStatus(401);
 			    }
 				
 			} catch (SQLException e) {

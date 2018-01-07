@@ -26,21 +26,29 @@ function editSinglePOParameterController($state,$uibModal,$stateParams,$translat
           
     this.languages = languages;
   
-    this.nameL1 = parameter.nameLang(languages[0].key);
-  
-    this.newNameL1 = this.nameL1;
-  
-    this.nameL2 = parameter.nameLang(languages[1].key);
+    this.nL1 = { data    : { value: parameter.nameLang(languages[0].key) },
+                 editing : false,
+                 field   : "name", 
+                 lang    : languages[0].key,
+               };
 
-    this.newNameL2 = this.nameL2;
-    
-    this.descL1 = parameter.descLang(languages[0].key);
-    
-    this.newDescL1 = this.descL1;
-    
-    this.descL2 = parameter.descLang(languages[1].key);
-    
-    this.newDescL2 = this.descL2;
+    this.nL2 = { data    : { value: parameter.nameLang(languages[1].key) },
+                 editing : false,                                       
+                 field   : "name",
+                 lang    : languages[1].key
+               };
+
+    this.dL1 = { data    : { value: parameter.descLang(languages[0].key) },
+                 editing : false,
+                 field   : "description",
+                 lang    : languages[0].key
+               };
+
+    this.dL2 = { data    : { value: parameter.descLang(languages[1].key) },
+                 editing : false,
+                 field   : "description",
+                 lang    : languages[1].key,
+               };
     
     this.lang1 = $translate.instant(languages[0].name);
   
@@ -60,46 +68,11 @@ function editSinglePOParameterController($state,$uibModal,$stateParams,$translat
     this.editFieldNL2 = false;
     
     this.unit = parameter.stringkeyunit>0;
-    
-    this.titlefield = parameter.id_field;
-    
-    
-
-  
-  
-    this.edit = function(field){
-	    thisController.editFieldNL1 = (field=="NL1");
-	    thisController.editFieldNL2 = (field=="NL2");
-	    thisController.editFieldDL1 = (field=="DL1");
-	    thisController.editFieldDL2 = (field=="DL2");
-	    thisController.newNameL1=thisController.nameL1;
-	    thisController.newNameL2=thisController.nameL2;
-	    thisController.newDescL1=thisController.descL1;
-	    thisController.newDescL2=thisController.descL2;
-    };
-	
+        
   
   
   
-    this.editNL1 = function(){
-	    thisController.editmode = true;
-	    parameter.editNL1 = true;
-	    parameter.newParameterNameL1=parameter.nameLang(thisController.lang1key);
-	    activeParameter = parameter;
-    };
-   
-  
-  
-    this.editNL2 = function(){
-	    thisController.editmode = true;
-	    parameter.editNL2 = true;
-	    parameter.newParameterNameL2=parameter.nameLang(thisController.lang2key);
-	    activeParameter = parameter;
-    };
-  
-  
-  
-  	this.setHidden=function(){
+  	this.setHidden = function(){
 	    var tempParameter={ 
 	    		parameterid : parameter.id, 
 	    		hidden : thisController.hidden
@@ -110,38 +83,34 @@ function editSinglePOParameterController($state,$uibModal,$stateParams,$translat
   
   
   
-  	this.setCompulsory=function(){
-  		var tempParameter={ 
-  			parameterid : parameter.id,
-			compulsory  : thisController.compulsory};
+  	this.setCompulsory = function(){
+  		var tempParameter = { parameterid : parameter.id,
+                      		  compulsory  : thisController.compulsory
+                      		};
   		var promise= avProcessTypeService.updatePOParameter(tempParameter);
         promise.then(reload,error)
   	};
 
   
   
-    this.keyUp = function(keyCode,value,languageKey) {
-  	    if ( keyCode === 13 ) {				// Return key pressed
-  	    	var tParameter={parameterid:parameter.id};
-  	    	if (thisController.editFieldDL1 || thisController.editFieldDL2){
-  	    		tParameter.description={};
-  	    		tParameter.description[languageKey] = value;
-  	    	} else{
-  	    		tParameter.name={};
-  	    		tParameter.name[languageKey] = value;
-  	    	}
-  		  	var promise = avProcessTypeService.updatePOParameter(tParameter);
-  		    promise.then(reload,error)
-	    }
-	    if ( keyCode === 27 ) {		// Escape key pressed
-		    thisController.editmode=false;
-	    }
+    this.updateNameOrDescription = function(p) {
+  	    	var tParameter = { parameterid : parameter.id };
+  	    	if (p.parameter.field === 'description'){
+            tParameter.description = {};
+            tParameter.description[p.parameter.lang] = p.parameter.data.value;
+        } else{
+            tParameter.name = {};
+            tParameter.name[p.parameter.lang] = p.parameter.data.value;
+        }
+  	    	var promise = avProcessTypeService.updatePOParameter(tParameter);
+  	    	p.editing = false;
+  	    	promise.then(reload, error)
     };
 
   
   
     var reload = function() {
-    	var current = $state.current;
+    	    var current = $state.current;
   	  	var params = angular.copy($stateParams);
   	  	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
     };

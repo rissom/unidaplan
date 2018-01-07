@@ -67,26 +67,30 @@ import org.json.JSONObject;
 				    
 						// find the stringkey
 						pStmt = dBconn.conn.prepareStatement(
-								"SELECT stringkeyname FROM ot_parameters WHERE id=?");
+								"SELECT stringkeyname FROM ot_parameters WHERE id = ?");
 						pStmt.setInt(1,parameterID);
 						int stringKey = dBconn.getSingleIntValue(pStmt);
 						pStmt.close();
+						
+		                 // if no stringkey exists: create a copy of the parent parameter stringkey
 						if (stringKey < 1){
 							pStmt = dBconn.conn.prepareStatement(
-									  "SELECT stringkeyname FROM paramdef WHERE id="
-									+ "(SELECT definition FROM ot_parameters WHERE id=?)");
-							pStmt.setInt(1,parameterID);
+									  "SELECT stringkeyname FROM paramdef WHERE id = "
+									+ "(SELECT definition FROM ot_parameters WHERE id = ?)");
+							pStmt.setInt(1, parameterID);
 							int key = dBconn.getSingleIntValue(pStmt);
+							
 							stringKey = dBconn.copyStringKey(key,userID,value); // new Stringkey with value as description, old entries are copyied
 							pStmt = dBconn.conn.prepareStatement(
-									"UPDATE ot_parameters SET stringkeyname = ? WHERE id=?");
-							pStmt.setInt(1,stringKey);
-							pStmt.setInt(2,parameterID);
+									"UPDATE ot_parameters SET stringkeyname = ? WHERE id = ?");
+							pStmt.setInt(1, stringKey);
+							pStmt.setInt(2, parameterID);
 							pStmt.executeUpdate();
+							pStmt.close();
 						}
 						dBconn.addString(stringKey, language, value);
 				    } else {
-				    	response.setStatus(401);
+				    	    response.setStatus(401);
 				    }
 	
 					
