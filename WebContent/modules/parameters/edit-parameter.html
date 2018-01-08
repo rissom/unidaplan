@@ -1,6 +1,6 @@
 
-<button class="btn btn-default"
-		ui-sref="parameter">
+<button class = "btn btn-default"
+		ui-sref = "parameter">
 		&#x25c0;	{{'Back to parameters'|translate}}
 </button>
 
@@ -11,83 +11,62 @@
 
 <br/>
 <table class = "table">
-<tr ng-dblclick = "editParamCtrl.edit('NL1')">
+<tr ng-dblclick = "editParamCtrl.NL1.editing = true">
 	<td>Name ({{editParamCtrl.lang1}}):</td>
 	<td>
-		<span ng-hide = "editParamCtrl.editNL1">{{editParamCtrl.nameL1}}</span>
-		<input ng-show = "editParamCtrl.editNL1" 
-			   ng-keyup = "editParamCtrl.keyUpName($event.keyCode,editParamCtrl.lang1Key,editParamCtrl.newNameL1)"
-			   type = "text"
-			   ng-model = "editParamCtrl.newNameL1"
-			   ng-blur = "editParamCtrl.cancelEdit()"
-			   autofocus 
-			   >
+		<string-parameter  
+            parameter = "editParamCtrl.NL1"
+            pupdate = "editParamCtrl.update2({parameter:editParamCtrl.NL1})">
+        </string-parameter>
 	</td>
 </tr>
-<tr ng-dblclick = "editParamCtrl.edit('NL2')">
+<tr ng-dblclick = "editParamCtrl.NL2.editing = true">
 	<td>Name ({{editParamCtrl.lang2}}):</td>
 	<td>
-		<span ng-hide = "editParamCtrl.editNL2">{{editParamCtrl.nameL2}}</span>
-		<input ng-show = "editParamCtrl.editNL2" 
-			   ng-keyup = "editParamCtrl.keyUpName($event.keyCode,editParamCtrl.lang2Key,editParamCtrl.newNameL2)"
-			   type = "text"
-			   ng-model = "editParamCtrl.newNameL2"
-			   ng-blur = "editParamCtrl.cancelEdit()"
-			   >
+		<string-parameter  
+            parameter = "editParamCtrl.NL2"
+            pupdate = "editParamCtrl.update2({parameter:editParamCtrl.NL2})">
+        </string-parameter>
 	</td>
 </tr>
 
-<tr ng-dblclick = "editParamCtrl.edit('DL1')">
+<tr ng-dblclick = "editParamCtrl.DL1.editing = true">
 	<td>{{'Description'|translate}} ({{editParamCtrl.lang1}}):</td>
 	<td>
-		<span ng-hide = "editParamCtrl.editDL1">{{editParamCtrl.descL1}}</span>
-		<input ng-show = "editParamCtrl.editDL1" 
-			   ng-keyup = "editParamCtrl.keyUpDescription($event.keyCode,
-			   				editParamCtrl.lang1Key,editParamCtrl.newDescL1)"
-			   type = "text"
-			   ng-model = "editParamCtrl.newDescL1"
-			   ng-blur = "editParamCtrl.cancelEdit()"
-			   >
+		<string-parameter  
+            parameter = "editParamCtrl.DL1"
+            pupdate = "editParamCtrl.update2({parameter:editParamCtrl.DL1})">
+        </string-parameter>
 	</td>
 </tr>
 
-<tr ng-dblclick = "editParamCtrl.edit('DL2')">
+<tr ng-dblclick = "editParamCtrl.DL2.editing = true">
 	<td>{{'Description'|translate}} ({{editParamCtrl.lang2}}):</td>
 	<td>
-		<span ng-hide = "editParamCtrl.editDL2">{{editParamCtrl.descL2}}</span>
-		<input ng-show = "editParamCtrl.editDL2" 
-			   ng-keyup = "editParamCtrl.keyUpDescription($event.keyCode,
-			   				editParamCtrl.lang2Key,editParamCtrl.newDescL2)"
-			   type = "text"
-			   ng-model = "editParamCtrl.newDescL2"
-			   ng-blur = "editParamCtrl.cancelEdit()"
-			   >
+		<string-parameter  
+            parameter = "editParamCtrl.DL2"
+            pupdate = "editParamCtrl.update2({parameter:editParamCtrl.DL2})">
+        </string-parameter>
 	</td>
 </tr>
 
-<tr ng-dblclick = "editParamCtrl.edit('UL1')" ng-show="editParamCtrl.hasUnit()">
+<tr ng-dblclick = "editParamCtrl.unitL1.editing = true" ng-show = "editParamCtrl.mightHaveUnit()">
 	<td>{{'Unit'|translate}} ({{editParamCtrl.lang1}}):</td>
 	<td>
-		<span ng-hide = "editParamCtrl.editUL1">{{editParamCtrl.unitL1}}</span>
-		<input ng-show = "editParamCtrl.editUL1" 
-			   ng-keyup = "editParamCtrl.keyUpUnit($event.keyCode,editParamCtrl.lang1Key,editParamCtrl.newUnitL1)"
-			   type = "text"
-			   ng-model = "editParamCtrl.newUnitL1"
-			   ng-blur = "editParamCtrl.cancelEdit()"
-			   >
+		<string-parameter
+            parameter = "editParamCtrl.unitL1"
+            pupdate = "editParamCtrl.update2({parameter:editParamCtrl.unitL1})">
+        </string-parameter>
 	</td>
 </tr>
 
-<tr ng-dblclick = "editParamCtrl.edit('UL2')"  ng-show = "editParamCtrl.hasUnit()">
+<tr ng-dblclick = "editParamCtrl.unitL2.editing = true"  ng-show = "editParamCtrl.mightHaveUnit()">
 	<td>{{'Unit'|translate}} ({{editParamCtrl.lang2}}):</td>
 	<td>
-		<span ng-hide = "editParamCtrl.editUL2">{{editParamCtrl.unitL2}}</span>
-		<input ng-show = "editParamCtrl.editUL2" 
-			   ng-keyup = "editParamCtrl.keyUpUnit($event.keyCode,editParamCtrl.lang2Key,editParamCtrl.newUnitL2)"
-			   type = "text"
-			   ng-model = "editParamCtrl.newUnitL2"
-			   ng-blur = "editParamCtrl.cancelEdit()"
-			   >
+		<string-parameter
+		    parameter = "editParamCtrl.unitL2"
+            pupdate = "editParamCtrl.update2({parameter:editParamCtrl.unitL2})">
+		</string-parameter>
 	</td>
 </tr>
 

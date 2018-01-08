@@ -47,27 +47,43 @@ function editParamController($scope,$state,$stateParams,
   
   this.dataType = param.datatype;
       
-  this.descL1 = param.descLang(this.lang1Key);
+  this.NL1 = { data    : { value: param.nameLang(languages[0].key) },
+          editing : false,
+          field   : "name", 
+          lang    : languages[0].key,
+        };
+
+  this.NL2 = { data    : { value: param.nameLang(languages[1].key) },
+          editing : false,                                       
+          field   : "name",
+          lang    : languages[1].key
+        };
+
+  this.DL1 = { data    : { value: param.descLang(languages[0].key) },
+          editing : false,
+          field   : "description",
+          lang    : languages[0].key
+        };
+
+  this.DL2 = { data    : { value: param.descLang(languages[1].key) },
+          editing : false,
+          field   : "description",
+          lang    : languages[1].key,
+        };  
+
+//  if (param.hasOwnProperty("stringkeyunit")){
+  this.unitL1 = { data    : { value: param.unitLang(languages[0].key) },
+                  editing : false,
+                  field   : "unit",
+                  lang    : languages[0].key,
+                };
   
-  this.descL2 = param.descLang(this.lang2Key);
-  
-  this.editNL1 = $stateParams.newParameter === 'true';
-    
-  this.newDescL1 = param.descLang(this.lang1Key);
-  
-  this.newDescL2 = param.descLang(this.lang2Key);
-  
-  if (param.stringkeyunit){
-	  this.unitL1 = param.unitLang(this.lang1Key);
-	  this.newUnitL1 = param.unitLang(this.lang1Key);
-	  this.unitL2 = param.unitLang(this.lang2Key);
-	  this.newUnitL2 = param.unitLang(this.lang2Key);
-  } else {
-	  this.unitL1 = "";
-	  this.newUnitL1 = "";
-	  this.unitL2 = "";
-	  this.newUnitL2 = "";
-  }	
+  this.unitL2 = { data    : { value: param.unitLang(languages[1].key) },
+                  editing : false,
+                  field   : "unit",
+                  lang    : languages[1].key,
+                };
+ // }
   
   $scope.possibleValues = param.possiblevalues;
   
@@ -90,27 +106,7 @@ function editParamController($scope,$state,$stateParams,
   this.newMax = param.max;
   
   this.newDataType = param.datatype;
-    
-  this.nameL1 = param.nameLang(this.lang1Key);
-  
-  if (param.nameLang(this.lang1Key) != '-'){
-	  this.newNameL1 = param.nameLang(this.lang1Key);
-  }
-  
-  this.nameL2 = param.nameLang(this.lang2Key);
-
-  if (param.nameLang(this.lang2Key) != '-'){
-	  this.newNameL2 = param.nameLang(this.lang2Key);
-  }
-  
-  if (param.descLang(this.lang1Key) != '-'){
-	  this.newDescriptionL1 = param.descLang(this.lang1Key);
-  }
-  
-  if (param.descLang(this.lang2Key) != '-'){
-	  this.newDescriptionL2 = param.descLang(this.lang2Key);
-  }
-	  
+      
   this.parameters = parameters;
   
   this.regex = param.regex;
@@ -171,12 +167,6 @@ function editParamController($scope,$state,$stateParams,
   
   
   this.edit = function(field){
-	  thisController.editNL1 	= (field == "NL1");
-	  thisController.editNL2	= (field == "NL2");
-	  thisController.editDL1 	= (field == "DL1");
-	  thisController.editDL2 	= (field == "DL2");
-	  thisController.editUL1 	= (field == "UL1");
-	  thisController.editUL2 	= (field == "UL2");
 	  thisController.editRegex 	= (field == "regex");
 	  thisController.editFormat = (field == "format");
 	  thisController.editMin 	= (field == "min");
@@ -184,7 +174,7 @@ function editParamController($scope,$state,$stateParams,
   };
 	
   
-  this.hasUnit = function() {
+  this.mightHaveUnit = function() {
 	  var a = ['integer','measurement','float'].indexOf(thisController.dataType);
 	  return a > -1;
   }
@@ -306,7 +296,6 @@ function editParamController($scope,$state,$stateParams,
   
 
   
-  
   this.showMinMaxTimestamp = function(){
 	  if (["date","timestamp"].indexOf(thisController.dataType)>-1){
 		  return true;
@@ -314,8 +303,6 @@ function editParamController($scope,$state,$stateParams,
 		  return false;
 	  }
   }
-  
-  
   
  
   
@@ -334,6 +321,25 @@ function editParamController($scope,$state,$stateParams,
 	parameter[field] = newValue;
 	parameterService.updateParameter(parameter);
   }
+  
+  
+  
+  this.update2 = function(p){
+      var tParameter = { parameterid : $stateParams.parameterID };
+      if (p.parameter.field === 'description'){
+          tParameter.description = {};
+          tParameter.description[p.parameter.lang] = p.parameter.data.value;
+      }
+      if (p.parameter.field === 'name'){
+          tParameter.name = {};
+          tParameter.name[p.parameter.lang] = p.parameter.data.value;
+      }
+      if (p.parameter.field === 'unit'){
+          tParameter.unit = {};
+          tParameter.unit[p.parameter.lang] = p.parameter.data.value;
+      }
+      parameterService.updateParameter(tParameter);
+    }
 	
   
 };
