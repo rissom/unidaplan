@@ -80,7 +80,7 @@ function editSinglePOParameterController($state,$uibModal,$stateParams,$translat
                       		  compulsory  : thisController.compulsory
                       		};
   		var promise= avProcessTypeService.updatePOParameter(tempParameter);
-        promise.then(reload,error)
+        promise.then(reload, error)
   	};
 
   

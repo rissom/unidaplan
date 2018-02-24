@@ -65,7 +65,7 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,$uibMod
 	  modalInstance.result.then(function (result) {  // get the new Parameterlist + Info if it has changed from Modal.  
     	  if (result.chosen.length>0){
     		  var promise=avProcessTypeService.addProcesstypeSRParameters($stateParams.processTypeID,result.chosen);
-    		  promise.then(function(){reload();});		    	  
+    		  promise.then(reload);		    	  
     	  }
 	    }, function () {
 	      console.log('Strange Error: Modal dismissed at: ' + new Date());
@@ -88,7 +88,7 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,$uibMod
 	  var pos1=thisController.parametergrps[index+1].pos;
 	  var pos2=thisController.parametergrps[index].pos;
 	  var promise = avProcessTypeService.exPosPTParamGrp(id1,pos1,id2,pos2);
-	  promise.then(function(){reload()},function(){console.log("error")})
+	  promise.then(reload,error);
   };
   
   
@@ -99,7 +99,7 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,$uibMod
 	  var pos1=thisController.samplerparams[index+1].position;
 	  var pos2=thisController.samplerparams[index].position;
 	  var promise = avProcessTypeService.exPosPTSRParams(id1,pos1,id2,pos2);
-	  promise.then(function(){reload()},function(){console.log("error")})
+	  promise.then(reload,error);
   };
 
   
@@ -176,7 +176,7 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,$uibMod
 	  }
 	  if (action.action == "delete" && !action.disabled) {
 		  var promise = avProcessTypeService.deletePTParameterGrp(parametergrp.id);
-		  promise.then(function(){reload()},function(){console.log("error")});
+		  promise.then(reload,error);
 	  }
   };
   
@@ -188,7 +188,7 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,$uibMod
 	  }
 	  if (action.action == "delete" && !action.disabled) {
 		  var promise = avProcessTypeService.deletePTSRParameter(sparam.id);
-		  promise.then(function(){reload()},function(){console.log("error")});
+		  promise.then(reload,error);
 	  }
   };
 
@@ -200,7 +200,7 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,$uibMod
       var pos1=thisController.parametergrps[index].pos;
       var pos2=thisController.parametergrps[index-1].pos;
       var promise = avProcessTypeService.exPosPTParamGrp(id1,pos1,id2,pos2);
-      promise.then(function(){reload()},function(){console.log("error")})
+      promise.then(reload,error);
   };
   
   
@@ -211,7 +211,7 @@ function editPtParamGrpsController($state,$stateParams,$translate,$scope,$uibMod
       var pos1=thisController.samplerparams[index].position;
       var pos2=thisController.samplerparams[index-1].position;
       var promise = avProcessTypeService.exPosPTSRParams(id1,pos1,id2,pos2);
-      promise.then(function(){reload()},function(){console.log("error")})
+      promise.then(reload,error);
   };
   
   

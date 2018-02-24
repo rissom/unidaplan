@@ -154,14 +154,14 @@ function editParamController($scope,$state,$stateParams,
     
   this.deleteParameter = function(parameter){
 	  var promise = parameterService.deleteParameter(param.id);
-	  promise.then(function(){reload();},function(){console.log("error");});
+	  promise.then(function(){reload(false);},function(){console.log("error");});
   };
   
   
   
   this.deletePossibleValue = function(pvalue){
 	  var promise = parameterService.deletePossibleValue(pvalue.id);
-	  promise.then(function(){reload();},function(){console.log("error");});
+	  promise.then(function(){reload(false);},function(){console.log("error");});
   };
   
   

@@ -36,21 +36,23 @@ function parameterController($scope,$state,$stateParams,$translate,parameterServ
 	  newParameter.datatype='integer';
 	  
 	  var promise = parameterService.addParameter(newParameter);
-	  promise.then(function(rest){
-		  $state.go('editParameter',{parameterID:rest.data.id,newParameter:true});
-//		  reload();
-	  	},function(){console.log("error");})
+	  promise.then(
+	      function(rest){
+		      $state.go('editParameter',{parameterID:rest.data.id,newParameter:true});
+	  	  },
+	  	  function(){console.log("error");}
+	  )
   }
   
   
 
-  this.performAction=function(parameter,action){
-	  if (action.action==="edit") {
+  this.performAction = function(parameter,action){
+	  if (action.action === "edit") {
 		  $state.go("editParameter",{parameterID:parameter.id})
 	  }
-	  if (action.action==="delete"  && !action.disabled) {
+	  if (action.action === "delete"  && !action.disabled) {
 		  var promise = parameterService.deleteParameter(parameter.id);
-		  promise.then(function(){reload();},function(){console.log("error");});
+		  promise.then(reload,function(){console.log("error");});
 	  }
   };
   
@@ -68,7 +70,7 @@ function parameterController($scope,$state,$stateParams,$translate,parameterServ
 	}
   };
   
-  var reload=function() {
+  var reload = function() {
   	var current = $state.current;
   	var params = angular.copy($stateParams);
   	params.newSearch=false;

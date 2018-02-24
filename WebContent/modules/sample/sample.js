@@ -51,7 +51,7 @@ function sampleController(sample,$state,$stateParams,$uibModal,$filter,types,sam
 	
 	this.deleteFile = function (fileID){
 		var promise = sampleService.deleteFile(fileID);
-		promise.then (function(){reload()});
+		promise.then (reload);
 	}
 	
 	
@@ -118,7 +118,7 @@ function sampleController(sample,$state,$stateParams,$uibModal,$filter,types,sam
 				
 			res = sampleService.saveParameter(sample.id,newParam);
 			res.then(
-				function() { reload(); },
+				reload,
 				function() {
 					parameter.data.value = oldValue;
 					console.log('error');
@@ -183,27 +183,21 @@ function sampleController(sample,$state,$stateParams,$uibModal,$filter,types,sam
 	
 	this.saveParameter = function(parameter) {
 		var promise = sampleService.saveParameter(sample.id,parameter);
-		promise.then(
-				function(data) {
-					reload();
-				},
-				function(data) {
-					console.log('error');
-					console.log(data);
-				}
+		promise.then(reload,
+			function(data) {
+				console.log('error');
+				console.log(data);
+			}
 		);
 	};
 	
 	
 	
 	this.upload = function(element) {
-		thisController.file=element.files[0].name;
+		thisController.file = element.files[0].name;
 		var file = element.files[0].name;
 		var xhr = new XMLHttpRequest();
-		xhr.addEventListener('load', function(event) {
-			reload();
-		});
-		
+		xhr.addEventListener('load', reload);
 		xhr.open("POST", 'upload-file2?sample='+$stateParams.sampleID); // xhr.open("POST", 'upload-file',true); ???
 		
 		// formdata

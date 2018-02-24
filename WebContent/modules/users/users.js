@@ -56,10 +56,10 @@ function userController(users,userService,$state,$stateParams,$translate) {
 	
 	
 	var reload = function() {
-    	var current = $state.current;
-    	var params = angular.copy($stateParams);
-    	params.newSearch = false;
-    	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
+        	var current = $state.current;
+        	var params = angular.copy($stateParams);
+        	params.newSearch = false;
+        	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
 	};
 	
 	
@@ -107,12 +107,10 @@ function userController(users,userService,$state,$stateParams,$translate) {
 	
 	this.resendToken = function(user) {
 		var promise = userService.resendToken(user);
-	    promise.then(
-	    	function(rest) {
-	    		reload();
-	    	},function(rest){ 
-	    		console.log("fehler");
-	    	}
+	    promise.then(reload,
+	        function(rest){ 
+	    		    console.log("fehler");
+	        }
 	    );
 	};
 

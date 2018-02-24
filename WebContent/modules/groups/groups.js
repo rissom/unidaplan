@@ -53,11 +53,10 @@ function groupController($uibModal,$translate,$scope,$state,$stateParams,avProce
 	
 	this.addGroup = function(group) {
 		var promise = userService.addGroup();
-	    promise.then(function(rest) {
-	    	reload();
-	    }, function(rest) {
-	    	console.log("ERROR");
-	    });
+	    promise.then(reload,
+	            function(rest) {
+	    	            console.log("ERROR");
+	            });
 	}
 	
 	
@@ -87,17 +86,13 @@ function groupController($uibModal,$translate,$scope,$state,$stateParams,avProce
 	
 	
 	this.keyUp = function(keyCode,group) {
-		if (keyCode===13) {				// Return key pressed
-			var promise=userService.updateGroupName(group);	
-			promise.then(function(){
-				reload();
-			},function(){
-				console.log("error");
-			});
+		if (keyCode === 13) {				// Return key pressed
+			var promise = userService.updateGroupName(group);	
+			promise.then(reload,error);
 		}
-		if (keyCode===27) {		// Escape key pressed
-			group.newName=group.name;
-			group.edit=false;
+		if (keyCode === 27) {		// Escape key pressed
+			group.newName = group.name;
+			group.edit = false;
 		}
 	};
 	
@@ -112,9 +107,9 @@ function groupController($uibModal,$translate,$scope,$state,$stateParams,avProce
 		    resolve: {
 		    	users 		: function() { return users; },
 		    	chosenUsers : function() { 
-		    						var cUsers=[]; 
+		    						var cUsers = []; 
 		    						if (group.members){
-		    							cUsers=group.members;
+		    							cUsers = group.members;
 		    						}
 	    							return users.filter(function(testUser){return cUsers.indexOf(testUser.id)>-1});
 		    				  },
@@ -166,7 +161,7 @@ function groupController($uibModal,$translate,$scope,$state,$stateParams,avProce
 	    modalInstance.result.then(function(updatedRights){
 	    	if (updatedRights){
 	    		var promise = avProcessTypeService.updateGroupRights({groupid:group.id, updatedPTrights: updatedRights});
-	    		promise.then(function(){reload()});
+	    		promise.then(reload);
 	    	}
 	    })
 	};
@@ -190,7 +185,7 @@ function groupController($uibModal,$translate,$scope,$state,$stateParams,avProce
 	    modalInstance.result.then(function(updatedRights){
 	    	if (updatedRights){
 	    		var promise = avSampleTypeService.updateGroupRights({groupid:group.id, updatedSTrights: updatedRights});
-	    		promise.then(function(){reload()});
+	    		promise.then(reload);
 	    	}
 	    })
 	};
@@ -198,17 +193,22 @@ function groupController($uibModal,$translate,$scope,$state,$stateParams,avProce
 	
 	
 	this.refuse = function(group) { // is called when editing of groupname is cancelled
-		group.newName=group.name;
-		group.edit=false;
+		group.newName = group.name;
+		group.edit = false;
 	}
 	
 	
+	
+	var error = function() {
+	    console.log("error");
+	}
+	
 
-	var reload=function() { // reload this pages data
-    	var current = $state.current;
-    	var params = angular.copy($stateParams);
-    	params.newSearch=false;
-    	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
+	var reload = function() { // reload this pages data
+        	var current = $state.current;
+        	var params = angular.copy($stateParams);
+        	params.newSearch=false;
+        	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
     };
 	
 };

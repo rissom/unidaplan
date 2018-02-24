@@ -50,7 +50,7 @@ function experimentController($uibModal,$scope,editmode,experimentService,langua
 //	    		console.log("experiment ID: ",thisController.experiment.id);
 //	    		console.log("parameter IDs: ",result.chosen);
 	    		var promise=experimentService.addParameters(thisController.experiment.id,result.chosen);
-	    		promise.then(function(){reload();});		    	  
+	    		promise.then(reload);		    	  
 	    	}
 		}, function () {
 			console.log('Strange Error: Modal dismissed at: ' + new Date());
@@ -62,7 +62,7 @@ function experimentController($uibModal,$scope,editmode,experimentService,langua
 	this.addProcessToExperiment = function(processtype){
 		// add a process (not a single step) to the experiment
 		var promise= experimentService.addProcessToExperiment(processtype.id, this.experiment.id);
-		promise.then(function(){reload();});
+		promise.then(reload);
 	};
 		
 		
@@ -98,7 +98,7 @@ function experimentController($uibModal,$scope,editmode,experimentService,langua
 		    		}
 		    		var promise=experimentService.addSampleToExperiment(thisController.experiment.id,
 		    			result.chosen[0].sampleid,thisController.experiment.samples.length+1);
-		    			promise.then(function(){reload();});		    	  
+		    			promise.then(reload);		    	  
 		    		}
 		      	}
 	    	}, function () {
@@ -115,10 +115,10 @@ function experimentController($uibModal,$scope,editmode,experimentService,langua
 		if (!$event.target.checked) {
 			var p=this.getPlannedProcess(process,sample.pprocesses)
 			promise = experimentService.deactivateProcessStep(p.process_step_id);
-			promise.then(function(){reload();});
+			promise.then(reload);
 		} else{
 			promise = experimentService.addProcessStep(process.id, sample.id);
-			promise.then(function(){reload();});
+			promise.then(reload);
 		}
 	};
 	 
@@ -126,7 +126,7 @@ function experimentController($uibModal,$scope,editmode,experimentService,langua
 	  
 	this.changeRecipe = function(pprocess){
 		var promise=experimentService.ExpStepChangeRecipe(pprocess.process_step_id,pprocess.recipe);
-		promise.then(function(){reload();});
+		promise.then(reload);
 	};
 
 	
@@ -180,28 +180,28 @@ function experimentController($uibModal,$scope,editmode,experimentService,langua
 	
 	this.deleteFile = function (fileID){
 		var promise = experimentService.deleteFile(fileID);
-		promise.then (function(){reload()});
+		promise.then (reload);
 	}
 	
 	
 	
 	this.deleteSample = function(sample){
 		var promise= experimentService.deleteSampleFromExperiment(sample.id);
-		promise.then(function(){reload();});
+		promise.then(reload);
 	};
 	
 	  
 
 	this.deleteParameter = function(parameter){
 		var promise = experimentService.deleteParameter(parameter.id);
-		promise.then(function(){reload();});
+		promise.then(reload);
 	};
 		
 	  
   
 	this.deleteProcess = function(process){
 		var promise = experimentService.deleteProcess(process.id);
-		promise.then(function(){reload();});
+		promise.then(reload);
 	};
 	
 	
@@ -255,7 +255,7 @@ function experimentController($uibModal,$scope,editmode,experimentService,langua
 	
 	this.markColumn=function(processID){
 		var promise=experimentService.markAllProcesses(this.experiment.id,processID);
-		promise.then(function(){reload();});
+		promise.then(reload);
 	};
 	
 	
@@ -294,7 +294,7 @@ function experimentController($uibModal,$scope,editmode,experimentService,langua
 				language = languages[1].key;
 			}
 			var promise = experimentService.updateExperimentName(experimentData.id,language,newValue);
-			promise.then(reload());
+			promise.then(reload);
 		}
 	};
 	
@@ -337,7 +337,7 @@ function experimentController($uibModal,$scope,editmode,experimentService,langua
 		      if (result.changed) {
 		    	  if (result.chosen.length>0){
 		    		  var promise=experimentService.replaceSampleInExperiment(sample.id,result.chosen[0].sampleid);
-		    		  promise.then(function(){reload();});
+		    		  promise.then(reload);
 		    	  }
 		      }
 		    }, function () {
@@ -359,7 +359,7 @@ function experimentController($uibModal,$scope,editmode,experimentService,langua
 	
 	this.setProcesstype = function(process, processtype){
 		var promise= experimentService.setProcesstype(process.id, processtype.id);
-		promise.then(function(){reload();});
+		promise.then(reload);
 	};
 	
 	
@@ -414,10 +414,7 @@ function experimentController($uibModal,$scope,editmode,experimentService,langua
 		thisController.file = element.files[0].name;
 		var file = element.files[0].name;
 		var xhr = new XMLHttpRequest();
-		xhr.addEventListener('load', function(event) {
-			reload();
-		});
-		
+		xhr.addEventListener('load',reload);
 		xhr.open("POST", 'upload-file2?experiment=' + $stateParams.experimentID); // xhr.open("POST", 'upload-file',true); ???
 		
 		// formdata
@@ -431,10 +428,10 @@ function experimentController($uibModal,$scope,editmode,experimentService,langua
 	this.keyUp = function(keyCode,newValue,parameter) {
 		if (keyCode === 13) {				// Return key pressed
 			var promise = thisController.submitParameter(parameter);
-			promise.then(function(){reload()},function(){reload()});
+			promise.then(reload,error);
 		}
 		if (keyCode === 27) {		// Escape key pressed
-			parameter.editing=false;		
+			parameter.editing = false;		
 		}
 	};
 	
@@ -458,15 +455,14 @@ function experimentController($uibModal,$scope,editmode,experimentService,langua
 		this.editmode = true;
 	}
 
+	
+	
 	this.submitParameter = function(parameter){
 		parameter.editing = false; 
 		var oldValue = parameter.value;
 		parameter.experimentid = this.experiment.id;
 		var res = experimentService.updateExperimentParameter(parameter);
-		res.then(
-			function(data) {
-				reload();
-			},
+		res.then(reload,
 			function(data) {
 				console.log('error');
 				reload();
@@ -482,6 +478,14 @@ function experimentController($uibModal,$scope,editmode,experimentService,langua
 	    var params = angular.copy($stateParams);
 	    return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
 	};
+	
+	
+	
+	var error = function() {
+	    console.log("error");
+	}
+	
+	
 }
     
         

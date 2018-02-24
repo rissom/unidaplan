@@ -60,7 +60,7 @@ function recipesController(restfactory,$state,$stateParams,$translate,stypes,pty
 		} else {
 			var promise = processService.deleteProcessRecipe(recipeID);
 		}
-		promise.then(function(){reload()});
+		promise.then(reload);
 	}
 	
 	

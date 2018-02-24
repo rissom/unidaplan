@@ -111,7 +111,7 @@ function editUserController($scope,$state,$stateParams,$translate,$uibModal,avPr
 	    modalInstance.result.then(function(updatedGroups){
 	    	if (updatedGroups.changed){
 	    		var promise = userService.assignGroupToUser($stateParams.userID, updatedGroups.assignedGroups);
-	    		promise.then(function(){reload()});
+	    		promise.then(reload);
 	    	}
 	    })
 	};
@@ -134,7 +134,7 @@ function editUserController($scope,$state,$stateParams,$translate,$uibModal,avPr
 	    modalInstance.result.then(function(updatedRights){
 	    	if (updatedRights){
 	    		var promise = experimentService.updateUserRights({userid:$stateParams.userID, updatedExRights: updatedRights});
-	    		promise.then(function(){reload()});
+	    		promise.then(reload);
 	    	}
 	    })
 	};
@@ -158,7 +158,7 @@ function editUserController($scope,$state,$stateParams,$translate,$uibModal,avPr
 	    modalInstance.result.then(function(updatedRights){
 	    	if (updatedRights){
 	    		var promise = avProcessTypeService.updateUserRights({userid:$stateParams.userID, updatedPTrights: updatedRights});
-	    		promise.then(function(){reload()});
+	    		promise.then(reload);
 	    	}
 	    })
 	};
@@ -182,7 +182,7 @@ function editUserController($scope,$state,$stateParams,$translate,$uibModal,avPr
 	    modalInstance.result.then(function(updatedRights){
 	    	if (updatedRights){
 	    		var promise = avSampleTypeService.updateUserRights({userid:$stateParams.userID, updatedSTrights: updatedRights});
-	    		promise.then(function(){reload()});
+	    		promise.then(reload);
 	    	}
 	    })
 	};
@@ -190,35 +190,35 @@ function editUserController($scope,$state,$stateParams,$translate,$uibModal,avPr
 	
 	this.pupdate = function(newTimestamp){
 		var promise = userService.updateTokenValidTo($stateParams.userID,newTimestamp.date);
-		promise.then(function(){reload()});
+		promise.then(reload);
 	}
 	
 	
 	this.updateUsername = function (){ // Assign Users to a group
 		var promise = userService.updateUsername($stateParams.userID,tc.newUsername);
-		promise.then(function(){reload()});
+		promise.then(reload);
 	};
 	
 	
 	
 	this.updateEmail = function (){ // Assign Users to a group
 		var promise = userService.updateEmail($stateParams.userID,tc.newEmail);
-		promise.then(function(){reload()});
+		promise.then(reload);
 	};
 	
 	
 	
 	this.updateFullname = function (){ // Assign Users to a group
 		var promise = userService.updateFullname($stateParams.userID,tc.newFullname);
-		promise.then(function(){reload()})
+		promise.then(reload)
 	};
 	
 	
 	
-	var reload=function() {
+	var reload = function() {
 		var current = $state.current;
 		var params = angular.copy($stateParams);
-		params.newParameter=false;
+		params.newParameter = false;
 		return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
 	};
   

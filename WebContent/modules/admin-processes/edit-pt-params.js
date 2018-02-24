@@ -55,7 +55,7 @@ function editPtParamsController($state,$uibModal,$stateParams,$translate,avParam
     	  if (result.chosen.length>0){
     		  var promise = avProcessTypeService.AddProcesstypePGParameters(thisController.processtype,
     				  parameterGrp.id,result.chosen);
-    		  promise.then(reload);		    	  
+    		  promise.then(reload,error);		    	  
     	  }
 	    }, function () {
 	      console.log('Strange Error: Modal dismissed at: ' + new Date());

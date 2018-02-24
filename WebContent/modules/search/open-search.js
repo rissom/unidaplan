@@ -46,11 +46,11 @@ function openSearchController(restfactory,$translate,$rootScope,$scope,$state,$s
 		}
 		if ( action.action == "delete" ) {
 			var promise = searchService.deleteSearch(search);
-			promise.then(function(){
-				reload();
-			},function(){
-				console.log("error");
-			});
+			promise.then(reload,
+			    function(){
+				    console.log("error");
+			    }
+			);
 		}
 	};
 	
@@ -59,12 +59,11 @@ function openSearchController(restfactory,$translate,$rootScope,$scope,$state,$s
 	
 	this.deleteSearch = function(search) {
 		var promise = searchService.deleteSearch(search);
-		promise.then(function(){
-				reload();
-			},
+		promise.then(reload,
 			function(){
 				console.log("error deleting search");
-			});   
+			}
+		);   
 	};
 	
 	

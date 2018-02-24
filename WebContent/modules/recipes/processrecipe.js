@@ -44,12 +44,12 @@ function processRecipeController(restfactory,recipeData,$state,$stateParams,$tra
 	
 	this.changeOwner = function() {
 		var promise = processService.changeOwner($stateParams.recipeID,thisController.owner.id);
-		promise.then(function(){
-			reload();
-		},function(){
-			console.log("error");
-			thisController.editOwner = false;
-		});
+		promise.then(reload,
+		    function(){
+			    console.log("error");
+			    thisController.editOwner = false;
+		    }
+		);
 	};
 	
 	
@@ -69,10 +69,7 @@ function processRecipeController(restfactory,recipeData,$state,$stateParams,$tra
 	
  	this.saveParameter = function(parameter) {
 		var promise = processService.saveProcessRecipeParameter($stateParams.recipeID,parameter);
-		promise.then(
-			function(data) {
-				reload();
-			},
+		promise.then(reload,
 			function(data) {
 				console.log('error');
 				console.log(data);	
@@ -94,7 +91,7 @@ function processRecipeController(restfactory,recipeData,$state,$stateParams,$tra
 	this.keyUpN = function(keyCode, newName, language) {
 		if (keyCode === 13) {				// Return key pressed
 			var promise = processService.updateProcessRecipeName($stateParams.recipeID,newName, language);
-			promise.then(function(){reload();},function(){console.log("error")});
+			promise.then(reload,error);
 		}
 		if (keyCode===27) {		// Escape key pressed
 			thisController.editFieldNL1 = false;
@@ -111,6 +108,10 @@ function processRecipeController(restfactory,recipeData,$state,$stateParams,$tra
 		}
 	}
 	
+	
+	var error = function(){
+	    console.log ("error");
+	}
 	
 	
 	var reload = function() {

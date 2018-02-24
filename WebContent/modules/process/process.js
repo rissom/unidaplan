@@ -183,19 +183,16 @@ function process($state,$stateParams,$translate,avSampleTypeService,types,$uibMo
   	
   	this.pupdate = function(parameter) {
   		var promise = processService.savePOParameter(parameter);
-		promise.then(function(){reload();});
+		promise.then(reload);
   	}
   	
   	
 	
 	this.upload = function(element) {
 		thisController.file=element.files[0].name;
-		var file=element.files[0].name;
+		var file = element.files[0].name;
 		var xhr = new XMLHttpRequest();
-		xhr.addEventListener('load', function(event) {
-			reload();
-		});
-		
+		xhr.addEventListener('load', reload);
 		xhr.open("POST", 'upload-file2?process=' + processData.id); // xhr.open("POST", 'upload-file',true); ???
 		
 		// formdata

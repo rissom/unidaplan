@@ -125,7 +125,7 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 			function (result) {  // get the new Parameterlist + Info if it has changed from Modal.  
 				if (result.chosen.length>0){
 					var promise=searchService.updateSearchSParameter(thisController.search.id,result.chosen);
-					promise.then(function(){reload();});		    	  
+					promise.then(reload);		    	  
 				}
 			},function () {
 				console.log('Strange Error: Modal dismissed at: ' + new Date());
@@ -152,7 +152,7 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 			function (result) {  // get the new Parameterlist + Info if it has changed from Modal.  
 				var promise=searchService.updateSearchPParameter(thisController.search.id,result.chosen);
 				if (result.chosen.length>0){
-					promise.then(function(){reload();});		    	  
+					promise.then(reload);		    	  
 				}
 			},function () {
 				console.log('Strange Error: Modal dismissed at: ' + new Date());
@@ -178,7 +178,7 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 			function (result) {  // get the new Parameterlist + Info if it has changed from Modal.  
 				var promise = searchService.updateSearchPOParameter(thisController.search.id,result.chosen);
 				if (result.chosen.length>0){
-					promise.then(function(){reload();});		    	  
+					promise.then(reload);		    	  
 				}
 			},function () {
 				console.log('Strange Error: Modal dismissed at: ' + new Date());
@@ -244,8 +244,8 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 							if (newOutParams.indexOf(p)==-1) newOutParams.push(p)
 						}
 					);
-					var promise=searchService.updateSearchOutput(thisController.search.id,newOutParams,type);
-					promise.then(function(){reload();});
+					var promise = searchService.updateSearchOutput(thisController.search.id,newOutParams,type);
+					promise.then(reload);
 				}
 			},function () {
 				console.log('Strange Error: Modal dismissed at: ' + new Date());
@@ -258,26 +258,26 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 	this.changeComparison = function(parameter,type){
 		var args = {searchid:searchData.id,id:parameter.id,comparison:parameter.comparison,type:type};
 		var promise = searchService.changeComparison(args);
-		promise.then(function(){reload();},function(){console.log("Error")});
+		promise.then(reload,error);
 	}
 	
 	
 	
 	this.changeMode = function(){
 		var promise = searchService.changeMode(searchData.id,this.mode==1);
-		promise.then(function(){reload();},function(){console.log("Error")});
+		promise.then(reload,error);
 	}
 	
 	
 		
 	this.changeOwner = function() {
 		var promise = searchService.changeOwner(searchData,thisController.newOwner);
-		promise.then(function(){
-			reload();
-		},function(){
-			console.log("error");
-			thisController.editOwner = false;
-		});
+		promise.then(reload,
+		    function(){
+			    console.log("error");
+			    thisController.editOwner = false;
+		    }
+		);
 	};
 
 
@@ -304,14 +304,14 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 	
 	this.changeType = function(){
 		var promise = searchService.updateSearchType(thisController.search.id,thisController.searchType);
-		promise.then(reload());
+		promise.then(reload,error);
 	};
 	
 	
     
     this.deleteOutParameter = function(parameter,type){
-		var oparameters=[];
-		var tParams=[];
+		var oparameters = [];
+		var tParams = [];
 		switch (type) {
 		case 'o'  : tParams=thisController.ooutput; break;
 		case 'p'  : tParams=thisController.poutput; break;
@@ -322,8 +322,8 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 				oparameters.push(tParams[i].id);
 			}
 		}
-		var promise=searchService.updateSearchOutput(thisController.search.id,oparameters,type);
-		promise.then(function(){reload();});		
+		var promise = searchService.updateSearchOutput(thisController.search.id,oparameters,type);
+		promise.then(reload);		
     }
     
 	
@@ -331,17 +331,15 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 	this.deleteParameter = function (parameter,type) {
 		// Delete Parameter from searchcriteria
 		var promise=searchService.deleteParameter(thisController.search.id,parameter.id,type);
-		promise.then(function(){
-			reload();
-		});
+		promise.then(reload,error);
 	};
 	
 	
 	var exchangePositions = function(array, index1,index2){
 		var pos1=array[index1].position;
 		var pos2=array[index2].position;
-		array[index1].position=pos2;
-		array[index2].position=pos1;
+		array[index1].position = pos2;
+		array[index2].position = pos1;
 		array.sort(function(a,b){return a.position-b.position});
 	}
 	
@@ -350,11 +348,11 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 		if (type=='o'){
 			exchangePositions (thisController.ooutput, index, index+1);
 			var promise = searchService.changeOrder(thisController.search.id,thisController.ooutput,type);
-			promise.then(function(){reload()},function(){console.log("error")})
+			promise.then(reload,error);
 		} else {
 			exchangePositions (thisController.poutput, index, index+1);
 			var promise = searchService.changeOrder(thisController.search.id,thisController.poutput,type);
-			promise.then(function(){reload()},function(){console.log("error")})
+			promise.then(reload,error);
 		}
 	};
 	
@@ -394,22 +392,18 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 		var tusers=[];
 		users.map(function(user){tusers.push(user.id)});
 		var promise = searchService.grantRights(searchData.id,tgroups,tusers)
-		promise.then(function(){reload()});
+		promise.then(reload,error);
 	};
 	
 	
 	
 	this.keyUp = function(keyCode,name,language) {
 		if (keyCode === 13) {				// Return key pressed
-			var promise=searchService.updateSearchName(searchData.id,name, language);	
-			promise.then(function(){
-				reload();
-			},function(){
-				console.log("error");
-			});
+			var promise = searchService.updateSearchName(searchData.id,name, language);	
+			promise.then(reload,error);
 		}
 		if (keyCode === 27) {		// Escape key pressed
-			  thisController.editmode=false;
+			  thisController.editmode = false;
 		}
 	};
 
@@ -492,11 +486,11 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 		if (type === 'o'){
 			exchangePositions(thisController.ooutput,index-1,index);
 			var promise = searchService.changeOrder(thisController.search.id,thisController.ooutput,type);
-			promise.then(function(){reload()},function(){console.log("error")})
+			promise.then(reload,error);
 		}else{
 			exchangePositions(thisController.poutput,index-1,index);
 			var promise = searchService.changeOrder(thisController.search.id,thisController.poutput,type);
-			promise.then(function(){reload()},function(){console.log("error")})
+			promise.then(reload,error);
 		}		
 
 	};
@@ -506,16 +500,22 @@ function editSearchController(restfactory,$filter,$state,$stateParams,$translate
 	this.valueKeyUp = function(keyCode,newValue,parameter,type){
 		if (keyCode === 13 || keyCode === 12) {				// Return or tab key pressed
 			var promise = searchService.updateSearchParamValue(thisController.search.id,parameter.id,newValue,type);
-			promise.then( function(){ reload(); } );
+			promise.then(reload,error);
 		}
 	}
     
+	
+	
+	var error = function(){
+	    console.log("error");
+	}
+	
     
     var reload = function() {
-    	var current = $state.current;
-    	var params = angular.copy($stateParams);
-    	params.newSearch = false;
-    	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
+        	var current = $state.current;
+        	var params = angular.copy($stateParams);
+        	params.newSearch = false;
+        	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
     };
 }  
 

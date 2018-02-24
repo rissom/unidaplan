@@ -14,19 +14,21 @@ function oExpController(restfactory,$rootScope,$translate,$scope,$state,$statePa
 	
 
 	
-	this.setStatus=function(status,experiment){
+	this.setStatus = function(status,experiment){
 		experiment.status = status;
 		var promise = restfactory.GET("change-experiment-status?id=" + experiment.id + "&status=" + status)
-	    promise.then(function(rest) {
-	    }, function(rest) {
-	    	console.log("ERROR");
-	    });
+	    promise.then(
+	         function(rest) {},
+	         function(rest) {
+	             console.log("ERROR");
+	         }
+	    );
 	};
 	
 	
 	
 	$scope.$on('language changed', function(event, args) {
-		thisController.statusItems=[$translate.instant("planning phase"),$translate.instant("planned"),
+		thisController.statusItems = [$translate.instant("planning phase"),$translate.instant("planned"),
 	                  $translate.instant("running"),$translate.instant("completed")]
 	});
 	
@@ -83,9 +85,7 @@ function oExpController(restfactory,$rootScope,$translate,$scope,$state,$statePa
 	
 	this.deleteExperiment = function(experiment) {
 		var promise=experimentService.deleteExperiment(experiment.id);
-		promise.then(function(){
-				reload();
-			},
+		promise.then(reload,
 			function(){
 				console.log("error deleting experiment");
 			})       

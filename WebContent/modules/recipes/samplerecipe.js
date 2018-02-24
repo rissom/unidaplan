@@ -46,12 +46,12 @@ function sampleRecipeController(restfactory,$state,$stateParams,$translate,recip
 	
 	this.changeOwner = function() {
 		var promise = sampleService.changeOwner($stateParams.recipeID,thisController.owner.id);
-		promise.then(function(){
-			reload();
-		},function(){
-			console.log("error");
-			thisController.editOwner = false;
-		});
+		promise.then(reload,
+		    function(){
+			    console.log("error");
+			    thisController.editOwner = false;
+		    }
+		);
 	};
 	
 	
@@ -71,10 +71,7 @@ function sampleRecipeController(restfactory,$state,$stateParams,$translate,recip
 	
  	this.saveParameter = function(parameter) {
 		var promise = sampleService.saveSampleRecipeParameter($stateParams.recipeID,parameter);
-		promise.then(
-			function(data) {
-				reload();
-			},
+		promise.then(reload,
 			function(data) {
 				console.log('error');
 				console.log(data);	
@@ -96,7 +93,7 @@ function sampleRecipeController(restfactory,$state,$stateParams,$translate,recip
 	this.keyUpN = function(keyCode, newName, language) {
 		if (keyCode === 13) {				// Return key pressed
 			var promise = sampleService.updateSampleRecipeName($stateParams.recipeID,newName, language);
-			promise.then(function(){reload();},function(){console.log("error")});
+			promise.then(reload,error);
 		}
 		if (keyCode===27) {		// Escape key pressed
 			thisController.editFieldNL1 = false;
@@ -111,6 +108,12 @@ function sampleRecipeController(restfactory,$state,$stateParams,$translate,recip
 		if (stypes[0]){
 			this.sampleType = stypes[0];
 		}
+	}
+	
+	
+	
+	var error = function(){
+	    console.log("error");
 	}
 	
 	

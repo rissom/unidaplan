@@ -85,17 +85,8 @@ function searchController(restfactory,$state,$stateParams,$translate,
 			thisController.startSearch();
 		}
 	};
-
     
-    
-    var reload=function() {
-    	var current = $state.current;
-    	var params = angular.copy($stateParams);
-    	params.newSearch=false;
-    	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
-    };
-    
-    
+	
     
 	this.startSearch = function() {
 		var searchParams = { searchid:thisController.search.id, 
