@@ -270,26 +270,30 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 	        controller: 'experimentController as experimentCtrl',
 	        resolve:{
 	            stypes: 
-	        	    function(avSampleTypeService){
-	        	   	    return avSampleTypeService.getSampleTypes();
+	        	        function(avSampleTypeService){
+	        	   	        return avSampleTypeService.getSampleTypes();
 	                },
                 ptypes: 
-                	function(avProcessTypeService){
-        	   	    	return avProcessTypeService.getProcessTypes();
-        	   	    },
+                	    function(avProcessTypeService){
+        	   	    	        return avProcessTypeService.getProcessTypes();
+        	   	        },
 	            experimentData: 
-	            	function(experimentService,$stateParams){
-	        			return experimentService.getExperiment($stateParams.experimentID);
-	        	    },
+	            	    function(experimentService,$stateParams){
+	        			    return experimentService.getExperiment($stateParams.experimentID);
+	        	        },
 		        avParameters: 
-		        	function(parameterService){
-			   	    	return parameterService.getParameters();
+		        	    function(parameterService){
+		                return parameterService.getParameters();
+			   	    },
+			   	experiments:
+                    function(experimentService){
+			   	        return experimentService.getExperiments();
 			   	    },
 	            editmode: 
-	            	function($stateParams){
-	        			return $stateParams.editmode === "true";
-	        	    },
-	        }
+	            	    function($stateParams){
+	        			    return $stateParams.editmode === "true";
+	        	        },
+	            }
         })
            
         
@@ -421,9 +425,8 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 	        templateUrl: 'modules/parameters/parameters.html',
 	        controller:'parameterController as parameterCtrl',
 	        resolve:{
-                parameters: 
-                	function(parameterService){
-        	   	    	return parameterService.getParameters();
+                parameters: function(parameterService){
+        	   	    	    return parameterService.getParameters();
         	   	    }
 	        }
         })
@@ -434,16 +437,17 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 	        templateUrl: 'modules/process/process.html',
 	        controller:"process as processCtrl",
 	        resolve:{
-	            types: 
-	        	    function(avSampleTypeService){
+	            types: function(avSampleTypeService){
 	        	   	    return avSampleTypeService.getSampleTypes();
-	                },
-	            processData: 
-	            	function(processService,$stateParams){
+	            },
+                experiments: function(experimentService){
+                    return experimentService.getExperiments();
+                },    
+	            processData: function(processService,$stateParams){
 	        			return processService.getProcess($stateParams.processID);
 	        	    },
                	ptypes: function(avProcessTypeService){
-        	   	    	return avProcessTypeService.getProcessTypes();
+        	   	    	    return avProcessTypeService.getProcessTypes();
         	   	    }
 			}
         })
@@ -567,9 +571,14 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 	            types: 
                     function(avSampleTypeService){
                 		return avSampleTypeService.getSampleTypes();
-                	}
+                	},
+    	            experiments:
+    	                function(experimentService){
+                    return experimentService.getExperiments();
+                }
 	        }
         })
+        
         
         
         .state('sample', {
@@ -583,6 +592,10 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 				types:  function(avSampleTypeService){
 	        	   	    		    return avSampleTypeService.getSampleTypes();
 						},
+                experiments:
+                    function(experimentService){
+                             return experimentService.getExperiments();
+	                    },
 	        	   	ptypes: function(avProcessTypeService){
 	        	   		        return avProcessTypeService.getProcessTypes();
 	            	   	    }

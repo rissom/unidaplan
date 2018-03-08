@@ -309,8 +309,8 @@ function editParamController($scope,$state,$stateParams,
   var reload = function(newPossvalue) {
   	var current = $state.current;
   	var params = angular.copy($stateParams);
-  	params.newPossvalue=newPossvalue;
-  	params.newParameter=false;
+  	params.newPossvalue = newPossvalue;
+  	params.newParameter = false;
   	return $state.transitionTo(current, params, { reload: true, inherit: true, notify: true });
   };
   

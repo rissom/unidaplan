@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-function sampleController(sample,$state,$stateParams,$uibModal,$filter,types,sampleService,avSampleTypeService,
+function sampleController(sample,$state,$stateParams,$uibModal,$filter,types,experiments,sampleService,avSampleTypeService,
 						  $translate,key2string,ptypes,avProcessTypeService){
 	
 	var thisController = this;
@@ -149,15 +149,16 @@ function sampleController(sample,$state,$stateParams,$uibModal,$filter,types,sam
 		    controller: 'modalSampleChoser as mSampleChoserCtrl',
 		    size: 'lg',
 		    resolve: {
-		    	samples 	: function() { return mSamples; },
-		        types       : function() { return types; },
-		        except		: function() {
-		        				var eSamples2=eSamples.slice(0);
-		        				eSamples2.push({sampleid:sample.id,typeid:sample.typeid,name:sample.name});
-		        				return eSamples2;
-		        				},
-		        mode		: function() { return "multiple";},
-		        buttonLabel	: function() { return $translate.instant('assign to sample'); }
+    		       	samples 	: function() { return mSamples; },
+    		        experiments : function(){return experiments; },   
+    		        types : function() { return types; },
+    		        except : function() {
+            		          				var eSamples2 = eSamples.slice(0);
+            		          				eSamples2.push({sampleid:sample.id,typeid:sample.typeid,name:sample.name});
+            		          				return eSamples2;
+		        			      	    },
+	            mode		: function() { return "multiple";},
+	            buttonLabel	: function() { return $translate.instant('assign to sample'); }
 		    }		        
 		});
 	    
@@ -219,7 +220,7 @@ function sampleController(sample,$state,$stateParams,$uibModal,$filter,types,sam
 
 
 
-angular.module('unidaplan').controller('sampleController',['sample','$state','$stateParams','$uibModal','$filter','types',
+angular.module('unidaplan').controller('sampleController',['sample','$state','$stateParams','$uibModal','$filter','types','experiments',
      'sampleService','avSampleTypeService','$translate','key2string','ptypes','avProcessTypeService',sampleController]);
 
 })();

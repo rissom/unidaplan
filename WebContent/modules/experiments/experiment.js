@@ -1,21 +1,21 @@
 (function(){
 'use strict';
 
-function experimentController($uibModal,$scope,editmode,experimentService,languages,restfactory,$translate,$state,$stateParams,key2string,
+function experimentController($uibModal,$scope,experiments,editmode,experimentService,languages,restfactory,$translate,$state,$stateParams,key2string,
 							  avSampleTypeService,avProcessTypeService,experimentData,ptypes,stypes,avParameters) {
 	
 	this.experiment = experimentData;
 	
 	this.editmode = editmode;
 	
-	this.newNumber=experimentData.number;
+	this.newNumber = experimentData.number;
 
 	
 	this.sampleActions = [$translate.instant("Go to sample"),
 	                      $translate.instant("Delete Sample from Experiment"),
 	                      $translate.instant("Replace sample")];	
 
-	var thisController =this;	
+	var thisController = this;	
 	
 	this.avProcesses = ptypes;
 	  
@@ -30,8 +30,6 @@ function experimentController($uibModal,$scope,editmode,experimentService,langua
 	this.lang1=$translate.instant(languages[0].name);
 	  
 	this.lang2=$translate.instant(languages[1].name);
-	
-
 	  
 	this.addParameter = function () {
 		var modalInstance = $uibModal.open({
@@ -74,17 +72,13 @@ function experimentController($uibModal,$scope,editmode,experimentService,langua
 		    animation: false,
 		    templateUrl: 'modules/modal-sample-choser/modal-sample-choser.html',
 		    controller: 'modalSampleChoser as mSampleChoserCtrl',
-//		    size: 'sm',
 		    resolve: {
-		    	mode		  : function(){return 'immediate'; },
-		    	samples 	  : function(){return []; },
-		        types         : function(){return stypes; },
+		    	mode		      : function(){return 'immediate'; },
+		    	samples 	      : function(){return []; },
+		    experiments   : function(){return experiments; },	
+		    types         : function(){return stypes; },
 		    	except		  : function(){
 		    		return thisController.experiment.samples?thisController.experiment.samples:[];
-		    		
-//		    		{sampleid:thisController.experiment.samples[0].sampleid,
-//						    typeid:thisController.experiment.samples[0].typeid,
-//						    name:thisController.experiment.samples[0].name}
 		    	},
 			    buttonLabel	  : function(){return ''; } 	// there is no button
 			}		        
@@ -95,12 +89,12 @@ function experimentController($uibModal,$scope,editmode,experimentService,langua
 				if (result.chosen.length>0){
 					if (thisController.experiment.samples===undefined) {
 						thisController.experiment.samples=[];
+		    		    }
+		    		    var promise = experimentService.addSampleToExperiment(thisController.experiment.id,
+		    		                    result.chosen[0].sampleid,thisController.experiment.samples.length+1);
+		    		    promise.then(reload);		    	  
 		    		}
-		    		var promise=experimentService.addSampleToExperiment(thisController.experiment.id,
-		    			result.chosen[0].sampleid,thisController.experiment.samples.length+1);
-		    			promise.then(reload);		    	  
-		    		}
-		      	}
+		    }
 	    	}, function () {
 		      console.log('Strange Error: Modal dismissed at: ' + new Date());
 		    }
@@ -155,11 +149,11 @@ function experimentController($uibModal,$scope,editmode,experimentService,langua
 	
 	
 	this.commentKeyUp2 = function(keyCode,newValue,pprocesses,process) {
-		var step=this.getPlannedProcess(process,pprocesses);
+		var step = this.getPlannedProcess(process,pprocesses);
 		if (keyCode===13) {				// Return key pressed
-			step.edit=false; 
-			var oldValue=step.trnote;
-			step.trnote=newValue;
+			step.edit = false; 
+			var oldValue = step.trnote;
+			step.trnote = newValue;
 			// save new comment in database.
 			var promise = experimentService.updateExperimentStepComment(step.process_step_id,newValue);
 			promise.then(function(data) {
@@ -243,18 +237,18 @@ function experimentController($uibModal,$scope,editmode,experimentService,langua
 	this.getWidth = function(){
 		//adjusts the width of a div for the experiment in edit-mode. 
 		// So big tables are not squeezed
-		var numProc=0;
+		var numProc = 0;
 		if (this.experiment.processes) { 
-			numProc=this.experiment.processes.length; 
+			numProc = this.experiment.processes.length; 
 		}
-		var mystyle= {'width':500+230*numProc+'px'};
+		var mystyle = {'width':500 + 230*numProc + 'px'};
 		return mystyle;
 	};
 	
 	
 	
-	this.markColumn=function(processID){
-		var promise=experimentService.markAllProcesses(this.experiment.id,processID);
+	this.markColumn = function(processID){
+		var promise = experimentService.markAllProcesses(this.experiment.id,processID);
 		promise.then(reload);
 	};
 	
@@ -274,8 +268,8 @@ function experimentController($uibModal,$scope,editmode,experimentService,langua
 	
 	this.moveProcessLeft = function(process){
 		for (var i=0; i<this.experiment.processes.length; i++){
-			if (this.experiment.processes[i].position==process.position-1){
-				this.experiment.processes[i].position=this.experiment.processes[i].position+1;
+			if (this.experiment.processes[i].position == process.position-1){
+				this.experiment.processes[i].position = this.experiment.processes[i].position+1;
 			}
 		}
 		process.position=process.position-1;
@@ -318,12 +312,12 @@ function experimentController($uibModal,$scope,editmode,experimentService,langua
 		    animation: false,
 		    templateUrl: 'modules/modal-sample-choser/modal-sample-choser.html',
 		    controller: 'modalSampleChoser as mSampleChoserCtrl',
-//		    size: 'sm',
 		    resolve: {
-		    	mode		  : function(){return 'immediate'; },
-		    	samples 	  : function(){return []; },
-		        types         : function(){return stypes; },
-		    	except		  : function(){
+		        mode		    : function(){return 'immediate'; },
+		    	    samples 	    : function(){return []; },
+		    	    experiments : function(){return experiments;},
+		        types       : function(){return stypes; },
+		    	    except		: function(){
 //		    		console.log("thisSamples",sample);
 		    		return [{sampleid:sample.sampleid,
 						    typeid:sample.typeid,
@@ -489,9 +483,9 @@ function experimentController($uibModal,$scope,editmode,experimentService,langua
 }
     
         
-angular.module('unidaplan').controller('experimentController',['$uibModal','$scope','editmode','experimentService',
-               'languages','restfactory',
-               '$translate','$state','$stateParams','key2string','avSampleTypeService','avProcessTypeService',
-               'experimentData','ptypes','stypes','avParameters',experimentController]);
+angular.module('unidaplan').controller('experimentController',['$uibModal','$scope','experiments',
+                'editmode','experimentService','languages','restfactory','$translate','$state',
+                '$stateParams','key2string','avSampleTypeService','avProcessTypeService',
+                'experimentData','ptypes','stypes','avParameters',experimentController]);
 
 })();

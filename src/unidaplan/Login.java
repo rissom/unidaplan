@@ -67,7 +67,7 @@ public class Login extends HttpServlet {
 
 			int id = hashjs.getInt("id");
 			if (PasswordHash.validatePassword(pw,hash)){
-				JSONObject answer=new JSONObject();
+				JSONObject answer = new JSONObject();
 				answer.put("status","Password correct");
 				answer.put("fullname",hashjs.getString("fullname"));
 				answer.put("id",id);

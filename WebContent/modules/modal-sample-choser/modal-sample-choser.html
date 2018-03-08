@@ -1,69 +1,81 @@
-<div class="container">
+<div class = "container">
 <h3> 
 	{{ 'Search for Sample' | translate }} 
 </h3>
 
-<div class="row">
+<div class = "row">
 <!-- type choser -->  
-<div class=col-md-6>
-	{{'Available sample types'|translate}} 
-	<br />	
-	<select multiple="multiple"
-			id="typeSelector"
-			style="width: 200px;"
-	  		ng-model="mSampleChoserCtrl.selectedtypes" 
-	  		ng-options="type.namef() for type in mSampleChoserCtrl.selectortypes"
-	  		size="5">
+	<div class = col-md-4>
+		{{'Available sample types'|translate}} 
+		<br />	
+		<select multiple = "multiple"
+				id = "typeSelector"
+				style = "width: 200px;"
+		  		ng-model = "mSampleChoserCtrl.selectedtypes" 
+		  		ng-options = "type.namef() for type in mSampleChoserCtrl.selectortypes"
+		  		size = "5">
+		</select>
+	</div>
+	
+	<div class = "col-md-4">
+	{{'Experiments' | translate}} <br />
+	<select multiple = "multiple"
+	        id = "experimentSelector"
+	        style = "width: 200px;"
+	        ng-model = "mSampleChoserCtrl.selectedexperiments" 
+	        ng-options = "experiment.namef() for experiment in mSampleChoserCtrl.selectorExperiments"
+	        size = "5">
 	</select>
-	<br /><br />
+	</div>
+</div>
+	
+<br /><br />
 	
 
 
 <!-- search field -->
 <label>Name: </label>
-<input type="text" 
-	   ng-model="mSampleChoserCtrl.userinput"
-	   style="width: 253px;" 
-	   placeholder="{{'Enter samplenumber here'|translate}}">
+<input type = "text" 
+	   ng-model = "mSampleChoserCtrl.userinput"
+	   style = "width: 253px;" 
+	   placeholder = "{{'Enter samplenumber here'|translate}}">
 <br /><br />
 
 
-{{mSampleChoserCtrl.isNotSelected({dings:"bums"})}}
 
 <!--  list of fitting samples  -->
 <ul> 
- 	<li ng-repeat="sample in mSampleChoserCtrl.samples | filter:isNotSelected | filter:{name:mSampleChoserCtrl.userinput} | orderBy: ['typeid','name']" 
- 		ng-show="mSampleChoserCtrl.typeSelected(sample)">
+ 	<li ng-repeat = "sample in mSampleChoserCtrl.samples | filter:isNotSelected | filter:{name:mSampleChoserCtrl.userinput} | orderBy: ['typeid', 'name']" 
+ 		ng-show = "mSampleChoserCtrl.typeSelected(sample)">
 					<!-- show only selected sample types -->
-		<a ng-click=mSampleChoserCtrl.choseSample(sample)> 
+		<a ng-click = mSampleChoserCtrl.choseSample(sample)> 
 			{{mSampleChoserCtrl.getType(sample)}} {{sample.name}}
 		</a>							
 	</li>   
 </ul>
 <br />
 </div>
-<div class=col-md-6>
-	<span ng-show="mSampleChoserCtrl.chosenSamples.length>0">
-		{{'chosen samples'|translate}}:
+<div class = col-md-12>
+	<span ng-show = "mSampleChoserCtrl.chosenSamples.length > 0" >
+		{{'chosen samples' | translate}}:
 	</span>	
 	<p />
-	<div ng-repeat="csample in mSampleChoserCtrl.chosenSamples | orderBy: ['typeid','name']">
-		<a ng-click=mSampleChoserCtrl.removeSample(csample)>
+	<div ng-repeat = "csample in mSampleChoserCtrl.chosenSamples | orderBy: [ 'typeid', 'name' ]">
+		<a ng-click = mSampleChoserCtrl.removeSample(csample)>
  			{{mSampleChoserCtrl.getType(csample)}} {{csample.name}}
  		</a>
 	</div>
 	<br />
 </div>
-</div>
-<button ng-click="mSampleChoserCtrl.close()" 
-		class="btn btn-default">
+<div class = col-md-12>
+<button ng-click = "mSampleChoserCtrl.close()" 
+		class = "btn btn-default">
 	{{'Cancel'|translate}}
 </button>&nbsp;
-<button ng-hide="mSampleChoserCtrl.immediate" ng-click="mSampleChoserCtrl.assignSamples()" 
-		class="btn btn-primary">
+<button ng-hide = "mSampleChoserCtrl.immediate" ng-click = "mSampleChoserCtrl.assignSamples()" 
+		class = "btn btn-primary">
 	{{mSampleChoserCtrl.getButtonLabel()}}
 </button>
-
-<br /><br />
-
+<br />
 </div>
+<div>&nbsp;</div>

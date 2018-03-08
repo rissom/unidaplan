@@ -89,7 +89,7 @@ var experimentService = function (restfactory,$q,$translate,key2string) {
 
 	
 	this.getExperiment = function(id) {
-        var defered=$q.defer();
+        var defered = $q.defer();
 			var promise = restfactory.GET("experiment?id="+id);
 	    	promise.then(function(rest) {
     	    	var experiment = rest.data.experiment;

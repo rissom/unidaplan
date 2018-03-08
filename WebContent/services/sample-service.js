@@ -124,11 +124,11 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 	
 	
 	
-	
-	this.getSamplesByName = function (name,types,privilege){
-		// possible values for privilege: "r"-> read or write; "w"-> write; "a" -> all
+	this.getSamplesByName = function (name, types, experiments, privilege){
+		// possible values for privilege: "r"-> read or write; "w"-> write
 		var params = {
 			sampletypes : types,
+			experiments : experiments,
 			name : name,
 			privilege : privilege
 		};
@@ -163,7 +163,7 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 	
 	
 	this.loadSample = function(id) {			// Load data and filter Titleparameters
-    	var defered = $q.defer();
+	    var defered = $q.defer();
 		var promise = restfactory.GET("showsample?id=" + id);
 	    promise.then(function(rest) {			// save the sample for recent samples
 	        var sample = { "id"		  	   	: rest.data.id,
@@ -193,8 +193,8 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 							return key2string.key2string(parameter.unit,strings);
 						};
 					}
-					if (parameter.datatype==="date" || parameter.datatype==="timestamp"){			
-						parameter.newDate=new Date(parameter.value);
+					if (parameter.datatype === "date" || parameter.datatype==="timestamp"){			
+						parameter.newDate = new Date(parameter.value);
 					}
 				});
 			});
@@ -227,16 +227,16 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 	
 	this.pushSample = function(sample){
 		var i;
-		var found=false;
-		for (i=0;i<this.recentSamples.length;i++){
-			if (this.recentSamples[i].name==sample.name){
-				found=true;	
+		var found = false;
+		for (i=0; i<this.recentSamples.length; i++){
+			if (this.recentSamples[i].name == sample.name){
+				found = true;	
 			}
 		}
 		if (!found) {
 			this.recentSamples.push(sample);
 		}
-		if (this.recentSamples.length>20){
+		if (this.recentSamples.length > 20){
 			this.recentSamples.slice(0,this.recentSamples.length-20);
 		}
 	};
@@ -246,13 +246,13 @@ var sampleService = function(restfactory,key2string,avSampleTypeService,$q){
 	this.saveParameter = function(sampleid,parameter) {
 		var json = {sampleid:sampleid, parameterid:parameter.pid, data:parameter.data};
 		if ("date" in parameter) {
-			json.date=parameter.date;
-			json.tz=parameter.tz;
+			json.date = parameter.date;
+			json.tz = parameter.tz;
 		}
 		if ("error" in parameter) {
-			json.error=parameter.error;
+			json.error = parameter.error;
 		} 
-		return restfactory.POST('save-sample-parameter',json);
+		return restfactory.POST('save-sample-parameter', json);
 	};
 	
 	

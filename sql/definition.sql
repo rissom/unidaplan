@@ -545,29 +545,37 @@ $$ LANGUAGE plpgsql;
 
 CREATE VIEW samplenames AS
 SELECT 
-    max(id) AS id,
-    string_agg(nameSubString,'-' ORDER BY pos) AS name,
-    max(typeid) AS typeid
-FROM ( 
+  t2.id, 
+  name, 
+  typeid, 
+  jsonb_agg (exps.expp_id) AS experiments 
+FROM(
   SELECT 
-      samples.id, 
-      CASE WHEN pd.datatype = 4 THEN sdata.data ->> 'value'
-           ELSE CASE WHEN pd.format IS Null
-              THEN
-              to_char((sdata.data ->> 'value')::float,'999999999')
-              ELSE
-                  to_char((sdata.data ->> 'value')::float, pd.format)
-                END
-      END AS nameSubString,
-      ot.id as typeid,
-      otp.pos
-  FROM samples 
-  JOIN objecttypes ot ON (samples.objecttypesID = ot.id)
-  JOIN ot_parameters otp ON (ot.id = otp.ObjecttypesID AND otp.ID_FIELD = true)
-  JOIN sampledata sdata ON (sdata.ObjectID = samples.id AND sdata.Ot_Parameter_ID = otp.ID)
-  JOIN paramdef pd ON (otp.definition = pd.ID) 
-  ) t
-GROUP BY id ;
+      max(id) AS id,
+      string_agg(nameSubString,'-' ORDER BY pos) AS name,
+      max(typeid) AS typeid
+  FROM ( 
+    SELECT 
+        samples.id, 
+        CASE WHEN pd.datatype = 4 THEN sdata.data ->> 'value'
+             ELSE CASE WHEN pd.format IS Null
+                THEN
+                to_char((sdata.data ->> 'value')::float,'999999999')
+                ELSE
+                    to_char((sdata.data ->> 'value')::float, pd.format)
+                  END
+        END AS nameSubString,
+        ot.id as typeid,
+        otp.pos
+    FROM samples 
+    JOIN objecttypes ot ON (samples.objecttypesID = ot.id)
+    JOIN ot_parameters otp ON (ot.id = otp.ObjecttypesID AND otp.ID_FIELD = true)
+    JOIN sampledata sdata ON (sdata.ObjectID = samples.id AND sdata.Ot_Parameter_ID = otp.ID)
+    JOIN paramdef pd ON (otp.definition = pd.ID) 
+    ) t
+  GROUP BY id  ) t2
+JOIN expp_samples exps ON exps.sample = t2.id
+GROUP BY t2.id, name, typeid;
 
 
 

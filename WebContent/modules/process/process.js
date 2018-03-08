@@ -1,7 +1,7 @@
 (function(){
   'use strict';
 
-function process($state,$stateParams,$translate,avSampleTypeService,types,$uibModal,processData,restfactory,processService){
+function process($state,$stateParams,$translate,avSampleTypeService,types,experiments,$uibModal,processData,restfactory,processService){
   
 	var thisController = this;
 	
@@ -63,27 +63,18 @@ function process($state,$stateParams,$translate,avSampleTypeService,types,$uibMo
 			controller: 'modalSampleChoser as mSampleChoserCtrl',
 			size: 'lg',
 			resolve: {
-				samples 	  : function() {
-							    return thisController.process.samples; },
-		        types         : function() {
-		        				return types; },
-		    	except		  : function() {
-			        				return [];
-			        			},
-			    buttonLabel	  : function() { 
-			        				return 'assign to process';
-			        			},
-			    mode		  : function() {
-			    					return 'multiple';
-			    				}
+				samples : function() { return thisController.process.samples; },
+		        types   : function() { return types; },
+		        experiments : function() { return experiments; },
+		        	except	: function() { return []; },
+			    buttonLabel : function() { return $translate.instant('assign to process'); },
+			    mode : function() { return 'multiple'; }
 		    }		        
 		});
 	  
 		modalInstance.result.then(function (result) {  // get the new Samplelist + Info if it is changed from Modal. 
 			thisController.process.samples = result.chosen;
-			if (result.changed) {
-				thisController.assign();
-			}
+			if (result.changed) { thisController.assign(); }
 		}, function () {
 			console.log('Strange Error: Modal dismissed at: ' + new Date());
 		});
@@ -211,7 +202,7 @@ function process($state,$stateParams,$translate,avSampleTypeService,types,$uibMo
  
 }
 
-angular.module('unidaplan').controller('process', ['$state','$stateParams','$translate','avSampleTypeService','types', '$uibModal',
-                                                   'processData','restfactory','processService',process]);
+angular.module('unidaplan').controller('process', ['$state','$stateParams','$translate','avSampleTypeService','types',
+                           'experiments','$uibModal','processData','restfactory','processService',process]);
 
 })();

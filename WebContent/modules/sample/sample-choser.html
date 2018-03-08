@@ -4,7 +4,9 @@
   
   
 <!-- type choser -->  
-{{'Available sample types'|translate}} <br />
+<div class = row>
+<div class = "col-md-4">
+{{'Available sample types' | translate}} <br />
 <select multiple = "multiple"
 		id = "typeSelector"
 		style = "width: 300px;"
@@ -12,6 +14,20 @@
   		ng-options = "type.namef() for type in sampleChoserCtrl.selectorTypes"
   		size = "10">
 </select>
+</div>
+
+
+<div class = "col-md-4">
+{{'Experiments' | translate}} <br />
+<select multiple = "multiple"
+        id = "experimentSelector"
+        style = "width: 300px;"
+        ng-model = "sampleChoserCtrl.selectedexperiments" 
+        ng-options = "experiment.namef() for experiment in sampleChoserCtrl.selectorExperiments"
+        size = "10">
+</select>
+</div>
+</div>
 <br /><br />
 
 
