@@ -69,22 +69,15 @@ function modalSampleChoser(avSampleTypeService,$translate,$scope,$uibModalInstan
 	
 	
 	
-	$scope.$watch( 'mSampleChoserCtrl.selectedexperiments', function (seltypes){
+	$scope.$watch( 'mSampleChoserCtrl.selectedexperiments', function (selexperiments){
         var experimentList = [];
-        if (seltypes === undefined || seltypes.length === 0){  // Nothing selected => Everything selected
-            angular.forEach(experiments, function(experiment) {
-                experimentList.push(experiment.id);         
-            });
-        } else {
-        if (seltypes[0].id === 0){  // all types field selected => Everything selected
-            angular.forEach(experiments, function(experiment) {
-                experimentList.push(experiment.id);
-            });
+        if (selexperiments === undefined || selexperiments.length === 0 || selexperiments[0].id === 0){  // Nothing selected => Everything selected
+            experimentList = ["0"];
         } else {                                      // make list of selected types
             angular.forEach(thisController.selectedexperiments, function(experiment) {
                 experimentList.push(experiment.id); 
             });
-        }}
+        }
         thisController.selectedExperimentsVar = experimentList;
                
         //check if there was change

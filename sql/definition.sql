@@ -574,7 +574,7 @@ FROM(
     JOIN paramdef pd ON (otp.definition = pd.ID) 
     ) t
   GROUP BY id  ) t2
-JOIN expp_samples exps ON exps.sample = t2.id
+LEFT JOIN expp_samples exps ON exps.sample = t2.id
 GROUP BY t2.id, name, typeid;
 
 

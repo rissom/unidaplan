@@ -46,8 +46,12 @@ public class SamplesByName extends HttpServlet {
 		
 	    try {
 		 	dBconn.startDB();
+		 	Boolean allExperiments = false;
 		 	JSONArray typeArray = jsonIn.getJSONArray("sampletypes");
             JSONArray experimentArray = jsonIn.getJSONArray("experiments");
+            if (experimentArray.getInt(0) == 0) {
+                allExperiments = true;
+            }
 		 	name = jsonIn.getString("name");
 		 	if (typeArray.length() > 0){
 		 		String query = "SELECT  "
@@ -65,15 +69,15 @@ public class SamplesByName extends HttpServlet {
 		 		}
 		 		query += "}'::int[]) ";
 		 		
-		 		
-		 		query += "AND ( ";
-		 		for (int i=0; i<experimentArray.length(); i++) {
-		 		        if (i>0) { query += "OR "; } 
-		 		        query += "samplenames.experiments @>'";
-		 		        query += experimentArray.getInt(i);
-		 		        query += "' ";
-		 		}
-		 		query += ") ";
+		 		if (!allExperiments) {
+        		 		query += "AND ( ";
+        		 		for (int i=0; i<experimentArray.length(); i++) {
+        		 		        if (i>0) { query += "OR "; } 
+        		 		        query += "samplenames.experiments @>'";
+        		 		        query += experimentArray.getInt(i);
+        		 		        query += "' ";
+        		 		}
+        		 		query += ") ";}
 		 		if (jsonIn.getString("privilege").equals("r")){
 			 		query += " AND (   getSampleRights(?, samplenames.id) = 'w'  "
 			 			   + " OR getSampleRights(?, samplenames.id) = 'r') ";
