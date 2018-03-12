@@ -54,9 +54,7 @@
 </paramfield>
 
 <table class = "table" ng-if = "experimentCtrl.editmode">
-	<tr>
-		<td>hallo</td>
-	</tr>
+
 	<tr ng-repeat = "parameter in experimentCtrl.experiment.parameters 
 				   | orderBy : experimentCtrl.experiment.parameters.pos" 
 		ng-dblclick = "parameter.editing = true; parameter.datatype === 'date+time' 
@@ -73,7 +71,7 @@
 			<tparameter parameter = "parameter" pupdate="experimentCtrl.submitParameter(parameter)"></tparameter>
 		</td>
 	</tr>
-	<tr ng-hide = "experimentCtrl.editmode">
+	<tr>
 		<td></td>
 		<td></td>
 	</tr>
