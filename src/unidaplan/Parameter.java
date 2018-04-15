@@ -89,9 +89,9 @@ public class Parameter extends HttpServlet {
 			  		if (datatype == 6){ // Chooser
 						pStmt = dBconn.conn.prepareStatement( 	
 							   "SELECT "
-							 + "	id,"
-							 + "	position,"
-							 + "	string "
+							 + "	    id,"
+							 + "	    position,"
+							 + "	    string "
 							 + "FROM possible_values "
 							 + "WHERE parameterid = ? "
 							 + "ORDER BY position");

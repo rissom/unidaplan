@@ -13,6 +13,7 @@
 	ng-keydown = "integerParamCtrl.keyDown($event.keyCode)"
 	ng-if = "parameter.editing" 
 	type = "number"
+	pattern = "[0-9]*"
 	ng-attr-min = "{{parameter.min || 0}}"
     ng-attr-max = "{{parameter.max}}"
 	step = "1"
