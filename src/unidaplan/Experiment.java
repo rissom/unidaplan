@@ -168,9 +168,9 @@ public class Experiment extends HttpServlet {
 											+ "FROM samplesinprocess "
 											+ "JOIN processes ON (processes.id = samplesinprocess.processid) "
 											+ "JOIN processtypes ON (processes.processtypesid = processtypes.id) "
-											+ "JOIN p_parameters pp ON (pp.definition=10) " // date
-											+ "JOIN p_parameters pp2 ON (pp2.definition=8) " // number
-											+ "JOIN p_parameters pp3 ON (pp3.definition=1) " // status
+											+ "JOIN p_parameters pp ON (pp.definition = 8) " // date
+											+ "JOIN p_parameters pp2 ON (pp2.definition = 7) " // number
+											+ "JOIN p_parameters pp3 ON (pp3.definition = 1) " // status
 											+ "JOIN processdata ptd ON (ptd.processID = samplesinprocess.processid AND ptd.parameterID = pp.id) "
 											+ "JOIN processdata n ON (n.ProcessID = samplesinprocess.processid AND n.parameterID = pp2.id) "
 											+ "JOIN processdata n2 ON (n2.ProcessID = samplesinprocess.processid AND n2.parameterID = pp3.id) "

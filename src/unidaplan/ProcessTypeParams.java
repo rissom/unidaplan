@@ -85,7 +85,7 @@ public class ProcessTypeParams extends HttpServlet {
 						  + "   parameterid "
 						  +"  FROM processdata a GROUP BY parameterid "
 						  +") AS blabla ON blabla.parameterid = p_parameters.id "
-						  +"WHERE parametergroup=? AND NOT definition IN (1,8,10)"); // status, processnumber and date cannot be edited
+						  +"WHERE parametergroup=? AND NOT definition IN (1,7,8)"); // status, processnumber and date cannot be edited
 			 		pStmt.setInt(1, paramgroupid);
 					processTypeGrps = dBconn.jsonArrayFromPreparedStmt(pStmt); // get ResultSet from the database using the query
 					if (processTypeGrps.length() > 0) {

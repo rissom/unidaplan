@@ -106,8 +106,8 @@ public class Process extends HttpServlet {
 					+ "  pp3.id AS statuspid "
 					+ "FROM processes "
 					+ "JOIN processtypes ON (processes.processtypesid = processtypes.id) "
-					+ "JOIN p_parameters pp1 ON (pp1.definition=10 AND pp1.ProcesstypeID = processes.processtypesid) " // date
-					+ "JOIN p_parameters pp2 ON (pp2.definition=8 AND pp2.ProcesstypeID = processes.processtypesid) " // number
+					+ "JOIN p_parameters pp1 ON (pp1.definition = 8 AND pp1.ProcesstypeID = processes.processtypesid) " // date
+					+ "JOIN p_parameters pp2 ON (pp2.definition = 7 AND pp2.ProcesstypeID = processes.processtypesid) " // number
 					+ "JOIN p_parameters pp3 ON (pp3.definition=1 AND pp3.ProcesstypeID = processes.processtypesid) " // status
 					+ "LEFT JOIN processdata ptd ON (ptd.processID = processes.id AND ptd.parameterid = pp1.id) "
 					+ "LEFT JOIN processdata n1 ON (n1.ProcessID = processes.id AND n1.parameterid = pp2.id) "
@@ -142,10 +142,10 @@ public class Process extends HttpServlet {
 			    try {      
 					pStmt = dBconn.conn.prepareStatement( 
 							  "WITH pn AS ( "
-							+ "SELECT * FROM pnumbers) "
+							+ "    SELECT * FROM pnumbers) "
 							+ "SELECT "
-							+ "  id,"
-							+ "  p_number "
+							+ "    id,"
+							+ "    p_number "
 							+ "FROM pn "
 							+ "WHERE (p_number > ? AND pn.processtype = ?) "
 							+ "ORDER BY p_number LIMIT 1");

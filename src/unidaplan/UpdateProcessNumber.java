@@ -89,7 +89,7 @@ import org.json.JSONObject;
 			    // Select p_parameter id
 			    pStmt = dBconn.conn.prepareStatement( 			
 						   "SELECT pp.id FROM processes "
-					 	 + "JOIN p_parameters pp ON pp.processtypeid = processes.processtypesid AND pp.definition = 8 "
+					 	 + "JOIN p_parameters pp ON pp.processtypeid = processes.processtypesid AND pp.definition = 7 "
 				 		 + "WHERE processes.id = ?");
 			   	pStmt.setInt(1, processID);
 			   	int ppid = dBconn.getSingleIntValue(pStmt);
@@ -122,14 +122,14 @@ import org.json.JSONObject;
 			   	}
 			} catch (SQLException e) {
 				System.err.println("SaveSampleParameter: Problems with SQL query");
-				status="Problems with SQL query";
+				status = "Problems with SQL query";
 				e.printStackTrace();
 			} catch (JSONException e){
 				System.err.println("SaveSampleParameter: Problems creating JSON");
-				status="Problems creating JSON";
+				status = "Problems creating JSON";
 			} catch (Exception e) {
 				System.err.println("SaveSampleParameter: Strange Problems");
-				status="Strange Problems";
+				status = "Strange Problems";
 			}
 	    } else {
 	    	response.setStatus(401);

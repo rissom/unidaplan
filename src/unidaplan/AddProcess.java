@@ -100,7 +100,7 @@ public class AddProcess extends HttpServlet {
 		    			  "INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser) "
 		    			+ "VALUES( "
 		    			+ " ?,"
-		    			+ " (SELECT id FROM P_Parameters WHERE definition = 8 AND processtypeid = ?),"
+		    			+ " (SELECT id FROM P_Parameters WHERE definition = 7 AND processtypeid = ?),"
 		    			+ " ?, ?)");
 		    	pStmt.setInt(1, id);
 		    	pStmt.setInt(2, processTypeID);
@@ -127,7 +127,7 @@ public class AddProcess extends HttpServlet {
 				
 				// find date parameter
 		    	pStmt= dBconn.conn.prepareStatement("SELECT id FROM p_parameters pp "
-		    			+ "WHERE (pp.definition=10 AND pp.processtypeid=?)");
+		    			+ "WHERE (pp.definition=8 AND pp.processtypeid=?)");
 		    	pStmt.setInt(1, processTypeID);
 			   	JSONObject dateIDObj = dBconn.jsonObjectFromPreparedStmt(pStmt);
 			   	int dateID = dateIDObj.getInt("id");

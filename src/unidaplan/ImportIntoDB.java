@@ -307,7 +307,7 @@ public class ImportIntoDB extends HttpServlet {
 			   	
 			   	// write processnumber 
 			   	pStmt= dBconn.conn.prepareStatement("INSERT INTO p_integer_data VALUES(default, ?,"
-		    			+ " (SELECT id FROM P_Parameters WHERE definition=8 AND processtypeid=?), ?, NOW(),?)");
+		    			+ " (SELECT id FROM P_Parameters WHERE definition=7 AND processtypeid=?), ?, NOW(),?)");
 			   	pStmt.setInt(1, processID);
 			   	pStmt.setInt(2, processTypeID);
 			   	pStmt.setInt(3, pnumber+1);
@@ -328,7 +328,7 @@ public class ImportIntoDB extends HttpServlet {
 				
 				// find date parameter
 			   	pStmt= dBconn.conn.prepareStatement("SELECT id FROM p_parameters pp "
-		    			+ "WHERE (pp.definition=10 AND pp.processtypeid=?)");
+		    			+ "WHERE (pp.definition=8 AND pp.processtypeid=?)");
 			   	pStmt.setInt(1, processTypeID);
 			   	JSONObject dateIDObj=dBconn.jsonObjectFromPreparedStmt(pStmt);
 			   	int dateID = dateIDObj.getInt("id");

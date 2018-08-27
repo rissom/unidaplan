@@ -1,7 +1,5 @@
 INSERT INTO string_key_table VALUES (default, 'status');
 INSERT INTO string_key_table VALUES (default, 'this parameter stores the status of the process');
-INSERT INTO string_key_table VALUES (default, 'number of experiment');
-INSERT INTO string_key_table VALUES (default, 'this parameter stores the number of an experiment');
 INSERT INTO string_key_table VALUES (default, 'samplenumber', NOW());
 INSERT INTO string_key_table VALUES (default, 'samplenumber description', NOW());
 INSERT INTO string_key_table VALUES (default, 'standard parameters');
@@ -78,132 +76,128 @@ INSERT INTO stringtable VALUES (default,  1, 'de', 'Status', NOW());
 INSERT INTO stringtable VALUES (default,  1, 'en', 'status', NOW());
 INSERT INTO stringtable VALUES (default,  2, 'de', 'Parameter zum Speichern des Status', NOW());
 INSERT INTO stringtable VALUES (default,  2, 'en', 'this parameter stores the status of the process', NOW());
-INSERT INTO stringtable VALUES (default,  3, 'de', 'Nummer des Experiments', NOW());
-INSERT INTO stringtable VALUES (default,  3, 'en', 'number of experiment', NOW());
-INSERT INTO stringtable VALUES (default,  4, 'de', 'Number of an experiment');
-INSERT INTO stringtable VALUES (default,  4, 'en', 'this parameter stores the number of an experiment');
-INSERT INTO stringtable VALUES (default,  5, 'en', 'samplenumber in Batch', NOW());
-INSERT INTO stringtable VALUES (default,  5, 'de', 'Probennumber in Batch', NOW());
-INSERT INTO stringtable VALUES (default,  6, 'en', 'number of sample in Batch. Second part of the samplenumber', NOW());
-INSERT INTO stringtable VALUES (default,  6, 'de', 'Probenummer in Batch. Zweiter Teil der Probennummer', NOW());
-INSERT INTO stringtable VALUES (default,  7, 'de', 'Standard Prozessparameter');
-INSERT INTO stringtable VALUES (default,  7, 'en', 'standard processparameters');
-INSERT INTO stringtable VALUES (default,  8, 'de', 'Länge', NOW());
-INSERT INTO stringtable VALUES (default,  8, 'en', 'length', NOW());
-INSERT INTO stringtable VALUES (default,  9, 'de', 'Ziel', NOW());
-INSERT INTO stringtable VALUES (default,  9, 'en', 'goal', NOW());
-INSERT INTO stringtable VALUES (default, 10, 'de', 'Substrat', NOW());
-INSERT INTO stringtable VALUES (default, 10, 'en', 'substrate', NOW());
-INSERT INTO stringtable VALUES (default, 11, 'de', 'Zellenlaenge', NOW());
-INSERT INTO stringtable VALUES (default, 11, 'en', 'cell length', NOW());
-INSERT INTO stringtable VALUES (default, 12, 'de', 'Gewicht', NOW());
-INSERT INTO stringtable VALUES (default, 12, 'en', 'weight', NOW());
-INSERT INTO stringtable VALUES (default, 14, 'de', 'Basisparameter', NOW());
-INSERT INTO stringtable VALUES (default, 14, 'en', 'base parameters', NOW());
-INSERT INTO stringtable VALUES (default, 15, 'de', 'Messwerte', NOW());
-INSERT INTO stringtable VALUES (default, 15, 'en', 'measured values', NOW());
-INSERT INTO stringtable VALUES (default, 16, 'de', 'Glas', NOW());
-INSERT INTO stringtable VALUES (default, 16, 'en', 'glass', NOW());
-INSERT INTO stringtable VALUES (default, 17, 'de', 'Polyimide', NOW());
-INSERT INTO stringtable VALUES (default, 17, 'en', 'polyimide', NOW());
-INSERT INTO stringtable VALUES (default, 18, 'de', 'Stahlfolie', NOW());
-INSERT INTO stringtable VALUES (default, 18, 'en', 'steel foil', NOW());
-INSERT INTO stringtable VALUES (default, 19, 'en', 'cm', NOW());
-INSERT INTO stringtable VALUES (default, 20, 'en', 'g', '5.6.2015');
-INSERT INTO stringtable VALUES (default, 21, 'de', 'VOC verbessern', NOW());
-INSERT INTO stringtable VALUES (default, 21, 'en', 'improve VOC', NOW());
-INSERT INTO stringtable VALUES (default, 22, 'de', 'Reinigung', NOW());
-INSERT INTO stringtable VALUES (default, 22, 'en', 'washing', NOW());
-INSERT INTO stringtable VALUES (default, 23, 'de', 'Vorwaschgang', NOW());
-INSERT INTO stringtable VALUES (default, 23, 'en', 'pre-wash', NOW());
-INSERT INTO stringtable VALUES (default, 24, 'de', 'Hauptwaschgang', NOW());
-INSERT INTO stringtable VALUES (default, 24, 'en', 'main-wash', NOW());
-INSERT INTO stringtable VALUES (default, 25, 'en', 'worker', NOW());
-INSERT INTO stringtable VALUES (default, 25, 'de', 'Bearbeiter', NOW());
-INSERT INTO stringtable VALUES (default, 26, 'en', 'worker', NOW());
-INSERT INTO stringtable VALUES (default, 26, 'de', 'Bearbeiter', NOW());
-INSERT INTO stringtable VALUES (default, 27, 'en', 'basic data', NOW());
-INSERT INTO stringtable VALUES (default, 27, 'de', 'Grunddaten', NOW());
-INSERT INTO stringtable VALUES (default, 28, 'en', 'Standard glas substrate', NOW());
-INSERT INTO stringtable VALUES (default, 28, 'de', 'Standardglassubstrat', NOW());
-INSERT INTO stringtable VALUES (default, 29, 'en', 'My first experiment', NOW());
-INSERT INTO stringtable VALUES (default, 29, 'de', 'Mein erstes Experiment', NOW());
-INSERT INTO stringtable VALUES (default, 30, 'en', 'second Experiment', NOW());
-INSERT INTO stringtable VALUES (default, 30, 'de', 'Mein zweites Experiment', NOW());
-INSERT INTO stringtable VALUES (default, 31, 'en', 'thickness', NOW());
-INSERT INTO stringtable VALUES (default, 31, 'de', 'Dicke', NOW());
-INSERT INTO stringtable VALUES (default, 32, 'en', 'thickness of the sample', NOW());
-INSERT INTO stringtable VALUES (default, 32, 'de', 'Dicke der Probe', NOW());
-INSERT INTO stringtable VALUES (default, 33, 'de', 'sputtern', NOW());
-INSERT INTO stringtable VALUES (default, 33, 'en', 'sputtering', NOW());
-INSERT INTO stringtable VALUES (default, 34, 'en', 'batch', NOW());
-INSERT INTO stringtable VALUES (default, 34, 'de', 'Batch', NOW());
-INSERT INTO stringtable VALUES (default, 35, 'en', 'number for a batch of samples. First part of the samplenumber', NOW());
-INSERT INTO stringtable VALUES (default, 35, 'de', 'Batchnummer. Erster Teil der Probennummer', NOW());
-INSERT INTO stringtable VALUES (default, 36, 'de', 'Prozessnummer', NOW());
-INSERT INTO stringtable VALUES (default, 36, 'en', 'Processnumber', NOW());
-INSERT INTO stringtable VALUES (default, 37, 'en', 'Visual inspection', NOW());
-INSERT INTO stringtable VALUES (default, 37, 'de', 'visueller Eindruck', NOW());
-INSERT INTO stringtable VALUES (default, 38, 'de', 'Beispiel Proben-Prozesssuche');
-INSERT INTO stringtable VALUES (default, 38, 'en', 'example sample process search');
-INSERT INTO stringtable VALUES (default, 39, 'en', 'cold fusion', NOW());
-INSERT INTO stringtable VALUES (default, 39, 'de', 'Kalte Kernfusion', NOW());
-INSERT INTO stringtable VALUES (default, 40, 'en', 'date', NOW());
-INSERT INTO stringtable VALUES (default, 40, 'de', 'Datum', NOW());
-INSERT INTO stringtable VALUES (default, 41, 'en', 'date of process', NOW());
-INSERT INTO stringtable VALUES (default, 41, 'de', 'Datum des Prozesses', NOW());
-INSERT INTO stringtable VALUES (default, 42, 'en', 'very carefully', NOW());
-INSERT INTO stringtable VALUES (default, 42, 'de', 'sehr vorsichtig', NOW());
-INSERT INTO stringtable VALUES (default, 43, 'en', 'standard cleaning', NOW());
-INSERT INTO stringtable VALUES (default, 43, 'de', 'standard Reinigung', NOW());
-INSERT INTO stringtable VALUES (default, 44, 'en', 'experiment number', NOW());
-INSERT INTO stringtable VALUES (default, 44, 'de', 'Experiment Nummer', NOW());
-INSERT INTO stringtable VALUES (default, 45, 'en', 'number for the experiment', NOW());
-INSERT INTO stringtable VALUES (default, 45, 'de', 'Nummer für das Experiment', NOW());
-INSERT INTO stringtable VALUES (default, 46, 'en', '2-layer sputtering', NOW());
-INSERT INTO stringtable VALUES (default, 46, 'de', 'Zweischicht Sputtern', NOW());
-INSERT INTO stringtable VALUES (default, 47, 'en', 'nice solar cell', NOW());
-INSERT INTO stringtable VALUES (default, 47, 'de', 'Sehr hübsche Solarzelle', NOW());
-INSERT INTO stringtable VALUES (default, 48, 'en', 'extra white', NOW());
-INSERT INTO stringtable VALUES (default, 48, 'de', 'extra weiss', NOW());
-INSERT INTO stringtable VALUES (default, 49, 'en', 'handwashed', NOW());
-INSERT INTO stringtable VALUES (default, 49, 'de', 'handgewaschen', NOW());
-INSERT INTO stringtable VALUES (default, 50, 'de', 'Solarzelle', NOW());
-INSERT INTO stringtable VALUES (default, 50, 'en', 'solar cell', NOW());
-INSERT INTO stringtable VALUES (default, 51, 'de', 'Pulverprobe', NOW());
-INSERT INTO stringtable VALUES (default, 51, 'en', 'powder sample', NOW());
-INSERT INTO stringtable VALUES (default, 52, 'de', 'Waschprozedur mit Miele-Waschmaschine');
-INSERT INTO stringtable VALUES (default, 52, 'en', 'washing procedure with Miele washing machine');
-INSERT INTO stringtable VALUES (default, 53, 'de', 'Sputtern des Rückkontakts');
-INSERT INTO stringtable VALUES (default, 53, 'en', 'sputtering of backcontact');
-INSERT INTO stringtable VALUES (default, 54, 'de', 'Sonstige Prozesse');
-INSERT INTO stringtable VALUES (default, 54, 'en', 'miscellanous processes');
-INSERT INTO stringtable VALUES (default, 55, 'de', 'Beschichtungs Prozesse');
-INSERT INTO stringtable VALUES (default, 55, 'en', 'coating processes');
-INSERT INTO stringtable VALUES (default, 56, 'en', 'deadline');
-INSERT INTO stringtable VALUES (default, 56, 'de', 'geplantes Abschlussdatum');
-INSERT INTO stringtable VALUES (default, 57, 'en', 'The experiment should be finished then');
-INSERT INTO stringtable VALUES (default, 57, 'de', 'geplantes Abschlussdatum für ein Experiment');
-INSERT INTO stringtable VALUES (default, 58, 'en', 'Describe the goal of your experiment here');
-INSERT INTO stringtable VALUES (default, 58, 'de', 'Was ist das Ziel des Experiments?');
-INSERT INTO stringtable VALUES (default, 59, 'de', 'Eine einzelne Solarzelle');
-INSERT INTO stringtable VALUES (default, 59, 'en', 'a single solarcell');
-INSERT INTO stringtable VALUES (default, 60, 'de', 'Eine Pulverprobe');
-INSERT INTO stringtable VALUES (default, 60, 'en', 'An amount of powder');
-INSERT INTO stringtable VALUES (default, 61, 'de', 'Solarproben');
-INSERT INTO stringtable VALUES (default, 61, 'en', 'solarsamples');
-INSERT INTO stringtable VALUES (default, 62, 'de', 'Pulverprobe');
-INSERT INTO stringtable VALUES (default, 62, 'en', 'a powdersample');
-INSERT INTO stringtable VALUES (default, 63, 'de', 'Länge');
-INSERT INTO stringtable VALUES (default, 63, 'en', 'length');
-INSERT INTO stringtable VALUES (default, 64, 'de', 'Beispiel Probensuche');
-INSERT INTO stringtable VALUES (default, 64, 'en', 'example sample search');
-INSERT INTO stringtable VALUES (default, 65, 'de', 'Beispiel Prozesssuche');
-INSERT INTO stringtable VALUES (default, 65, 'en', 'example process search');
-INSERT INTO stringtable VALUES (default, 66, 'de', 'Beispiel Objektspezifischer Parameter');
-INSERT INTO stringtable VALUES (default, 66, 'en', 'example object specific parameter');
-INSERT INTO stringtable VALUES (default, 67, 'de', 'Standard Rezept');
-INSERT INTO stringtable VALUES (default, 67, 'en', 'baseline recipe');
+INSERT INTO stringtable VALUES (default,  3, 'en', 'samplenumber in Batch', NOW());
+INSERT INTO stringtable VALUES (default,  3, 'de', 'Probennumber in Batch', NOW());
+INSERT INTO stringtable VALUES (default,  4, 'en', 'number of sample in Batch. Second part of the samplenumber', NOW());
+INSERT INTO stringtable VALUES (default,  4, 'de', 'Probenummer in Batch. Zweiter Teil der Probennummer', NOW());
+INSERT INTO stringtable VALUES (default,  5, 'de', 'Standard Prozessparameter');
+INSERT INTO stringtable VALUES (default,  5, 'en', 'standard processparameters');
+INSERT INTO stringtable VALUES (default,  6, 'de', 'Länge', NOW());
+INSERT INTO stringtable VALUES (default,  6, 'en', 'length', NOW());
+INSERT INTO stringtable VALUES (default,  7, 'de', 'Ziel', NOW());
+INSERT INTO stringtable VALUES (default,  7, 'en', 'goal', NOW());
+INSERT INTO stringtable VALUES (default,  8, 'de', 'Substrat', NOW());
+INSERT INTO stringtable VALUES (default,  8, 'en', 'substrate', NOW());
+INSERT INTO stringtable VALUES (default,  9, 'de', 'Zellenlaenge', NOW());
+INSERT INTO stringtable VALUES (default,  9, 'en', 'cell length', NOW());
+INSERT INTO stringtable VALUES (default, 10, 'de', 'Gewicht', NOW());
+INSERT INTO stringtable VALUES (default, 10, 'en', 'weight', NOW());
+INSERT INTO stringtable VALUES (default, 12, 'de', 'Basisparameter', NOW());
+INSERT INTO stringtable VALUES (default, 12, 'en', 'base parameters', NOW());
+INSERT INTO stringtable VALUES (default, 13, 'de', 'Messwerte', NOW());
+INSERT INTO stringtable VALUES (default, 13, 'en', 'measured values', NOW());
+INSERT INTO stringtable VALUES (default, 14, 'de', 'Glas', NOW());
+INSERT INTO stringtable VALUES (default, 14, 'en', 'glass', NOW());
+INSERT INTO stringtable VALUES (default, 15, 'de', 'Polyimide', NOW());
+INSERT INTO stringtable VALUES (default, 15, 'en', 'polyimide', NOW());
+INSERT INTO stringtable VALUES (default, 16, 'de', 'Stahlfolie', NOW());
+INSERT INTO stringtable VALUES (default, 16, 'en', 'steel foil', NOW());
+INSERT INTO stringtable VALUES (default, 17, 'en', 'cm', NOW());
+INSERT INTO stringtable VALUES (default, 18, 'en', 'g', '5.6.2015');
+INSERT INTO stringtable VALUES (default, 19, 'de', 'VOC verbessern', NOW());
+INSERT INTO stringtable VALUES (default, 19, 'en', 'improve VOC', NOW());
+INSERT INTO stringtable VALUES (default, 20, 'de', 'Reinigung', NOW());
+INSERT INTO stringtable VALUES (default, 20, 'en', 'washing', NOW());
+INSERT INTO stringtable VALUES (default, 21, 'de', 'Vorwaschgang', NOW());
+INSERT INTO stringtable VALUES (default, 21, 'en', 'pre-wash', NOW());
+INSERT INTO stringtable VALUES (default, 22, 'de', 'Hauptwaschgang', NOW());
+INSERT INTO stringtable VALUES (default, 22, 'en', 'main-wash', NOW());
+INSERT INTO stringtable VALUES (default, 23, 'en', 'worker', NOW());
+INSERT INTO stringtable VALUES (default, 23, 'de', 'Bearbeiter', NOW());
+INSERT INTO stringtable VALUES (default, 24, 'en', 'worker', NOW());
+INSERT INTO stringtable VALUES (default, 24, 'de', 'Bearbeiter', NOW());
+INSERT INTO stringtable VALUES (default, 25, 'en', 'basic data', NOW());
+INSERT INTO stringtable VALUES (default, 25, 'de', 'Grunddaten', NOW());
+INSERT INTO stringtable VALUES (default, 26, 'en', 'Standard glas substrate', NOW());
+INSERT INTO stringtable VALUES (default, 26, 'de', 'Standardglassubstrat', NOW());
+INSERT INTO stringtable VALUES (default, 27, 'en', 'My first experiment', NOW());
+INSERT INTO stringtable VALUES (default, 27, 'de', 'Mein erstes Experiment', NOW());
+INSERT INTO stringtable VALUES (default, 28, 'en', 'second Experiment', NOW());
+INSERT INTO stringtable VALUES (default, 28, 'de', 'Mein zweites Experiment', NOW());
+INSERT INTO stringtable VALUES (default, 29, 'en', 'thickness', NOW());
+INSERT INTO stringtable VALUES (default, 29, 'de', 'Dicke', NOW());
+INSERT INTO stringtable VALUES (default, 30, 'en', 'thickness of the sample', NOW());
+INSERT INTO stringtable VALUES (default, 30, 'de', 'Dicke der Probe', NOW());
+INSERT INTO stringtable VALUES (default, 31, 'de', 'sputtern', NOW());
+INSERT INTO stringtable VALUES (default, 31, 'en', 'sputtering', NOW());
+INSERT INTO stringtable VALUES (default, 32, 'en', 'batch', NOW());
+INSERT INTO stringtable VALUES (default, 32, 'de', 'Batch', NOW());
+INSERT INTO stringtable VALUES (default, 33, 'en', 'number for a batch of samples. First part of the samplenumber', NOW());
+INSERT INTO stringtable VALUES (default, 33, 'de', 'Batchnummer. Erster Teil der Probennummer', NOW());
+INSERT INTO stringtable VALUES (default, 34, 'de', 'Prozessnummer', NOW());
+INSERT INTO stringtable VALUES (default, 34, 'en', 'Processnumber', NOW());
+INSERT INTO stringtable VALUES (default, 35, 'en', 'Visual inspection', NOW());
+INSERT INTO stringtable VALUES (default, 35, 'de', 'visueller Eindruck', NOW());
+INSERT INTO stringtable VALUES (default, 36, 'de', 'Beispiel Proben-Prozesssuche');
+INSERT INTO stringtable VALUES (default, 36, 'en', 'example sample process search');
+INSERT INTO stringtable VALUES (default, 37, 'en', 'cold fusion', NOW());
+INSERT INTO stringtable VALUES (default, 37, 'de', 'Kalte Kernfusion', NOW());
+INSERT INTO stringtable VALUES (default, 38, 'en', 'date', NOW());
+INSERT INTO stringtable VALUES (default, 38, 'de', 'Datum', NOW());
+INSERT INTO stringtable VALUES (default, 39, 'en', 'date of process', NOW());
+INSERT INTO stringtable VALUES (default, 39, 'de', 'Datum des Prozesses', NOW());
+INSERT INTO stringtable VALUES (default, 40, 'en', 'very carefully', NOW());
+INSERT INTO stringtable VALUES (default, 40, 'de', 'sehr vorsichtig', NOW());
+INSERT INTO stringtable VALUES (default, 41, 'en', 'standard cleaning', NOW());
+INSERT INTO stringtable VALUES (default, 41, 'de', 'standard Reinigung', NOW());
+INSERT INTO stringtable VALUES (default, 42, 'en', 'experiment number', NOW());
+INSERT INTO stringtable VALUES (default, 42, 'de', 'Experiment Nummer', NOW());
+INSERT INTO stringtable VALUES (default, 43, 'en', 'number for the experiment', NOW());
+INSERT INTO stringtable VALUES (default, 43, 'de', 'Nummer für das Experiment', NOW());
+INSERT INTO stringtable VALUES (default, 44, 'en', '2-layer sputtering', NOW());
+INSERT INTO stringtable VALUES (default, 44, 'de', 'Zweischicht Sputtern', NOW());
+INSERT INTO stringtable VALUES (default, 45, 'en', 'nice solar cell', NOW());
+INSERT INTO stringtable VALUES (default, 45, 'de', 'Sehr hübsche Solarzelle', NOW());
+INSERT INTO stringtable VALUES (default, 46, 'en', 'extra white', NOW());
+INSERT INTO stringtable VALUES (default, 46, 'de', 'extra weiss', NOW());
+INSERT INTO stringtable VALUES (default, 47, 'en', 'handwashed', NOW());
+INSERT INTO stringtable VALUES (default, 47, 'de', 'handgewaschen', NOW());
+INSERT INTO stringtable VALUES (default, 48, 'de', 'Solarzelle', NOW());
+INSERT INTO stringtable VALUES (default, 48, 'en', 'solar cell', NOW());
+INSERT INTO stringtable VALUES (default, 49, 'de', 'Pulverprobe', NOW());
+INSERT INTO stringtable VALUES (default, 49, 'en', 'powder sample', NOW());
+INSERT INTO stringtable VALUES (default, 50, 'de', 'Waschprozedur mit Miele-Waschmaschine');
+INSERT INTO stringtable VALUES (default, 50, 'en', 'washing procedure with Miele washing machine');
+INSERT INTO stringtable VALUES (default, 51, 'de', 'Sputtern des Rückkontakts');
+INSERT INTO stringtable VALUES (default, 51, 'en', 'sputtering of backcontact');
+INSERT INTO stringtable VALUES (default, 52, 'de', 'Sonstige Prozesse');
+INSERT INTO stringtable VALUES (default, 52, 'en', 'miscellanous processes');
+INSERT INTO stringtable VALUES (default, 53, 'de', 'Beschichtungs Prozesse');
+INSERT INTO stringtable VALUES (default, 53, 'en', 'coating processes');
+INSERT INTO stringtable VALUES (default, 54, 'en', 'deadline');
+INSERT INTO stringtable VALUES (default, 54, 'de', 'geplantes Abschlussdatum');
+INSERT INTO stringtable VALUES (default, 55, 'en', 'The experiment should be finished then');
+INSERT INTO stringtable VALUES (default, 55, 'de', 'geplantes Abschlussdatum für ein Experiment');
+INSERT INTO stringtable VALUES (default, 56, 'en', 'Describe the goal of your experiment here');
+INSERT INTO stringtable VALUES (default, 56, 'de', 'Was ist das Ziel des Experiments?');
+INSERT INTO stringtable VALUES (default, 57, 'de', 'Eine einzelne Solarzelle');
+INSERT INTO stringtable VALUES (default, 57, 'en', 'a single solarcell');
+INSERT INTO stringtable VALUES (default, 58, 'de', 'Eine Pulverprobe');
+INSERT INTO stringtable VALUES (default, 58, 'en', 'An amount of powder');
+INSERT INTO stringtable VALUES (default, 59, 'de', 'Solarproben');
+INSERT INTO stringtable VALUES (default, 59, 'en', 'solarsamples');
+INSERT INTO stringtable VALUES (default, 60, 'de', 'Pulverprobe');
+INSERT INTO stringtable VALUES (default, 60, 'en', 'a powdersample');
+INSERT INTO stringtable VALUES (default, 61, 'de', 'Länge');
+INSERT INTO stringtable VALUES (default, 61, 'en', 'length');
+INSERT INTO stringtable VALUES (default, 62, 'de', 'Beispiel Probensuche');
+INSERT INTO stringtable VALUES (default, 62, 'en', 'example sample search');
+INSERT INTO stringtable VALUES (default, 63, 'de', 'Beispiel Prozesssuche');
+INSERT INTO stringtable VALUES (default, 63, 'en', 'example process search');
+INSERT INTO stringtable VALUES (default, 64, 'de', 'Beispiel Objektspezifischer Parameter');
+INSERT INTO stringtable VALUES (default, 64, 'en', 'example object specific parameter');
+INSERT INTO stringtable VALUES (default, 65, 'de', 'Standard Rezept');
+INSERT INTO stringtable VALUES (default, 65, 'en', 'baseline recipe');
 
  /* stringID        INTEGER NOT NULL PRIMARY KEY,
   string_key      INTEGER NOT NULL REFERENCES string_key_table,
@@ -238,7 +232,7 @@ INSERT INTO language_preferences VALUES (default, 1, 'de', 1);
 -- );
 
 
-INSERT INTO objecttypesgrp VALUES (default,1, 61, NOW()); -- Solarzelle
+INSERT INTO objecttypesgrp VALUES (default,1, 59, NOW()); -- Solarzelle
 -- CREATE TABLE objecttypesgrp (
 --   ID              SERIAL PRIMARY KEY,
 --   name            INTEGER NOT NULL REFERENCES string_key_table ON DELETE CASCADE,
@@ -246,8 +240,8 @@ INSERT INTO objecttypesgrp VALUES (default,1, 61, NOW()); -- Solarzelle
 --   lastUser        INTEGER REFERENCES users(ID)
 -- ); 
 
-INSERT INTO objecttypes VALUES (default,1,1,50,59,NOW()); -- Solarzelle
-INSERT INTO objecttypes VALUES (default,2,1,62,60,NOW()); -- Pulverprobe
+INSERT INTO objecttypes VALUES (default,1,1,48,57,NOW()); -- Solarzelle
+INSERT INTO objecttypes VALUES (default,2,1,60,58,NOW()); -- Pulverprobe
   -- ID              SERIAL PRIMARY KEY,
   -- position        INTEGER,
   -- otgrp           INTEGER REFERENCES objecttypesgrp ON DELETE NO ACTION,
@@ -258,8 +252,8 @@ INSERT INTO objecttypes VALUES (default,2,1,62,60,NOW()); -- Pulverprobe
 
 
 
-INSERT INTO ot_parametergrps VALUES (default, 1, 14, 1, NOW());
-INSERT INTO ot_parametergrps VALUES (default, 2, 15, 2, NOW());
+INSERT INTO ot_parametergrps VALUES (default, 1, 12, 1, NOW());
+INSERT INTO ot_parametergrps VALUES (default, 2, 13, 2, NOW());
 /*CREATE TABLE ot_parametergrps(
   ID              INTEGER NOT NULL PRIMARY KEY,
   OT_ID           INTEGER NOT NULL REFERENCES objecttypes(ID),
@@ -271,35 +265,31 @@ INSERT INTO ot_parametergrps VALUES (default, 2, 15, 2, NOW());
 
 
 INSERT INTO paramdef (StringKeyName,StringKeyUnit,Datatype,description,min,max,lastUser ) 
-	VALUES ( 1, NULL,1, 2, 1, 3, 1); -- 1 status
+	VALUES ( 1, NULL, 1, 2, 1, 3, 1); -- 1 status
 INSERT INTO paramdef (StringKeyName,StringKeyUnit,Datatype,description,lastUser ) 
-	VALUES ( 3, NULL,1, 4, 1); -- 2 number of experiment
+	VALUES ( 8, NULL, 6, NULL, 1); -- 2 Substrat (chose one)
 INSERT INTO paramdef (StringKeyName,StringKeyUnit,Datatype,description,lastUser ) 
-	VALUES (10, NULL,  6, NULL , 1); -- 3 Substrat (chose one)
-INSERT INTO paramdef (StringKeyName,StringKeyUnit,Datatype,description,lastUser ) 
-	VALUES (25, NULL,  4, 26, 1); -- 4 worker (String)
+	VALUES (23, NULL, 4, 24, 1); -- 3 worker (String)
 INSERT INTO paramdef (StringKeyName,StringKeyUnit,Datatype,description,min,lastUser ) 
-	VALUES (31, 19,  2, 32, 0,1); -- 5 thickness
+	VALUES (29,   17,  2, NULL, 0,1); -- 4 thickness
 INSERT INTO paramdef (StringKeyName,StringKeyUnit,Datatype,description,min,format,lastUser ) 
-	VALUES (34, NULL,  1, 35, 0, '0000',1); -- 6 Batch
+	VALUES (32, NULL,  1, 35, 0, '0000',1); -- 5 batch
 INSERT INTO paramdef (StringKeyName,StringKeyUnit,Datatype,description,min,format,lastUser ) 
-	VALUES (5, NULL,  1, 35, 0, '00',1); -- 7 Samplenumber
+	VALUES ( 3, NULL,  1, 35, 0, '00',1); -- 6 Samplenumber
 INSERT INTO paramdef (StringKeyName,StringKeyUnit,Datatype,description,min,lastUser ) 
-	VALUES (36, NULL,  1, NULL, 0, 1); -- 8 Processnumber
+	VALUES (34, NULL,  1, NULL, 0, 1); -- 7 Processnumber
 INSERT INTO paramdef (StringKeyName,StringKeyUnit,Datatype,description,lastUser ) 
-	VALUES (37, NULL,  4, 37, 1); -- 9 Visual inspection
+	VALUES (39, NULL,  7, 41, 1); -- 8 date of process
 INSERT INTO paramdef (StringKeyName,StringKeyUnit,Datatype,description,lastUser ) 
-	VALUES (40, NULL,  7, 41, 1); -- 10 Date for processes
+	VALUES (35, NULL,  4, 37, 1); -- 9 Visual inspection
 INSERT INTO paramdef (StringKeyName,StringKeyUnit,Datatype,description,min,lastUser ) 
-	VALUES (44, NULL,  1, 45, 0, 1); -- 11 Number für Experiment
+	VALUES (61,   17,  2,  8, 0, 1); -- 11 length
 INSERT INTO paramdef (StringKeyName,StringKeyUnit,Datatype,description,min,lastUser ) 
-	VALUES (63, 19,  2,  8, 0, 1); -- 12 length
-INSERT INTO paramdef (StringKeyName,StringKeyUnit,Datatype,description,min,lastUser ) 
-	VALUES (23, 20,  3,  NULL, 0, 1); -- 13 weight
+	VALUES (10,   18,  3,  NULL, 0, 1); -- 12 weight
 INSERT INTO paramdef (StringKeyName,StringKeyUnit,Datatype,description,lastUser ) 
-	VALUES (56, NULL,7, 57, 1); -- 14 Geplantes Abschlussdatum
+	VALUES (54, NULL,7, 57, 1); -- 13 planned finishing date
 INSERT INTO paramdef (StringKeyName,StringKeyUnit,Datatype,description,lastUser ) 
-	VALUES ( 9, NULL,4, 58, 1); -- 15 Goal
+	VALUES ( 7, NULL,4, 58, 1); -- 14 goal
 
 -- CREATE TABLE paramdef ( -- definition of parameters
 --   ID 				      SERIAL PRIMARY KEY,
@@ -321,31 +311,31 @@ INSERT INTO paramdef (StringKeyName,StringKeyUnit,Datatype,description,lastUser 
 
 INSERT INTO ot_parameters (ObjecttypesID, Parametergroup, compulsory, ID_Field, Hidden, pos,      
 	definition, StringKeyName) 
-	VALUES (1, NULL, True,  True,  False, 1, 6, 34); -- Batchnumber
+	VALUES (1, NULL, True,  True,  False, 1, 5, 32); -- Batchnumber
 INSERT INTO ot_parameters (ObjecttypesID, Parametergroup, compulsory, ID_Field, Hidden, pos,      
 	definition, StringKeyName) 
-	VALUES (1, NULL, True,  True,  False, 2, 7,  5); -- samplenumber in Batch
+	VALUES (1, NULL, True,  True,  False, 2, 6,  3); -- samplenumber in Batch
 INSERT INTO ot_parameters (ObjecttypesID, Parametergroup, compulsory, ID_Field, Hidden, pos,      
 	definition, StringKeyName) 
-	VALUES (1, 1, False, False, False, 4,13, 12); -- weight
+	VALUES (1, 1, False, False, False, 4,11, 10); -- weight
 INSERT INTO ot_parameters (ObjecttypesID, Parametergroup, compulsory, ID_Field, Hidden, pos,      
 	definition, StringKeyName) 	
-	VALUES (1, 1, False, False, False, 5, 3, 10); -- substrate
+	VALUES (1, 1, False, False, False, 5, 2, 8); -- substrate
 INSERT INTO ot_parameters (ObjecttypesID, Parametergroup, compulsory, ID_Field, Hidden, pos,      
 	definition, StringKeyName) 
-	VALUES (1, 1, False, False, False, 6, 5, 31); -- thickness
+	VALUES (1, 1, False, False, False, 6, 4, 29); -- thickness
 INSERT INTO ot_parameters (ObjecttypesID, Parametergroup, compulsory, ID_Field, Hidden, pos,      
 	definition, StringKeyName) 
-	VALUES (1, 1, False, False, False, 3,12, NULL); -- length
+	VALUES (1, 1, False, False, False, 3, 10, NULL); -- length
 INSERT INTO ot_parameters (ObjecttypesID, Parametergroup, compulsory, ID_Field, Hidden, pos,      
 	definition, StringKeyName) 
-	VALUES (2, NULL, True,  True,  False, 1, 6, 34); -- Batchnumber
+	VALUES (2, NULL, True,  True,  False, 1, 5, 32); -- Batchnumber
 INSERT INTO ot_parameters (ObjecttypesID, Parametergroup, compulsory, ID_Field, Hidden, pos,      
 	definition, StringKeyName) 
-	VALUES (2, NULL, True,  True,  False, 2, 7,  5); -- samplenumber in Batch
+	VALUES (2, NULL, True,  True,  False, 2, 8,  3); -- samplenumber in Batch
 INSERT INTO ot_parameters (ObjecttypesID, Parametergroup, compulsory, ID_Field, Hidden, pos,      
 	definition, StringKeyName) 
-	VALUES (2, 2, False, False, False, 3,13, 12); -- weight
+	VALUES (2, 2, False, False, False, 3,11, 10); -- weight
 --  ID              INTEGER NOT NULL PRIMARY KEY,
 --  ObjecttypesID   INTEGER NOT NULL REFERENCES objecttypes(ID),
 --  Parametergroup  INTEGER NOT NULL REFERENCES ot_parametergrps(ID),
@@ -425,9 +415,9 @@ INSERT INTO originates_from VALUES (default,4,1,NOW());
 
 
 
-INSERT INTO possible_VALUES VALUES (default,3, 1, 'Glas', NOW());
-INSERT INTO possible_VALUES VALUES (default,3, 2, 'Titanfolie', NOW());
-INSERT INTO possible_VALUES VALUES (default,3, 3, 'Stahlfolie', NOW());
+INSERT INTO possible_VALUES VALUES (default,2, 1, 'Glas', NOW());
+INSERT INTO possible_VALUES VALUES (default,2, 2, 'Titanfolie', NOW());
+INSERT INTO possible_VALUES VALUES (default,2, 3, 'Stahlfolie', NOW());
  -- id              SERIAL PRIMARY KEY, 
  --  parameterID 		INTEGER NOT NULL REFERENCES paramdef(ID) ON DELETE CASCADE,
  --  position		  	INTEGER NOT NULL,
@@ -455,8 +445,8 @@ INSERT INTO processtypegroups VALUES (default, 1, 54);
 --   lastUser        INTEGER REFERENCES users(ID)
 -- );
 
-INSERT INTO processtypes VALUES (default,1,1,22,52); -- Reinigung
-INSERT INTO processtypes VALUES (default,2,1,33,53); -- Politur
+INSERT INTO processtypes VALUES (default,1,1,20,50); -- Reinigung
+INSERT INTO processtypes VALUES (default,2,1,31,51); -- Politur
 -- CREATE TABLE processtypes (   -- kind of process (i.e. washing)
 --   ID              SERIAL PRIMARY KEY, 
 --   position        INTEGER,
@@ -469,10 +459,10 @@ INSERT INTO processtypes VALUES (default,2,1,33,53); -- Politur
 
 
 
-INSERT INTO p_parametergrps VALUES (default,1,23,2,NOW());
-INSERT INTO p_parametergrps VALUES (default,1,24,3,NOW());
-INSERT INTO p_parametergrps VALUES (default,1,27,1,NOW());
-INSERT INTO p_parametergrps VALUES (default,2,23,1,NOW());
+INSERT INTO p_parametergrps VALUES (default,1,21,2,NOW());
+INSERT INTO p_parametergrps VALUES (default,1,22,3,NOW());
+INSERT INTO p_parametergrps VALUES (default,1,25,1,NOW());
+INSERT INTO p_parametergrps VALUES (default,2,21,1,NOW());
 
 -- CREATE TABLE p_parametergrps(
 --   ID              INTEGER NOT NULL PRIMARY KEY,
@@ -483,22 +473,22 @@ INSERT INTO p_parametergrps VALUES (default,2,23,1,NOW());
 
 
 
+INSERT INTO p_parameters (ProcesstypeID,compulsory,id_field,hidden,pos,
+definition,lastUser) VALUES (1,True,True, False,1, 7, 1); -- processnumber
 INSERT INTO p_parameters (ProcesstypeID,parametergroup,compulsory,id_field,hidden,pos,
-definition,lastUser) VALUES (1,NULL,True,True, False,1, 8,1); -- processnumber
-INSERT INTO p_parameters (ProcesstypeID,parametergroup,compulsory,id_field,hidden,pos,
-definition,lastUser) VALUES (1,NULL,True, False,False,1,10,1); -- date 
+definition,lastUser) VALUES (1,NULL,True, False,False,1,8,1); -- date 
 INSERT INTO p_parameters (ProcesstypeID,parametergroup,compulsory,id_field,hidden,pos,
 definition,lastUser) VALUES (1,NULL,True, False,True, 1, 1, 1); -- status 
 INSERT INTO p_parameters (ProcesstypeID,parametergroup,compulsory,id_field,hidden,pos,
-definition,lastUser) VALUES (1,1,False,False,False,3, 4, 1); -- worker
+definition,lastUser) VALUES (1,1,False,False,False,3, 3, 1); -- worker
+INSERT INTO p_parameters (ProcesstypeID,parametergroup,compulsory,id_field,hidden,pos,
+definition,lastUser) VALUES (2,NULL,True, True,False,1, 7, 1); -- processnumber
+INSERT INTO p_parameters (ProcesstypeID,parametergroup,compulsory,id_field,hidden,pos,
+definition,lastUser) VALUES (2,NULL,True, False,False,2,8,1); -- date 
 INSERT INTO p_parameters (ProcesstypeID,parametergroup,compulsory,id_field,hidden,pos,
 definition,lastUser) VALUES (1,1,False,False,False,4, 9, 1); -- visual inspection
 INSERT INTO p_parameters (ProcesstypeID,parametergroup,compulsory,id_field,hidden,pos,
-definition,lastUser) VALUES (2,NULL,True, True,False,1, 8, 1); -- processnumber
-INSERT INTO p_parameters (ProcesstypeID,parametergroup,compulsory,id_field,hidden,pos,
-definition,lastUser) VALUES (2,NULL,True, False,False,2,10,1); -- date 
-INSERT INTO p_parameters (ProcesstypeID,parametergroup,compulsory,id_field,hidden,pos,
-definition,lastUser) VALUES (1,2,False,False,False,1,12,1); -- length
+definition,lastUser) VALUES (1,2,False,False,False,1, 10, 1); -- length
 INSERT INTO p_parameters (ProcesstypeID,parametergroup,compulsory,id_field,hidden,pos,
 definition,lastUser) VALUES (2,NULL,True, False,True, 1, 1, 1); -- status 
   -- ID              SERIAL PRIMARY KEY,
@@ -576,7 +566,7 @@ INSERT INTO rightssampletypegroup (groupID,sampletype,permission,lastUser) VALUE
 --   lastUser        INTEGER REFERENCES users(ID)
 
 
-INSERT INTO samplerecipes(name,sampletype,position,lastuser) VALUES (67,1,1,1);  -- Standardsubstrat
+INSERT INTO samplerecipes(name,sampletype,position,lastuser) VALUES (65,1,1,1);  -- Standardsubstrat
 -- CREATE TABLE samplerecipes (   -- Rezepte für Objekte
 --   id              SERIAL PRIMARY KEY, 
 --   name            INTEGER NOT NULL REFERENCES string_key_table(id) ON DELETE CASCADE,
@@ -605,9 +595,9 @@ INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser)
 INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser) 
 		VALUES (3, 1, '{"value":3}', 1);
 INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser) 
-		VALUES (4, 6, '{"value":1}', 1);
+		VALUES (4, 5, '{"value":1}', 1);
 INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser) 
-		VALUES (5, 6, '{"value":2}', 1);
+		VALUES (5, 5, '{"value":2}', 1);
 INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser) 
 		VALUES (1, 3, '{"value":1}', 1);
 INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser) 
@@ -629,7 +619,7 @@ INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser)
 INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser) 
 		VALUES (1, 4, '{"value":"Thorsten Rissom"}', 1);
 INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser) 
-		VALUES (1, 5, '{"value":"grünlich verfärbt"}', 1);
+		VALUES (1, 7, '{"value":"grünlich verfärbt"}', 1);
 -- Timestamps
 INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser) 
 		VALUES (1, 2, '{"tz":-120,"date":"2016-05-30T17:13:33.633Z"}',1);
@@ -638,9 +628,9 @@ INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser)
 INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser) 
 		VALUES (3, 2, '{"tz":-120,"date":"2016-05-30T17:15:33.633Z"}',1);
 INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser) 
-		VALUES (4, 7, '{"tz":-120,"date":"2016-05-30T17:16:33.633Z"}',1);
+		VALUES (4, 6, '{"tz":-120,"date":"2016-05-30T17:16:33.633Z"}',1);
 INSERT INTO processdata (ProcessID, ParameterID, Data, lastUser) 
-		VALUES (5, 7, '{"tz":-120,"date":"2016-05-30T17:17:33.633Z"}',1);
+		VALUES (5, 6, '{"tz":-120,"date":"2016-05-30T17:17:33.633Z"}',1);
 
 
 
@@ -654,8 +644,8 @@ INSERT INTO samplesinprocess VALUES (default,2,2,NOW(),1);
 --   sampleID        INTEGER NOT NULL REFERENCES objects(ID),
 --   lastChange      timestamp
 
-INSERT INTO processrecipes (name,processtype,position,owner) VALUES (43, 1, 1, 1);
-INSERT INTO processrecipes (name,processtype,position,owner) VALUES (48, 1, 2, 1);
+INSERT INTO processrecipes (name,processtype,position,owner) VALUES (41, 1, 1, 1);
+INSERT INTO processrecipes (name,processtype,position,owner) VALUES (46, 1, 2, 1);
 --   id              SERIAL PRIMARY KEY, 
 --   name            INTEGER NOT NULL REFERENCES string_key_table(ID) ON DELETE CASCADE,
 --   processtype     INTEGER NOT NULL REFERENCES processtypes(ID) ON DELETE CASCADE,  
@@ -688,9 +678,9 @@ INSERT INTO processrecipes (name,processtype,position,owner) VALUES (48, 1, 2, 1
 --   StringKey       INTEGER NOT NULL REFERENCES string_key_table(ID),
 --   lastChange      timestamp
 
-INSERT INTO searches (name, operation, type, owner) VALUES (64,true,1,1);
-INSERT INTO searches (name, operation, type, owner) VALUES (65,true,2,1);
-INSERT INTO searches (name, operation, type, owner) VALUES (66,true,3,1);
+INSERT INTO searches (name, operation, type, owner) VALUES (62,true,1,1);
+INSERT INTO searches (name, operation, type, owner) VALUES (63,true,2,1);
+INSERT INTO searches (name, operation, type, owner) VALUES (64,true,3,1);
 -- CREATE TABLE searches (  -- abstract searchobject
 --   ID              SERIAL PRIMARY KEY,
 --   Name            INTEGER NOT NULL REFERENCES string_key_table(ID),
@@ -790,11 +780,13 @@ INSERT INTO oSearchOutput (search,position,otparameter) VALUES (1,6,6);
 
 
 INSERT INTO experiments (Name,Number,Creator,Status,lastUser) 
-	VALUES (29,5,1,3,1);  -- status: abgeschlossen
+	VALUES (27,5,1,3,1);  -- status: abgeschlossen
+
 INSERT INTO experiments (Name,Number,Creator,Status,lastUser) 
-	VALUES (30,6,1,1,1);  -- status: geplant
+	VALUES (28,6,1,1,1);  -- status: geplant
+
 INSERT INTO experiments (Name,Number,Creator,Status,lastUser) 
-	VALUES (39,8,1,2,1);  -- status: in Durchführung
+	VALUES (37,8,1,2,1);  -- status: in Durchführung
 -- CREATE TABLE experiments (
 --   ID              SERIAL PRIMARY KEY,
 --   Name            INTEGER NOT NULL REFERENCES string_key_table(ID),
@@ -807,11 +799,20 @@ INSERT INTO experiments (Name,Number,Creator,Status,lastUser)
 
 
 -- Experiment parameters
-INSERT INTO expp_param VALUES (default,1,false,'',2,15, 9);  -- Goal of the Experiments
-INSERT INTO expp_param VALUES (default,1,false,'',3,13,12);  -- weight
-INSERT INTO expp_param VALUES (default,1,false,'',3,14,57);  -- geplantes Abschlussdatum
-INSERT INTO expp_param VALUES (default,2,false,'',1,15, 9);  -- Goal of the Experiments
-INSERT INTO expp_param VALUES (default,3,false,'',1,15, 9);  -- Goal of the Experiments
+INSERT INTO expp_param (exp_plan_id, hidden, pos, definition, StringKeyName)
+	VALUES (1, false, 2, 13, 7);  -- Goal of the Experiments
+
+INSERT INTO expp_param (exp_plan_id, hidden, pos, definition, StringKeyName)
+	VALUES (1, false, 3, 11, 10);  -- weight
+
+INSERT INTO expp_param (exp_plan_id, hidden, pos, definition, StringKeyName)
+	VALUES (1, false, 3, 12, 55);  -- geplantes Abschlussdatum
+
+INSERT INTO expp_param (exp_plan_id, hidden, pos, definition, StringKeyName)
+	VALUES (2, false, 1, 13, 7);  -- Goal of the Experiments
+
+INSERT INTO expp_param (exp_plan_id, hidden, pos, definition, StringKeyName)
+	VALUES (3, false, 1, 13, 7);  -- Goal of the Experiments
 
 
 -- CREATE TABLE expp_param (
@@ -835,8 +836,9 @@ INSERT INTO experimentdata (ExperimentID, ParameterID, Data, lastUser)
 		VALUES (2, 4, '{"value":"Verbesserung der Optik"}',1);
 INSERT INTO experimentdata (ExperimentID, ParameterID, Data, lastUser) 
 		VALUES (3, 5, '{"value":"Fusion von Wasserstoffatomen"}',1);
-
-INSERT INTO expp_samples VALUES (default,1,47,  1,1,NOW(),1);
+INSERT INTO experimentdata (ExperimentID, ParameterID, Data, lastUser) 
+	    VALUES (1, 3, '{"tz": -60, "date":"2018-04-27T23:00:00.000Z"}',1);
+INSERT INTO expp_samples VALUES (default,1,45,  1,1,NOW(),1);
 INSERT INTO expp_samples VALUES (default,2,NULL,1,2,NOW(),1);
 INSERT INTO expp_samples VALUES (default,1,NULL,2,3,NOW(),1);
 INSERT INTO expp_samples VALUES (default,2,NULL,2,4,NOW(),1);
@@ -867,9 +869,9 @@ INSERT INTO exp_plan_processes VALUES (default,1,2,1,NULL,NULL,NOW(),1); -- wash
 -- );
 
 
-INSERT INTO exp_plan_steps VALUES (default,1,1,1,   42,  NOW(),1);
-INSERT INTO exp_plan_steps VALUES (default,2,1,1,   NULL,NOW(),1);
-INSERT INTO exp_plan_steps VALUES (default,3,3,NULL,49,  NOW(),1); -- Pulverprobe in Exp2
+INSERT INTO exp_plan_steps VALUES (default, 1, 1,    1,   40, NOW(), 1);
+INSERT INTO exp_plan_steps VALUES (default, 2, 1,    1, NULL, NOW(), 1);
+INSERT INTO exp_plan_steps VALUES (default, 3, 3, NULL,   47, NOW(), 1); -- Pulverprobe in Exp2
 -- ID              SERIAL PRIMARY KEY,
 -- exp_plan_pr     INTEGER NOT NULL REFERENCES exp_plan_processes(ID) ON DELETE CASCADE,
 -- expp_s_ID       INTEGER NOT NULL REFERENCES expp_samples(ID) ON DELETE CASCADE,

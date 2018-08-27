@@ -587,8 +587,8 @@ SELECT
   (n.data ->> 'value')::integer AS p_number 
 FROM processes 
 JOIN processtypes ON (processes.processtypesid = processtypes.id) 
-JOIN p_parameters pp ON (pp.definition = 10) 
-JOIN p_parameters pp2 ON (pp2.definition = 8)
+JOIN p_parameters pp ON (pp.definition = 8) 
+JOIN p_parameters pp2 ON (pp2.definition = 7)
 JOIN processdata ptd ON (ptd.processID = processes.id AND ptd.ParameterID = pp.id) 
 JOIN processdata n ON (n.ProcessID = processes.id AND n.ParameterID = pp2.id);
 

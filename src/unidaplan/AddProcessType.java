@@ -116,7 +116,7 @@ import org.json.JSONObject;
 		   	// define parameter for processnumber
 			pStmt= dBconn.conn.prepareStatement( 			
 					"INSERT INTO p_parameters (ProcesstypeID,compulsory,ID_Field,Formula,Hidden,pos,definition,StringKeyName,lastUser) "
-					+"VALUES (?,True,True,'',False,1,8,36,?)");
+					+"VALUES (?,True,True,'',False,1,7,36,?)");
 			pStmt.setInt(1, id);
 //			pStmt.setInt(2, parameterGrp);
 			pStmt.setInt(2, userID);
@@ -125,7 +125,7 @@ import org.json.JSONObject;
 		   	// define parameter for processtime
 			pStmt= dBconn.conn.prepareStatement( 			
 					"INSERT INTO p_parameters (ProcesstypeID,compulsory,ID_Field,Formula,Hidden,pos,definition,StringKeyName,lastUser) "
-					+"VALUES (?,True,False,'',False,1,10,40,?)");
+					+"VALUES (?,True,False,'',False,1,8,40,?)");
 			pStmt.setInt(1, id);
 //			pStmt.setInt(2, parameterGrp);
 			pStmt.setInt(2, userID);
