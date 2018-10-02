@@ -17,11 +17,11 @@ function menuf(experimentService,searchService,restfactory,$translate,$transitio
 	
 	
 	this.addSearch = function(){
-		var name={}
-        name[this.language()]=$translate.instant("New Search");
+		var name = {}
+        name[this.language()] = $translate.instant("New Search");
 		var promise=searchService.addSearch(name);
 		promise.then(function(rest){
-			$state.go("editSearch",{id:rest.data.id,newSearch:true})
+			$state.go("editSearch",{id:rest.data.id, newSearch:true})
 		},
 		function(){
 			console.log("Error creating new Search");
@@ -60,7 +60,7 @@ function menuf(experimentService,searchService,restfactory,$translate,$transitio
       // if user is not logged in: track the state the user wants to go to
 		var toState = trans.targetState();
 		var toStateName = toState.name();
-		if (toStateName != "login" && toStateName != "noRights"){
+		if (toStateName != "login" && toStateName != "noRights" && toStateName != "signup"){
 			if ($rootScope.userid == undefined || $rootScope.userid < 1){
 				$rootScope.failedState = toState; // save desired state
 				return trans.router.stateService.target('login');

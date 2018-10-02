@@ -645,14 +645,12 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 	    	templateUrl: 'modules/signup/signup.html',
 	    	controller: 'signupController as signupCtrl',
 	    	resolve:{
-	            user: 
-	        	    function(userService,$stateParams){
-	        	   	    return userService.getUserWithToken($stateParams.userID,$stateParams.token);
-	            	},
-	        	token: 
-	        	   	function($stateParams){
+	        user: function(userService,$stateParams){
+        	   	    return userService.getUserWithToken($stateParams.userID,$stateParams.token);
+	        },
+	        	token: function($stateParams){
 	        			return $stateParams.token;
-	            	}
+	        }
 	    	}
     	})
     	
@@ -699,6 +697,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 		var data = JSON.parse(request.responseText);
 
 		if (request.status === 200) {
+
 			$rootScope.userid = data.id;
 			if (data.fullname){
 				$rootScope.userfullname = data.fullname;
@@ -738,6 +737,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 	 * debug = 0 - print nothing 
 	 */
 	
+		
 	$rootScope.DEBUG_NONE  		= 0; 
 	$rootScope.DEBUG_ERROR  		= 1; 
 	$rootScope.DEBUG_WARNING  	= 2; 

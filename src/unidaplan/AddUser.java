@@ -82,7 +82,10 @@ import org.json.JSONObject;
 					try {
 						initialContext = new InitialContext();
 						Context environmentContext = (Context) initialContext.lookup("java:/comp/env");
-						ip = (String) environmentContext.lookup("IPAdress");
+						ip = (String) initialContext.lookup("IPAdress");
+						if (ip.isEmpty()) {
+						    ip = (String) environmentContext.lookup("IPAdress");
+						}
 					} catch (NamingException e1) {
 						e1.printStackTrace();
 					}

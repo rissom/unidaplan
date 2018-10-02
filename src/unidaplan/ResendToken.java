@@ -115,7 +115,7 @@ import org.json.JSONObject;
 				}
 			    int port = request.getLocalPort();
 		
-		 	    String link = "http://" + ip + ":" + port + "/" + pname + "index.html#signup/" +
+		 	    String link = "http://" + ip + ":" + port + "/" + pname + "index.html#!/signup/" +
 		 	    				id + "/" + PasswordHash.toHex(token);
 		 	    SendMail.sendEmail(email, "Your Unidaplan Login", link);   
 		    } else {
