@@ -6,7 +6,8 @@
 	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd 
 	http://java.sun.com/xml/ns/j2ee 
 	http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" 
-	version = "2.4">
+	version = "2.4"
+	reloadable="true">
 	
   <resource-ref>
       <description>DB Connection</description>

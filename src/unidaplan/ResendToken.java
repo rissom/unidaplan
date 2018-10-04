@@ -99,23 +99,35 @@ import org.json.JSONObject;
 		
 			    // send an E-Mail with the token
 		 		String pname = "unidaplan/";
-		 		String ip = "";
+		 		String address = "";
 				InitialContext initialContext;
 				try {
 					initialContext = new InitialContext();
 					Context environmentContext = (Context) initialContext.lookup("java:/comp/env");
-					ip = (String) environmentContext.lookup("IPAdress");
+					address = (String) environmentContext.lookup("Address");
 				} catch (NamingException e1) {
 					e1.printStackTrace();
 				}
 				
-				if (ip.equals("automatic")){
+				if (address.equals("automatic")){
 					InetAddress inetAddress = InetAddress.getLocalHost();
-					ip = inetAddress.getHostAddress();
+					address = inetAddress.getHostAddress();
 				}
-			    int port = request.getLocalPort();
+				
+                int port = request.getLocalPort();
+
+				try {
+				    initialContext = new InitialContext();
+                    Context environmentContext = (Context) initialContext.lookup("java:/comp/env");
+                    port = (int) environmentContext.lookup("Port");
+                } catch (NamingException e1) {
+                    e1.printStackTrace();
+                }
+				
+				String portString = ""; 
+				if (port != 80) { portString = ":" + port; }
 		
-		 	    String link = "http://" + ip + ":" + port + "/" + pname + "index.html#!/signup/" +
+		 	    String link = "http://" + address + portString + "/" + pname + "index.html#!/signup/" +
 		 	    				id + "/" + PasswordHash.toHex(token);
 		 	    SendMail.sendEmail(email, "Your Unidaplan Login", link);   
 		    } else {
