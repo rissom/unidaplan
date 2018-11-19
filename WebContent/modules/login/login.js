@@ -49,11 +49,12 @@ var loginController = function($state,restfactory,$scope,$rootScope,$translate){
 		        	  }
 		        } 
 				
-				// did you want to go somewhere special? If not: sample chooser.
+				// did you want to go somewhere special? If not: experiments.
+		        console.log("checking failed state variable")
 				if ($rootScope.failedState) {
 					$state.go($rootScope.failedState.name(),$rootScope.failedState.params());
 				} else {
-					$state.go('sampleChoser');
+					$state.go('openExperiment');
 				}
 			}, function(data){
 				thisController.error = $translate.instant("unknown user or wrong password");

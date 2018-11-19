@@ -63,7 +63,8 @@ function menuf(experimentService,searchService,restfactory,$translate,$transitio
 		if (toStateName != "login" && toStateName != "noRights" && toStateName != "signup"){
 			if ($rootScope.userid == undefined || $rootScope.userid < 1){
 				$rootScope.failedState = toState; // save desired state
-				return trans.router.stateService.target('login');
+//				console.log("userid=undefined")
+//				return trans.router.stateService.target('login');
 			} 
 		}
     });
@@ -72,51 +73,62 @@ function menuf(experimentService,searchService,restfactory,$translate,$transitio
 	
 	$transitions.onError({},
 		function(trans) {
-		
-		// Output error message and detail, if they exist.
-		var error = trans.error();
-		if (error.detail){
-			
-			if (error.detail === "401") {
-				// save the desired state
-				var toState = trans.targetState();
-				var toStateName = toState.name();
-				if (toStateName != "login" && toStateName != "noRights"){
-					$rootScope.failedState = toState;
-				}
-				$state.go('noRights');
-			}
-			
-			if (error.detail === "404") {
-				alert ("Not Found!");
-				$state.go('sampleChoser');
-			}
-			
-			if (error.detail === "511") {
-				// save the desired state
-				var toState = trans.targetState();
-				var toStateName = toState.name();
-				if (toStateName != "login" && toStateName != "noRights"){
-					$rootScope.failedState = toState;
-				}
-				delete $rootScope.username;
-				delete $rootScope.userid;
-				delete $rootScope.userfullname;
-				$rootScope.admin = false
-				$state.go('noRights');
-			}
-		}	
-    });
+        	    console.log("Hello, error");
+        	    
+        		
+        		// Output error message and detail, if they exist.
+        		var error = trans.error();
+        		console.log("error",error);
+        		if (error.detail){
+        			console.log("yes detail")
+        			if (error.detail === "401") {
+        				// save the desired state
+        				var toState = trans.targetState();
+        				var toStateName = toState.name();
+                        console.log ("toStateName",toStateName)
+        
+        				if (toStateName != "login" && toStateName != "noRights" && toStateName != "signup"){
+        					$rootScope.failedState = toState;
+        				}
+        				$state.go('noRights');
+        			}
+        			
+        			if (error.detail === "404") {
+        				alert ("Not Found!");
+        				$state.go('sampleChoser');
+        			}
+        			
+        			if (error.detail === "511") {
+        				// save the desired state
+        				var toState = trans.targetState();
+        				var toStateName = toState.name();
+                    console.log ("trans",trans)
+                    console.log ("toState",toState)
+                    console.log ("toStateName",toStateName)
+        				if (toStateName != "login" && toStateName != "noRights" && toStateName != "signup"){
+        					$rootScope.failedState = toState;
+        				}
+        				delete $rootScope.username;
+        				delete $rootScope.userid;
+        				delete $rootScope.userfullname;
+        				$rootScope.admin = false
+        				$state.go('noRights');
+        			}
+        		}	
+        }
+	);
 	 
 	
 	
 	
 	$transitions.onSuccess({}, function(trans) {
 	        // track the state the user wants to go to; authorization service needs this
-		var toState = trans.$to();
-      	if (toState.name!="login" && toState.name!="noRights"){
-			delete $rootScope.failedState;
-  	    }
+	    if ($state.name){
+          	if ($state.name!="login" && $state.name!="noRights"){
+          	    console.log("$state.name",$state.name)
+    			delete $rootScope.failedState;
+      	    }
+	    }
     });
 	
 	
@@ -125,6 +137,7 @@ function menuf(experimentService,searchService,restfactory,$translate,$transitio
 		var promise = restfactory.GET('logout');
 		promise.then(function(){
 				delete $rootScope.username;
+				delete $rootScope.failedState;
 				$rootScope.admin = false;
 				delete $rootScope.userid;
 				$state.go('login');

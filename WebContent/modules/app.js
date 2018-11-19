@@ -12,7 +12,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 .config(function($stateProvider, $urlRouterProvider) {
     
 	
-	$urlRouterProvider.otherwise('/login');
+	$urlRouterProvider.otherwise('/experiments');
 	
 	
     $stateProvider
@@ -685,46 +685,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 
 
 
-.run(function($rootScope, $translate, restfactory) {
-	
-	// init function: reads the username from local Browser storage.
-	
-	
-	
-		var request = new XMLHttpRequest();
-		request.open("GET", "get-active-session-user", false);  // `false` makes the request synchronous
-		request.send(null);
-		var data = JSON.parse(request.responseText);
-
-		if (request.status === 200) {
-
-			$rootScope.userid = data.id;
-			if (data.fullname){
-				$rootScope.userfullname = data.fullname;
-			}else{
-				delete $rootScope.userfullname;
-			}
-			
-			if (data.username){
-				$rootScope.username = data.username;
-			}else{
-				delete $rootScope.username;
-			}
-			
-			if(data.preferredlanguage && data.preferredlanguage !== null){
-	        	  if (data.preferredlanguage != $translate.use()) {
-	      			$translate.use(data.preferredlanguage);
-	        	  }
-	        } 
-			
-			if (data.admin === true){
-				$rootScope.admin = true;
-			}else{
-				$rootScope.admin = false;
-			}
-		};
-		
-	
+.run(function($rootScope, $translate, restfactory) {	
 		
 	
 	// Also look into menu.js. Event handlers for transitions have to be set at later time and cannot be set here.
@@ -762,37 +723,70 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
     
     /** print errors */ 
     $rootScope.log_E = function (text, obj) {
-    	if ($rootScope.debugLevel >= $rootScope.DEBUG_ERROR) {
-			if (arguments.length >1) {
-				console.log(" ERROR: "+text,obj); 
-			} else {
-				console.log(" ERROR: " + text);
-			}
-			console.trace();
-    	}
+        	if ($rootScope.debugLevel >= $rootScope.DEBUG_ERROR) {
+    			if (arguments.length >1) {
+    				console.log(" ERROR: "+text,obj); 
+    			} else {
+    				console.log(" ERROR: " + text);
+    			}
+    			console.trace();
+        	}
     };
     
     /** print warnings */
     $rootScope.log_W = function (text, obj) {
-    	if ($rootScope.debugLevel >= $rootScope.DEBUG_WARNING) {
-			if (arguments.length >1) {
-				console.log(" WARNING: "+text,obj); 
-			} else {
-				console.log(" WARNING: "+text);
-			}
-    	}
+        	if ($rootScope.debugLevel >= $rootScope.DEBUG_WARNING) {
+    			if (arguments.length >1) {
+    				console.log(" WARNING: "+text,obj); 
+    			} else {
+    				console.log(" WARNING: "+text);
+    			}
+        	}
     };
     /** print Info */
     $rootScope.log_I = function (text, obj) {
-    	if ($rootScope.debugLevel >= $rootScope.DEBUG_INFO) {
-    		if (arguments.length >1) {
-    			console.log(" INFO: "+text,obj); 
-    		} else {
-    			console.log(" INFO: "+text);
-    		}
-    	}
+        	if ($rootScope.debugLevel >= $rootScope.DEBUG_INFO) {
+        		if (arguments.length >1) {
+        			console.log(" INFO: "+text,obj); 
+        		} else {
+        			console.log(" INFO: "+text);
+        		}
+        	}
     };
     
+    
+    // init function: reads the username from Server session
+    var promise = new restfactory.GET("get-active-session-user")
+    promise.then(
+        function(response){
+            $rootScope.userid = response.data.id;
+            if (response.data.fullname){
+                $rootScope.userfullname = response.data.fullname;
+            }else{
+                delete $rootScope.userfullname;
+            }
+            
+            if (response.data.username){
+                $rootScope.username = response.data.username;
+            } else {
+                delete $rootScope.username;
+            }
+            
+            if(response.data.preferredlanguage && response.data.preferredlanguage !== null){
+                  if (response.data.preferredlanguage != $translate.use()) {
+                    $translate.use(response.data.preferredlanguage);
+                  }
+            } 
+            
+            if (response.data.admin === true){
+                $rootScope.admin = true;
+            }else{
+                $rootScope.admin = false;
+            }
+        },
+        function(){console.log('not logged in')}
+    )
+    return promise;
     
 });
 

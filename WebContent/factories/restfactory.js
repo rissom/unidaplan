@@ -2,7 +2,7 @@
 
 
 
-angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', '$state', '$transitions', function($q, $rootScope, $http, $state, $transitions) {
+angular.module('unidaplan').factory('restfactory', ['$q', '$rootScope','$http', '$state', function($q, $rootScope, $http, $state) {
 
 	$http.defaults.headers.post["Content-Type"] = "application/json";
 	$http.defaults.headers.put["Content-Type"] = "application/json";
