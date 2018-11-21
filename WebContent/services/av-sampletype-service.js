@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
+var avSampleTypeService = function (restfactory, $q, $rootScope, $translate, key2string) {
 	// restfactory is a wrapper for $html.
 	
 	
@@ -154,7 +154,7 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
     	  defered.resolve(thisController.sampleTypes);
 	    	
     	}, function(rest) {
-    		console.log("Error loading sampletypes");
+    	    $rootScope.log_E("Error loading sampletypes");
     	});
 		return defered.promise;
 	};
@@ -376,6 +376,6 @@ var avSampleTypeService = function (restfactory,$q,$translate,key2string) {
 };
 
 
-angular.module('unidaplan').service('avSampleTypeService', ['restfactory','$q','$translate','key2string',avSampleTypeService]);
+angular.module('unidaplan').service('avSampleTypeService', ['restfactory','$q','$rootScope','$translate','key2string',avSampleTypeService]);
 
 })();

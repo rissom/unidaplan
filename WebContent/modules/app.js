@@ -706,7 +706,7 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
 	$rootScope.DEBUG_INFO  		= 4; 
 	$rootScope.DEBUG_ALL  		= 5; 
 	
-	$rootScope.debugLevel = $rootScope.DEBUG_ALL; 
+	$rootScope.debugLevel = $rootScope.DEBUG_NONE; 
 	
 	/** print debug*/ 
     $rootScope.log_D = function (text, obj) {
@@ -753,40 +753,6 @@ angular.module('unidaplan',['pascalprecht.translate','ui.bootstrap','ui.router',
         		}
         	}
     };
-    
-    
-    // init function: reads the username from Server session
-    var promise = new restfactory.GET("get-active-session-user")
-    promise.then(
-        function(response){
-            $rootScope.userid = response.data.id;
-            if (response.data.fullname){
-                $rootScope.userfullname = response.data.fullname;
-            }else{
-                delete $rootScope.userfullname;
-            }
-            
-            if (response.data.username){
-                $rootScope.username = response.data.username;
-            } else {
-                delete $rootScope.username;
-            }
-            
-            if(response.data.preferredlanguage && response.data.preferredlanguage !== null){
-                  if (response.data.preferredlanguage != $translate.use()) {
-                    $translate.use(response.data.preferredlanguage);
-                  }
-            } 
-            
-            if (response.data.admin === true){
-                $rootScope.admin = true;
-            }else{
-                $rootScope.admin = false;
-            }
-        },
-        function(){console.log('not logged in')}
-    )
-    return promise;
     
 });
 

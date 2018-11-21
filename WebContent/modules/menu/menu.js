@@ -53,7 +53,48 @@ function menuf(experimentService,searchService,restfactory,$translate,$transitio
 	};
 	
 	
+	
+	this.getServerSession = function(){
+	    // init function: reads the username from Server session
+	    var promise = new restfactory.GET("get-active-session-user")
+	    promise.then(
+	        function(response){
+	            $rootScope.userid = response.data.id;
+	            if (response.data.fullname){
+	                $rootScope.userfullname = response.data.fullname;
+	            }else{
+	                delete $rootScope.userfullname;
+	            }
+	            
+	            if (response.data.username){
+	                $rootScope.username = response.data.username;
+	            } else {
+	                delete $rootScope.username;
+	            }
+	            
+	            if(response.data.preferredlanguage && response.data.preferredlanguage !== null){
+	                  if (response.data.preferredlanguage != $translate.use()) {
+	                    $translate.use(response.data.preferredlanguage);
+	                  }
+	            } 
+	            
+	            if (response.data.admin === true){
+	                $rootScope.admin = true;
+	            }else{
+	                $rootScope.admin = false;
+	            }
+	        },
+	        function(){
+	            $state.go('login');
+	        }
+	    )
+	    return promise;
+	}
+	
+	this.getServerSession(); // invoke
+	
 
+	
 	$transitions.onBefore({},function(trans) {
 		thisController.navCollapsed = true;
 		
@@ -63,7 +104,8 @@ function menuf(experimentService,searchService,restfactory,$translate,$transitio
 		if (toStateName != "login" && toStateName != "noRights" && toStateName != "signup"){
 			if ($rootScope.userid == undefined || $rootScope.userid < 1){
 				$rootScope.failedState = toState; // save desired state
-//				console.log("userid=undefined")
+				$rootScope.log_D("userid is undefined");
+				thisController.getServerSession();  // get Username etc.
 //				return trans.router.stateService.target('login');
 			} 
 		}
@@ -72,29 +114,25 @@ function menuf(experimentService,searchService,restfactory,$translate,$transitio
 	
 	
 	$transitions.onError({},
-		function(trans) {
-        	    console.log("Hello, error");
-        	    
-        		
+		function(trans) {        	    
         		// Output error message and detail, if they exist.
         		var error = trans.error();
-        		console.log("error",error);
+        		console.log("error: ",error);
         		if (error.detail){
-        			console.log("yes detail")
         			if (error.detail === "401") {
         				// save the desired state
         				var toState = trans.targetState();
-        				var toStateName = toState.name();
-                        console.log ("toStateName",toStateName)
-        
+        				var toStateName = toState.name();        
         				if (toStateName != "login" && toStateName != "noRights" && toStateName != "signup"){
         					$rootScope.failedState = toState;
         				}
+        				trans.abort();
         				$state.go('noRights');
         			}
         			
         			if (error.detail === "404") {
         				alert ("Not Found!");
+        				trans.abort();
         				$state.go('sampleChoser');
         			}
         			
@@ -102,9 +140,6 @@ function menuf(experimentService,searchService,restfactory,$translate,$transitio
         				// save the desired state
         				var toState = trans.targetState();
         				var toStateName = toState.name();
-                    console.log ("trans",trans)
-                    console.log ("toState",toState)
-                    console.log ("toStateName",toStateName)
         				if (toStateName != "login" && toStateName != "noRights" && toStateName != "signup"){
         					$rootScope.failedState = toState;
         				}
@@ -112,9 +147,11 @@ function menuf(experimentService,searchService,restfactory,$translate,$transitio
         				delete $rootScope.userid;
         				delete $rootScope.userfullname;
         				$rootScope.admin = false
+        				console.log("Transition: ", trans);
         				$state.go('noRights');
         			}
-        		}	
+        		}
+            return false;  // abort the transition
         }
 	);
 	 
@@ -146,6 +183,7 @@ function menuf(experimentService,searchService,restfactory,$translate,$transitio
 				console.log("Error logging out!");	
 			});
 	};
+	
 	
 	
 }

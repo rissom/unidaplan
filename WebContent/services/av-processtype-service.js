@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-var avProcessTypeService = function (restfactory,$q,key2string,$translate,languages) {
+var avProcessTypeService = function (restfactory,$q,$rootScope,key2string,$translate,languages) {
 	// get the available processtypes and their names and recipes.
 
     var thisController = this;
@@ -103,41 +103,43 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 	
 	
 	this.getProcessTypes = function() {
-        var defered=$q.defer();
+        var defered = $q.defer();
 	    var promise = restfactory.GET("available-processtypes");
-	    promise.then(function(rest) {
-	    	var strings = rest.data.strings;
-	    	var processTypes = rest.data.processes;
-	    	angular.forEach(processTypes,function(ptype) {
-	    		ptype.namef = function(){
-	    			return (key2string.key2string(ptype.name,strings));
-	    		};
-	    		ptype.nameLang = function(lang){
-	    			return (key2string.key2stringWithLangStrict(ptype.name,strings,lang));
-	    		};
-	    		ptype.descf = function(){
-	    			return (key2string.key2string(ptype.description,strings));
-	    		};
-	    		ptype.descLang = function(lang){
-	    			return (key2string.key2stringWithLangStrict(ptype.description,strings,lang));
-	    		};
-	    		ptype.actions = [{ action  : "edit",     
-	    						   namef   : function(){ return $translate.instant("edit")}},
-	    		                 { action  : "duplicate",
-	    					       namef   : function(){return $translate.instant("duplicate");}},
-	    		                 { action  : "delete",   
-	    					       namef   : function(){return $translate.instant("delete");},
-	    					       disabled: !ptype.deletable}];
-	    		angular.forEach(ptype.recipes, function(recipe) {
-	    			recipe.namef = function(){
-	    				return (key2string.key2string(recipe.name,strings));
-	    			};
-	    		});
-	         });
-	    	defered.resolve(processTypes);	    	
-		    }, function(rest) {
-			console.log("Error loading processtypes");
-		 });
+	    promise.then(
+	        function(rest) {
+            	    	var strings = rest.data.strings;
+            	    	var processTypes = rest.data.processes;
+            	    	angular.forEach(processTypes,function(ptype) {
+            	    		ptype.namef = function(){
+            	    			return (key2string.key2string(ptype.name,strings));
+            	    		};
+            	    		ptype.nameLang = function(lang){
+            	    			return (key2string.key2stringWithLangStrict(ptype.name,strings,lang));
+            	    		};
+            	    		ptype.descf = function(){
+            	    			return (key2string.key2string(ptype.description,strings));
+            	    		};
+            	    		ptype.descLang = function(lang){
+            	    			return (key2string.key2stringWithLangStrict(ptype.description,strings,lang));
+            	    		};
+            	    		ptype.actions = [{ action  : "edit",     
+            	    						   namef   : function(){ return $translate.instant("edit")}},
+            	    		                 { action  : "duplicate",
+            	    					       namef   : function(){return $translate.instant("duplicate");}},
+            	    		                 { action  : "delete",   
+            	    					       namef   : function(){return $translate.instant("delete");},
+            	    					       disabled: !ptype.deletable}];
+            	    		angular.forEach(ptype.recipes, function(recipe) {
+            	    			recipe.namef = function(){
+            	    				return (key2string.key2string(recipe.name,strings));
+            	    			};
+            	    		});
+            	    });
+            	    	defered.resolve(processTypes);	    	
+            }, function(rest) {
+                $rootScope.log_E("Error loading processtypes");
+            }
+		);
 	    return defered.promise;
 	};
 	
@@ -347,6 +349,6 @@ var avProcessTypeService = function (restfactory,$q,key2string,$translate,langua
 };
 
 
-angular.module('unidaplan').service('avProcessTypeService', ['restfactory','$q','key2string','$translate','languages',avProcessTypeService]);
+angular.module('unidaplan').service('avProcessTypeService', ['restfactory','$q','$rootScope','key2string','$translate','languages',avProcessTypeService]);
 
 })();
