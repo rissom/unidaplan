@@ -25,7 +25,7 @@ public class DBconnection  {
 	public void init() throws ServletException {
 	    try {
 	      // Look up the JNDI data source only once at init time
-	    	Context initialContext = new InitialContext();
+	    	    Context initialContext = new InitialContext();
 	  	  	String DATASOURCE_CONTEXT = "java:/comp/env/jdbc/postgres";
 		    datasource = (DataSource)initialContext.lookup(DATASOURCE_CONTEXT);
 	    }
@@ -40,20 +40,20 @@ public class DBconnection  {
     
 	public void startDB() throws Exception {
 	    try {
-	    	if (datasource == null){
-	    		init();
-	    	}
-	    	if (datasource != null) {
-	    		conn = datasource.getConnection();
-	    	}
-	    	else {
-		    	System.err.println("DBconnection: No connection to database ");
-	    	}
+        	    	if (datasource == null){
+        	    		init();
+        	    	}
+        	    	if (datasource != null) {
+        	    		conn = datasource.getConnection();
+        	    	}
+        	    	else {
+        		    	System.err.println("DBconnection: No connection to database ");
+        	    	}
 	    }
 	    catch(SQLException ex){
-	    	System.err.println("SQL Exception");
-	    	System.err.println("DBconnection: Cannot get connection: " + ex);
-	    	ex.printStackTrace();
+        	    	System.err.println("SQL Exception");
+        	    	System.err.println("DBconnection: Cannot get connection: " + ex);
+        	    	ex.printStackTrace();
 	    }    
 	}
   
@@ -61,6 +61,7 @@ public class DBconnection  {
   
 	public void closeDB() {
 		try {
+//		    System.out.println(datasource.);
 			conn.close();
 			conn = null;
 		} catch (SQLException e) {
@@ -408,22 +409,21 @@ public class DBconnection  {
 	          if ( pStmt == null ) {
 		          System.err.println("DBconnection: prepared statement null! " );
 	          } else {
-	        	  queryResult = pStmt.executeQuery(); 
+	        	      queryResult = pStmt.executeQuery(); 
 	          }
 	          if (queryResult == null) {
-	        	  System.err.println("DBconnection: statement result null! ");
+	        	      System.err.println("DBconnection: statement result null! ");
 	          } else {
-	        	  int columns = queryResult.getMetaData().getColumnCount();
-	        	  if ( queryResult.next() ){
-		              for (int i = 1; i <= columns; i++) {
-		                  result.put(queryResult.getMetaData().getColumnLabel(i), queryResult.getObject(i));
-		              }
-	        	  }
-	        	  else {
-//	        		  it is perfectly normal to not have a result...
-//	        		  System.err.println("DBconnection: No result!");
-	        	  }
-		          queryResult.close();
+	        	      int columns = queryResult.getMetaData().getColumnCount();
+        	        	  if ( queryResult.next() ){
+        	              for (int i = 1; i <= columns; i++) {
+        	                  result.put(queryResult.getMetaData().getColumnLabel(i), queryResult.getObject(i));
+        	              }
+        	        	  } else {
+    //	        		  it is perfectly normal to not have a result...
+    //	        		  System.err.println("DBconnection: No result!");
+        	        	  }
+        		      queryResult.close();
 	          }
 	          pStmt.close();
 	  	  } catch (SQLException e) {   // Exception for SQL database

@@ -91,7 +91,7 @@ public class SampleTypeParams extends HttpServlet {
 			     		  	 + "  pos, "
 			     		  	 + "  definition, "
 			           		 + "  COALESCE(ot_parameters.stringkeyname,paramdef.stringkeyname) as name, "
-			     		  	 + "  (blabla.count) IS NULL as deletable, stringkeyunit, paramdef.datatype "
+			     		  	 + "  ((blabla.count) IS NULL OR NOT formula IS NULL) as deletable, stringkeyunit, paramdef.datatype "
 			     		  	 + "FROM ot_parameters " 
 			     		  	 + "JOIN paramdef ON (definition=paramdef.id) "
 			     		  	 + "LEFT JOIN "

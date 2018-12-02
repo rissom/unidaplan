@@ -32,14 +32,37 @@ import javax.servlet.http.HttpServletResponse;
 		    dBconn.startDB();
 		    
 		    if (dBconn.isAdmin(userID)){
-		    	
-			    // Delete the parameter
-			    PreparedStatement pStmt = null;
-				pStmt = dBconn.conn.prepareStatement( 			
-						"DELETE FROM ot_parameters WHERE id=? ");
-			   	pStmt.setInt(1, id);
-			   	pStmt.executeUpdate();
-				pStmt.close();
+	            PreparedStatement pStmt = null;
+
+		        // Check if parameter is a formula
+		        pStmt = dBconn.conn.prepareStatement(             
+                          "SELECT  " 
+                        + "     ((blabla.count) IS NULL OR NOT formula IS NULL) as deletable " 
+                        + "FROM ot_parameters " 
+                        + "LEFT JOIN ( " 
+                        + "    SELECT " 
+                        + "        count(a.id), " 
+                        + "        ot_parameter_id "  
+                        + "    FROM sampledata a " 
+                        + "    GROUP BY ot_parameter_id ) AS blabla ON blabla.ot_parameter_id = ot_parameters.id "  
+                        + "WHERE ot_parameters.ID = ?");
+		        pStmt.setInt(1, id);
+		        Boolean deletable = dBconn.getSingleBooleanValue(pStmt);
+		        
+		        if (deletable) {   // Delete the parameter and all of its data (should only do this when the parameter is a formula)
+		            pStmt = dBconn.conn.prepareStatement(           
+                            "DELETE FROM sampledata WHERE ot_parameter_id=? ");
+                    pStmt.setInt(1, id);
+                    pStmt.executeUpdate();
+		            pStmt.close();
+		            
+	                pStmt = dBconn.conn.prepareStatement(           
+	                        "DELETE FROM ot_parameters WHERE id=? ");
+	                pStmt.setInt(1, id);
+	                pStmt.executeUpdate();
+	                pStmt.close();
+		        }
+			    
 		    } else { // no admin rights
 		    	response.setStatus(401);
 		    }
