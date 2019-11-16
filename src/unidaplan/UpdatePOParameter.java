@@ -170,6 +170,7 @@ import org.json.JSONObject;
 							pStmt.setInt(1,stringKey);
 							pStmt.setInt(2,parameterID);
 							pStmt.executeUpdate();
+							pStmt.close();
 							dBconn.addStringSet(stringKey,newDescription);
 						}
 					} else { // there is a stringkey
@@ -177,7 +178,7 @@ import org.json.JSONObject;
 							dBconn.addStringSet(stringKey,newDescription);
 						} else {
 							dBconn.removeStringKey(stringKey);
-							pStmt=dBconn.conn.prepareStatement(
+							pStmt = dBconn.conn.prepareStatement(
 									"UPDATE po_parameters SET description = ? WHERE id=?");
 							pStmt.setNull(1,java.sql.Types.INTEGER);
 							pStmt.setInt(2,parameterID);
@@ -186,7 +187,7 @@ import org.json.JSONObject;
 						}
 					}
 			    } else {
-			    	response.setStatus(401);
+			    	    response.setStatus(401);
 			    }
 
 				
