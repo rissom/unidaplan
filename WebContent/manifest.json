@@ -3,10 +3,10 @@
   "name" : "Unidaplan",
   "theme_color": "#e7e7e7",
   "background_color": "#e7e7e7",
-  "display": "minimal-ui",
   "orientation": "portrait",
   "Scope": "/",
   "start_url": "/",
+  "display": "standalone",
   "icons": [
     {
       "src": "images/icons/icon-72x72.png",

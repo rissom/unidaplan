@@ -1,6 +1,6 @@
 # Unidaplan
 
-## What is it?
+## Manage your experiments and samples
 
 Unidaplan is a sample management software for scientists. This software is made for scientists who need to manage their samples, plan experiments and do processes on them. 
 
@@ -9,10 +9,10 @@ can be seen here (in german, sorry):
 
 https://www.youtube.com/watch?v=gAOdfen3yqU
 
-The software is still a bit rough around the edges. Allthough all basic functionality is there, there are probably still bugs. The software is free to use for public research facilities and universities. But there will be a fee for private companies, once it is finished.
+The software is free to use "as is". I will take no responsibility for data loss.
 
 
-##How to set it up
+## How to set it up
 
 You need an E-Mail account, an Apache Tomcat Web Application Server and an installed PostgreSQL database. Unidaplan uses the 
 apache.tomcat.jdbc.pool. Make sure it is installed. 
@@ -89,7 +89,7 @@ Also you need to initialize the database. This can be done by running the SQL sc
 
 You will also need to create a directory "/mnt/data-store" which is writable by the tomcat processowner for storing files.
 
-##Changing the password
+## Changing the password
 
 The first and only user is called ***admin*** and has the password ***admin***. 
 

@@ -27,7 +27,6 @@ public class AddProcess extends HttpServlet {
 	    // get the processTypeID
 	    int processTypeID = -1;
 	   	int lastProcessID = 1;
-	   	int timeZone = 120;
 	   	int recipe = 0;
 	   	String privilege = "n";
 	    String in = request.getReader().readLine();
@@ -43,7 +42,7 @@ public class AddProcess extends HttpServlet {
 		
 	    try {
 			 processTypeID = jsonIn.getInt("processtypeid");
-			 timeZone = jsonIn.getInt("tz");
+			 // int timeZone = jsonIn.getInt("tz");
 			 if (jsonIn.has("recipe")){
 				 recipe = jsonIn.getInt("recipe");
 			 }

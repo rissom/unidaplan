@@ -34,10 +34,50 @@ public class DBconnection  {
 	    	System.err.println("DBconnection: Cannot get connection: " + ex);
 	    	ex.printStackTrace();
 	    }
-	  }
+	}
 
 	
+	  
+	public int addString(int key, String lang,String input) throws Exception {
+	    PreparedStatement pStmt = conn.prepareStatement("DELETE FROM stringtable WHERE language=? AND string_key=?");
+	    pStmt.setString(1, lang);
+	    pStmt.setInt(2, key);
+	    pStmt.executeUpdate();
+	    pStmt.close();
+	    pStmt = conn.prepareStatement(
+	                "INSERT INTO stringtable (string_key,language,value,lastchange)"
+	              + " VALUES (?,?,?,NOW()) RETURNING id");
+	    pStmt.setInt(1, key);
+	    pStmt.setString(2, lang);
+	    pStmt.setString(3, input);
+	    int id = getSingleIntValue(pStmt);
+	    pStmt.close();
+	    return id;
+	}
+	  
+	  
+	  
+	public void addStringSet (int key, JSONObject stringset) throws JSONException, Exception{
+	    String[] names = JSONObject.getNames(stringset);
+	    for (int i=0; i<names.length; i++){
+	        addString(key,names[i],stringset.getString(names[i]));
+	    }
+	}
+	  
+	  
+  
+    public void closeDB() {
+        try {
+//          System.out.println(datasource.);
+            conn.close();
+            conn = null;
+        } catch (SQLException e) {
+            System.err.println("Error closing database");
+        }
+    }
     
+    
+	
 	public void startDB() throws Exception {
 	    try {
         	    	if (datasource == null){
@@ -59,43 +99,31 @@ public class DBconnection  {
   
   
   
-	public void closeDB() {
-		try {
-//		    System.out.println(datasource.);
-			conn.close();
-			conn = null;
-		} catch (SQLException e) {
-			System.err.println("Error closing database");
-		}
-	}
-  
-  
-  public Boolean isAdmin(int userID) throws Exception{
-  	  Boolean blocked = true;
-  	  Boolean admin = false;
-	  PreparedStatement pStmt;
-	  if (userID > 0){
-		  // blocked?
-		  pStmt = conn.prepareStatement(
+    public Boolean isAdmin(int userID) throws Exception{
+  	    Boolean blocked = true;
+  	    Boolean admin = false;
+	    PreparedStatement pStmt;
+	    if (userID > 0){
+	        // blocked?
+		    pStmt = conn.prepareStatement(
 			       	"SELECT blocked FROM users WHERE id=?");
-		  pStmt.setInt(1,userID);
-		  blocked = getSingleBooleanValue(pStmt);
-	  }
+	  	    pStmt.setInt(1,userID);
+		    blocked = getSingleBooleanValue(pStmt);
+	    }
 	  
-	  if (!blocked){
-		  pStmt = conn.prepareStatement( 	
-					"SELECT EXISTS (SELECT 1 FROM groupmemberships WHERE groupid = 1 AND userid = ?)");
-		  pStmt.setInt(1, userID);
-		  ResultSet queryResult = null;
-		  queryResult = pStmt.executeQuery();
-		  queryResult.next();
-		  admin = queryResult.getBoolean(1);
-		  queryResult.close();
-		  pStmt.close();
-	  }
-	  
-	  return admin;
-  }
+	    if (!blocked){
+        	    pStmt = conn.prepareStatement( 	
+        		 		"SELECT EXISTS (SELECT 1 FROM groupmemberships WHERE groupid = 1 AND userid = ?)");
+        		pStmt.setInt(1, userID);
+        		ResultSet queryResult = null;
+        		queryResult = pStmt.executeQuery();
+        		queryResult.next();
+        		admin = queryResult.getBoolean(1);
+        		queryResult.close();
+        		pStmt.close();
+    	    }  
+	    return admin;
+    }
 
   
   
@@ -110,11 +138,11 @@ public class DBconnection  {
 	      }
           queryresult = stmt.executeQuery(query);
           if (queryresult == null) {
-        	  System.err.println("DBconnection: statement result null! ");
-        	  result = new JSONArray();
+        	      System.err.println("DBconnection: statement result null! ");
+        	      result = new JSONArray();
           } else {
-        	  result = table2json(queryresult);
-        	  queryresult.close();
+        	      result = table2json(queryresult);
+        	      queryresult.close();
           }     
           stmt.close();
   	  } catch (SQLException e) {   // Exception for SQL database
@@ -362,33 +390,6 @@ public class DBconnection  {
 	  pStmt.executeUpdate();
 	  pStmt.close();
 	  return newKey;
-  }
-  
-  
-  
-  public int addString(int key, String lang,String input) throws Exception {
-	  PreparedStatement pStmt = conn.prepareStatement("DELETE FROM stringtable WHERE language=? AND string_key=?");
-	  pStmt.setString(1, lang);
-	  pStmt.setInt(2, key);
-	  pStmt.executeUpdate();
-	  pStmt.close();
-	  pStmt = conn.prepareStatement(
-	              "INSERT INTO stringtable (string_key,language,value,lastchange)"
-	  		    + " VALUES (?,?,?,NOW()) RETURNING id");
-	  pStmt.setInt(1, key);
-	  pStmt.setString(2, lang);
-	  pStmt.setString(3, input);
-	  int id = getSingleIntValue(pStmt);
-	  pStmt.close();
-	  return id;
-  }
-  
-  
-  public void addStringSet (int key, JSONObject stringset) throws JSONException, Exception{
-	  String[] names = JSONObject.getNames(stringset);
-	  for (int i=0; i<names.length; i++){
-		  addString(key,names[i],stringset.getString(names[i]));
-	  }
   }
   
   

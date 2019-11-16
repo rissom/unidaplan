@@ -617,8 +617,8 @@ public class Showsample extends HttpServlet {
 				System.err.println("Showsample: Strange Problem while getting deletable");
 			}
 				
-				try{
-			        jsSample.put("strings", dBconn.getStrings(stringkeys));
+			try{
+			    jsSample.put("strings", dBconn.getStrings(stringkeys));
 		    	} catch (JSONException e) {
 					System.err.println("Showsample: JSON Problem while getting Stringkeys");
 		    	} catch (Exception e2) {
