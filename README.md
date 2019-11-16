@@ -1,6 +1,6 @@
 # Unidaplan
 
-## Manage your experiments and samples
+## What is it?
 
 Unidaplan is a sample management software for scientists. This software is made for scientists who need to manage their samples, plan experiments and do processes on them. 
 

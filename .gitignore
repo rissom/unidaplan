@@ -4,4 +4,6 @@
 /.elasticbeanstalk/
 /WebContent/META-INF/context.xml
 .DS_Store
+.metadata
+.settings
 /target/
